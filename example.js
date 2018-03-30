@@ -3,7 +3,10 @@ const { Filemaker } = require('./filemaker');
 
 connect('nedb://data').then(db => {
   const filemaker = Filemaker.create({
-    message: 'I will be a full blown client some day!'
+    application: 'mock-application',
+    server: 'https://mock-server.com',
+    _username: 'obi-wan',
+    _password: 'kenobi'
   });
 
   filemaker.save().then(client => console.log(client.toJSON()));
