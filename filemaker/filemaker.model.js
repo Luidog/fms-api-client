@@ -86,9 +86,7 @@ class Filemaker extends Document {
 	 * @return {String} A URL
 	 */
 	_authURL() {
-		let url = `${this.server}/fmi/rest/api/auth/${
-			this.application
-		}/sessions`;
+		let url = `${this.server}/fmi/rest/api/auth/${this.application}`;
 		return url;
 	}
 	/**
@@ -161,9 +159,9 @@ class Filemaker extends Document {
 	 * @return {String} A URL
 	 */
 	_findURL(layout) {
-		let url = `${this.server}/fmi/data/v1/databases/${
+		let url = `${this.server}/fmi/rest/api/find/${
 			this.application
-		}/layouts/${layout}/_find`;
+		}/${layout}`;
 		return url;
 	}
 	/**
@@ -177,6 +175,41 @@ class Filemaker extends Document {
 			this._layout
 		}`;
 		return url;
+	}
+	/**
+	 * Retrieves an authentication token from the Data API. This promise method will check for
+	 * a zero errorCode before resolving. If a http error code or a non zero response error code
+	 * is returned this promise method will reject.
+	 * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+	 * response
+	 */
+	_generateToken() {
+		return new Promise((resolve, reject) => {
+			request({
+				url: this._authURL(),
+				method: 'post',
+				headers: {
+					Authorization: this._basicAuth(),
+					'Content-Type': 'application/json'
+				},
+				body: {
+					user: this._username,
+					password: this._password,
+					layout: this._layout
+				},
+				json: true
+			})
+				.then(response => {
+					if (response.errorCode === '0') {
+						resolve(response.token);
+					} else {
+						reject(response.body);
+					}
+					saveToken(response.token);
+					resolve(response.token);
+				})
+				.catch(error => reject(error));
+		});
 	}
 }
 
