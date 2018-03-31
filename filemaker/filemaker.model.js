@@ -17,6 +17,7 @@ class Filemaker extends Document {
 			/**
 			 * The client application name.
 			 * @member Filemaker#application
+			 * @type String
 			 */
 			application: {
 				type: String,
@@ -25,6 +26,7 @@ class Filemaker extends Document {
 			/**
 			 * The client application server.
 			 * @member Filemaker#server
+			 * @type String
 			 */
 			server: {
 				type: String,
@@ -32,6 +34,7 @@ class Filemaker extends Document {
 			},
 			/** The client application username.
 			 * @member Filemaker#_username
+			 * @type String
 			 */
 			_username: {
 				type: String,
@@ -39,6 +42,7 @@ class Filemaker extends Document {
 			},
 			/** The client application password.
 			 * @member Filemaker#_password
+			 * @type String
 			 */
 			_password: {
 				type: String,
@@ -46,14 +50,27 @@ class Filemaker extends Document {
 			},
 			/** The client application connection object.
 			 * @member Filemaker#_connection
+			 * @type Object
 			 */
 			_connection: {
+			/** A string containing the time the token token was issued.
+			 * @memberof _connection
+			 * @type String
+			 */
 				issued: {
 					type: String
 				},
+			/** A string containing the time the token will expire.
+			 * @memberof _connection
+			 * @type String
+			 */
 				expires: {
 					type: String
 				},
+			/** The token to use when querying an endpoint.
+			 * @memberof _connection
+			 * @type String
+			 */
 				token: {
 					type: String
 				}
