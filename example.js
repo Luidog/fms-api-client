@@ -21,6 +21,10 @@ connect('nedb://data').then(db => {
         .edit('Heroes', response.recordId, { name: 'Luke Skywalker' })
         .then(response => console.log(response))
         .catch(error => console.log(error));
+      client
+        .delete('Heroes', response.recordId)
+        .then(response => console.log(response))
+        .catch(error => console.log(error));
     });
   });
 });

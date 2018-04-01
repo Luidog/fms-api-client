@@ -322,7 +322,7 @@ class Filemaker extends Document {
    * @param {String} layout The layout to use when creating the layout.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
    * @param {Object} data The data to use when creating the layout.
-   * @param {Object} parameters parameters to use hen performing the query.
+   * @param {Object} parameters parameters to use when performing the query.
    * @public
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API
    *
@@ -339,6 +339,33 @@ class Filemaker extends Document {
               'Content-Type': 'application/json'
             },
             body: Object.assign({ data: data }, parameters),
+            json: true
+          })
+        )
+        .then(response => resolve(response))
+        .catch(response => reject(response.message))
+    );
+  }
+  /**
+   * @method delete
+   * @description Deletes a filemaker record.
+   * @param {String} layout The layout to use when creating the layout.
+   * @param {String} recordId The FileMaker internal record ID to use when editing the record.
+   * @public
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   *
+   */
+
+  delete(layout, recordId) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          request({
+            url: this._deleteURL(layout, recordId),
+            method: 'delete',
+            headers: {
+              'FM-Data-token': `${this._connection.token}`
+            },
             json: true
           })
         )
