@@ -24,10 +24,22 @@ const environment = require('dotenv');
 const varium = require('varium');
 
 environment.config({ path: './tests/.env' });
+
 varium(process.env, './tests/env.manifest');
 
-connect('nedb://data').then(db => {
-  const filemaker = Filemaker.create({
+/**
+ * Connect must be called before the filemaker class is instiantiated. This connect uses Marpat. Marpat is a fork of
+ * Camo. much love to https://github.com/scottwrobinson for his creation and maintenance of Camo.
+ * My fork of Camo - Marpat is designed to allow the use of multiple datastores with the focus on encrypted storage.
+ * @param  {String} url
+ * @return {Promise}           A database.
+ */
+connect('nedb://memory').then(db => {
+  /**
+   * The client is the FileMaker class. The class then offers methods designed to
+   * make it easier to integrate into filemaker
+   */
+  const client = Filemaker.create({
     application: process.env.APPLICATION,
     server: process.env.SERVER,
     _username: process.env.USERNAME,
@@ -35,46 +47,59 @@ connect('nedb://data').then(db => {
     _layout: process.env.LAYOUT
   });
 
-  filemaker.save().then(client => {
-    client.create('Heroes', { name: 'Han Solo' }).then(response => {
-      client
-        .edit('Heroes', response.recordId, { name: 'Luke Skywalker' })
-        .then(response => console.log(response))
-        .catch(error => console.log(error));
+  client
+    .save()
+    .then(filemaker => {
+      filemaker
+        .list('Heroes', { range: 1 })
+        .then(response => filemaker.fieldData(response.data))
+        .then(response => console.log('A Long Time Ago', response))
+        .catch(error => console.log('That is no moon...', error));
 
-      client
-        .delete('Heroes', response.recordId)
-        .then(response => console.log(response))
-        .catch(error => console.log(error));
-
-      client
-        .create('Heroes', { name: 'Darth Vader' })
-        .then(response => {
-          client
-            .get('Heroes', response.recordId)
-            .then(response => console.log(response));
-        })
-        .catch(error => console.log(error));
-
-      client
-        .find(
-          'Heroes',
-          [
-            {
-              name: 'Luke Skywalker'
-            }
-          ],
-          { range: '2' }
+      filemaker
+        .create('Heroes', { name: 'Anakin Skywalker' })
+        .then(response =>
+          console.log('Jedi business, go back to your drinks!', response)
         )
-        .then(response => console.log(response))
-        .catch(error => console.log(error));
+        .catch(error => console.log('That is no moon...', error));
 
-      client
+      filemaker
         .globals({ ship: 'Millenium Falcon' })
-        .then(response => console.log(response))
-        .catch(error => console.log(error));
+        .then(response =>
+          console.log(
+            'Made the Kessel Run in less than twelve parsecs.',
+            response
+          )
+        )
+        .catch(error => console.log('That is no moon...', error));
+
+      return filemaker;
+    })
+    .then(filemaker => {
+      filemaker
+        .find('Heroes', [{ name: 'Anakin Skywalker' }], { range: '1' })
+        .then(response => filemaker.recordId(response.data))
+        .then(recordIds =>
+          filemaker.edit('Heroes', recordIds[0], { name: 'Darth Vader' })
+        )
+        .then(response =>
+          console.log('I find your lack of faith disturbing', response)
+        )
+        .catch(error => console.log('That is no moon...', error));
+      return filemaker;
+    })
+    .then(filemaker => {
+      filemaker
+        .find('Heroes', [{ name: 'Anakin Skywalker' }], { range: '1' })
+        .then(response => filemaker.recordId(response.data[0]))
+        .then(response => {
+          console.log(response);
+          return response;
+        })
+        .then(recordId => filemaker.delete('Heroes', recordId))
+        .then(response => console.log('Fin.', response))
+        .catch(error => console.log('That is no moon...', error));
     });
-  });
 });
 
 ```
@@ -91,15 +116,15 @@ npm test
 > mocha --recursive ./tests
   FileMaker Data API Client
     ✓ should allow an instance to be saved.
-    ✓ should get an authentication token. (172ms)
-    ✓ should create FileMaker records. (181ms)
+    ✓ should get an authentication token. (193ms)
+    ✓ should create FileMaker records. (162ms)
     ✓ should edit FileMaker records.
     ✓ should delete FileMaker records.
     ✓ should get a FileMaker specific record.
-    ✓ should allow you to modify the FileMaker List response (200ms)
-    ✓ should allow you to find FileMaker records (220ms)
-    ✓ should allow you to set FileMaker globals (179ms)
-  9 passing (985ms)
+    ✓ should allow you to modify the FileMaker List response (175ms)
+    ✓ should allow you to find FileMaker records (160ms)
+    ✓ should allow you to set FileMaker globals (157ms)
+  9 passing (885ms)
 
 ```
 
