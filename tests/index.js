@@ -107,4 +107,9 @@ describe('FileMaker Data API Client', () => {
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
+  it('should allow you to set FileMaker globals', () => {
+    return expect(filemaker.globals({ ship: 'Millenium Falcon' }))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('errorCode', 'result');
+  });
 });

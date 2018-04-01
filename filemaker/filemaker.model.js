@@ -2,6 +2,7 @@
 const moment = require('moment');
 const request = require('request-promise');
 const { Document } = require('marpat');
+const _ = require('lodash');
 /**
  * @class Filemaker
  * @classdesc The class used to integrate with the FileMaker server Data API
@@ -188,9 +189,9 @@ class Filemaker extends Document {
    * @method _generateToken
    * @private
    * @description Retrieves an authentication token from the Data API. This promise method will check for
-   * a zero errorCode before resolving. If an http error code or a non zero response error code
-   * is returned this promise method will reject.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   * a zero errorCode before resolving. If an http error code or a non zero response error code.
+   * is returned this promise method will reject
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    * response
    */
   _generateToken() {
@@ -325,7 +326,7 @@ class Filemaker extends Document {
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
    * @param {Object} data The data to use when editing a record.
    * @param {Object} parameters parameters to use when performing the query.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
   edit(layout, recordId, data, parameters) {
@@ -354,7 +355,7 @@ class Filemaker extends Document {
    * @description Deletes a filemaker record.
    * @param {String} layout The layout to use when deleting the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
   delete(layout, recordId) {
@@ -382,7 +383,7 @@ class Filemaker extends Document {
    * @param {String} layout The layout to use when retrieving the record.
    * @param {String} recordId The FileMaker internal record ID to use when retrieving the record.
    * @param {Object} parameters Parameters to add for the get query.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
   get(layout, recordId, parameters) {
@@ -410,7 +411,7 @@ class Filemaker extends Document {
    * @description Retrieves a list of FileMaker records based upon a layout.
    * @param {String} layout The layout to use when retrieving the record.
    * @param {Object} parameters the parameters to use to modify the query.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
   list(layout, parameters) {
@@ -439,7 +440,7 @@ class Filemaker extends Document {
    * @param {String} layout The layout to use when performing the find.
    * @param {Object} query to use in the find request.
    * @param {Object} parameters the parameters to use to modify the query.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
   find(layout, query, parameters) {
@@ -461,6 +462,63 @@ class Filemaker extends Document {
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
+  }
+  /**
+   * @method globals
+   * @public
+   * @description Sets global fields for the current session.
+   * @param  {Object|Array} data a json object containing the name value pairs to set.
+   * @return {Object}      a json object containing fieldData from the record.
+   */
+  globals(data) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          request({
+            url: this._globalsURL(),
+            method: 'put',
+            headers: {
+              'FM-Data-token': `${this._connection.token}`,
+              'Content-Type': 'application/json'
+            },
+            body: { globalFields: data },
+            json: true
+          })
+        )
+        .then(response => this._extendToken(response))
+        .then(response => resolve(response))
+        .catch(response => reject(response.message))
+    );
+  }
+  /**
+   * @method fieldData
+   * @public
+   * @description fieldData is a helper method that strips the filemaker structural layout and portal information
+   * from a record. It returns only the data contained in the fieldData key and the recordId.
+   * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
+   * @return {Object}      a json object containing fieldData from the record.
+   */
+  fieldData(data) {
+    return Array.isArray(data)
+      ? _.map(data, object =>
+          Object.assign({}, object.fieldData, {
+            recordId: object.recordId
+          })
+        )
+      : data.fieldData;
+  }
+  /**
+   * @method recordId
+   * @public
+   * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
+   * from a record. It returns only the data contained in the fieldData key adn the recordId.
+   * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
+   * @return {Object}      a json object containing fieldData from the record.
+   */
+  recordId(data) {
+    return Array.isArray(data)
+      ? _.map(data, object => object.recordId)
+      : _.pick(data, 'recordId');
   }
 }
 

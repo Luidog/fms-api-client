@@ -21,10 +21,12 @@ connect('nedb://data').then(db => {
         .edit('Heroes', response.recordId, { name: 'Luke Skywalker' })
         .then(response => console.log(response))
         .catch(error => console.log(error));
+
       client
         .delete('Heroes', response.recordId)
         .then(response => console.log(response))
         .catch(error => console.log(error));
+
       client
         .create('Heroes', { name: 'Darth Vader' })
         .then(response => {
@@ -33,6 +35,7 @@ connect('nedb://data').then(db => {
             .then(response => console.log(response));
         })
         .catch(error => console.log(error));
+
       client
         .find(
           'Heroes',
@@ -43,6 +46,11 @@ connect('nedb://data').then(db => {
           ],
           { range: '2' }
         )
+        .then(response => console.log(response))
+        .catch(error => console.log(error));
+
+      client
+        .globals({ ship: 'Millenium Falcon' })
         .then(response => console.log(response))
         .catch(error => console.log(error));
     });
