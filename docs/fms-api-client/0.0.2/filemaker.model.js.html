@@ -2,22 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: filemaker.model.js</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>filemaker.model.js - Documentation</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Source: filemaker.model.js</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Filemaker.html">Filemaker</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#._extendToken">_extendToken</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#._generateToken">_generateToken</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#._saveToken">_saveToken</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#.authenticate">authenticate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#.create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#.delete">delete</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#.edit">edit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#.fieldData">fieldData</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#.find">find</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#.get">get</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#.globals">globals</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#.list">list</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#.recordId">recordId</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#_authURL">_authURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#_createURL">_createURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#_deleteURL">_deleteURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#_findURL">_findURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#_getURL">_getURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#_globalsURL">_globalsURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#_listURL">_listURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Filemaker.html#_updateURL">_updateURL</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">filemaker.model.js</h1>
+    
 
     
 
@@ -215,6 +228,7 @@ class Filemaker extends Document {
   }
   /**
    * @method _generateToken
+   * @memberof Filemaker
    * @private
    * @description Retrieves an authentication token from the Data API. This promise method will check for
    * a zero errorCode before resolving. If an http error code or a non zero response error code.
@@ -250,6 +264,7 @@ class Filemaker extends Document {
   /**
    * @method _saveToken
    * @private
+   * @memberof Filemaker
    * @description Saves a token retrieved from the Data API.
    * @params {String} token The token to save to the class instance.
    * @return {String} a token retrieved from the private generation method
@@ -269,6 +284,7 @@ class Filemaker extends Document {
   }
   /**
    * @method _extendToken
+   * @memberof Filemaker
    * @private
    * @description Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.
    * @param {Object} response The response object.
@@ -284,6 +300,7 @@ class Filemaker extends Document {
   }
   /**
    * @method authenticate
+   * @memberof Filemaker
    * @public
    * @description Checks the private connection schema for a token and if the current time is between when that token was
    * issued and when it will expire. If the connection token is not a string (its empty) or the current time is
@@ -320,6 +337,7 @@ class Filemaker extends Document {
   /**
    * @method create
    * @public
+   * @memberof Filemaker
    * @description Creates a record in FileMaker. This method accepts a layout variable and a data variable.
    * @param {String} layout The layout to use when creating a record.
    * @param {Object} data The data to use when creating a record.
@@ -349,6 +367,7 @@ class Filemaker extends Document {
   /**
    * @method edit
    * @public
+   * @memberof Filemaker
    * @description Edits a filemaker record.
    * @param {String} layout The layout to use when editing the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
@@ -380,6 +399,7 @@ class Filemaker extends Document {
   /**
    * @method delete
    * @public
+   * @memberof Filemaker
    * @description Deletes a filemaker record.
    * @param {String} layout The layout to use when deleting the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
@@ -407,6 +427,7 @@ class Filemaker extends Document {
   /**
    * @method get
    * @public
+   * @memberof Filemaker
    * @description Retrieves a filemaker record based upon the layout and recordId.
    * @param {String} layout The layout to use when retrieving the record.
    * @param {String} recordId The FileMaker internal record ID to use when retrieving the record.
@@ -436,6 +457,7 @@ class Filemaker extends Document {
   /**
    * @method list
    * @public
+   * @memberof Filemaker
    * @description Retrieves a list of FileMaker records based upon a layout.
    * @param {String} layout The layout to use when retrieving the record.
    * @param {Object} parameters the parameters to use to modify the query.
@@ -464,6 +486,7 @@ class Filemaker extends Document {
   /**
    * @method find
    * @public
+   * @memberof Filemaker
    * @description performs a FileMaker find.
    * @param {String} layout The layout to use when performing the find.
    * @param {Object} query to use in the find request.
@@ -494,6 +517,7 @@ class Filemaker extends Document {
   /**
    * @method globals
    * @public
+   * @memberof Filemaker
    * @description Sets global fields for the current session.
    * @param  {Object|Array} data a json object containing the name value pairs to set.
    * @return {Object}      a json object containing fieldData from the record.
@@ -521,6 +545,7 @@ class Filemaker extends Document {
   /**
    * @method fieldData
    * @public
+   * @memberof Filemaker
    * @description fieldData is a helper method that strips the filemaker structural layout and portal information
    * from a record. It returns only the data contained in the fieldData key and the recordId.
    * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
@@ -538,6 +563,7 @@ class Filemaker extends Document {
   /**
    * @method recordId
    * @public
+   * @memberof Filemaker
    * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
    * from a record. It returns only the data contained in the fieldData key adn the recordId.
    * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
@@ -562,17 +588,13 @@ module.exports = {
 
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Filemaker.html">Filemaker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#authenticate">authenticate</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#edit">edit</a></li><li><a href="global.html#fieldData">fieldData</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#globals">globals</a></li><li><a href="global.html#list">list</a></li><li><a href="global.html#recordId">recordId</a></li></ul>
-</nav>
-
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Apr 01 2018 09:04:27 GMT-0700 (PDT)
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Apr 01 2018 09:33:09 GMT-0700 (PDT) using the Minami theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
 </body>
 </html>

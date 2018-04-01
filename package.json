@@ -5,7 +5,10 @@
     "A FileMaker Data API client designed to allow interaction with a FileMaker application from a web environment.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive ./tests"
+    "test": "mocha --recursive ./tests",
+    "generate-readme":
+      "node_modules/.bin/readme package.json --tests --travis > README.md",
+    "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
   },
   "repository": {
     "type": "git",
@@ -34,6 +37,7 @@
     "eslint-config-prettier": "^2.7.0",
     "eslint-plugin-prettier": "^2.3.1",
     "jsdocs": "^1.0.0",
+    "minami": "^1.2.3",
     "mocha": "^5.0.4",
     "package-json-to-readme": "^2.1.1",
     "prettier": "^1.8.2",

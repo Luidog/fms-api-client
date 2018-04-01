@@ -187,6 +187,7 @@ class Filemaker extends Document {
   }
   /**
    * @method _generateToken
+   * @memberof Filemaker
    * @private
    * @description Retrieves an authentication token from the Data API. This promise method will check for
    * a zero errorCode before resolving. If an http error code or a non zero response error code.
@@ -222,6 +223,7 @@ class Filemaker extends Document {
   /**
    * @method _saveToken
    * @private
+   * @memberof Filemaker
    * @description Saves a token retrieved from the Data API.
    * @params {String} token The token to save to the class instance.
    * @return {String} a token retrieved from the private generation method
@@ -241,6 +243,7 @@ class Filemaker extends Document {
   }
   /**
    * @method _extendToken
+   * @memberof Filemaker
    * @private
    * @description Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.
    * @param {Object} response The response object.
@@ -256,6 +259,7 @@ class Filemaker extends Document {
   }
   /**
    * @method authenticate
+   * @memberof Filemaker
    * @public
    * @description Checks the private connection schema for a token and if the current time is between when that token was
    * issued and when it will expire. If the connection token is not a string (its empty) or the current time is
@@ -292,6 +296,7 @@ class Filemaker extends Document {
   /**
    * @method create
    * @public
+   * @memberof Filemaker
    * @description Creates a record in FileMaker. This method accepts a layout variable and a data variable.
    * @param {String} layout The layout to use when creating a record.
    * @param {Object} data The data to use when creating a record.
@@ -321,6 +326,7 @@ class Filemaker extends Document {
   /**
    * @method edit
    * @public
+   * @memberof Filemaker
    * @description Edits a filemaker record.
    * @param {String} layout The layout to use when editing the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
@@ -352,6 +358,7 @@ class Filemaker extends Document {
   /**
    * @method delete
    * @public
+   * @memberof Filemaker
    * @description Deletes a filemaker record.
    * @param {String} layout The layout to use when deleting the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
@@ -379,6 +386,7 @@ class Filemaker extends Document {
   /**
    * @method get
    * @public
+   * @memberof Filemaker
    * @description Retrieves a filemaker record based upon the layout and recordId.
    * @param {String} layout The layout to use when retrieving the record.
    * @param {String} recordId The FileMaker internal record ID to use when retrieving the record.
@@ -408,6 +416,7 @@ class Filemaker extends Document {
   /**
    * @method list
    * @public
+   * @memberof Filemaker
    * @description Retrieves a list of FileMaker records based upon a layout.
    * @param {String} layout The layout to use when retrieving the record.
    * @param {Object} parameters the parameters to use to modify the query.
@@ -436,6 +445,7 @@ class Filemaker extends Document {
   /**
    * @method find
    * @public
+   * @memberof Filemaker
    * @description performs a FileMaker find.
    * @param {String} layout The layout to use when performing the find.
    * @param {Object} query to use in the find request.
@@ -466,6 +476,7 @@ class Filemaker extends Document {
   /**
    * @method globals
    * @public
+   * @memberof Filemaker
    * @description Sets global fields for the current session.
    * @param  {Object|Array} data a json object containing the name value pairs to set.
    * @return {Object}      a json object containing fieldData from the record.
@@ -493,6 +504,7 @@ class Filemaker extends Document {
   /**
    * @method fieldData
    * @public
+   * @memberof Filemaker
    * @description fieldData is a helper method that strips the filemaker structural layout and portal information
    * from a record. It returns only the data contained in the fieldData key and the recordId.
    * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
@@ -510,6 +522,7 @@ class Filemaker extends Document {
   /**
    * @method recordId
    * @public
+   * @memberof Filemaker
    * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
    * from a record. It returns only the data contained in the fieldData key adn the recordId.
    * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
