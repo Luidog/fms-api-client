@@ -186,10 +186,10 @@ class Filemaker extends Document {
   }
   /**
    * @method _generateToken
+   * @private
    * @description Retrieves an authentication token from the Data API. This promise method will check for
    * a zero errorCode before resolving. If an http error code or a non zero response error code
    * is returned this promise method will reject.
-   * @private
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API
    * response
    */
@@ -220,9 +220,9 @@ class Filemaker extends Document {
   }
   /**
    * @method _saveToken
+   * @private
    * @description Saves a token retrieved from the Data API.
    * @params {String} token The token to save to the class instance.
-   * @private
    * @return {String} a token retrieved from the private generation method
    *
    */
@@ -240,9 +240,9 @@ class Filemaker extends Document {
   }
   /**
    * @method _extendToken
+   * @private
    * @description Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.
    * @param {Object} response The response object.
-   * @private
    * @return {Promise} the response recieved from the Data API.
    *
    */
@@ -255,13 +255,13 @@ class Filemaker extends Document {
   }
   /**
    * @method authenticate
+   * @public
    * @description Checks the private connection schema for a token and if the current time is between when that token was
    * issued and when it will expire. If the connection token is not a string (its empty) or the current time is
    * not between when the token is issued and the time it will expire this method calls the private
    * is returned this promise method will reject.
    * @see {@method _generateToken}
    * @see {@method _saveToken}
-   * @public
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
@@ -290,10 +290,10 @@ class Filemaker extends Document {
   }
   /**
    * @method create
+   * @public
    * @description Creates a record in FileMaker. This method accepts a layout variable and a data variable.
    * @param {String} layout The layout to use when creating a record.
    * @param {Object} data The data to use when creating a record.
-   * @public
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
@@ -319,12 +319,12 @@ class Filemaker extends Document {
   }
   /**
    * @method edit
+   * @public
    * @description Edits a filemaker record.
    * @param {String} layout The layout to use when editing the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
    * @param {Object} data The data to use when editing a record.
    * @param {Object} parameters parameters to use when performing the query.
-   * @public
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API
    *
    */
@@ -350,10 +350,10 @@ class Filemaker extends Document {
   }
   /**
    * @method delete
+   * @public
    * @description Deletes a filemaker record.
    * @param {String} layout The layout to use when deleting the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
-   * @public
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API
    *
    */
@@ -377,11 +377,11 @@ class Filemaker extends Document {
   }
   /**
    * @method get
+   * @public
    * @description Retrieves a filemaker record based upon the layout and recordId.
    * @param {String} layout The layout to use when retrieving the record.
    * @param {String} recordId The FileMaker internal record ID to use when retrieving the record.
    * @param {Object} parameters Parameters to add for the get query.
-   * @public
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API
    *
    */
@@ -405,11 +405,11 @@ class Filemaker extends Document {
     );
   }
   /**
-   * @method lists
+   * @method list
+   * @public
    * @description Retrieves a list of FileMaker records based upon a layout.
    * @param {String} layout The layout to use when retrieving the record.
    * @param {Object} parameters the parameters to use to modify the query.
-   * @public
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API
    *
    */
@@ -424,6 +424,36 @@ class Filemaker extends Document {
               'FM-Data-token': `${this._connection.token}`
             },
             qs: parameters,
+            json: true
+          })
+        )
+        .then(response => this._extendToken(response))
+        .then(response => resolve(response))
+        .catch(response => reject(response.message))
+    );
+  }
+  /**
+   * @method find
+   * @public
+   * @description performs a FileMaker find.
+   * @param {String} layout The layout to use when performing the find.
+   * @param {Object} query to use in the find request.
+   * @param {Object} parameters the parameters to use to modify the query.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   *
+   */
+  find(layout, query, parameters) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          request({
+            url: this._findURL(layout),
+            method: 'post',
+            headers: {
+              'FM-Data-token': `${this._connection.token}`,
+              'Content-Type': 'application/json'
+            },
+            body: Object.assign({ query: query }, parameters),
             json: true
           })
         )

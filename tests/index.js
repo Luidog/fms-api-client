@@ -84,7 +84,24 @@ describe('FileMaker Data API Client', () => {
     });
   });
   it('should allow you to modify the FileMaker List response', () => {
-    return expect(filemaker.list('Heroes', { range: 2 }))
+    return expect(filemaker.list('Heroes', { range: '2' }))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('errorCode', 'result', 'data')
+      .and.property('data')
+      .to.have.a.lengthOf(2);
+  });
+  it('should allow you to find FileMaker records', () => {
+    return expect(
+      filemaker.find(
+        'Heroes',
+        [
+          {
+            name: 'Luke Skywalker'
+          }
+        ],
+        { range: '2' }
+      )
+    )
       .to.eventually.be.a('object')
       .that.has.all.keys('errorCode', 'result', 'data')
       .and.property('data')
