@@ -291,8 +291,8 @@ class Filemaker extends Document {
   /**
    * @method create
    * @description Creates a record in FileMaker. This method accepts a layout variable and a data variable.
-   * @param {String} layout The layout to use when creating the layout.
-   * @param {Object} data The data to use when creating the layout.
+   * @param {String} layout The layout to use when creating a record.
+   * @param {Object} data The data to use when creating a record.
    * @public
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
@@ -312,6 +312,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this._extendToken(response))
         .then(response => resolve(response))
         .catch(error => reject(error.message))
     );
@@ -319,9 +320,9 @@ class Filemaker extends Document {
   /**
    * @method edit
    * @description Edits a filemaker record.
-   * @param {String} layout The layout to use when creating the layout.
+   * @param {String} layout The layout to use when editing the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
-   * @param {Object} data The data to use when creating the layout.
+   * @param {Object} data The data to use when editing a record.
    * @param {Object} parameters parameters to use when performing the query.
    * @public
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API
@@ -342,6 +343,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this._extendToken(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
@@ -349,13 +351,12 @@ class Filemaker extends Document {
   /**
    * @method delete
    * @description Deletes a filemaker record.
-   * @param {String} layout The layout to use when creating the layout.
+   * @param {String} layout The layout to use when deleting the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
    * @public
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API
    *
    */
-
   delete(layout, recordId) {
     return new Promise((resolve, reject) =>
       this.authenticate()
@@ -369,6 +370,64 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this._extendToken(response))
+        .then(response => resolve(response))
+        .catch(response => reject(response.message))
+    );
+  }
+  /**
+   * @method get
+   * @description Retrieves a filemaker record based upon the layout and recordId.
+   * @param {String} layout The layout to use when retrieving the record.
+   * @param {String} recordId The FileMaker internal record ID to use when retrieving the record.
+   * @param {Object} parameters Parameters to add for the get query.
+   * @public
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   *
+   */
+  get(layout, recordId, parameters) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          request({
+            url: this._getURL(layout, recordId),
+            method: 'get',
+            headers: {
+              'FM-Data-token': `${this._connection.token}`
+            },
+            qs: parameters,
+            json: true
+          })
+        )
+        .then(response => this._extendToken(response))
+        .then(response => resolve(response))
+        .catch(response => reject(response.message))
+    );
+  }
+  /**
+   * @method lists
+   * @description Retrieves a list of FileMaker records based upon a layout.
+   * @param {String} layout The layout to use when retrieving the record.
+   * @param {Object} parameters the parameters to use to modify the query.
+   * @public
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   *
+   */
+  list(layout, parameters) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          request({
+            url: this._listURL(layout),
+            method: 'get',
+            headers: {
+              'FM-Data-token': `${this._connection.token}`
+            },
+            qs: parameters,
+            json: true
+          })
+        )
+        .then(response => this._extendToken(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );

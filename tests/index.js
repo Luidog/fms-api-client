@@ -76,4 +76,18 @@ describe('FileMaker Data API Client', () => {
         .and.have.property('errorCode', '0');
     });
   });
+  it('should get a FileMaker specific record.', () => {
+    filemaker.create('Heroes', { name: 'Darth Vader' }).then(response => {
+      return expect(filemaker.get('Heroes', response.recordId))
+        .to.eventually.be.a('object')
+        .that.has.all.keys('errorCode', 'result', 'data');
+    });
+  });
+  it('should allow you to modify the FileMaker List response', () => {
+    return expect(filemaker.list('Heroes', { range: 2 }))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('errorCode', 'result', 'data')
+      .and.property('data')
+      .to.have.a.lengthOf(2);
+  });
 });
