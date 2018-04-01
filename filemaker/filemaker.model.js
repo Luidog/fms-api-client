@@ -531,7 +531,7 @@ class Filemaker extends Document {
   recordId(data) {
     return Array.isArray(data)
       ? _.map(data, object => object.recordId)
-      : _.pick(data, 'recordId');
+      : data.recordId.toString();
   }
 }
 
