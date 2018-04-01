@@ -7,5 +7,6 @@ before_script:
 - node --version
 - npm --version
 env:
+  global:
   - APPLICATION=authenticationDB
   - NODE_ENV=test
