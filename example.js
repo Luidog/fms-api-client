@@ -15,13 +15,12 @@ connect('nedb://data').then(db => {
     _layout: process.env.LAYOUT
   });
 
-  filemaker
-    .save()
-    .then(client => console.log(client.toJSON()))
-    .catch(error => console.log(error));
-
-  filemaker
-    .authenticate()
-    .then(token => console.log(token))
-    .catch(error => console.log(error));
+  filemaker.save().then(client => {
+    client.create('Heroes', { name: 'Han Solo' }).then(response => {
+      client
+        .edit('Heroes', response.recordId, { name: 'Luke Skywalker' })
+        .then(response => console.log(response))
+        .catch(error => console.log(error));
+    });
+  });
 });

@@ -49,7 +49,19 @@ describe('FileMaker Data API Client', () => {
         '_layout'
       );
   });
-  it('should allow be able to get an authentication token', () => {
+  it('should get an authentication token', () => {
     return expect(filemaker.authenticate()).to.eventually.be.a('string');
+  });
+  it('should create FileMaker records.', () => {
+    return expect(filemaker.create('Heroes', { name: 'Han Solo' }))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('errorCode', 'recordId', 'result')
+      .and.have.property('errorCode', '0');
+  });
+  it('should edit FileMaker records.', () => {
+    return expect(filemaker.edit('Heroes', '1', { name: 'Han Solo' }))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('errorCode', 'result')
+      .and.have.property('errorCode', '0');
   });
 });

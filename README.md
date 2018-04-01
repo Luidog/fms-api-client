@@ -41,7 +41,7 @@ npm test
 ```
 
 ```
-> fms-api-client@0.0.1 test /fms-api-client
+> fms-api-client@0.0.1 test ./fms-api-client
 > mocha --recursive ./tests
   FileMaker Data API Node Adapter
     ✓ will eventually have tests

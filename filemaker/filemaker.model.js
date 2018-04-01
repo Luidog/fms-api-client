@@ -221,18 +221,37 @@ class Filemaker extends Document {
   /**
    * @method _saveToken
    * @description Saves a token retrieved from the Data API.
+   * @params {String} token The token to save to the class instance.
    * @private
    * @return {String} a token retrieved from the private generation method
    *
    */
   _saveToken(token) {
-    this._connection.token = token;
-    this._connection.issued = moment().format();
+    return new Promise((resolve, reject) => {
+      this._connection.token = token;
+      this._connection.issued = moment().format();
+      this._connection.expires = moment()
+        .add(15, 'minutes')
+        .format();
+      this.save()
+        .then(response => resolve(this._connection.token))
+        .catch(error => reject(error));
+    });
+  }
+  /**
+   * @method _extendToken
+   * @description Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.
+   * @param {Object} response The response object.
+   * @private
+   * @return {Promise} the response recieved from the Data API.
+   *
+   */
+  _extendToken(response) {
     this._connection.expires = moment()
       .add(15, 'minutes')
       .format();
     this.save();
-    return token;
+    return response;
   }
   /**
    * @method authenticate
@@ -243,23 +262,89 @@ class Filemaker extends Document {
    * @see {@method _generateToken}
    * @see {@method _saveToken}
    * @public
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
-   * response
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   *
    */
   authenticate() {
     return new Promise((resolve, reject) => {
       let currentTime = moment();
       if (
         typeof this._connection.token !== 'object' &&
-        currentTime.isBetween(this._connection.issued, this._connection.expires)
+        currentTime.isBetween(
+          this._connection.issued,
+          this._connection.expires,
+          'second',
+          '[)'
+        )
       ) {
         resolve(this._connection.token);
       } else {
         this._generateToken()
-          .then(token => resolve(token))
+          .then(token => this._saveToken(token))
+          .then(token => {
+            resolve(token);
+          })
           .catch(error => reject(error));
       }
     });
+  }
+  /**
+   * @method create
+   * @description Creates a record in FileMaker. This method accepts a layout variable and a data variable.
+   * @param {String} layout The layout to use when creating the layout.
+   * @param {Object} data The data to use when creating the layout.
+   * @public
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   *
+   */
+  create(layout, data) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          request({
+            url: this._createURL(layout),
+            method: 'post',
+            headers: {
+              'FM-Data-token': `${this._connection.token}`,
+              'Content-Type': 'application/json'
+            },
+            body: { data: data },
+            json: true
+          })
+        )
+        .then(response => resolve(response))
+        .catch(error => reject(error.message))
+    );
+  }
+  /**
+   * @method edit
+   * @description Edits a filemaker record.
+   * @param {String} layout The layout to use when creating the layout.
+   * @param {String} recordId The FileMaker internal record ID to use when editing the record.
+   * @param {Object} data The data to use when creating the layout.
+   * @param {Object} parameters parameters to use hen performing the query.
+   * @public
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API
+   *
+   */
+  edit(layout, recordId, data, parameters) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          request({
+            url: this._updateURL(layout, recordId),
+            method: 'put',
+            headers: {
+              'FM-Data-token': `${this._connection.token}`,
+              'Content-Type': 'application/json'
+            },
+            body: Object.assign({ data: data }, parameters),
+            json: true
+          })
+        )
+        .then(response => resolve(response))
+        .catch(response => reject(response.message))
+    );
   }
 }
 
