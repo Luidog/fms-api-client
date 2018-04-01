@@ -1,7 +1,8 @@
 {
   "name": "fms-api-client",
-  "version": "0.0.1",
-  "description": "A FileMaker Data API client designed to allow interaction with a FileMaker application from a web environment.",
+  "version": "0.0.2",
+  "description":
+    "A FileMaker Data API client designed to allow interaction with a FileMaker application from a web environment.",
   "main": "index.js",
   "scripts": {
     "test": "mocha --recursive ./tests"
@@ -10,11 +11,7 @@
     "type": "git",
     "url": "git+https://Luidog@github.com/Luidog/fms-api-client.git"
   },
-  "keywords": [
-    "FileMaker",
-    "Data-API",
-    "Marpat"
-  ],
+  "keywords": ["FileMaker", "Data-API", "Marpat"],
   "author": "Lui de la Parra",
   "license": "MIT",
   "bugs": {
