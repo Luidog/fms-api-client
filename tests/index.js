@@ -49,7 +49,7 @@ describe('FileMaker Data API Client', () => {
         '_layout'
       );
   });
-  it('should get an authentication token.', () => {
+  it('should authenticate into FileMaker.', () => {
     return expect(filemaker.authenticate()).to.eventually.be.a('string');
   });
   it('should create FileMaker records.', () => {
@@ -58,7 +58,7 @@ describe('FileMaker Data API Client', () => {
       .that.has.all.keys('errorCode', 'recordId', 'result')
       .and.have.property('errorCode', '0');
   });
-  it('should edit FileMaker records.', () => {
+  it('should update FileMaker records.', () => {
     filemaker.create('Heroes', { name: 'Obi-Wan' }).then(response => {
       return expect(
         filemaker.edit('Heroes', response.recordId, { name: 'Luke Skywalker' })
@@ -83,7 +83,14 @@ describe('FileMaker Data API Client', () => {
         .that.has.all.keys('errorCode', 'result', 'data');
     });
   });
-  it('should allow you to modify the FileMaker List response', () => {
+  it('should allow you to list FileMaker records', () => {
+    return expect(filemaker.list('Heroes'))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('errorCode', 'result', 'data')
+      .and.property('data')
+      .to.have.a.lengthOf(2);
+  });
+  it('should allow you to modify the FileMaker list response', () => {
     return expect(filemaker.list('Heroes', { range: '2' }))
       .to.eventually.be.a('object')
       .that.has.all.keys('errorCode', 'result', 'data')
