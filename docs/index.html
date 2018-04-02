@@ -47,6 +47,137 @@
     
 
 
+    <section class="readme">
+        <article><h1>fms-api-client <a href="https://travis-ci.org/Luidog/fms-api-client"><img src="https://travis-ci.org/Luidog/fms-api-client.png?branch=master" alt="Build Status"></a></h1><p>A FileMaker Data API client designed to allow interaction with a FileMaker application from a web environment.</p>
+<h2>Installation</h2><p>This is a <a href="https://nodejs.org/">Node.js</a> module available through the 
+<a href="https://www.npmjs.com/">npm registry</a>. It can be installed using the 
+<a href="https://docs.npmjs.com/getting-started/installing-npm-packages-locally"><code>npm</code></a>
+or 
+<a href="https://yarnpkg.com/en/"><code>yarn</code></a>
+command line tools.</p>
+<pre class="prettyprint source lang-sh"><code>npm install fms-api-client --save</code></pre><h2>Usage</h2><pre class="prettyprint source lang-js"><code>const { connect } = require('marpat');
+const { Filemaker } = require('./filemaker');
+const environment = require('dotenv');
+const varium = require('varium');
+
+environment.config({ path: './tests/.env' });
+
+varium(process.env, './tests/env.manifest');
+
+/**
+ * Connect must be called before the filemaker class is instiantiated. This connect uses Marpat. Marpat is a fork of
+ * Camo. much love to https://github.com/scottwrobinson for his creation and maintenance of Camo.
+ * My fork of Camo - Marpat is designed to allow the use of multiple datastores with the focus on encrypted storage.
+ * @param  {String} url
+ * @return {Promise}           A database.
+ */
+connect('nedb://memory').then(db => {
+  /**
+   * The client is the FileMaker class. The class then offers methods designed to
+   * make it easier to integrate into filemaker
+   */
+  const client = Filemaker.create({
+    application: process.env.APPLICATION,
+    server: process.env.SERVER,
+    _username: process.env.USERNAME,
+    _password: process.env.PASSWORD,
+    _layout: process.env.LAYOUT
+  });
+
+  client
+    .save()
+    .then(filemaker => {
+      filemaker
+        .list('Heroes', { range: 1 })
+        .then(response => filemaker.fieldData(response.data))
+        .then(response => console.log('A Long Time Ago', response))
+        .catch(error => console.log('That is no moon...', error));
+
+      filemaker
+        .create('Heroes', { name: 'Anakin Skywalker' })
+        .then(response =>
+          console.log('Jedi business, go back to your drinks!', response)
+        )
+        .catch(error => console.log('That is no moon...', error));
+
+      filemaker
+        .globals({ ship: 'Millenium Falcon' })
+        .then(response =>
+          console.log(
+            'Made the Kessel Run in less than twelve parsecs.',
+            response
+          )
+        )
+        .catch(error => console.log('That is no moon...', error));
+
+      return filemaker;
+    })
+    .then(filemaker => {
+      filemaker
+        .find('Heroes', [{ name: 'Anakin Skywalker' }], { range: '1' })
+        .then(response => filemaker.recordId(response.data))
+        .then(recordIds =>
+          filemaker.edit('Heroes', recordIds[0], { name: 'Darth Vader' })
+        )
+        .then(response =>
+          console.log('I find your lack of faith disturbing', response)
+        )
+        .catch(error => console.log('That is no moon...', error));
+      return filemaker;
+    })
+    .then(filemaker => {
+      filemaker
+        .find('Heroes', [{ name: 'Anakin Skywalker' }], { range: '1' })
+        .then(response => filemaker.recordId(response.data[0]))
+        .then(response => {
+          console.log(response);
+          return response;
+        })
+        .then(recordId => filemaker.delete('Heroes', recordId))
+        .then(response => console.log('Fin.', response))
+        .catch(error => console.log('That is no moon...', error));
+    });
+});
+</code></pre><h2>Tests</h2><pre class="prettyprint source lang-sh"><code>npm install
+npm test</code></pre><pre class="prettyprint source"><code>
+> fms-api-client@0.0.3 test /Users/luidelaparra/Documents/Development/fms-api-client
+> mocha --recursive ./tests
+  FileMaker Data API Client
+    ✓ should allow an instance to be saved.
+    ✓ should get an authentication token. (165ms)
+    ✓ should create FileMaker records. (152ms)
+    ✓ should edit FileMaker records.
+    ✓ should delete FileMaker records.
+    ✓ should get a FileMaker specific record.
+    ✓ should allow you to modify the FileMaker List response (188ms)
+    ✓ should allow you to find FileMaker records (175ms)
+    ✓ should allow you to set FileMaker globals (159ms)
+  9 passing (877ms)
+</code></pre><h2>Dependencies</h2><ul>
+<li><a href="https://ghub.io/lodash">lodash</a>: Lodash modular utilities.</li>
+<li><a href="https://ghub.io/marpat">marpat</a>: A class-based ES6 ODM for Mongo-like databases.</li>
+<li><a href="https://ghub.io/moment">moment</a>: Parse, validate, manipulate, and display dates</li>
+<li><a href="https://ghub.io/request">request</a>: Simplified HTTP request client.</li>
+<li><a href="https://ghub.io/request-promise">request-promise</a>: The simplified HTTP request client 'request' with Promise support. Powered by Bluebird.</li>
+</ul>
+<h2>Dev Dependencies</h2><ul>
+<li><a href="https://ghub.io/chai">chai</a>: BDD/TDD assertion library for node.js and the browser. Test framework agnostic.</li>
+<li><a href="https://ghub.io/chai-as-promised">chai-as-promised</a>: Extends Chai with assertions about promises.</li>
+<li><a href="https://ghub.io/dotenv">dotenv</a>: Loads environment variables from .env file</li>
+<li><a href="https://ghub.io/eslint">eslint</a>: An AST-based pattern checker for JavaScript.</li>
+<li><a href="https://ghub.io/eslint-config-google">eslint-config-google</a>: ESLint shareable config for the Google style</li>
+<li><a href="https://ghub.io/eslint-config-prettier">eslint-config-prettier</a>: Turns off all rules that are unnecessary or might conflict with Prettier.</li>
+<li><a href="https://ghub.io/eslint-plugin-prettier">eslint-plugin-prettier</a>: Runs prettier as an eslint rule</li>
+<li><a href="https://ghub.io/jsdocs">jsdocs</a>: jsdocs</li>
+<li><a href="https://ghub.io/minami">minami</a>: Clean and minimal JSDoc 3 Template / Theme</li>
+<li><a href="https://ghub.io/mocha">mocha</a>: simple, flexible, fun test framework</li>
+<li><a href="https://ghub.io/package-json-to-readme">package-json-to-readme</a>: Generate a README.md from package.json contents</li>
+<li><a href="https://ghub.io/prettier">prettier</a>: Prettier is an opinionated code formatter</li>
+<li><a href="https://ghub.io/varium">varium</a>: A strict parser and validator of environment config variables</li>
+</ul>
+<h2>License</h2><p>MIT</p></article>
+    </section>
+
 
 
 
@@ -57,7 +188,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Apr 01 2018 16:39:32 GMT-0700 (PDT) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Apr 01 2018 16:55:14 GMT-0700 (PDT) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
