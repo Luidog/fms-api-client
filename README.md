@@ -2,12 +2,14 @@
 
 A FileMaker Data API client designed to allow interaction with a FileMaker application from a web environment.
 
+For in depth documentation: https://luidog.github.io/fms-api-client/Filemaker.html
+
 ## Installation
 
-This is a [Node.js](https://nodejs.org/) module available through the 
-[npm registry](https://www.npmjs.com/). It can be installed using the 
+This is a [Node.js](https://nodejs.org/) module available through the
+[npm registry](https://www.npmjs.com/). It can be installed using the
 [`npm`](https://docs.npmjs.com/getting-started/installing-npm-packages-locally)
-or 
+or
 [`yarn`](https://yarnpkg.com/en/)
 command line tools.
 
@@ -19,7 +21,7 @@ npm install fms-api-client --save
 
 ```js
 const { connect } = require('marpat');
-const { Filemaker } = require('./filemaker');
+const { Filemaker } = require('fms-api-client');
 const environment = require('dotenv');
 const varium = require('varium');
 
@@ -101,7 +103,6 @@ connect('nedb://memory').then(db => {
         .catch(error => console.log('That is no moon...', error));
     });
 });
-
 ```
 
 ## Tests
@@ -110,47 +111,46 @@ connect('nedb://memory').then(db => {
 npm install
 npm test
 ```
-```
 
-> fms-api-client@0.0.2 test /Users/luidelaparra/Documents/Development/fms-api-client
+```
+> fms-api-client@0.0.3 test /Users/luidelaparra/Documents/Development/fms-api-client
 > mocha --recursive ./tests
   FileMaker Data API Client
     ✓ should allow an instance to be saved.
-    ✓ should get an authentication token. (193ms)
-    ✓ should create FileMaker records. (162ms)
+    ✓ should get an authentication token. (165ms)
+    ✓ should create FileMaker records. (152ms)
     ✓ should edit FileMaker records.
     ✓ should delete FileMaker records.
     ✓ should get a FileMaker specific record.
-    ✓ should allow you to modify the FileMaker List response (175ms)
-    ✓ should allow you to find FileMaker records (160ms)
-    ✓ should allow you to set FileMaker globals (157ms)
-  9 passing (885ms)
-
+    ✓ should allow you to modify the FileMaker List response (188ms)
+    ✓ should allow you to find FileMaker records (175ms)
+    ✓ should allow you to set FileMaker globals (159ms)
+  9 passing (877ms)
 ```
 
 ## Dependencies
 
-- [lodash](https://ghub.io/lodash): Lodash modular utilities.
-- [marpat](https://ghub.io/marpat): A class-based ES6 ODM for Mongo-like databases.
-- [moment](https://ghub.io/moment): Parse, validate, manipulate, and display dates
-- [request](https://ghub.io/request): Simplified HTTP request client.
-- [request-promise](https://ghub.io/request-promise): The simplified HTTP request client &#39;request&#39; with Promise support. Powered by Bluebird.
+* [lodash](https://ghub.io/lodash): Lodash modular utilities.
+* [marpat](https://ghub.io/marpat): A class-based ES6 ODM for Mongo-like databases.
+* [moment](https://ghub.io/moment): Parse, validate, manipulate, and display dates
+* [request](https://ghub.io/request): Simplified HTTP request client.
+* [request-promise](https://ghub.io/request-promise): The simplified HTTP request client &#39;request&#39; with Promise support. Powered by Bluebird.
 
 ## Dev Dependencies
 
-- [chai](https://ghub.io/chai): BDD/TDD assertion library for node.js and the browser. Test framework agnostic.
-- [chai-as-promised](https://ghub.io/chai-as-promised): Extends Chai with assertions about promises.
-- [dotenv](https://ghub.io/dotenv): Loads environment variables from .env file
-- [eslint](https://ghub.io/eslint): An AST-based pattern checker for JavaScript.
-- [eslint-config-google](https://ghub.io/eslint-config-google): ESLint shareable config for the Google style
-- [eslint-config-prettier](https://ghub.io/eslint-config-prettier): Turns off all rules that are unnecessary or might conflict with Prettier.
-- [eslint-plugin-prettier](https://ghub.io/eslint-plugin-prettier): Runs prettier as an eslint rule
-- [jsdocs](https://ghub.io/jsdocs): jsdocs
-- [minami](https://ghub.io/minami): Clean and minimal JSDoc 3 Template / Theme
-- [mocha](https://ghub.io/mocha): simple, flexible, fun test framework
-- [package-json-to-readme](https://ghub.io/package-json-to-readme): Generate a README.md from package.json contents
-- [prettier](https://ghub.io/prettier): Prettier is an opinionated code formatter
-- [varium](https://ghub.io/varium): A strict parser and validator of environment config variables
+* [chai](https://ghub.io/chai): BDD/TDD assertion library for node.js and the browser. Test framework agnostic.
+* [chai-as-promised](https://ghub.io/chai-as-promised): Extends Chai with assertions about promises.
+* [dotenv](https://ghub.io/dotenv): Loads environment variables from .env file
+* [eslint](https://ghub.io/eslint): An AST-based pattern checker for JavaScript.
+* [eslint-config-google](https://ghub.io/eslint-config-google): ESLint shareable config for the Google style
+* [eslint-config-prettier](https://ghub.io/eslint-config-prettier): Turns off all rules that are unnecessary or might conflict with Prettier.
+* [eslint-plugin-prettier](https://ghub.io/eslint-plugin-prettier): Runs prettier as an eslint rule
+* [jsdocs](https://ghub.io/jsdocs): jsdocs
+* [minami](https://ghub.io/minami): Clean and minimal JSDoc 3 Template / Theme
+* [mocha](https://ghub.io/mocha): simple, flexible, fun test framework
+* [package-json-to-readme](https://ghub.io/package-json-to-readme): Generate a README.md from package.json contents
+* [prettier](https://ghub.io/prettier): Prettier is an opinionated code formatter
+* [varium](https://ghub.io/varium): A strict parser and validator of environment config variables
 
 ## License
 
