@@ -3,6 +3,7 @@ node_js:
 - node
 install:
 - npm install
+- npm install marpat
 before_script:
 - node --version
 - npm --version
