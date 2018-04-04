@@ -186,6 +186,20 @@ class Filemaker extends Document {
     return url;
   }
   /**
+   * @method _sanitizeParameters
+   * @memberof Filemaker
+   * @private
+   * @description stringifys all values for an object. This is used to ensure that find requests and list requests
+   * can use either strings or numbers when setting options.
+   * @return {Object} returns an object with all values mapped to strings.
+   */
+  _sanitizeParameters(parameters) {
+    return _.mapValues(
+      parameters,
+      value => (_.isNumber(value) ? value.toString() : value)
+    );
+  }
+  /**
    * @method _generateToken
    * @memberof Filemaker
    * @private
@@ -346,7 +360,10 @@ class Filemaker extends Document {
               'FM-Data-token': `${this._connection.token}`,
               'Content-Type': 'application/json'
             },
-            body: Object.assign({ data: data }, parameters),
+            body: Object.assign(
+              { data: data },
+              this._sanitizeParameters(parameters)
+            ),
             json: true
           })
         )
@@ -404,7 +421,7 @@ class Filemaker extends Document {
             headers: {
               'FM-Data-token': `${this._connection.token}`
             },
-            qs: parameters,
+            qs: this._sanitizeParameters(parameters),
             json: true
           })
         )
@@ -433,7 +450,7 @@ class Filemaker extends Document {
             headers: {
               'FM-Data-token': `${this._connection.token}`
             },
-            qs: parameters,
+            qs: this._sanitizeParameters(parameters),
             json: true
           })
         )
@@ -464,7 +481,10 @@ class Filemaker extends Document {
               'FM-Data-token': `${this._connection.token}`,
               'Content-Type': 'application/json'
             },
-            body: Object.assign({ query: query }, parameters),
+            body: Object.assign(
+              { query: query },
+              this._sanitizeParameters(parameters)
+            ),
             json: true
           })
         )
