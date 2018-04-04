@@ -87,8 +87,7 @@ describe('FileMaker Data API Client', () => {
     return expect(filemaker.list('Heroes'))
       .to.eventually.be.a('object')
       .that.has.all.keys('errorCode', 'result', 'data')
-      .and.property('data')
-      .to.have.a.lengthOf(100);
+      .and.property('data');
   });
   it('should allow you to modify the FileMaker list response', () => {
     return expect(filemaker.list('Heroes', { range: '2' }))

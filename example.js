@@ -31,7 +31,21 @@ connect('nedb://memory').then(db => {
     .save()
     .then(filemaker => {
       filemaker
-        .list('Heroes', { range: 1 })
+        .create('Heroes', { name: 'Anakin Skywalker' })
+        .then(response =>
+          filemaker.create('Heroes', { name: 'Luke Skywalker' })
+        )
+        .then(response =>
+          filemaker.create('Heroes', { name: 'Leia Skywalker' })
+        )
+        .then(response =>
+          filemaker.create('Heroes', { name: 'Ben Skywalker' })
+        );
+      return filemaker;
+    })
+    .then(filemaker => {
+      filemaker
+        .list('Heroes', { range: 5 })
         .then(response => filemaker.fieldData(response.data))
         .then(response => console.log('A Long Time Ago', response))
         .catch(error => console.log('That is no moon...', error));
@@ -57,7 +71,7 @@ connect('nedb://memory').then(db => {
     })
     .then(filemaker => {
       filemaker
-        .find('Heroes', [{ name: 'Anakin Skywalker' }], { range: '1' })
+        .find('Heroes', [{ name: 'Anakin Skywalker' }], { range: 1 })
         .then(response => filemaker.recordId(response.data))
         .then(recordIds =>
           filemaker.edit('Heroes', recordIds[0], { name: 'Darth Vader' })
@@ -65,7 +79,7 @@ connect('nedb://memory').then(db => {
         .then(response =>
           console.log('I find your lack of faith disturbing', response)
         )
-        .catch(error => console.log('That is no moon...', error));
+        .catch(error => console.log('That is no moon...darth', error));
       return filemaker;
     })
     .then(filemaker => {
