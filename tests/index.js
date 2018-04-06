@@ -39,14 +39,13 @@ describe('FileMaker Data API Client', () => {
     return expect(filemaker.save())
       .to.eventually.be.an('object')
       .that.has.all.keys(
-        'password',
         '_schema',
-        'user',
         'connection',
         '_id',
         'application',
         'server',
-        'layout'
+        'credentials',
+        'version'
       );
   });
   it('should authenticate into FileMaker.', () => {

@@ -16,21 +16,21 @@ class Connection extends EmbeddedDocument {
 		super();
 		this.schema({
 			/** A string containing the time the token token was issued.
-			 * @memberof Connection#issued
+			 * @member Connection#issued
 			 * @type String
 			 */
 			issued: {
 				type: String
 			},
 			/* A string containing the time the token will expire.
-         * @memberof Connection#expires
-         * @type String
-		*/
+             * @member Connection#expires
+             * @type String
+		     */
 			expires: {
 				type: String
 			},
 			/** The token to use when querying an endpoint.
-			 * @memberof Connection#token
+			 * @member Connection#token
 			 * @type String
 			 */
 			token: {
