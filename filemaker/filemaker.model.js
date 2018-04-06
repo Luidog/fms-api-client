@@ -63,6 +63,7 @@ class Filemaker extends Document {
       connection: Connection
     });
   }
+
   preInit(data) {
     this.credentials = Credentials.create({
       user: data.user,
@@ -74,10 +75,6 @@ class Filemaker extends Document {
 
   preSave() {
     if (typeof this.connection === 'undefined') {
-      console.log(
-        `Creating connection to ${this.application} at ${this.server}`
-      );
-
       this.authenticate()
         .then(token => {
           this.connection.saveToken(token);
@@ -178,7 +175,7 @@ class Filemaker extends Document {
    */
   _globalsURL() {
     let url = `${this.server}/fmi/rest/api/global/${this.application}/${
-      this.layout
+      this.credentials.layout
     }`;
     return url;
   }
@@ -257,10 +254,6 @@ class Filemaker extends Document {
           '()'
         )
       ) {
-        console.log('issued:', this.connection.issued);
-        console.log('expires at', this.connection.expires);
-        console.log('Token:', this.connection.token);
-
         resolve(this.connection.token);
       } else {
         this._generateToken()
@@ -286,7 +279,6 @@ class Filemaker extends Document {
    *
    */
   create(layout, data) {
-    console.log(data);
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
