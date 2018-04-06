@@ -8,7 +8,8 @@
     "test": "mocha --recursive ./tests",
     "generate-readme":
       "node_modules/.bin/readme package.json --tests --travis > README.md",
-    "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.js --verbose"
+    "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
+    "example": "node example.js"
   },
   "repository": {
     "type": "git",
@@ -23,12 +24,13 @@
   "homepage": "https://github.com/Luidog/fms-api-client#readme",
   "dependencies": {
     "lodash": "^4.17.5",
+    "marpat": "^1.16.0",
     "moment": "^2.21.0",
     "request": "^2.85.0",
     "request-promise": "^4.2.2"
   },
   "peerDependencies": {
-    "marpat": "~1.15.0"
+    "marpat": "^1.16.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
