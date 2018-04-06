@@ -1,8 +1,12 @@
 'use strict';
+
 const moment = require('moment');
 const request = require('request-promise');
-const { Document } = require('marpat');
 const _ = require('lodash');
+
+const { Document } = require('marpat');
+const { Connection } = require('./connection.model');
+const { Credentials } = require('./credentials.model');
 /**
  * @class Filemaker
  * @classdesc The class used to integrate with the FileMaker server Data API
@@ -12,10 +16,19 @@ class Filemaker extends Document {
    * FileMaker constructor.
    * @constructs Filemaker
    */
-  constructor() {
+  constructor(data) {
     super();
-
     this.schema({
+      /**
+       * The version of Data API to use.
+       * @member Filemaker#version
+       * @type String
+       */
+      version: {
+        type: String,
+        required: true,
+        default: 'beta'
+      },
       /**
        * The client application name.
        * @member Filemaker#application
@@ -30,66 +43,50 @@ class Filemaker extends Document {
        * @member Filemaker#server
        * @type String
        */
+
       server: {
-        type: String,
-        required: true
-      },
-      /** The client application username.
-       * @private
-       * @member Filemaker#_username
-       * @type String
-       */
-      _username: {
-        type: String,
-        required: true
-      },
-      /** The client application password.
-       * @private
-       * @member Filemaker#_password
-       * @type String
-       */
-      _password: {
-        type: String,
-        required: true
-      },
-      /** The layout to use for authentication and globals.
-       * @private
-       * @member Filemaker#_layout
-       * @type String
-       */
-      _layout: {
         type: String,
         required: true
       },
       /** The client application connection object.
        * @private
-       * @member Filemaker#_connection
+       * @member Filemaker#credentials
        * @type Object
        */
-      _connection: {
-        /** A string containing the time the token token was issued.
-         * @memberof Filemaker#_connection
-         * @type String
-         */
-        issued: {
-          type: String
-        },
-        /** A string containing the time the token will expire.
-         * @memberof Filemaker#_connection
-         * @type String
-         */
-        expires: {
-          type: String
-        },
-        /** The token to use when querying an endpoint.
-         * @memberof Filemaker#_connection
-         * @type String
-         */
-        token: {
-          type: String
-        }
-      }
+      credentials: Credentials,
+
+      /** The client application connection object.
+       * @public
+       * @member Connection
+       * @type Object
+       */
+      connection: Connection
     });
+  }
+  preInit(data) {
+    this.credentials = Credentials.create({
+      user: data.user,
+      layout: data.layout,
+      password: data.password
+    });
+    this.connection = Connection.create();
+  }
+
+  preSave() {
+    if (typeof this.connection === 'undefined') {
+      console.log(
+        `Creating connection to ${this.application} at ${this.server}`
+      );
+
+      this.authenticate()
+        .then(token => {
+          this.connection.saveToken(token);
+          this.save();
+        })
+        .catch(error => {
+          console.log('Filemaker Authentication Error', { error: error });
+        });
+    }
   }
   /**
    * Generates a url for use when retrieving authentication tokens in exchange for Account credentials
@@ -181,7 +178,7 @@ class Filemaker extends Document {
    */
   _globalsURL() {
     let url = `${this.server}/fmi/rest/api/global/${this.application}/${
-      this._layout
+      this.layout
     }`;
     return url;
   }
@@ -218,9 +215,9 @@ class Filemaker extends Document {
           'Content-Type': 'application/json'
         },
         body: {
-          user: this._username,
-          password: this._password,
-          layout: this._layout
+          user: this.credentials.user,
+          password: this.credentials.password,
+          layout: this.credentials.layout
         },
         json: true
       })
@@ -234,43 +231,7 @@ class Filemaker extends Document {
         .catch(error => reject(error.message));
     });
   }
-  /**
-   * @method _saveToken
-   * @private
-   * @memberof Filemaker
-   * @description Saves a token retrieved from the Data API.
-   * @params {String} token The token to save to the class instance.
-   * @return {String} a token retrieved from the private generation method
-   *
-   */
-  _saveToken(token) {
-    return new Promise((resolve, reject) => {
-      this._connection.token = token;
-      this._connection.issued = moment().format();
-      this._connection.expires = moment()
-        .add(15, 'minutes')
-        .format();
-      this.save()
-        .then(response => resolve(this._connection.token))
-        .catch(error => reject(error));
-    });
-  }
-  /**
-   * @method _extendToken
-   * @memberof Filemaker
-   * @private
-   * @description Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.
-   * @param {Object} response The response object.
-   * @return {Promise} the response recieved from the Data API.
-   *
-   */
-  _extendToken(response) {
-    this._connection.expires = moment()
-      .add(15, 'minutes')
-      .format();
-    this.save();
-    return response;
-  }
+
   /**
    * @method authenticate
    * @memberof Filemaker
@@ -287,26 +248,33 @@ class Filemaker extends Document {
   authenticate() {
     return new Promise((resolve, reject) => {
       let currentTime = moment();
+
       if (
-        typeof this._connection.token !== 'object' &&
+        typeof this.connection !== 'undefined' &&
         currentTime.isBetween(
-          this._connection.issued,
-          this._connection.expires,
-          'second',
-          '[)'
+          this.connection.issued,
+          this.connection.expires,
+          '()'
         )
       ) {
-        resolve(this._connection.token);
+        console.log('issued:', this.connection.issued);
+        console.log('expires at', this.connection.expires);
+        console.log('Token:', this.connection.token);
+
+        resolve(this.connection.token);
       } else {
         this._generateToken()
-          .then(token => this._saveToken(token))
+          .then(token => this.connection.saveToken(token))
           .then(token => {
-            resolve(token);
+            this.save();
+            return token;
           })
+          .then(token => resolve(token))
           .catch(error => reject(error));
       }
     });
   }
+
   /**
    * @method create
    * @public
@@ -318,6 +286,7 @@ class Filemaker extends Document {
    *
    */
   create(layout, data) {
+    console.log(data);
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
@@ -325,14 +294,16 @@ class Filemaker extends Document {
             url: this._createURL(layout),
             method: 'post',
             headers: {
-              'FM-Data-token': `${this._connection.token}`,
+              'FM-Data-token': `${this.connection.token}`,
               'Content-Type': 'application/json'
             },
             body: { data: data },
             json: true
           })
         )
-        .then(response => this._extendToken(response))
+
+        .then(response => this.connection.extend(response))
+
         .then(response => resolve(response))
         .catch(error => reject(error.message))
     );
@@ -357,7 +328,7 @@ class Filemaker extends Document {
             url: this._updateURL(layout, recordId),
             method: 'put',
             headers: {
-              'FM-Data-token': `${this._connection.token}`,
+              'FM-Data-token': `${this.connection.token}`,
               'Content-Type': 'application/json'
             },
             body: Object.assign(
@@ -367,7 +338,7 @@ class Filemaker extends Document {
             json: true
           })
         )
-        .then(response => this._extendToken(response))
+        .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
@@ -390,12 +361,12 @@ class Filemaker extends Document {
             url: this._deleteURL(layout, recordId),
             method: 'delete',
             headers: {
-              'FM-Data-token': `${this._connection.token}`
+              'FM-Data-token': `${this.connection.token}`
             },
             json: true
           })
         )
-        .then(response => this._extendToken(response))
+        .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
@@ -419,13 +390,13 @@ class Filemaker extends Document {
             url: this._getURL(layout, recordId),
             method: 'get',
             headers: {
-              'FM-Data-token': `${this._connection.token}`
+              'FM-Data-token': `${this.connection.token}`
             },
             qs: this._sanitizeParameters(parameters),
             json: true
           })
         )
-        .then(response => this._extendToken(response))
+        .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
@@ -448,13 +419,13 @@ class Filemaker extends Document {
             url: this._listURL(layout),
             method: 'get',
             headers: {
-              'FM-Data-token': `${this._connection.token}`
+              'FM-Data-token': `${this.connection.token}`
             },
             qs: this._sanitizeParameters(parameters),
             json: true
           })
         )
-        .then(response => this._extendToken(response))
+        .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
@@ -478,7 +449,7 @@ class Filemaker extends Document {
             url: this._findURL(layout),
             method: 'post',
             headers: {
-              'FM-Data-token': `${this._connection.token}`,
+              'FM-Data-token': `${this.connection.token}`,
               'Content-Type': 'application/json'
             },
             body: Object.assign(
@@ -488,7 +459,7 @@ class Filemaker extends Document {
             json: true
           })
         )
-        .then(response => this._extendToken(response))
+        .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
@@ -509,14 +480,14 @@ class Filemaker extends Document {
             url: this._globalsURL(),
             method: 'put',
             headers: {
-              'FM-Data-token': `${this._connection.token}`,
+              'FM-Data-token': `${this.connection.token}`,
               'Content-Type': 'application/json'
             },
             body: { globalFields: data },
             json: true
           })
         )
-        .then(response => this._extendToken(response))
+        .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
