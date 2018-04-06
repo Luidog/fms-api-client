@@ -28,9 +28,9 @@ describe('FileMaker Data API Client', () => {
     filemaker = Filemaker.create({
       application: process.env.APPLICATION,
       server: process.env.SERVER,
-      _username: process.env.USERNAME,
-      _password: process.env.PASSWORD,
-      _layout: process.env.LAYOUT
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      layout: process.env.LAYOUT
     });
     done();
   });
@@ -39,14 +39,13 @@ describe('FileMaker Data API Client', () => {
     return expect(filemaker.save())
       .to.eventually.be.an('object')
       .that.has.all.keys(
-        '_password',
         '_schema',
-        '_username',
-        '_connection',
+        'connection',
         '_id',
         'application',
         'server',
-        '_layout'
+        'credentials',
+        'version'
       );
   });
   it('should authenticate into FileMaker.', () => {
@@ -68,6 +67,7 @@ describe('FileMaker Data API Client', () => {
         .and.have.property('errorCode', '0');
     });
   });
+
   it('should delete FileMaker records.', () => {
     filemaker.create('Heroes', { name: 'Darth Vader' }).then(response => {
       return expect(filemaker.delete('Heroes', response.recordId))
@@ -91,6 +91,13 @@ describe('FileMaker Data API Client', () => {
   });
   it('should allow you to modify the FileMaker list response', () => {
     return expect(filemaker.list('Heroes', { range: '2' }))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('errorCode', 'result', 'data')
+      .and.property('data')
+      .to.have.a.lengthOf(2);
+  });
+  it('should allow allow a list response to be set with numbers', () => {
+    return expect(filemaker.list('Heroes', { range: 2 }))
       .to.eventually.be.a('object')
       .that.has.all.keys('errorCode', 'result', 'data')
       .and.property('data')
