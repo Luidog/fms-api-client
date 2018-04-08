@@ -6,6 +6,7 @@ const _ = require('lodash');
 const { Document } = require('marpat');
 const { Connection } = require('./connection.model');
 const { Credentials } = require('./credentials.model');
+const { Data } = require('./data.model');
 /**
  * @class Filemaker
  * @classdesc The class used to integrate with the FileMaker server Data API
@@ -47,17 +48,26 @@ class Filemaker extends Document {
         type: String,
         required: true
       },
-      /** The client application connection object.
-       * @private
-       * @member Filemaker#credentials
-       * @type Object
+      /** The client data logger.
+       * @public
+       * @member Data
+       * @type Class
+       */
+      data: {
+        type: Data,
+        required: true,
+        default: () => Data.create()
+      },
+      /** The client credentials.
+       * @public
+       * @member Credentials
+       * @type Class
        */
       credentials: Credentials,
-
       /** The client application connection object.
        * @public
        * @member Connection
-       * @type Object
+       * @type Class
        */
       connection: {
         type: Connection,
@@ -195,7 +205,6 @@ class Filemaker extends Document {
    * not between when the token is issued and the time it will expire this method calls the private
    * is returned this promise method will reject.
    * @see {@method Connnection#generate}
-   * @see {@method Connnection#generate}
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
@@ -241,9 +250,8 @@ class Filemaker extends Document {
             json: true
           })
         )
-
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
-
         .then(response => resolve(response))
         .catch(error => reject(error.message))
     );
@@ -278,6 +286,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
@@ -306,6 +315,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
@@ -336,6 +346,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
@@ -365,6 +376,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
@@ -399,6 +411,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(
@@ -432,6 +445,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
@@ -459,7 +473,7 @@ class Filemaker extends Document {
    */
   _stringify(data) {
     return _.mapValues(
-      data,
+      this.data.incoming(data),
       value =>
         typeof value === 'string'
           ? value

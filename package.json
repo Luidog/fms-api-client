@@ -1,13 +1,11 @@
 {
   "name": "fms-api-client",
   "version": "0.0.4",
-  "description":
-    "A FileMaker Data API client designed to allow interaction with a FileMaker application from a web environment.",
+  "description": "A FileMaker Data API client designed to allow interaction with a FileMaker application from a web environment.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive ./tests",
-    "generate-readme":
-      "node_modules/.bin/readme package.json --tests --travis > README.md",
+    "test": "node_modules/mocha --recursive ./tests",
+    "generate-readme": "node_modules/.bin/readme package.json --tests --travis > README.md",
     "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
     "example": "node example.js"
   },
@@ -15,16 +13,23 @@
     "type": "git",
     "url": "git+https://Luidog@github.com/Luidog/fms-api-client.git"
   },
-  "keywords": ["FileMaker", "Data-API", "Marpat"],
+  "keywords": [
+    "FileMaker",
+    "Data-API",
+    "Marpat"
+  ],
   "author": "Lui de la Parra",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Luidog/fms-api-client/issues"
   },
-  "homepage": "https://github.com/Luidog/fms-api-client#readme",
+  "homepage": "https://github.com/Luidog/fms-api-client",
   "dependencies": {
     "lodash": "^4.17.5",
+    "marpat": "^1.16.0",
     "moment": "^2.21.0",
+    "object-sizeof": "^1.2.0",
+    "prettysize": "^1.1.0",
     "request": "^2.85.0",
     "request-promise": "^4.2.2"
   },
