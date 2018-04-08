@@ -40,7 +40,7 @@ class Connection extends EmbeddedDocument {
 		});
 	}
 	/**
-	 * @method saveToken
+	 * @method _saveToken
 	 * @public
 	 * @memberof Connection
 	 * @description Saves a token retrieved from the Data API.
@@ -48,7 +48,7 @@ class Connection extends EmbeddedDocument {
 	 * @return {String} a token retrieved from the private generation method
 	 *
 	 */
-	saveToken(token) {
+	_saveToken(token) {
 		this.expires = moment()
 			.add(15, 'minutes')
 			.format();
@@ -93,7 +93,7 @@ class Connection extends EmbeddedDocument {
 				json: true
 			}).then(response => {
 				if (response.errorCode === '0') {
-					this.saveToken(response.token);
+					this._saveToken(response.token);
 					resolve(response.token);
 				} else {
 					reject(response.errorMessage);
