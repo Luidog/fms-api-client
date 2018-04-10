@@ -40,113 +40,87 @@ connect('nedb://memory').then(db => {
   client.save().then(client =>
     client
       .create('Heroes', {
-        name: 'lui',
+        name: 'George Lucas',
         number: 5,
         array: ['1'],
         object: { driods: true }
       })
-      .then(record => {
-        console.log(record);
-      })
+      .then(record =>
+        console.log('Some guy thought of a movie....'.yellow.underline, record)
+      )
+      .catch(error => console.log('That is no moon....'.red, error))
   );
 
-  //   client
-  //     .save()
-  //     .then(client => {
-  //       return Promise.all([
-  //         client.create('Heroes', { name: 'Anakin Skywalker' }),
-  //         client.create('Heroes', { name: 'Obi-Wan' }),
-  //         client.create('Heroes', { name: 'Yoda' })
-  //       ]).then(response => {
-  //         console.group();
-  //         console.log('A Long Time Ago...'.rainbow);
-  //         console.log(response);
-  //         console.groupEnd();
-  //         return client;
-  //       });
-  //     })
-  //     .then(client => {
-  //       client
-  //         .list('Heroes', { range: 5 })
-  //         .then(response => client.fieldData(response.data))
-  //         .then(response => {
-  //           console.group();
-  //           console.log(
-  //             ' For my ally is the Force, and a powerful ally it is.'.underline
-  //               .green
-  //           );
-  //           console.log(response);
-  //           console.groupEnd();
-  //         })
-  //         .catch(error => {
-  //           console.group();
-  //           console.log('That is no moon...'.red);
-  //           console.log(error);
-  //           console.groupEnd();
-  //         });
+  client
+    .save()
+    .then(client => {
+      return Promise.all([
+        client.create('Heroes', { name: 'Anakin Skywalker' }),
+        client.create('Heroes', { name: 'Obi-Wan' }),
+        client.create('Heroes', { name: 'Yoda' })
+      ]).then(response => {
+        console.log('A Long Time Ago....'.rainbow.underline, response);
+        return client;
+      });
+    })
+    .then(client => {
+      client
+        .list('Heroes', { range: 5 })
+        .then(response => client.fieldData(response.data))
+        .then(response =>
+          console.log(
+            ' For my ally is the Force, and a powerful ally it is.'.underline
+              .green,
+            response
+          )
+        )
+        .catch(error => console.log('That is no moon....'.red, error));
 
-  //       client
-  //         .globals({ ship: 'Millenium Falcon' })
-  //         .then(response => {
-  //           console.group();
-  //           console.log(
-  //             'Made the Kessel Run in less than twelve parsecs.'.underline.blue
-  //           );
-  //           console.log(response);
-  //           console.groupEnd();
-  //         })
-  //         .catch(error => {
-  //           console.group();
-  //           console.log('That is no moon...'.red);
-  //           console.log(error);
-  //           console.groupEnd();
-  //         });
+      client
+        .globals({ ship: 'Millenium Falcon' })
+        .then(response =>
+          console.log(
+            'Made the Kessel Run in less than twelve parsecs.'.underline.blue,
+            response
+          )
+        )
+        .catch(error => console.log('That is no moon....'.red, error));
 
-  //       return client;
-  //     })
-  //     .then(client =>
-  //       client
-  //         .find('Heroes', [{ name: 'Anakin Skywalker' }], { range: 1 })
-  //         .then(response => client.recordId(response.data))
-  //         .then(recordIds =>
-  //           client.edit('Heroes', recordIds[0], { name: 'Darth Vader' })
-  //         )
-  //         .then(response => {
-  //           console.group();
-  //           console.log('I find your lack of faith disturbing'.underline.red);
-  //           console.log(response);
-  //           console.groupEnd();
-  //         })
-  //         .catch(error => {
-  //           console.group();
-  //           console.log('That is no moon...'.red);
-  //           console.log(error);
-  //           console.groupEnd();
-  //         })
-  //     );
+      return client;
+    })
+    .then(client =>
+      client
+        .find('Heroes', [{ name: 'Anakin Skywalker' }], { range: 1 })
+        .then(response => client.recordId(response.data))
+        .then(recordIds =>
+          client.edit('Heroes', recordIds[0], { name: 'Darth Vader' })
+        )
+        .then(response =>
+          console.log(
+            'I find your lack of faith disturbing'.cyan.underline,
+            response
+          )
+        )
+        .catch(error => console.log('That is no moon...'.red, error))
+    );
 });
 
 const rewind = () => {
   Filemaker.findOne().then(client => {
-    console.log(client.data.status());
+    console.log(client.toJSON());
+    console.log(client.data);
     client
       .find('Heroes', [{ id: '*' }], { range: 150 })
       .then(response => client.recordId(response.data))
       .then(response => {
-        console.group();
-        console.log('Be Kind.... Rewind.....'.rainbow);
-        console.log(response);
-        console.groupEnd();
+        console.log('Be Kind.... Rewind.....'.rainbow, response);
         return response;
       })
       .then(recordIds =>
         recordIds.forEach(id => {
-          client.delete('Heroes', id).catch(error => {
-            console.group();
-            console.log('That is no moon...'.red);
-            console.log(error);
-            console.groupEnd();
-          });
+          client
+            .delete('Heroes', id)
+            .catch(error => console.log('That is no moon....'.red, error));
         })
       );
   });
