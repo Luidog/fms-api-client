@@ -21,10 +21,13 @@
   "bugs": {
     "url": "https://github.com/Luidog/fms-api-client/issues"
   },
-  "homepage": "https://github.com/Luidog/fms-api-client#readme",
+  "homepage": "https://github.com/Luidog/fms-api-client",
   "dependencies": {
     "lodash": "^4.17.5",
+    "marpat": "^1.16.0",
     "moment": "^2.21.0",
+    "object-sizeof": "^1.2.0",
+    "prettysize": "^1.1.0",
     "request": "^2.85.0",
     "request-promise": "^4.2.2"
   },

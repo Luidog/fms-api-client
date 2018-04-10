@@ -16,21 +16,21 @@ class Credentials extends EmbeddedDocument {
 		super();
 		this.schema({
 			/** A string containing the time the token token was issued.
-			 * @memberof Credentials#password
+			 * @member Credentials#password
 			 * @type String
 			 */
 			password: {
 				type: String
 			},
 			/** A string containing the time the token will expire.
-			 * @memberof Credentials#layout
+			 * @member Credentials#layout
 			 * @type String
 			 */
 			layout: {
 				type: String
 			},
 			/** The token to use when querying an endpoint.
-			 * @memberof Credentials#user
+			 * @member Credentials#user
 			 * @type String
 			 */
 			user: {

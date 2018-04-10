@@ -42,6 +42,7 @@ describe('FileMaker Data API Client', () => {
         '_schema',
         'connection',
         '_id',
+        'data',
         'application',
         'server',
         'credentials',

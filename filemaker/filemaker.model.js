@@ -1,12 +1,12 @@
 'use strict';
 
-const moment = require('moment');
 const request = require('request-promise');
 const _ = require('lodash');
 
 const { Document } = require('marpat');
 const { Connection } = require('./connection.model');
 const { Credentials } = require('./credentials.model');
+const { Data } = require('./data.model');
 /**
  * @class Filemaker
  * @classdesc The class used to integrate with the FileMaker server Data API
@@ -48,42 +48,45 @@ class Filemaker extends Document {
         type: String,
         required: true
       },
-      /** The client application connection object.
-       * @private
-       * @member Filemaker#credentials
-       * @type Object
+      /** The client data logger.
+       * @public
+       * @member Data
+       * @type Class
+       */
+      data: {
+        type: Data,
+        required: true,
+        default: () => Data.create()
+      },
+      /** The client credentials.
+       * @public
+       * @member Credentials
+       * @type Class
        */
       credentials: Credentials,
-
       /** The client application connection object.
        * @public
        * @member Connection
-       * @type Object
+       * @type Class
        */
-      connection: Connection
+      connection: {
+        type: Connection,
+        default: () => Connection.create(),
+        required: true
+      }
     });
   }
-
+  /**
+   * preInit is a hook
+   * @schema
+   * @return {null} The preInit hook does not return anything
+   */
   preInit(data) {
     this.credentials = Credentials.create({
       user: data.user,
       layout: data.layout,
       password: data.password
     });
-    this.connection = Connection.create();
-  }
-
-  preSave() {
-    if (typeof this.connection === 'undefined') {
-      this.authenticate()
-        .then(token => {
-          this.connection.saveToken(token);
-          this.save();
-        })
-        .catch(error => {
-          console.log('Filemaker Authentication Error', { error: error });
-        });
-    }
   }
   /**
    * Generates a url for use when retrieving authentication tokens in exchange for Account credentials
@@ -194,42 +197,6 @@ class Filemaker extends Document {
     );
   }
   /**
-   * @method _generateToken
-   * @memberof Filemaker
-   * @private
-   * @description Retrieves an authentication token from the Data API. This promise method will check for
-   * a zero errorCode before resolving. If an http error code or a non zero response error code.
-   * is returned this promise method will reject
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   * response
-   */
-  _generateToken() {
-    return new Promise((resolve, reject) => {
-      request({
-        url: this._authURL(),
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: {
-          user: this.credentials.user,
-          password: this.credentials.password,
-          layout: this.credentials.layout
-        },
-        json: true
-      })
-        .then(response => {
-          if (response.errorCode === '0') {
-            resolve(response.token);
-          } else {
-            reject(response.errorMessage);
-          }
-        })
-        .catch(error => reject(error.message));
-    });
-  }
-
-  /**
    * @method authenticate
    * @memberof Filemaker
    * @public
@@ -237,27 +204,17 @@ class Filemaker extends Document {
    * issued and when it will expire. If the connection token is not a string (its empty) or the current time is
    * not between when the token is issued and the time it will expire this method calls the private
    * is returned this promise method will reject.
-   * @see {@method _generateToken}
-   * @see {@method _saveToken}
+   * @see {@method Connnection#generate}
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
   authenticate() {
     return new Promise((resolve, reject) => {
-      let currentTime = moment();
-
-      if (
-        typeof this.connection !== 'undefined' &&
-        currentTime.isBetween(
-          this.connection.issued,
-          this.connection.expires,
-          '()'
-        )
-      ) {
+      if (this.connection.valid()) {
         resolve(this.connection.token);
       } else {
-        this._generateToken()
-          .then(token => this.connection.saveToken(token))
+        this.connection
+          .generate(this._authURL(), this.credentials)
           .then(token => {
             this.save();
             return token;
@@ -289,13 +246,12 @@ class Filemaker extends Document {
               'FM-Data-token': `${this.connection.token}`,
               'Content-Type': 'application/json'
             },
-            body: { data: data },
+            body: { data: this._stringify(data) },
             json: true
           })
         )
-
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
-
         .then(response => resolve(response))
         .catch(error => reject(error.message))
     );
@@ -324,12 +280,13 @@ class Filemaker extends Document {
               'Content-Type': 'application/json'
             },
             body: Object.assign(
-              { data: data },
+              { data: this._stringify(data) },
               this._sanitizeParameters(parameters)
             ),
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
@@ -358,6 +315,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
@@ -388,6 +346,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
@@ -417,6 +376,7 @@ class Filemaker extends Document {
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
@@ -445,15 +405,21 @@ class Filemaker extends Document {
               'Content-Type': 'application/json'
             },
             body: Object.assign(
-              { query: query },
+              { query: this._toArray(query) },
               this._sanitizeParameters(parameters)
             ),
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
-        .catch(response => reject(response.message))
+        .catch(
+          response =>
+            response.error.errorCode === '401'
+              ? resolve({ data: [], message: response.error.errorMessage })
+              : reject(error.message)
+        )
     );
   }
   /**
@@ -475,13 +441,45 @@ class Filemaker extends Document {
               'FM-Data-token': `${this.connection.token}`,
               'Content-Type': 'application/json'
             },
-            body: { globalFields: data },
+            body: { globalFields: this._stringify(data) },
             json: true
           })
         )
+        .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
+    );
+  }
+  /**
+  /**
+   * @method _toArray
+   * @private
+   * @memberof Filemaker
+   * @description _toArray is a helper method that converts an object into an array. This is used 
+   * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
+   * @return {Object}      a json object containing stringified data.
+   */
+  _toArray(data) {
+    return Array.isArray(data) ? data : [data];
+  }
+  /**
+   * @method _stringify
+   * @private
+   * @memberof Filemaker
+   * @description _stringify is a helper method that converts numbers and objects / arrays to strings.
+   * @param  {Object|Array} The data being used to create or update a record.
+   * @return {Object}      a json object containing stringified data.
+   */
+  _stringify(data) {
+    return _.mapValues(
+      this.data.incoming(data),
+      value =>
+        typeof value === 'string'
+          ? value
+          : typeof value === 'object'
+            ? JSON.stringify(value)
+            : typeof value === 'number' ? value.toString() : ''
     );
   }
   /**
