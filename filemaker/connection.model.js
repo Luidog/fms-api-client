@@ -1,6 +1,7 @@
 'use strict';
 
 const moment = require('moment');
+const request = require('request-promise');
 const { EmbeddedDocument } = require('marpat');
 
 /**
@@ -39,7 +40,7 @@ class Connection extends EmbeddedDocument {
 		});
 	}
 	/**
-	 * @method saveToken
+	 * @method _saveToken
 	 * @public
 	 * @memberof Connection
 	 * @description Saves a token retrieved from the Data API.
@@ -47,7 +48,7 @@ class Connection extends EmbeddedDocument {
 	 * @return {String} a token retrieved from the private generation method
 	 *
 	 */
-	saveToken(token) {
+	_saveToken(token) {
 		this.expires = moment()
 			.add(15, 'minutes')
 			.format();
@@ -55,6 +56,52 @@ class Connection extends EmbeddedDocument {
 		this.token = token;
 		return token;
 	}
+	/**
+	 * @method valid
+	 * @public
+	 * @memberof Connection
+	 * @description Saves a token retrieved from the Data API.
+	 * @params {String} token The token to save to the class instance.
+	 * @return {String} a token retrieved from the private generation method
+	 *
+	 */
+	valid() {
+		return (
+			this.token !== undefined &&
+			moment().isBetween(this.issued, this.expires, '()')
+		);
+	}
+	/**
+	 * @method generate
+	 * @memberof Connection
+	 * @public
+	 * @description Retrieves an authentication token from the Data API. This promise method will check for
+	 * a zero string in the response errorCode before resolving. If an http error code or a non zero response error code.
+	 * is returned this will reject.
+	 * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+	 * response
+	 */
+	generate(url, body) {
+		return new Promise((resolve, reject) =>
+			request({
+				url: url,
+				method: 'post',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: body,
+				json: true
+			}).then(response => {
+				if (response.errorCode === '0') {
+					this._saveToken(response.token);
+					resolve(response.token);
+				} else {
+					reject(response.errorMessage);
+				}
+			})
+		);
+	}
+
 	/**
 	 * @method extend
 	 * @memberof Connection
