@@ -2,7 +2,7 @@
   "name": "fms-api-client",
   "version": "0.0.5",
   "description":
-    "A FileMaker Data API client designed to allow interaction with a FileMaker application from a web environment.",
+    "A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.",
   "main": "index.js",
   "scripts": {
     "test": "mocha --recursive ./tests",
