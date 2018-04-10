@@ -55,8 +55,7 @@ class Filemaker extends Document {
        */
       data: {
         type: Data,
-        required: true,
-        default: () => Data.create()
+        required: true
       },
       /** The client credentials.
        * @public
@@ -71,7 +70,6 @@ class Filemaker extends Document {
        */
       connection: {
         type: Connection,
-        default: () => Connection.create(),
         required: true
       }
     });
@@ -82,6 +80,8 @@ class Filemaker extends Document {
    * @return {null} The preInit hook does not return anything
    */
   preInit(data) {
+    this.data = Data.create();
+    this.connection = Connection.create();
     this.credentials = Credentials.create({
       user: data.user,
       layout: data.layout,
@@ -224,7 +224,19 @@ class Filemaker extends Document {
       }
     });
   }
-
+  /**
+   * @method saveState
+   * @private
+   * @memberof Filemaker
+   * @description Triggers a save and returns the response. This is responsible for ensuring the documents are up to date.
+   * @param {Any} response The response data from the data api request.
+   * @return {Any} Returns the umodified response.
+   *
+   */
+  _saveState(response) {
+    this.save();
+    return response;
+  }
   /**
    * @method create
    * @public
@@ -252,6 +264,7 @@ class Filemaker extends Document {
         )
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
+        .then(response => this._saveState(response))
         .then(response => resolve(response))
         .catch(error => reject(error.message))
     );
@@ -288,6 +301,7 @@ class Filemaker extends Document {
         )
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
+        .then(response => this._saveState(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
@@ -317,6 +331,7 @@ class Filemaker extends Document {
         )
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
+        .then(response => this._saveState(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
@@ -348,6 +363,7 @@ class Filemaker extends Document {
         )
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
+        .then(response => this._saveState(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
@@ -378,6 +394,7 @@ class Filemaker extends Document {
         )
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
+        .then(response => this._saveState(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
@@ -413,6 +430,7 @@ class Filemaker extends Document {
         )
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
+        .then(response => this._saveState(response))
         .then(response => resolve(response))
         .catch(
           response =>
@@ -447,6 +465,7 @@ class Filemaker extends Document {
         )
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
+        .then(response => this._saveState(response))
         .then(response => resolve(response))
         .catch(response => reject(response.message))
     );
