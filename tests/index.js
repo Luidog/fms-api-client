@@ -108,18 +108,17 @@ describe('FileMaker Data API Client', () => {
     return expect(
       filemaker.find(
         'Heroes',
-        [
-          {
-            name: 'Luke Skywalker'
-          }
-        ],
-        { range: '2' }
+
+        {
+          name: 'Luke Skywalker'
+        },
+        { range: 1 }
       )
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('errorCode', 'result', 'data')
       .and.property('data')
-      .to.have.a.lengthOf(2);
+      .to.have.a.lengthOf(1);
   });
   it('should allow you to set FileMaker globals', () => {
     return expect(filemaker.globals({ ship: 'Millenium Falcon' }))
