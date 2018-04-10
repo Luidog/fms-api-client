@@ -1,6 +1,6 @@
 # fms-api-client [![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client)
 
-A FileMaker Data API client designed to allow interaction with a FileMaker application from a web environment.
+A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.
 
 For in depth documentation: https://luidog.github.io/fms-api-client
 
@@ -41,7 +41,7 @@ varium(process.env, './tests/env.manifest');
  * @return {Promise}           A database.
  */
 
-connect('nedb://data').then(db => {
+connect('nedb://memory').then(db => {
   /**
    * The client is the FileMaker class. The class then offers methods designed to
    * make it easier to integrate into filemaker's api.
@@ -59,6 +59,19 @@ connect('nedb://data').then(db => {
    * A client can be used directly after saving it. It is also stored on the datastore
    * so that it can be reused later.
    */
+  client.save().then(client =>
+    client
+      .create('Heroes', {
+        name: 'George Lucas',
+        number: 5,
+        array: ['1'],
+        object: { driods: true }
+      })
+      .then(record =>
+        console.log('Some guy thought of a movie....'.yellow.underline, record)
+      )
+      .catch(error => console.log('That is no moon....'.red, error))
+  );
 
   client
     .save()
@@ -68,10 +81,7 @@ connect('nedb://data').then(db => {
         client.create('Heroes', { name: 'Obi-Wan' }),
         client.create('Heroes', { name: 'Yoda' })
       ]).then(response => {
-        console.group();
-        console.log('A Long Time Ago...'.rainbow);
-        console.log(response);
-        console.groupEnd();
+        console.log('A Long Time Ago....'.rainbow.underline, response);
         return client;
       });
     })
@@ -79,38 +89,24 @@ connect('nedb://data').then(db => {
       client
         .list('Heroes', { range: 5 })
         .then(response => client.fieldData(response.data))
-        .then(response => {
-          console.group();
+        .then(response =>
           console.log(
             ' For my ally is the Force, and a powerful ally it is.'.underline
-              .green
-          );
-          console.log(response);
-          console.groupEnd();
-        })
-        .catch(error => {
-          console.group();
-          console.log('That is no moon...'.red);
-          console.log(error);
-          console.groupEnd();
-        });
+              .green,
+            response
+          )
+        )
+        .catch(error => console.log('That is no moon....'.red, error));
 
       client
         .globals({ ship: 'Millenium Falcon' })
-        .then(response => {
-          console.group();
+        .then(response =>
           console.log(
-            'Made the Kessel Run in less than twelve parsecs.'.underline.blue
-          );
-          console.log(response);
-          console.groupEnd();
-        })
-        .catch(error => {
-          console.group();
-          console.log('That is no moon...'.red);
-          console.log(error);
-          console.groupEnd();
-        });
+            'Made the Kessel Run in less than twelve parsecs.'.underline.blue,
+            response
+          )
+        )
+        .catch(error => console.log('That is no moon....'.red, error));
 
       return client;
     })
@@ -121,41 +117,32 @@ connect('nedb://data').then(db => {
         .then(recordIds =>
           client.edit('Heroes', recordIds[0], { name: 'Darth Vader' })
         )
-        .then(response => {
-          console.group();
-          console.log('I find your lack of faith disturbing'.underline.red);
-          console.log(response);
-          console.groupEnd();
-        })
-        .catch(error => {
-          console.group();
-          console.log('That is no moon...'.red);
-          console.log(error);
-          console.groupEnd();
-        })
+        .then(response =>
+          console.log(
+            'I find your lack of faith disturbing'.cyan.underline,
+            response
+          )
+        )
+        .catch(error => console.log('That is no moon...'.red, error))
     );
 });
 
 const rewind = () => {
   Filemaker.findOne().then(client => {
+    console.log(client.toJSON());
+    console.log(client.data);
     client
       .find('Heroes', [{ id: '*' }], { range: 150 })
       .then(response => client.recordId(response.data))
       .then(response => {
-        console.group();
-        console.log('Be Kind.... Rewind.....'.rainbow);
-        console.log(response);
-        console.groupEnd();
+        console.log('Be Kind.... Rewind.....'.rainbow, response);
         return response;
       })
       .then(recordIds =>
         recordIds.forEach(id => {
-          client.delete('Heroes', id).catch(error => {
-            console.group();
-            console.log('That is no moon...'.red);
-            console.log(error);
-            console.groupEnd();
-          });
+          client
+            .delete('Heroes', id)
+            .catch(error => console.log('That is no moon....'.red, error));
         })
       );
   });
@@ -177,24 +164,29 @@ npm test
 > fms-api-client@0.0.5 test ./fms-api-client
 > mocha --recursive ./tests
   FileMaker Data API Client
+    ✓ should track API usage data. (278ms)
+  FileMaker Data API Client
     ✓ should allow an instance to be saved.
-    ✓ should authenticate into FileMaker. (165ms)
-    ✓ should create FileMaker records. (243ms)
+    ✓ should authenticate into FileMaker. (380ms)
+    ✓ should create FileMaker records. (302ms)
     ✓ should update FileMaker records.
     ✓ should delete FileMaker records.
     ✓ should get a FileMaker specific record.
-    ✓ should allow you to list FileMaker records (419ms)
-    ✓ should allow you to modify the FileMaker list response (403ms)
-    ✓ should allow allow a list response to be set with numbers (332ms)
-    ✓ should allow you to find FileMaker records (245ms)
-    ✓ should allow you to set FileMaker globals (264ms)
-  11 passing (2s)
+    ✓ should allow you to list FileMaker records (375ms)
+    ✓ should allow you to modify the FileMaker list response (241ms)
+    ✓ should allow allow a list response to be set with numbers (250ms)
+    ✓ should allow you to find FileMaker records (325ms)
+    ✓ should allow you to set FileMaker globals (212ms)
+  12 passing (2s)
 ```
 
 ## Dependencies
 
 * [lodash](https://ghub.io/lodash): Lodash modular utilities.
+* [marpat](https://ghub.io/marpat): A class-based ES6 ODM for Mongo-like databases.
 * [moment](https://ghub.io/moment): Parse, validate, manipulate, and display dates
+* [object-sizeof](https://ghub.io/object-sizeof): Sizeof of a JavaScript object in Bytes
+* [prettysize](https://ghub.io/prettysize): Convert bytes to other sizes for prettier logging
 * [request](https://ghub.io/request): Simplified HTTP request client.
 * [request-promise](https://ghub.io/request-promise): The simplified HTTP request client &#39;request&#39; with Promise support. Powered by Bluebird.
 
