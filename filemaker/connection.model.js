@@ -1,9 +1,10 @@
 'use strict';
 
+const axios = require('axios');
+const _ = require('lodash');
 const moment = require('moment');
-const request = require('request-promise');
 const { EmbeddedDocument } = require('marpat');
-
+const { Credentials } = require('./credentials.model');
 /**
  * @class Connection
  * @classdesc The class used to connection with the FileMaker server Data API
@@ -23,6 +24,20 @@ class Connection extends EmbeddedDocument {
       issued: {
         type: String
       },
+      server: {
+        type: String,
+        required: true
+      },
+      application: {
+        type: String,
+        required: true
+      },
+      /** The client credentials.
+       * @public
+       * @member Credentials
+       * @type Class
+       */
+      credentials: Credentials,
       /* A string containing the time the token will expire.
              * @member Connection#expires
              * @type String
@@ -38,6 +53,69 @@ class Connection extends EmbeddedDocument {
         type: String
       }
     });
+  }
+
+  preInit(data) {
+    this.credentials = Credentials.create({
+      user: data.user,
+      layout: data.layout,
+      password: data.password
+    });
+  }
+  /**
+   * Generates a url for use when retrieving authentication tokens in exchange for Account credentials
+   * @private
+   * @return {String} A URL
+   */
+  _authURL() {
+    let url = `${this.server}/fmi/rest/api/auth/${this.application}`;
+    return url;
+  }
+
+  /**
+   * Generates a url for use when creating a record.
+   * @private
+   * @param {String} layout The layout to use when creating a record.
+   * @return {String} A URL
+   */
+  _createURL(layout) {
+    let url = `${this.server}/fmi/rest/api/record/${
+      this.application
+    }/${layout}`;
+    return url;
+  }
+  /**
+   * @method _stringify
+   * @private
+   * @memberof Connection
+   * @description _stringify is a helper method that converts numbers and objects / arrays to strings.
+   * @param  {Object|Array} The data being used to create or update a record.
+   * @return {Object}      a json object containing stringified data.
+   */
+  _stringify(data) {
+    return _.mapValues(
+      data,
+      value =>
+        typeof value === 'string'
+          ? value
+          : typeof value === 'object'
+            ? JSON.stringify(value)
+            : typeof value === 'number' ? value.toString() : ''
+    );
+  }
+
+  create(token, layout, data) {
+    return axios({
+      url: this._createURL(layout),
+      method: 'post',
+      headers: {
+        'FM-Data-token': `${token}`,
+        'Content-Type': 'application/json'
+      },
+      data: { data: this._stringify(data) }
+    })
+      .then(response => response.data)
+      .then(response => this.extend(response));
   }
   /**
    * @method _saveToken
@@ -81,24 +159,25 @@ class Connection extends EmbeddedDocument {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    * response
    */
-  generate(url, body) {
+  generate() {
     return new Promise((resolve, reject) =>
-      request({
-        url: url,
+      axios({
+        url: this._authURL(),
         method: 'post',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: body,
-        json: true
-      }).then(response => {
-        if (response.errorCode === '0') {
-          this._saveToken(response.token);
-          resolve(response.token);
-        } else {
-          reject(response.errorMessage);
-        }
+        data: this.credentials
       })
+        .then(response => response.data)
+        .then(response => {
+          if (response.errorCode === '0') {
+            this._saveToken(response.token);
+            resolve(response.token);
+          } else {
+            reject(response.errorMessage);
+          }
+        })
     );
   }
 

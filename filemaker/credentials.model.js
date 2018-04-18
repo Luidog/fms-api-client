@@ -1,6 +1,5 @@
 'use strict';
 
-const moment = require('moment');
 const { EmbeddedDocument } = require('marpat');
 
 /**
