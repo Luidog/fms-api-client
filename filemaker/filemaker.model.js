@@ -405,9 +405,9 @@ class Filemaker extends Document {
         .then(response => resolve(response))
         .catch(
           response =>
-            response.error.errorCode === '401'
-              ? resolve({ data: [], message: response.error.errorMessage })
-              : reject(response.error.errorMessage)
+            response.errorCode === '401'
+              ? resolve({ data: [], message: response.errorMessage })
+              : reject(response.errorMessage)
         )
     );
   }
