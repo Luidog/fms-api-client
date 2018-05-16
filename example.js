@@ -106,7 +106,7 @@ connect('nedb://memory').then(db => {
         .catch(error => console.log('find - That is no moon...'.red, error));
 
       client
-        .upload('./images/leia.jpg', 'Heroes', 'image')
+        .upload('./images/placeholder.md', 'Heroes', 'image')
         .then(response => {
           console.log('Perhaps an Image...'.cyan.underline, response);
         })
@@ -116,7 +116,12 @@ connect('nedb://memory').then(db => {
         .find('Heroes', [{ name: 'Luke Skywalker' }], { limit: 1 })
         .then(response => client.recordId(response.data))
         .then(recordIds =>
-          client.upload('./images/luke.jpeg', 'Heroes', 'image', recordIds[0])
+          client.upload(
+            './images/placeholder.md',
+            'Heroes',
+            'image',
+            recordIds[0]
+          )
         )
         .then(response => {
           console.log('Dont Forget Luke...'.cyan.underline, response);
@@ -171,6 +176,6 @@ const rewind = () => {
   });
 };
 
-// setTimeout(function() {
-//   rewind();
-// }, 10000);
+setTimeout(function() {
+  rewind();
+}, 10000);

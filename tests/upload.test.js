@@ -37,14 +37,9 @@ describe('Client Upload Capability', () => {
   });
 
   it('should allow you to upload a file to FileMaker', () => {
-    return expect(filemaker.upload('./images/luke.jpeg', 'Heroes', 'image'))
-      .to.eventually.be.a('object')
-      .that.has.all.keys('modId')
-      .and.property('modId', 1);
-  });
-
-  it('should allow you to upload a file to FileMaker', () => {
-    return expect(filemaker.upload('./images/luke.jpeg', 'Heroes', 'image'))
+    return expect(
+      filemaker.upload('./images/placeholder.md', 'Heroes', 'image')
+    )
       .to.eventually.be.a('object')
       .that.has.all.keys('modId')
       .and.property('modId', 1);
