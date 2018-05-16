@@ -9,7 +9,7 @@ const { expect, should } = require('chai');
 
 chai.use(chaiAsPromised);
 
-describe('FileMaker Data API Client', () => {
+describe('Client Data Usage Tracking', () => {
   let database = null;
 
   beforeEach(done => {
@@ -17,8 +17,7 @@ describe('FileMaker Data API Client', () => {
       application: process.env.APPLICATION,
       server: process.env.SERVER,
       user: process.env.USERNAME,
-      password: process.env.PASSWORD,
-      layout: process.env.LAYOUT
+      password: process.env.PASSWORD
     });
     done();
   });
