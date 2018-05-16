@@ -2,7 +2,8 @@
 
 const axios = require('axios');
 const _ = require('lodash');
-
+const fs = require('fs');
+const FormData = require('form-data');
 const { Document } = require('marpat');
 const { Connection } = require('./connection.model');
 const { Credentials } = require('./credentials.model');
@@ -27,7 +28,7 @@ class Filemaker extends Document {
       version: {
         type: String,
         required: true,
-        default: 'beta'
+        default: '1'
       },
       /**
        * The client application name.
@@ -85,22 +86,19 @@ class Filemaker extends Document {
       server: data.server,
       application: data.application,
       user: data.user,
-      password: data.password,
-      layout: data.layout
+      password: data.password
     });
   }
-
   /**
-   * Generates a url for use when deleting a record.
+   * Generates a url for use when creating a record.
    * @private
    * @param {String} layout The layout to use when creating a record.
-   * @param {String} recordId The FileMaker internal record id to use.
    * @return {String} A URL
    */
-  _deleteURL(layout, recordId) {
-    let url = `${this.server}/fmi/rest/api/record/${
+  _createURL(layout) {
+    let url = `${this.server}/fmi/data/v1/databases/${
       this.application
-    }/${layout}/${recordId}`;
+    }/layouts/${layout}/records`;
     return url;
   }
   /**
@@ -111,11 +109,25 @@ class Filemaker extends Document {
    * @return {String} A URL
    */
   _updateURL(layout, recordId) {
-    let url = `${this.server}/fmi/rest/api/record/${
+    let url = `${this.server}/fmi/data/v1/databases/${
       this.application
-    }/${layout}/${recordId}`;
+    }/layouts/${layout}/records/${recordId}`;
     return url;
   }
+  /**
+   * Generates a url for use when deleting a record.
+   * @private
+   * @param {String} layout The layout to use when creating a record.
+   * @param {String} recordId The FileMaker internal record id to use.
+   * @return {String} A URL
+   */
+  _deleteURL(layout, recordId) {
+    let url = `${this.server}/fmi/data/v1/databases/${
+      this.application
+    }/layouts/${layout}/records/${recordId}`;
+    return url;
+  }
+
   /**
    * Generates a url to access a record.
    * @private
@@ -124,9 +136,9 @@ class Filemaker extends Document {
    * @return {String} A URL
    */
   _getURL(layout, recordId) {
-    let url = `${this.server}/fmi/rest/api/record/${
+    let url = `${this.server}/fmi/data/v1/databases/${
       this.application
-    }/${layout}/${recordId}`;
+    }/layouts/${layout}/records/${recordId}`;
     return url;
   }
   /**
@@ -136,9 +148,9 @@ class Filemaker extends Document {
    * @return {String} A URL
    */
   _listURL(layout) {
-    let url = `${this.server}/fmi/rest/api/record/${
+    let url = `${this.server}/fmi/data/v1/databases/${
       this.application
-    }/${layout}`;
+    }/layouts/${layout}/records`;
     return url;
   }
   /**
@@ -148,7 +160,9 @@ class Filemaker extends Document {
    * @return {String} A URL
    */
   _findURL(layout) {
-    let url = `${this.server}/fmi/rest/api/find/${this.application}/${layout}`;
+    let url = `${this.server}/fmi/data/v1/databases/${
+      this.application
+    }/layouts/${layout}/_find`;
     return url;
   }
   /**
@@ -158,9 +172,25 @@ class Filemaker extends Document {
    * @return {String} A URL
    */
   _globalsURL() {
-    let url = `${this.server}/fmi/rest/api/global/${this.application}/${
-      this.connection.credentials.layout
-    }`;
+    let url = `${this.server}/fmi/data/v1/databases/${
+      this.application
+    }/globals`;
+    return url;
+  }
+  /**
+   * Generates a url for use when uploading files to FileMaker containers.
+   * @private
+   * @param {String} layout The layout to use when setting globals.
+   * @param {String} recordId the record id to use when inserting the file.
+   * @param {String} fieldName the field to use when inserting a file.
+   * @param {String} fieldRepetition The repetition to use when inserting the file.
+   * default is 1.
+   * @return {String} A URL
+   */
+  _uploadURL(layout, recordId, fieldName, fieldRepetition = 1) {
+    let url = `${this.server}/fmi/data/v1/databases/${
+      this.application
+    }/layouts/${layout}/records/${recordId}/containers/${fieldName}/${fieldRepetition}`;
     return url;
   }
   /**
@@ -225,19 +255,33 @@ class Filemaker extends Document {
    * @description Creates a record in FileMaker. This method accepts a layout variable and a data variable.
    * @param {String} layout The layout to use when creating a record.
    * @param {Object} data The data to use when creating a record.
+   * @param {Object} parameters The request parameters to use when creating the record.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
-  create(layout, data) {
+  create(layout, data, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.connection.create(token, layout, this.data.incoming(data))
+          axios({
+            url: this._createURL(layout),
+            method: 'post',
+            headers: {
+              authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            data: Object.assign(parameters, {
+              fieldData: this._stringify(data)
+            })
+          })
         )
-        .then(response => this.data.outgoing(response))
-        .then(response => this._saveState(response))
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => this._filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error.message))
+        .catch(error => reject(error.response.data.messages[0]))
     );
   }
   /**
@@ -252,29 +296,29 @@ class Filemaker extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
-  edit(layout, recordId, data, parameters) {
+  edit(layout, recordId, data, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
           axios({
             url: this._updateURL(layout, recordId),
-            method: 'put',
+            method: 'patch',
             headers: {
-              'FM-Data-token': `${this.connection.token}`,
+              Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
-            data: Object.assign(
-              { data: this._stringify(data) },
-              this._sanitizeParameters(parameters)
-            )
+            data: Object.assign(this._sanitizeParameters(parameters), {
+              fieldData: this._stringify(data)
+            })
           })
         )
         .then(response => response.data)
-        .then(response => this.data.outgoing(response))
-        .then(response => this.connection.extend(response))
-        .then(response => this._saveState(response))
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => this._filterResponse(body))
         .then(response => resolve(response))
-        .catch(response => reject(response.message))
+        .catch(error => reject(error.response.data.messages[0]))
     );
   }
   /**
@@ -287,7 +331,7 @@ class Filemaker extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
-  delete(layout, recordId) {
+  delete(layout, recordId, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
@@ -295,16 +339,18 @@ class Filemaker extends Document {
             url: this._deleteURL(layout, recordId),
             method: 'delete',
             headers: {
-              'FM-Data-token': `${this.connection.token}`
-            }
+              Authorization: `Bearer ${token}`
+            },
+            data: this._sanitizeParameters(parameters) || {}
           })
         )
         .then(response => response.data)
-        .then(response => this.data.outgoing(response))
-        .then(response => this.connection.extend(response))
-        .then(response => this._saveState(response))
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => this._filterResponse(body))
         .then(response => resolve(response))
-        .catch(response => reject(response.message))
+        .catch(error => reject(error.response.data.messages[0]))
     );
   }
   /**
@@ -318,7 +364,7 @@ class Filemaker extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
-  get(layout, recordId, parameters) {
+  get(layout, recordId, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
@@ -326,17 +372,18 @@ class Filemaker extends Document {
             url: this._getURL(layout, recordId),
             method: 'get',
             headers: {
-              'FM-Data-token': `${this.connection.token}`
+              Authorization: `Bearer ${token}`
             },
-            params: this._sanitizeParameters(parameters)
+            params: this._namespace(parameters)
           })
         )
         .then(response => response.data)
-        .then(response => this.data.outgoing(response))
-        .then(response => this.connection.extend(response))
-        .then(response => this._saveState(response))
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => this._filterResponse(body))
         .then(response => resolve(response))
-        .catch(response => reject(response.message))
+        .catch(error => reject(error.response.data.messages[0]))
     );
   }
   /**
@@ -349,7 +396,7 @@ class Filemaker extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
-  list(layout, parameters) {
+  list(layout, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
@@ -357,17 +404,19 @@ class Filemaker extends Document {
             url: this._listURL(layout),
             method: 'get',
             headers: {
-              'FM-Data-token': `${this.connection.token}`
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
             },
-            params: this._sanitizeParameters(parameters)
+            params: this._namespace(parameters)
           })
         )
         .then(response => response.data)
-        .then(response => this.data.outgoing(response))
-        .then(response => this.connection.extend(response))
-        .then(response => this._saveState(response))
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => this._filterResponse(body))
         .then(response => resolve(response))
-        .catch(response => reject(response.message))
+        .catch(error => reject(error.response.data.messages[0]))
     );
   }
   /**
@@ -381,7 +430,7 @@ class Filemaker extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
-  find(layout, query, parameters) {
+  find(layout, query, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
@@ -389,7 +438,7 @@ class Filemaker extends Document {
             url: this._findURL(layout),
             method: 'post',
             headers: {
-              'FM-Data-token': `${this.connection.token}`,
+              Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
             data: Object.assign(
@@ -399,15 +448,19 @@ class Filemaker extends Document {
           })
         )
         .then(response => response.data)
-        .then(response => this.data.outgoing(response))
-        .then(response => this.connection.extend(response))
-        .then(response => this._saveState(response))
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => this._filterResponse(body))
         .then(response => resolve(response))
         .catch(
-          response =>
-            response.errorCode === '401'
-              ? resolve({ data: [], message: response.errorMessage })
-              : reject(response.errorMessage)
+          error =>
+            error.response.data.messages[0].code === '401'
+              ? resolve({
+                  data: [],
+                  message: this._filterResponse(error.response.data)
+                })
+              : reject(error.response.data.messages[0])
         )
     );
   }
@@ -417,7 +470,7 @@ class Filemaker extends Document {
    * @memberof Filemaker
    * @description Sets global fields for the current session.
    * @param  {Object|Array} data a json object containing the name value pairs to set.
-   * @return {Object}      a json object containing fieldData from the record.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   globals(data) {
     return new Promise((resolve, reject) =>
@@ -425,22 +478,129 @@ class Filemaker extends Document {
         .then(token =>
           axios({
             url: this._globalsURL(),
-            method: 'put',
+            method: 'patch',
             headers: {
-              'FM-Data-token': `${this.connection.token}`,
+              Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
-            data: { globalFields: this._stringify(data) }
+            data: { globalFields: JSON.stringify(data) }
           })
         )
         .then(response => response.data)
-        .then(response => this.data.outgoing(response))
-        .then(response => this.connection.extend(response))
-        .then(response => this._saveState(response))
-        .then(response => resolve(response))
-        .catch(response => reject(response.message))
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => resolve(body.response))
+        .catch(error => reject(error.response.data.messages[0]))
     );
   }
+  /**
+   * @method upload.
+   * @public
+   * @memberof Filemaker
+   * @description Allows you to upload a file to a FileMaker record container field. This method
+   * currently creates a record for each upload. This method will use fs to read the file at the given
+   * path to a stream. If a record Id is not passed to this method a new record will be created.
+   * @param  {String} file               The path to the file to upload.
+   * @param {String} layout The layout to use when performing the find.
+   * @param  {String} containerFieldName The field name to insert the data into. It must be a container field.
+   * @param  {Number||String} recordId the recordId to use when uploading the file.
+   * @param  {Number} fieldRepetition    The field repetition to use when inserting into a container field.
+   * by default this is 1.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  upload(file, layout, containerFieldName, recordId = 0, fieldRepetition = 1) {
+    return new Promise((resolve, reject) => {
+      let form = new FormData();
+      let resolveRecordId = () =>
+        recordId === 0
+          ? this.create(layout, {}).then(response => response.recordId)
+          : Promise.resolve(recordId);
+
+      form.append('upload', fs.createReadStream(file));
+
+      resolveRecordId()
+        .then(recordId =>
+          this.authenticate().then(token =>
+            axios.post(
+              this._uploadURL(
+                layout,
+                recordId,
+                containerFieldName,
+                fieldRepetition
+              ),
+              form,
+              {
+                headers: {
+                  ...form.getHeaders(),
+                  Authorization: `Bearer ${token}`
+                }
+              }
+            )
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => this._filterResponse(body))
+        .then(response => resolve(response))
+        .catch(
+          error =>
+            error.errno !== undefined
+              ? reject(error.message)
+              : reject(error.response.data.messages[0])
+        );
+    });
+  }
+  /**
+   * [script description]
+   * @param  {[type]} name       [description]
+   * @param  {[type]} layout     [description]
+   * @param  {Object} parameters [description]
+   * @return {[type]}            [description]
+   */
+  script(name, layout, parameters = {}) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          axios({
+            url: this._listURL(layout),
+            method: 'get',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            params: this._sanitizeParameters(
+              Object.assign(
+                { script: name, 'script.param': this._stringify(parameters) },
+                this._namespace({ limit: '1' })
+              )
+            )
+          })
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(
+          body =>
+            body.response.scriptError === '0'
+              ? resolve({
+                  result: this._isJson(body.response.scriptResult)
+                    ? JSON.parse(body.response.scriptResult)
+                    : body.response.scriptResult
+                })
+              : reject({
+                  result: this._isJson(body.response.scriptResult)
+                    ? JSON.parse(body.response.scriptResult)
+                    : body.response.scriptResult
+                })
+        )
+        .catch(error => reject(error.response.data.messages[0]))
+    );
+  }
+
   /**
   /**
    * @method _toArray
@@ -473,6 +633,60 @@ class Filemaker extends Document {
     );
   }
   /**
+   * @method _filterResponse
+   * @private
+   * @memberof Filemaker
+   * @description This method filters the FileMaker DAPI response by testing if a script was triggered with
+   * the request, then either selecting the response, script error, and script result from the response or
+   * selecting just the response.
+   * @return {Object}      a json object containing the selected data from the Data API Response.
+   */
+  _filterResponse(data) {
+    return data.scriptError
+      ? _.chain(data)
+          .map(object =>
+            _.pick(object, ['response', 'scriptError', 'scriptResult'])
+          )
+          .mapValues(value => (this._isJson(value) ? JSON.parse(value) : value))
+      : _.mapValues(
+          data.response,
+          value => (this._isJson(value) ? JSON.parse(value) : value)
+        );
+  }
+  /**
+   * @method _isJson
+   * @private
+   * @memberof Filemaker
+   * @description This is a helper method for the _filterResponse method. If a returned value is valid json
+   * it will be parsed for you.
+   * @return {Boolean}      a boolean result if the data passed to it is json
+   */
+  _isJson(data) {
+    try {
+      JSON.parse(data);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+  /**
+   * @method _namespace
+   * @private
+   * @memberof Filemaker
+   * @description This method filters the FileMaker DAPI response by testing if a script was triggered with
+   * the request, then either selecting the response, script error, and script result from the response or
+   * selecting just the response.
+   * @return {Object}      a json object containing the selected data from the Data API Response.
+   */
+  _namespace(data) {
+    let underscored = ['limit', 'offset', 'sort'];
+
+    return _.mapKeys(
+      data,
+      (value, key) => (_.includes(underscored, key) ? `_${key}` : key)
+    );
+  }
+  /**
    * @method fieldData
    * @public
    * @memberof Filemaker
@@ -485,7 +699,8 @@ class Filemaker extends Document {
     return Array.isArray(data)
       ? _.map(data, object =>
           Object.assign({}, object.fieldData, {
-            recordId: object.recordId
+            recordId: object.recordId,
+            modId: object.modId
           })
         )
       : data.fieldData;

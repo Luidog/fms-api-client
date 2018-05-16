@@ -58,7 +58,6 @@ class Connection extends EmbeddedDocument {
   preInit(data) {
     this.credentials = Credentials.create({
       user: data.user,
-      layout: data.layout,
       password: data.password
     });
   }
@@ -68,22 +67,22 @@ class Connection extends EmbeddedDocument {
    * @return {String} A URL
    */
   _authURL() {
-    let url = `${this.server}/fmi/rest/api/auth/${this.application}`;
+    let url = `${this.server}/fmi/data/v1/databases/${
+      this.application
+    }/sessions`;
     return url;
+  }
+  /**
+   * [_basicAuth description]
+   * @return {[type]} [description]
+   */
+  _basicAuth() {
+    let auth = `Basic ${new Buffer(
+      `${this.credentials.user}:${this.credentials.password}`
+    ).toString('base64')}`;
+    return auth;
   }
 
-  /**
-   * Generates a url for use when creating a record.
-   * @private
-   * @param {String} layout The layout to use when creating a record.
-   * @return {String} A URL
-   */
-  _createURL(layout) {
-    let url = `${this.server}/fmi/rest/api/record/${
-      this.application
-    }/${layout}`;
-    return url;
-  }
   /**
    * @method _stringify
    * @private
@@ -104,19 +103,6 @@ class Connection extends EmbeddedDocument {
     );
   }
 
-  create(token, layout, data) {
-    return axios({
-      url: this._createURL(layout),
-      method: 'post',
-      headers: {
-        'FM-Data-token': `${token}`,
-        'Content-Type': 'application/json'
-      },
-      data: { data: this._stringify(data) }
-    })
-      .then(response => response.data)
-      .then(response => this.extend(response));
-  }
   /**
    * @method _saveToken
    * @public
@@ -165,19 +151,21 @@ class Connection extends EmbeddedDocument {
         url: this._authURL(),
         method: 'post',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          authorization: this._basicAuth()
         },
-        data: this.credentials
+        data: {}
       })
         .then(response => response.data)
-        .then(response => {
-          if (response.errorCode === '0') {
-            this._saveToken(response.token);
-            resolve(response.token);
+        .then(body => {
+          if (body.messages[0].code === '0') {
+            this._saveToken(body.response.token);
+            resolve(body.response.token);
           } else {
-            reject(response.errorMessage);
+            reject(body.messages[0]);
           }
         })
+        .catch(error => reject(error))
     );
   }
 

@@ -21,13 +21,6 @@ class Credentials extends EmbeddedDocument {
       password: {
         type: String
       },
-      /** A string containing the time the token will expire.
-       * @member Credentials#layout
-       * @type String
-       */
-      layout: {
-        type: String
-      },
       /** The token to use when querying an endpoint.
        * @member Credentials#user
        * @type String
