@@ -1,6 +1,6 @@
 'use strict';
 
-const request = require('request-promise');
+const axios = require('axios');
 const _ = require('lodash');
 
 const { Document } = require('marpat');
@@ -81,34 +81,15 @@ class Filemaker extends Document {
    */
   preInit(data) {
     this.data = Data.create();
-    this.connection = Connection.create();
-    this.credentials = Credentials.create({
+    this.connection = Connection.create({
+      server: data.server,
+      application: data.application,
       user: data.user,
-      layout: data.layout,
-      password: data.password
+      password: data.password,
+      layout: data.layout
     });
   }
-  /**
-   * Generates a url for use when retrieving authentication tokens in exchange for Account credentials
-   * @private
-   * @return {String} A URL
-   */
-  _authURL() {
-    let url = `${this.server}/fmi/rest/api/auth/${this.application}`;
-    return url;
-  }
-  /**
-   * Generates a url for use when creating a record.
-   * @private
-   * @param {String} layout The layout to use when creating a record.
-   * @return {String} A URL
-   */
-  _createURL(layout) {
-    let url = `${this.server}/fmi/rest/api/record/${
-      this.application
-    }/${layout}`;
-    return url;
-  }
+
   /**
    * Generates a url for use when deleting a record.
    * @private
@@ -178,7 +159,7 @@ class Filemaker extends Document {
    */
   _globalsURL() {
     let url = `${this.server}/fmi/rest/api/global/${this.application}/${
-      this.credentials.layout
+      this.connection.credentials.layout
     }`;
     return url;
   }
@@ -214,7 +195,7 @@ class Filemaker extends Document {
         resolve(this.connection.token);
       } else {
         this.connection
-          .generate(this._authURL(), this.credentials)
+          .generate()
           .then(token => {
             this.save();
             return token;
@@ -251,19 +232,9 @@ class Filemaker extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
-            url: this._createURL(layout),
-            method: 'post',
-            headers: {
-              'FM-Data-token': `${this.connection.token}`,
-              'Content-Type': 'application/json'
-            },
-            body: { data: this._stringify(data) },
-            json: true
-          })
+          this.connection.create(token, layout, this.data.incoming(data))
         )
         .then(response => this.data.outgoing(response))
-        .then(response => this.connection.extend(response))
         .then(response => this._saveState(response))
         .then(response => resolve(response))
         .catch(error => reject(error.message))
@@ -285,20 +256,20 @@ class Filemaker extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          axios({
             url: this._updateURL(layout, recordId),
             method: 'put',
             headers: {
               'FM-Data-token': `${this.connection.token}`,
               'Content-Type': 'application/json'
             },
-            body: Object.assign(
+            data: Object.assign(
               { data: this._stringify(data) },
               this._sanitizeParameters(parameters)
-            ),
-            json: true
+            )
           })
         )
+        .then(response => response.data)
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => this._saveState(response))
@@ -320,15 +291,15 @@ class Filemaker extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          axios({
             url: this._deleteURL(layout, recordId),
             method: 'delete',
             headers: {
               'FM-Data-token': `${this.connection.token}`
-            },
-            json: true
+            }
           })
         )
+        .then(response => response.data)
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => this._saveState(response))
@@ -351,16 +322,16 @@ class Filemaker extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          axios({
             url: this._getURL(layout, recordId),
             method: 'get',
             headers: {
               'FM-Data-token': `${this.connection.token}`
             },
-            qs: this._sanitizeParameters(parameters),
-            json: true
+            params: this._sanitizeParameters(parameters)
           })
         )
+        .then(response => response.data)
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => this._saveState(response))
@@ -382,16 +353,16 @@ class Filemaker extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          axios({
             url: this._listURL(layout),
             method: 'get',
             headers: {
               'FM-Data-token': `${this.connection.token}`
             },
-            qs: this._sanitizeParameters(parameters),
-            json: true
+            params: this._sanitizeParameters(parameters)
           })
         )
+        .then(response => response.data)
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => this._saveState(response))
@@ -414,29 +385,29 @@ class Filemaker extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          axios({
             url: this._findURL(layout),
             method: 'post',
             headers: {
               'FM-Data-token': `${this.connection.token}`,
               'Content-Type': 'application/json'
             },
-            body: Object.assign(
+            data: Object.assign(
               { query: this._toArray(query) },
               this._sanitizeParameters(parameters)
-            ),
-            json: true
+            )
           })
         )
+        .then(response => response.data)
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => this._saveState(response))
         .then(response => resolve(response))
         .catch(
           response =>
-            response.error.errorCode === '401'
-              ? resolve({ data: [], message: response.error.errorMessage })
-              : reject(error.message)
+            response.errorCode === '401'
+              ? resolve({ data: [], message: response.errorMessage })
+              : reject(response.errorMessage)
         )
     );
   }
@@ -452,17 +423,17 @@ class Filemaker extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          axios({
             url: this._globalsURL(),
             method: 'put',
             headers: {
               'FM-Data-token': `${this.connection.token}`,
               'Content-Type': 'application/json'
             },
-            body: { globalFields: this._stringify(data) },
-            json: true
+            data: { globalFields: this._stringify(data) }
           })
         )
+        .then(response => response.data)
         .then(response => this.data.outgoing(response))
         .then(response => this.connection.extend(response))
         .then(response => this._saveState(response))

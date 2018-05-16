@@ -107,8 +107,7 @@ connect('nedb://memory').then(db => {
 
 const rewind = () => {
   Filemaker.findOne().then(client => {
-    console.log(client.toJSON());
-    console.log(client.data);
+    console.log(client.data.status());
     client
       .find('Heroes', [{ id: '*' }], { range: 150 })
       .then(response => client.recordId(response.data))
