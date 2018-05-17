@@ -10,10 +10,6 @@ const { Credentials } = require('./credentials.model');
  * @classdesc The class used to connection with the FileMaker server Data API
  */
 class Connection extends EmbeddedDocument {
-  /**
-   * Connection constructor.
-   * @constructs Connection
-   */
   constructor() {
     super();
     this.schema({
@@ -34,14 +30,14 @@ class Connection extends EmbeddedDocument {
       },
       /** The client credentials.
        * @public
-       * @member Credentials
-       * @type Class
+       * @member Connection#credentials
+       * @type Object
        */
       credentials: Credentials,
       /* A string containing the time the token will expire.
-             * @member Connection#expires
-             * @type String
-         */
+       * @member Connection#expires
+       * @type String
+      */
       expires: {
         type: String
       },
@@ -62,8 +58,12 @@ class Connection extends EmbeddedDocument {
     });
   }
   /**
-   * Generates a url for use when retrieving authentication tokens in exchange for Account credentials
+   * @method _authURL
+   * @memberof Connection
    * @private
+   * @description Generates a url for use when retrieving authentication tokens in exchange for Account credentials
+
+
    * @return {String} A URL
    */
   _authURL() {
@@ -73,8 +73,10 @@ class Connection extends EmbeddedDocument {
     return url;
   }
   /**
-   * [_basicAuth description]
-   * @return {[type]} [description]
+   * @method _basicAuth
+   * @private
+   * @memberof Connection
+   * @return {String} A string containing the authentication
    */
   _basicAuth() {
     let auth = `Basic ${new Buffer(
@@ -186,6 +188,9 @@ class Connection extends EmbeddedDocument {
     return response;
   }
 }
+/**
+ * @module Connection
+ */
 module.exports = {
   Connection
 };

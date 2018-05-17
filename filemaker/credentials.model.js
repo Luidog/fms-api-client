@@ -7,10 +7,6 @@ const { EmbeddedDocument } = require('marpat');
  * @classdesc The class used to authenticate with into the FileMaker API.
  */
 class Credentials extends EmbeddedDocument {
-  /**
-   * Credentials constructor.
-   * @constructs Credentials
-   */
   constructor() {
     super();
     this.schema({
@@ -31,6 +27,9 @@ class Credentials extends EmbeddedDocument {
     });
   }
 }
+/**
+ * @module Credentials
+ */
 module.exports = {
   Credentials
 };

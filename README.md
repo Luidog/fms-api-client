@@ -51,8 +51,7 @@ connect('nedb://memory').then(db => {
     application: process.env.APPLICATION,
     server: process.env.SERVER,
     user: process.env.USERNAME,
-    password: process.env.PASSWORD,
-    layout: process.env.LAYOUT
+    password: process.env.PASSWORD
   });
 
   /**
@@ -67,9 +66,10 @@ connect('nedb://memory').then(db => {
         array: ['1'],
         object: { driods: true }
       })
-      .then(record =>
-        console.log('Some guy thought of a movie....'.yellow.underline, record)
-      )
+      .then(record => {
+        console.log(record);
+        console.log('Some guy thought of a movie....'.yellow.underline, record);
+      })
       .catch(error => console.log('That is no moon....'.red, error))
   );
 
@@ -87,7 +87,7 @@ connect('nedb://memory').then(db => {
     })
     .then(client => {
       client
-        .list('Heroes', { range: 5 })
+        .list('Heroes', { limit: 5 })
         .then(response => client.fieldData(response.data))
         .then(response =>
           console.log(
@@ -99,20 +99,22 @@ connect('nedb://memory').then(db => {
         .catch(error => console.log('That is no moon....'.red, error));
 
       client
-        .globals({ ship: 'Millenium Falcon' })
+        .globals({ 'Globals::ship': 'Millenium Falcon' })
         .then(response =>
           console.log(
             'Made the Kessel Run in less than twelve parsecs.'.underline.blue,
             response
           )
         )
-        .catch(error => console.log('That is no moon....'.red, error));
+        .catch(error =>
+          console.log('globals - That is no moon....'.red, error)
+        );
 
       return client;
     })
-    .then(client =>
+    .then(client => {
       client
-        .find('Heroes', [{ name: 'Anakin Skywalker' }], { range: 1 })
+        .find('Heroes', [{ name: 'Anakin Skywalker' }], { limit: 1 })
         .then(response => client.recordId(response.data))
         .then(recordIds =>
           client.edit('Heroes', recordIds[0], { name: 'Darth Vader' })
@@ -123,16 +125,64 @@ connect('nedb://memory').then(db => {
             response
           )
         )
-        .catch(error => console.log('That is no moon...'.red, error))
-    );
+        .catch(error => console.log('find - That is no moon...'.red, error));
+
+      client
+        .upload('./images/placeholder.md', 'Heroes', 'image')
+        .then(response => {
+          console.log('Perhaps an Image...'.cyan.underline, response);
+        })
+        .catch(error => console.log('That is no moon...'.red, error));
+
+      client
+        .find('Heroes', [{ name: 'Luke Skywalker' }], { limit: 1 })
+        .then(response => client.recordId(response.data))
+        .then(recordIds =>
+          client.upload(
+            './images/placeholder.md',
+            'Heroes',
+            'image',
+            recordIds[0]
+          )
+        )
+        .then(response => {
+          console.log('Dont Forget Luke...'.cyan.underline, response);
+        })
+        .catch(error => console.log('That is no moon...'.red, error));
+
+      client
+        .script('example script', 'Heroes', {
+          name: 'han',
+          number: 102,
+          object: { child: 'ben' },
+          array: ['leia', 'chewbacca']
+        })
+        .then(response => {
+          console.log('or a script....'.cyan.underline, response);
+        })
+        .catch(error => console.log('That is no moon...'.red, error));
+    })
+    .catch(error => console.log('That is no moon...'.red, error));
+
+  client
+    .find('Heroes', [{ name: 'Darth Vader' }], {
+      limit: 1,
+      script: 'example script'
+    })
+    .then(response =>
+      console.log(
+        'I find your lack of faith disturbing'.cyan.underline,
+        response
+      )
+    )
+    .catch(error => console.log('find - That is no moon...'.red, error));
 });
 
 const rewind = () => {
   Filemaker.findOne().then(client => {
-    console.log(client.toJSON());
-    console.log(client.data);
+    console.log(client.data.status());
     client
-      .find('Heroes', [{ id: '*' }], { range: 150 })
+      .find('Heroes', [{ id: '*' }], { limit: 10 })
       .then(response => client.recordId(response.data))
       .then(response => {
         console.log('Be Kind.... Rewind.....'.rainbow, response);
@@ -161,34 +211,39 @@ npm test
 ```
 
 ```
-> fms-api-client@0.0.5 test ./fms-api-client
+> fms-api-client@0.0.7 test /Users/luidelaparra/Documents/Development/fms-api-client
 > mocha --recursive ./tests
   FileMaker Data API Client
-    ✓ should track API usage data. (278ms)
-  FileMaker Data API Client
     ✓ should allow an instance to be saved.
-    ✓ should authenticate into FileMaker. (380ms)
-    ✓ should create FileMaker records. (302ms)
+    ✓ should authenticate into FileMaker. (155ms)
+    ✓ should create FileMaker records. (169ms)
     ✓ should update FileMaker records.
     ✓ should delete FileMaker records.
     ✓ should get a FileMaker specific record.
-    ✓ should allow you to list FileMaker records (375ms)
-    ✓ should allow you to modify the FileMaker list response (241ms)
-    ✓ should allow allow a list response to be set with numbers (250ms)
-    ✓ should allow you to find FileMaker records (325ms)
-    ✓ should allow you to set FileMaker globals (212ms)
-  12 passing (2s)
+    ✓ should allow you to list FileMaker records (218ms)
+    ✓ should allow you to modify the FileMaker list response (165ms)
+    ✓ should allow allow a list response to be set with numbers (158ms)
+    ✓ should allow you to find FileMaker records (151ms)
+    ✓ should allow you to set FileMaker globals (166ms)
+  Client Script Capability
+    ✓ should allow you to trigger a script in FileMaker (178ms)
+    ✓ should allow you to trigger a script in a find (195ms)
+  Client Upload Capability
+    ✓ should allow you to upload a file to FileMaker (1362ms)
+  Client Data Usage Tracking
+    ✓ should track API usage data. (159ms)
+  15 passing (3s)
 ```
 
 ## Dependencies
 
+* [axios](https://ghub.io/axios): Promise based HTTP client for the browser and node.js
+* [form-data](https://ghub.io/form-data): A library to create readable &quot;multipart/form-data&quot; streams. Can be used to submit forms and file uploads to other web applications.
 * [lodash](https://ghub.io/lodash): Lodash modular utilities.
 * [marpat](https://ghub.io/marpat): A class-based ES6 ODM for Mongo-like databases.
 * [moment](https://ghub.io/moment): Parse, validate, manipulate, and display dates
 * [object-sizeof](https://ghub.io/object-sizeof): Sizeof of a JavaScript object in Bytes
 * [prettysize](https://ghub.io/prettysize): Convert bytes to other sizes for prettier logging
-* [request](https://ghub.io/request): Simplified HTTP request client.
-* [request-promise](https://ghub.io/request-promise): The simplified HTTP request client &#39;request&#39; with Promise support. Powered by Bluebird.
 
 ## Dev Dependencies
 

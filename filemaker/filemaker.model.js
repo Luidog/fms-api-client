@@ -8,15 +8,12 @@ const { Document } = require('marpat');
 const { Connection } = require('./connection.model');
 const { Credentials } = require('./credentials.model');
 const { Data } = require('./data.model');
+
 /**
  * @class Filemaker
  * @classdesc The class used to integrate with the FileMaker server Data API
  */
 class Filemaker extends Document {
-  /**
-   * FileMaker constructor.
-   * @constructs Filemaker
-   */
   constructor(data) {
     super();
     this.schema({
@@ -51,23 +48,17 @@ class Filemaker extends Document {
       },
       /** The client data logger.
        * @public
-       * @member Data
-       * @type Class
+       * @member Filemaker#data
+       * @type Object
        */
       data: {
         type: Data,
         required: true
       },
-      /** The client credentials.
-       * @public
-       * @member Credentials
-       * @type Class
-       */
-      credentials: Credentials,
       /** The client application connection object.
        * @public
-       * @member Connection
-       * @type Class
+       * @member Filemaker#connection
+       * @type Object
        */
       connection: {
         type: Connection,
@@ -495,7 +486,7 @@ class Filemaker extends Document {
     );
   }
   /**
-   * @method upload.
+   * @method upload
    * @public
    * @memberof Filemaker
    * @description Allows you to upload a file to a FileMaker record container field. This method
@@ -504,7 +495,7 @@ class Filemaker extends Document {
    * @param  {String} file               The path to the file to upload.
    * @param {String} layout The layout to use when performing the find.
    * @param  {String} containerFieldName The field name to insert the data into. It must be a container field.
-   * @param  {Number||String} recordId the recordId to use when uploading the file.
+   * @param  {Number|String} recordId the recordId to use when uploading the file.
    * @param  {Number} fieldRepetition    The field repetition to use when inserting into a container field.
    * by default this is 1.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
@@ -554,11 +545,16 @@ class Filemaker extends Document {
     });
   }
   /**
-   * [script description]
-   * @param  {[type]} name       [description]
-   * @param  {[type]} layout     [description]
-   * @param  {Object} parameters [description]
-   * @return {[type]}            [description]
+   * @method script
+   * @public
+   * @memberof Filemaker
+   * @description A public method to make triggering a script easier. This method uses the list method with
+   * a limit of 1. This is the lightest weight query possible while still allowing for a script to be triggered.
+   * For a more robust query with scripts use the find method.
+   * @param  {String} name       The name of the script
+   * @param  {String} layout     The layout to use for the list request
+   * @param  {Object} parameters Parameters to pass to the script
+   * @return {Promise}           returns a promise that will either resolve or reject based on the Data API.
    */
   script(name, layout, parameters = {}) {
     return new Promise((resolve, reject) =>
@@ -657,8 +653,7 @@ class Filemaker extends Document {
    * @method _isJson
    * @private
    * @memberof Filemaker
-   * @description This is a helper method for the _filterResponse method. If a returned value is valid json
-   * it will be parsed for you.
+   * @description This is a helper method for the _filterResponse method.
    * @return {Boolean}      a boolean result if the data passed to it is json
    */
   _isJson(data) {
@@ -720,7 +715,9 @@ class Filemaker extends Document {
       : data.recordId.toString();
   }
 }
-
+/**
+ * @module Filemaker
+ */
 module.exports = {
   Filemaker
 };
