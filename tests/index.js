@@ -44,7 +44,6 @@ describe('FileMaker Data API Client', () => {
         'data',
         'application',
         'server',
-        'credentials',
         'version'
       );
   });
