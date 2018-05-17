@@ -29,8 +29,7 @@ connect('nedb://memory').then(db => {
     application: process.env.APPLICATION,
     server: process.env.SERVER,
     user: process.env.USERNAME,
-    password: process.env.PASSWORD,
-    layout: process.env.LAYOUT
+    password: process.env.PASSWORD
   });
 
   /**
@@ -45,9 +44,10 @@ connect('nedb://memory').then(db => {
         array: ['1'],
         object: { driods: true }
       })
-      .then(record =>
-        console.log('Some guy thought of a movie....'.yellow.underline, record)
-      )
+      .then(record => {
+        console.log(record);
+        console.log('Some guy thought of a movie....'.yellow.underline, record);
+      })
       .catch(error => console.log('That is no moon....'.red, error))
   );
 
@@ -65,7 +65,7 @@ connect('nedb://memory').then(db => {
     })
     .then(client => {
       client
-        .list('Heroes', { range: 5 })
+        .list('Heroes', { limit: 5 })
         .then(response => client.fieldData(response.data))
         .then(response =>
           console.log(
@@ -77,20 +77,22 @@ connect('nedb://memory').then(db => {
         .catch(error => console.log('That is no moon....'.red, error));
 
       client
-        .globals({ ship: 'Millenium Falcon' })
+        .globals({ 'Globals::ship': 'Millenium Falcon' })
         .then(response =>
           console.log(
             'Made the Kessel Run in less than twelve parsecs.'.underline.blue,
             response
           )
         )
-        .catch(error => console.log('That is no moon....'.red, error));
+        .catch(error =>
+          console.log('globals - That is no moon....'.red, error)
+        );
 
       return client;
     })
-    .then(client =>
+    .then(client => {
       client
-        .find('Heroes', [{ name: 'Anakin Skywalker' }], { range: 1 })
+        .find('Heroes', [{ name: 'Anakin Skywalker' }], { limit: 1 })
         .then(response => client.recordId(response.data))
         .then(recordIds =>
           client.edit('Heroes', recordIds[0], { name: 'Darth Vader' })
@@ -101,16 +103,64 @@ connect('nedb://memory').then(db => {
             response
           )
         )
-        .catch(error => console.log('That is no moon...'.red, error))
-    );
+        .catch(error => console.log('find - That is no moon...'.red, error));
+
+      client
+        .upload('./images/placeholder.md', 'Heroes', 'image')
+        .then(response => {
+          console.log('Perhaps an Image...'.cyan.underline, response);
+        })
+        .catch(error => console.log('That is no moon...'.red, error));
+
+      client
+        .find('Heroes', [{ name: 'Luke Skywalker' }], { limit: 1 })
+        .then(response => client.recordId(response.data))
+        .then(recordIds =>
+          client.upload(
+            './images/placeholder.md',
+            'Heroes',
+            'image',
+            recordIds[0]
+          )
+        )
+        .then(response => {
+          console.log('Dont Forget Luke...'.cyan.underline, response);
+        })
+        .catch(error => console.log('That is no moon...'.red, error));
+
+      client
+        .script('example script', 'Heroes', {
+          name: 'han',
+          number: 102,
+          object: { child: 'ben' },
+          array: ['leia', 'chewbacca']
+        })
+        .then(response => {
+          console.log('or a script....'.cyan.underline, response);
+        })
+        .catch(error => console.log('That is no moon...'.red, error));
+    })
+    .catch(error => console.log('That is no moon...'.red, error));
+
+  client
+    .find('Heroes', [{ name: 'Darth Vader' }], {
+      limit: 1,
+      script: 'example script'
+    })
+    .then(response =>
+      console.log(
+        'I find your lack of faith disturbing'.cyan.underline,
+        response
+      )
+    )
+    .catch(error => console.log('find - That is no moon...'.red, error));
 });
 
 const rewind = () => {
   Filemaker.findOne().then(client => {
-    console.log(client.toJSON());
-    console.log(client.data);
+    console.log(client.data.status());
     client
-      .find('Heroes', [{ id: '*' }], { range: 150 })
+      .find('Heroes', [{ id: '*' }], { limit: 10 })
       .then(response => client.recordId(response.data))
       .then(response => {
         console.log('Be Kind.... Rewind.....'.rainbow, response);

@@ -23,13 +23,13 @@
   },
   "homepage": "https://github.com/Luidog/fms-api-client",
   "dependencies": {
+    "axios": "^0.18.0",
+    "form-data": "^2.3.2",
     "lodash": "^4.17.5",
     "marpat": "^1.16.0",
     "moment": "^2.21.0",
     "object-sizeof": "^1.2.0",
-    "prettysize": "^1.1.0",
-    "request": "^2.85.0",
-    "request-promise": "^4.2.2"
+    "prettysize": "^1.1.0"
   },
   "peerDependencies": {
     "marpat": "^1.16.0"
