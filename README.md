@@ -2,7 +2,7 @@
 
 A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.
 
-For in depth documentation: https://luidog.github.io/fms-api-client
+For in depth documentation head to the [`docs`](https://luidog.github.io/fms-api-client)
 
 ## Installation
 
