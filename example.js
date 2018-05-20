@@ -128,7 +128,7 @@ connect('nedb://memory').then(db => {
         .catch(error => console.log('find - That is no moon...'.red, error));
 
       client
-        .upload('./images/placeholder.md', 'Heroes', 'image')
+        .upload('./assets/placeholder.md', 'Heroes', 'image')
         .then(response => {
           console.log('Perhaps an Image...'.cyan.underline, response);
         })
@@ -139,7 +139,7 @@ connect('nedb://memory').then(db => {
         .then(response => client.recordId(response.data))
         .then(recordIds =>
           client.upload(
-            './images/placeholder.md',
+            './assets/placeholder.md',
             'Heroes',
             'image',
             recordIds[0]
