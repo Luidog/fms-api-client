@@ -181,7 +181,7 @@ class Connection extends EmbeddedDocument {
    *
    */
   extend(response) {
-    this.expires = moment(this.expires)
+    this.expires = moment()
       .add(15, 'minutes')
       .format();
 
