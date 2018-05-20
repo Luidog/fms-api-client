@@ -1,19 +1,26 @@
+/* global describe before beforeEach it */
+
+/* eslint-disable */
+
 const assert = require('assert');
+const { expect, should } = require('chai');
+
+/* eslint-enable */
+
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker } = require('../filemaker');
-const { expect, should } = require('chai');
 
 chai.use(chaiAsPromised);
 
-describe('Client Data Usage Tracking', () => {
-  let database = null;
+describe('Data Usage Tracking Capabilities', () => {
+  let database, client;
 
   beforeEach(done => {
-    filemaker = Filemaker.create({
+    client = Filemaker.create({
       application: process.env.APPLICATION,
       server: process.env.SERVER,
       user: process.env.USERNAME,
@@ -37,9 +44,9 @@ describe('Client Data Usage Tracking', () => {
 
   it('should track API usage data.', () => {
     return expect(
-      filemaker
-        .create('Heroes', { name: 'Luke Skywalker' })
-        .then(response => filemaker.data.status())
+      client
+        .create(process.env.LAYOUT, { name: 'Luke Skywalker' })
+        .then(response => client.data.status())
     )
       .to.eventually.be.an('object')
       .that.has.all.keys('data');
@@ -47,13 +54,13 @@ describe('Client Data Usage Tracking', () => {
 
   it('should allow you to reset usage data.', () => {
     return expect(
-      filemaker
-        .create('Heroes', { name: 'Luke Skywalker' })
+      client
+        .create(process.env.LAYOUT, { name: 'Luke Skywalker' })
         .then(response => {
-          filemaker.data.clear();
-          return filemaker;
+          client.data.clear();
+          return client;
         })
-        .then(filemaker => filemaker.data.status())
+        .then(filemaker => client.data.status())
     )
       .to.eventually.be.an('object')
       .that.has.all.keys('data');
