@@ -26,19 +26,18 @@ const environment = require('dotenv');
 const varium = require('varium');
 const colors = require('colors');
 const { connect } = require('marpat');
-const { Filemaker } = require('fms-api-client');
+const { Filemaker } = require('./filemaker');
 
 environment.config({ path: './tests/.env' });
 
 varium(process.env, './tests/env.manifest');
 
 /**
- * Connect must be called before the filemaker class is instiantiated. This connect uses Marpat. Marpat is a fork of
- * Camo. much love to https://github.com/scottwrobinson for his creation and maintenance of Camo.
- * My fork of Camo - Marpat is designed to allow the use of multiple datastores with the focus on encrypted storage.
- * @param  {url} url a url string representing a datastore.
- * @param  {options} options an object representing datastore options. See Marpat for more info.
- * @return {Promise}           A database.
+ * Connect must be called before the filemaker class is instiantiated. This
+ * connect uses Marpat. Marpat is a fork of Camo. much love to
+ * https://github.com/scottwrobinson for his creation and maintenance of Camo.
+ * My fork of Camo - Marpat is designed to allow the use of multiple datastores
+ * with the focus on encrypted storage.
  */
 
 connect('nedb://memory').then(db => {
@@ -55,10 +54,16 @@ connect('nedb://memory').then(db => {
   });
 
   /**
-   * A client can be used directly after saving it. It is also stored on the datastore
-   * so that it can be reused later.
+   * A client can be used directly after saving it. It is also stored on the
+   * datastore so that it can be reused later.
    */
   client.save().then(client =>
+    /**
+     * Using the client you can create filemaker records. To create a record
+     * specify the layout to use and the data to insert on creation. The client
+     * will automatically convert numbers, arrays, and objects into strings so
+     * they can be inserted into a filemaker field.
+     */
     client
       .create('Heroes', {
         name: 'George Lucas',
@@ -66,13 +71,16 @@ connect('nedb://memory').then(db => {
         array: ['1'],
         object: { driods: true }
       })
-      .then(record => {
-        console.log(record);
-        console.log('Some guy thought of a movie....'.yellow.underline, record);
-      })
+      .then(record =>
+        console.log('Some guy thought of a movie....'.yellow.underline, record)
+      )
       .catch(error => console.log('That is no moon....'.red, error))
   );
-
+  /**
+   * Most methods on the client are promises. The only exceptions to this are
+   * the utility methods of fieldData(), and recordId(). You can chain together
+   * multiple methods such as record creation.
+   */
   client
     .save()
     .then(client => {
@@ -86,6 +94,12 @@ connect('nedb://memory').then(db => {
       });
     })
     .then(client => {
+      /**
+       * You can use the client to list filemaker records. The List method
+       * accepts a layout and parameter variable. The client will automatically
+       * santize the limit, offset, and sort keys to correspond with the Data
+       * API's requirements.
+       */
       client
         .list('Heroes', { limit: 5 })
         .then(response => client.fieldData(response.data))
@@ -97,7 +111,9 @@ connect('nedb://memory').then(db => {
           )
         )
         .catch(error => console.log('That is no moon....'.red, error));
-
+      /**
+       * You can also use the client to set FileMaker Globals for the session.
+       */
       client
         .globals({ 'Globals::ship': 'Millenium Falcon' })
         .then(response =>
@@ -113,6 +129,12 @@ connect('nedb://memory').then(db => {
       return client;
     })
     .then(client => {
+      /**
+       * The client's find method  will accept either a single object as find
+       * parameters or an array. The find method will also santize the limit,
+       * sort, and offset parameters to conform with the Data API's
+       * requirements.
+       */
       client
         .find('Heroes', [{ name: 'Anakin Skywalker' }], { limit: 1 })
         .then(response => client.recordId(response.data))
@@ -151,12 +173,7 @@ connect('nedb://memory').then(db => {
         .catch(error => console.log('That is no moon...'.red, error));
 
       client
-        .script('example script', 'Heroes', {
-          name: 'han',
-          number: 102,
-          object: { child: 'ben' },
-          array: ['leia', 'chewbacca']
-        })
+        .script('FMS Triggered Script', 'Heroes')
         .then(response => {
           console.log('or a script....'.cyan.underline, response);
         })
@@ -211,28 +228,32 @@ npm test
 ```
 
 ```
-> fms-api-client@0.0.7 test /Users/luidelaparra/Documents/Development/fms-api-client
+> fms-api-client@1.0.1 test /Users/luidelaparra/Documents/Development/fms-api-client
 > mocha --recursive ./tests
-  FileMaker Data API Client
+  Client Data Store
     ✓ should allow an instance to be saved.
-    ✓ should authenticate into FileMaker. (155ms)
-    ✓ should create FileMaker records. (169ms)
+    ✓ should allow an instance to be recalled
+  FileMaker Data API Client
+    ✓ should authenticate into FileMaker. (136ms)
+    ✓ should create FileMaker records. (178ms)
     ✓ should update FileMaker records.
     ✓ should delete FileMaker records.
     ✓ should get a FileMaker specific record.
-    ✓ should allow you to list FileMaker records (218ms)
-    ✓ should allow you to modify the FileMaker list response (165ms)
-    ✓ should allow allow a list response to be set with numbers (158ms)
-    ✓ should allow you to find FileMaker records (151ms)
-    ✓ should allow you to set FileMaker globals (166ms)
+    ✓ should allow you to list FileMaker records (225ms)
+    ✓ should allow you to modify the FileMaker list response (158ms)
+    ✓ should allow allow a list response to be set with numbers (149ms)
+    ✓ should allow you to find FileMaker records (159ms)
+    ✓ should allow you to set FileMaker globals (159ms)
   Client Script Capability
-    ✓ should allow you to trigger a script in FileMaker (178ms)
-    ✓ should allow you to trigger a script in a find (195ms)
+    ✓ should allow you to trigger a script in FileMaker (166ms)
+    ✓ should allow you to trigger a script in a find (199ms)
+    ✓ should allow you to trigger a script in a list (153ms)
   Client Upload Capability
-    ✓ should allow you to upload a file to FileMaker (1362ms)
+    ✓ should allow you to upload a file to FileMaker (1324ms)
   Client Data Usage Tracking
-    ✓ should track API usage data. (159ms)
-  15 passing (3s)
+    ✓ should track API usage data. (161ms)
+    ✓ should allow you to reset usage data. (150ms)
+  18 passing (3s)
 ```
 
 ## Dependencies
