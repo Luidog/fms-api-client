@@ -38,7 +38,7 @@ describe('Client Script Capability', () => {
 
   it('should allow you to trigger a script in FileMaker', () => {
     return expect(
-      filemaker.script('example script', 'Heroes', {
+      filemaker.script('FMS Triggered Script', 'Heroes', {
         name: 'han',
         number: 102,
         object: { child: 'ben' },
@@ -50,8 +50,18 @@ describe('Client Script Capability', () => {
   });
 
   it('should allow you to trigger a script in a find', () => {
-    return expect(filemaker.script('example script', 'Heroes', 'text'))
+    return expect(
+      filemaker.find('Heroes', { id: '*' }, { script: 'FMS Triggered Script' })
+    )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult', 'scriptError', 'data');
+  });
+
+  it('should allow you to trigger a script in a list', () => {
+    return expect(
+      filemaker.list('Heroes', { limit: 2, script: 'FMS Triggered Script' })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('scriptResult', 'scriptError', 'data');
   });
 });
