@@ -151,12 +151,7 @@ connect('nedb://memory').then(db => {
         .catch(error => console.log('That is no moon...'.red, error));
 
       client
-        .script('example script', 'Heroes', {
-          name: 'han',
-          number: 102,
-          object: { child: 'ben' },
-          array: ['leia', 'chewbacca']
-        })
+        .script('FMS Triggered Script', 'Heroes')
         .then(response => {
           console.log('or a script....'.cyan.underline, response);
         })

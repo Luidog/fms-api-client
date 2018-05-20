@@ -34,19 +34,6 @@ describe('FileMaker Data API Client', () => {
     done();
   });
 
-  it('should allow an instance to be saved.', () => {
-    return expect(filemaker.save())
-      .to.eventually.be.an('object')
-      .that.has.all.keys(
-        '_schema',
-        'connection',
-        '_id',
-        'data',
-        'application',
-        'server',
-        'version'
-      );
-  });
   it('should authenticate into FileMaker.', () => {
     return expect(filemaker.authenticate()).to.eventually.be.a('string');
   });

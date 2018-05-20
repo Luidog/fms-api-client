@@ -44,4 +44,18 @@ describe('Client Data Usage Tracking', () => {
       .to.eventually.be.an('object')
       .that.has.all.keys('data');
   });
+
+  it('should allow you to reset usage data.', () => {
+    return expect(
+      filemaker
+        .create('Heroes', { name: 'Luke Skywalker' })
+        .then(response => {
+          filemaker.data.clear();
+          return filemaker;
+        })
+        .then(filemaker => filemaker.data.status())
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('data');
+  });
 });
