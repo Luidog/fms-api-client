@@ -86,26 +86,6 @@ class Connection extends EmbeddedDocument {
   }
 
   /**
-   * @method _stringify
-   * @private
-   * @memberof Connection
-   * @description _stringify is a helper method that converts numbers and objects / arrays to strings.
-   * @param  {Object|Array} The data being used to create or update a record.
-   * @return {Object}      a json object containing stringified data.
-   */
-  _stringify(data) {
-    return _.mapValues(
-      data,
-      value =>
-        typeof value === 'string'
-          ? value
-          : typeof value === 'object'
-            ? JSON.stringify(value)
-            : typeof value === 'number' ? value.toString() : ''
-    );
-  }
-
-  /**
    * @method _saveToken
    * @public
    * @memberof Connection
