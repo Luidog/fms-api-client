@@ -89,17 +89,17 @@ class Connection extends EmbeddedDocument {
    * @public
    * @memberof Connection
    * @description Saves a token retrieved from the Data API.
-   * @params {String} token The token to save to the class instance.
+   * @params {Object} data an object. The FileMaker authentication response.
    * @return {String} a token retrieved from the private generation method
    *
    */
-  _saveToken(token) {
+  _saveToken(data) {
     this.expires = moment()
       .add(15, 'minutes')
       .format();
     this.issued = moment().format();
-    this.token = token;
-    return token;
+    this.token = data.response.token;
+    return data;
   }
   /**
    * @method valid
@@ -138,14 +138,8 @@ class Connection extends EmbeddedDocument {
         data: {}
       })
         .then(response => response.data)
-        .then(body => {
-          if (body.messages[0].code === '0') {
-            this._saveToken(body.response.token);
-            resolve(body.response.token);
-          } else {
-            reject(body.messages[0]);
-          }
-        })
+        .then(body => this._saveToken(body))
+        .then(body => resolve(body.response.token))
         .catch(error => reject(error))
     );
   }
