@@ -9,8 +9,7 @@ const colors = require('colors');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
-const { Filemaker } = require('./filemaker');
-
+const { Filemaker } = require('./index.js');
 environment.config({ path: './tests/.env' });
 
 varium(process.env, './tests/env.manifest');

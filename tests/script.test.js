@@ -55,6 +55,19 @@ describe('Script Capabilities', () => {
       .that.has.all.keys('result');
   });
 
+  it('should allow you to trigger a script in FileMaker', () => {
+    return expect(
+      filemaker.script('FMS Triggered Script', process.env.LAYOUT, {
+        name: 'han',
+        number: 102,
+        object: { child: 'ben' },
+        array: ['leia', 'chewbacca']
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('result');
+  });
+
   it('should allow you to trigger a script in a find', () => {
     return expect(
       filemaker.find(
