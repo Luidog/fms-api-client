@@ -44,10 +44,23 @@ describe('Get Capabilities', () => {
   });
 
   it('should get specific FileMaker records.', () => {
-    client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response => {
-      return expect(client.get(process.env.LAYOUT, response.recordId))
-        .to.eventually.be.a('object')
-        .that.has.all.keys('modId', 'data');
-    });
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
+        .then(response => client.get(process.env.LAYOUT, response.recordId))
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data');
+  });
+
+  it('should reject get requests that do not specify a recordId', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
+        .then(response => client.edit(process.env.LAYOUT, '', 'junk error'))
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('message');
   });
 });

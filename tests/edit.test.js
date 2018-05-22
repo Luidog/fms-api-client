@@ -54,4 +54,17 @@ describe('Edit Capabilities', () => {
         .that.has.all.keys('modId');
     });
   });
+
+  it('should reject bad data with an error', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
+        .then(response =>
+          client.edit(process.env.LAYOUT, response.recordId, 'junk error')
+        )
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
 });

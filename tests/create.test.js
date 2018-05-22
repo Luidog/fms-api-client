@@ -48,4 +48,12 @@ describe('Create Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('recordId', 'modId');
   });
+
+  it('should reject bad data with an error', () => {
+    return expect(
+      filemaker.create(process.env.LAYOUT, 'junk data').catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message');
+  });
 });

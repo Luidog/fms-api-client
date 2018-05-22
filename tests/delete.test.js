@@ -43,12 +43,21 @@ describe('Delete Capabilities', () => {
     done();
   });
   it('should delete FileMaker records.', () => {
-    client
-      .create(process.env.LAYOUT, { name: 'Darth Vader' })
-      .then(response => {
-        return expect(
-          client.delete(process.env.LAYOUT, response.recordId)
-        ).to.eventually.be.a('object');
-      });
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Darth Vader' })
+        .then(response => client.delete(process.env.LAYOUT, response.recordId))
+    ).to.eventually.be.a('object');
+  });
+
+  it('should reject deletions that do not specify a recordId', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
+        .then(response => client.edit(process.env.LAYOUT, '', 'junk error'))
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
   });
 });
