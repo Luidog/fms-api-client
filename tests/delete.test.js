@@ -58,6 +58,6 @@ describe('Delete Capabilities', () => {
         .catch(error => error)
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('code', 'message');
+      .that.has.all.keys('message');
   });
 });
