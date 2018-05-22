@@ -87,4 +87,14 @@ describe('List Capabilities', () => {
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
+
+  it('should reject requests that use unexpected parameters', () => {
+    return expect(
+      filemaker
+        .list(process.env.LAYOUT, { error: 'fail', limit: 2, offset: 2 })
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('message', 'code');
+  });
 });

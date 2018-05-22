@@ -34,3 +34,4 @@ bundles/
 # Dev data need not be saved.
 data/
 .DS_Store
+.nyc_output

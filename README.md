@@ -1,4 +1,4 @@
-# fms-api-client [![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client)
+# fms-api-client [![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client)[![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=tests-and-documentation)](https://coveralls.io/github/Luidog/fms-api-client?branch=tests-and-documentation)
 
 A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.
 
@@ -22,9 +22,14 @@ npm install fms-api-client --save
 ```js
 'use strict';
 
+/* eslint-disable */
+
+const colors = require('colors');
+
+/* eslint-enable */
+
 const environment = require('dotenv');
 const varium = require('varium');
-const colors = require('colors');
 const { connect } = require('marpat');
 const { Filemaker } = require('./filemaker');
 
@@ -150,7 +155,7 @@ connect('nedb://memory').then(db => {
         .catch(error => console.log('find - That is no moon...'.red, error));
 
       client
-        .upload('./images/placeholder.md', 'Heroes', 'image')
+        .upload('./assets/placeholder.md', 'Heroes', 'image')
         .then(response => {
           console.log('Perhaps an Image...'.cyan.underline, response);
         })
@@ -161,7 +166,7 @@ connect('nedb://memory').then(db => {
         .then(response => client.recordId(response.data))
         .then(recordIds =>
           client.upload(
-            './images/placeholder.md',
+            './assets/placeholder.md',
             'Heroes',
             'image',
             recordIds[0]
@@ -215,9 +220,7 @@ const rewind = () => {
   });
 };
 
-setTimeout(function() {
-  rewind();
-}, 10000);
+setTimeout(() => rewind(), 10000);
 ```
 
 ## Tests
@@ -228,42 +231,51 @@ npm test
 ```
 
 ```
-> fms-api-client@1.0.1 test /fms-api-client
-> mocha --recursive ./tests
+> fms-api-client@1.0.1 test /Users/luidelaparra/Documents/Development/fms-api-client
+> nyc _mocha --recursive ./tests --timeout=30000
   Authentication Capabilities
-    ✓ should authenticate into FileMaker. (141ms)
-    ✓ should automatically request an authentication token (160ms)
-    ✓ should reuse a saved authentication token (162ms)
+    ✓ should authenticate into FileMaker. (148ms)
+    ✓ should automatically request an authentication token (164ms)
+    ✓ should reuse a saved authentication token (156ms)
+    ✓ reject if the authentication request fails (1420ms)
   Create Capabilities
-    ✓ should create FileMaker records. (159ms)
+    ✓ should create FileMaker records. (153ms)
+    ✓ should reject bad data with an error (167ms)
   Delete Capabilities
-    ✓ should delete FileMaker records.
+    ✓ should delete FileMaker records. (228ms)
+    ✓ should reject deletions that do not specify a recordId (229ms)
   Edit Capabilities
     ✓ should edit FileMaker records.
+    ✓ should reject bad data with an error (232ms)
   Find Capabilities
-    ✓ should perform a find request (205ms)
-    ✓ should allow you to use an object instead of an array for a find (194ms)
-    ✓ should specify omit Criterea (201ms)
-    ✓ should allow additional parameters to manipulate the results (169ms)
-    ✓ should allow you to use numbers in the find query parameters (159ms)
-    ✓ should allow you to sort the results (194ms)
-    ✓ should allow you run a pre request script (161ms)
-    ✓ should allow you to send a parameter to the pre request script (167ms)
-    ✓ should allow you run script after the find and before the sort (192ms)
-    ✓ should allow you to pass a parameter to a script after the find and before the sort (204ms)
+    ✓ should perform a find request (200ms)
+    ✓ should allow you to use an object instead of an array for a find (189ms)
+    ✓ should specify omit Criterea (186ms)
+    ✓ should allow additional parameters to manipulate the results (154ms)
+    ✓ should allow you to use numbers in the find query parameters (163ms)
+    ✓ should allow you to sort the results (218ms)
+    ✓ should return an empty array if the find does not return results (171ms)
+    ✓ should allow you run a pre request script (160ms)
+    ✓ should allow you to send a parameter to the pre request script (176ms)
+    ✓ should allow you run script after the find and before the sort (231ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (218ms)
+  Get Capabilities
+    ✓ should get specific FileMaker records. (236ms)
+    ✓ should reject get requests that do not specify a recordId (241ms)
   Global Capabilities
-    ✓ should allow you to set FileMaker globals (167ms)
+    ✓ should allow you to set FileMaker globals (169ms)
   List Capabilities
-    ✓ should allow you to list records (212ms)
-    ✓ should allow you use parameters to modify the list response (158ms)
-    ✓ should should allow you to use numbers in parameters (158ms)
-    ✓ should modify requests to comply with DAPI name reservations (172ms)
-    ✓ should allow strings while complying with DAPI name reservations (163ms)
-    ✓ should allow you to offset the list response (158ms)
+    ✓ should allow you to list records (197ms)
+    ✓ should allow you use parameters to modify the list response (161ms)
+    ✓ should should allow you to use numbers in parameters (173ms)
+    ✓ should modify requests to comply with DAPI name reservations (165ms)
+    ✓ should allow strings while complying with DAPI name reservations (157ms)
+    ✓ should allow you to offset the list response (163ms)
+    ✓ should reject requests that use unexpected parameters (176ms)
   Script Capabilities
-    ✓ should allow you to trigger a script in FileMaker (168ms)
-    ✓ should allow you to trigger a script in a find (197ms)
-    ✓ should allow you to trigger a script in a list (162ms)
+    ✓ should allow you to trigger a script in FileMaker (172ms)
+    ✓ should allow you to trigger a script in a find (199ms)
+    ✓ should allow you to trigger a script in a list (164ms)
   Storage
     ✓ should allow an instance to be created
     ✓ should allow an instance to be saved.
@@ -271,11 +283,26 @@ npm test
     ✓ should allow insances to be listed
     ✓ should allow you to remove an instance
   File Upload Capabilities
-    ✓ should allow you to upload a file to FileMaker (1326ms)
+    ✓ should allow you to upload a file to FileMaker (1519ms)
   Data Usage Tracking Capabilities
-    ✓ should track API usage data. (156ms)
-    ✓ should allow you to reset usage data. (156ms)
-  34 passing (6s)
+    ✓ should track API usage data. (170ms)
+    ✓ should allow you to reset usage data. (158ms)
+  Utility Capabilities
+    ✓ should extract field while maintaining the array (242ms)
+    ✓ should extract field data while maintaining the object (236ms)
+    ✓ should extract the recordId while maintaining the array (227ms)
+    ✓ should extract field data while maintaining the object (233ms)
+  46 passing (10s)
+----------------------|----------|----------|----------|----------|-------------------|
+File                  |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+----------------------|----------|----------|----------|----------|-------------------|
+All files             |    96.06 |    69.23 |    95.07 |    96.06 |                   |
+ connection.model.js  |    96.43 |       75 |      100 |    96.43 |               147 |
+ credentials.model.js |      100 |      100 |      100 |      100 |                   |
+ data.model.js        |      100 |      100 |      100 |      100 |                   |
+ filemaker.model.js   |    95.42 |    68.75 |    94.31 |    95.42 |... 41,596,644,646 |
+ index.js             |      100 |      100 |      100 |      100 |                   |
+----------------------|----------|----------|----------|----------|-------------------|
 ```
 
 ## Dependencies
@@ -293,6 +320,7 @@ npm test
 * [chai](https://ghub.io/chai): BDD/TDD assertion library for node.js and the browser. Test framework agnostic.
 * [chai-as-promised](https://ghub.io/chai-as-promised): Extends Chai with assertions about promises.
 * [colors](https://ghub.io/colors): get colors in your node.js console
+* [coveralls](https://ghub.io/coveralls): takes json-cov output into stdin and POSTs to coveralls.io
 * [dotenv](https://ghub.io/dotenv): Loads environment variables from .env file
 * [eslint](https://ghub.io/eslint): An AST-based pattern checker for JavaScript.
 * [eslint-config-google](https://ghub.io/eslint-config-google): ESLint shareable config for the Google style
@@ -301,6 +329,8 @@ npm test
 * [jsdocs](https://ghub.io/jsdocs): jsdocs
 * [minami](https://ghub.io/minami): Clean and minimal JSDoc 3 Template / Theme
 * [mocha](https://ghub.io/mocha): simple, flexible, fun test framework
+* [mocha-lcov-reporter](https://ghub.io/mocha-lcov-reporter): LCOV reporter for Mocha
+* [nyc](https://ghub.io/nyc): the Istanbul command line interface
 * [package-json-to-readme](https://ghub.io/package-json-to-readme): Generate a README.md from package.json contents
 * [prettier](https://ghub.io/prettier): Prettier is an opinionated code formatter
 * [varium](https://ghub.io/varium): A strict parser and validator of environment config variables

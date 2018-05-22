@@ -101,6 +101,16 @@ describe('Find Capabilities', () => {
       .to.have.a.lengthOf(2);
   });
 
+  it('should return an empty array if the find does not return results', () => {
+    return expect(
+      client.find(process.env.LAYOUT, { name: 'bruce springsteen' })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data', 'message')
+      .and.property('data')
+      .to.have.a.lengthOf(0);
+  });
+
   it('should allow you run a pre request script', () => {
     return expect(
       client.find(
