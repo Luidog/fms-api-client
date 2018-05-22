@@ -1,7 +1,6 @@
 'use strict';
 
 const axios = require('axios');
-const _ = require('lodash');
 const moment = require('moment');
 const { EmbeddedDocument } = require('marpat');
 const { Credentials } = require('./credentials.model');
