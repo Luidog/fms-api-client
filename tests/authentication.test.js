@@ -1,3 +1,5 @@
+'use strict';
+
 /* global describe before beforeEach it */
 
 /* eslint-disable */
@@ -16,7 +18,7 @@ const { Filemaker } = require('../filemaker');
 
 chai.use(chaiAsPromised);
 
-describe('File Upload Capabilities', () => {
+describe('Authentication Capabilities', () => {
   let database, client;
 
   before(done => {
@@ -42,12 +44,28 @@ describe('File Upload Capabilities', () => {
     done();
   });
 
-  it('should allow you to upload a file to FileMaker', () => {
+  it('should authenticate into FileMaker.', () => {
+    return expect(client.authenticate()).to.eventually.be.a('string');
+  });
+
+  it('should automatically request an authentication token', () => {
     return expect(
-      client.upload('./assets/placeholder.md', process.env.LAYOUT, 'image')
-    )
-      .to.eventually.be.a('object')
-      .that.has.all.keys('modId')
-      .and.property('modId', 1);
+      client
+        .create(process.env.LAYOUT, {})
+        .then(record => Promise.resolve(client.connection.token))
+    ).to.eventually.be.a('string');
+  });
+
+  it('should reuse a saved authentication token', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, {})
+        .then(record => client.connection.token)
+        .then(token => {
+          client.create(process.env.LAYOUT, {});
+          return token;
+        })
+        .then(token => Promise.resolve(token === client.connection.token))
+    ).to.eventually.be.true;
   });
 });

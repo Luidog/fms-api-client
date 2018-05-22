@@ -1,8 +1,13 @@
 'use strict';
 
+/* eslint-disable */
+
+const colors = require('colors');
+
+/* eslint-enable */
+
 const environment = require('dotenv');
 const varium = require('varium');
-const colors = require('colors');
 const { connect } = require('marpat');
 const { Filemaker } = require('./filemaker');
 
@@ -128,7 +133,7 @@ connect('nedb://memory').then(db => {
         .catch(error => console.log('find - That is no moon...'.red, error));
 
       client
-        .upload('./images/placeholder.md', 'Heroes', 'image')
+        .upload('./assets/placeholder.md', 'Heroes', 'image')
         .then(response => {
           console.log('Perhaps an Image...'.cyan.underline, response);
         })
@@ -139,7 +144,7 @@ connect('nedb://memory').then(db => {
         .then(response => client.recordId(response.data))
         .then(recordIds =>
           client.upload(
-            './images/placeholder.md',
+            './assets/placeholder.md',
             'Heroes',
             'image',
             recordIds[0]
@@ -193,6 +198,4 @@ const rewind = () => {
   });
 };
 
-setTimeout(function() {
-  rewind();
-}, 10000);
+setTimeout(() => rewind(), 10000);

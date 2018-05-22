@@ -228,32 +228,54 @@ npm test
 ```
 
 ```
-> fms-api-client@1.0.1 test /Users/luidelaparra/Documents/Development/fms-api-client
+> fms-api-client@1.0.1 test /fms-api-client
 > mocha --recursive ./tests
-  Client Data Store
+  Authentication Capabilities
+    ✓ should authenticate into FileMaker. (141ms)
+    ✓ should automatically request an authentication token (160ms)
+    ✓ should reuse a saved authentication token (162ms)
+  Create Capabilities
+    ✓ should create FileMaker records. (159ms)
+  Delete Capabilities
+    ✓ should delete FileMaker records.
+  Edit Capabilities
+    ✓ should edit FileMaker records.
+  Find Capabilities
+    ✓ should perform a find request (205ms)
+    ✓ should allow you to use an object instead of an array for a find (194ms)
+    ✓ should specify omit Criterea (201ms)
+    ✓ should allow additional parameters to manipulate the results (169ms)
+    ✓ should allow you to use numbers in the find query parameters (159ms)
+    ✓ should allow you to sort the results (194ms)
+    ✓ should allow you run a pre request script (161ms)
+    ✓ should allow you to send a parameter to the pre request script (167ms)
+    ✓ should allow you run script after the find and before the sort (192ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (204ms)
+  Global Capabilities
+    ✓ should allow you to set FileMaker globals (167ms)
+  List Capabilities
+    ✓ should allow you to list records (212ms)
+    ✓ should allow you use parameters to modify the list response (158ms)
+    ✓ should should allow you to use numbers in parameters (158ms)
+    ✓ should modify requests to comply with DAPI name reservations (172ms)
+    ✓ should allow strings while complying with DAPI name reservations (163ms)
+    ✓ should allow you to offset the list response (158ms)
+  Script Capabilities
+    ✓ should allow you to trigger a script in FileMaker (168ms)
+    ✓ should allow you to trigger a script in a find (197ms)
+    ✓ should allow you to trigger a script in a list (162ms)
+  Storage
+    ✓ should allow an instance to be created
     ✓ should allow an instance to be saved.
     ✓ should allow an instance to be recalled
-  FileMaker Data API Client
-    ✓ should authenticate into FileMaker. (136ms)
-    ✓ should create FileMaker records. (178ms)
-    ✓ should update FileMaker records.
-    ✓ should delete FileMaker records.
-    ✓ should get a FileMaker specific record.
-    ✓ should allow you to list FileMaker records (225ms)
-    ✓ should allow you to modify the FileMaker list response (158ms)
-    ✓ should allow allow a list response to be set with numbers (149ms)
-    ✓ should allow you to find FileMaker records (159ms)
-    ✓ should allow you to set FileMaker globals (159ms)
-  Client Script Capability
-    ✓ should allow you to trigger a script in FileMaker (166ms)
-    ✓ should allow you to trigger a script in a find (199ms)
-    ✓ should allow you to trigger a script in a list (153ms)
-  Client Upload Capability
-    ✓ should allow you to upload a file to FileMaker (1324ms)
-  Client Data Usage Tracking
-    ✓ should track API usage data. (161ms)
-    ✓ should allow you to reset usage data. (150ms)
-  18 passing (3s)
+    ✓ should allow insances to be listed
+    ✓ should allow you to remove an instance
+  File Upload Capabilities
+    ✓ should allow you to upload a file to FileMaker (1326ms)
+  Data Usage Tracking Capabilities
+    ✓ should track API usage data. (156ms)
+    ✓ should allow you to reset usage data. (156ms)
+  34 passing (6s)
 ```
 
 ## Dependencies

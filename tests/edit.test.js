@@ -1,3 +1,5 @@
+'use strict';
+
 /* global describe before beforeEach it */
 
 /* eslint-disable */
@@ -16,9 +18,8 @@ const { Filemaker } = require('../filemaker');
 
 chai.use(chaiAsPromised);
 
-describe('File Upload Capabilities', () => {
+describe('Edit Capabilities', () => {
   let database, client;
-
   before(done => {
     environment.config({ path: './tests/.env' });
     varium(process.env, './tests/env.manifest');
@@ -42,12 +43,15 @@ describe('File Upload Capabilities', () => {
     done();
   });
 
-  it('should allow you to upload a file to FileMaker', () => {
-    return expect(
-      client.upload('./assets/placeholder.md', process.env.LAYOUT, 'image')
-    )
-      .to.eventually.be.a('object')
-      .that.has.all.keys('modId')
-      .and.property('modId', 1);
+  it('should edit FileMaker records.', () => {
+    client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response => {
+      return expect(
+        client.edit(process.env.LAYOUT, response.recordId, {
+          name: 'Luke Skywalker'
+        })
+      )
+        .to.eventually.be.a('object')
+        .that.has.all.keys('modId');
+    });
   });
 });

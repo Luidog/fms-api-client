@@ -16,9 +16,8 @@ const { Filemaker } = require('../filemaker');
 
 chai.use(chaiAsPromised);
 
-describe('Script Capabilities', () => {
+describe('Global Capabilities', () => {
   let database, filemaker;
-
   before(done => {
     environment.config({ path: './tests/.env' });
     varium(process.env, './tests/env.manifest');
@@ -42,39 +41,9 @@ describe('Script Capabilities', () => {
     done();
   });
 
-  it('should allow you to trigger a script in FileMaker', () => {
+  it('should allow you to set FileMaker globals', () => {
     return expect(
-      filemaker.script('FMS Triggered Script', process.env.LAYOUT, {
-        name: 'han',
-        number: 102,
-        object: { child: 'ben' },
-        array: ['leia', 'chewbacca']
-      })
-    )
-      .to.eventually.be.a('object')
-      .that.has.all.keys('result');
-  });
-
-  it('should allow you to trigger a script in a find', () => {
-    return expect(
-      filemaker.find(
-        process.env.LAYOUT,
-        { id: '*' },
-        { script: 'FMS Triggered Script' }
-      )
-    )
-      .to.eventually.be.a('object')
-      .that.has.all.keys('scriptResult', 'scriptError', 'data');
-  });
-
-  it('should allow you to trigger a script in a list', () => {
-    return expect(
-      filemaker.list(process.env.LAYOUT, {
-        limit: 2,
-        script: 'FMS Triggered Script'
-      })
-    )
-      .to.eventually.be.a('object')
-      .that.has.all.keys('scriptResult', 'scriptError', 'data');
+      filemaker.globals({ 'Globals::ship': 'Millenium Falcon' })
+    ).to.eventually.be.a('object');
   });
 });
