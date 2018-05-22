@@ -1,8 +1,13 @@
 'use strict';
 
+/* eslint-disable */
+
+const colors = require('colors');
+
+/* eslint-enable */
+
 const environment = require('dotenv');
 const varium = require('varium');
-const colors = require('colors');
 const { connect } = require('marpat');
 const { Filemaker } = require('./filemaker');
 
