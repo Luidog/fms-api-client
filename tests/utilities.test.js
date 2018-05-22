@@ -64,6 +64,7 @@ describe('Utility Capabilities', () => {
         .then(record => client.fieldData(record.data[0]))
     )
       .to.eventually.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
       .and.to.not.include.keys('fieldData');
   });
 

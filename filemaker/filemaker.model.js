@@ -698,7 +698,10 @@ class Filemaker extends Document {
             modId: object.modId
           })
         )
-      : data.fieldData;
+      : Object.assign(data.fieldData, {
+          recordId: data.recordId,
+          modId: data.modId
+        });
   }
   /**
    * @method recordId
