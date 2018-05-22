@@ -68,4 +68,14 @@ describe('Authentication Capabilities', () => {
         .then(token => Promise.resolve(token === client.connection.token))
     ).to.eventually.be.true;
   });
+
+  it('reject if the authentication request fails', () => {
+    client.connection.credentials.password = 'incorrect';
+    return expect(
+      client
+        .save()
+        .then(client => client.authenticate())
+        .catch(error => error)
+    ).to.eventually.be.an('error');
+  });
 });
