@@ -198,6 +198,4 @@ const rewind = () => {
   });
 };
 
-setTimeout(function() {
-  rewind();
-}, 10000);
+setTimeout(() => rewind(), 10000);
