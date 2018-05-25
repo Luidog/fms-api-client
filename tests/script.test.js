@@ -90,4 +90,17 @@ describe('Script Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('scriptResult', 'scriptError', 'data');
   });
+
+  it('should allow reject a script that does not exist', () => {
+    return expect(
+      filemaker
+        .script(process.env.LAYOUT, {
+          limit: 2,
+          script: 'Made up Script'
+        })
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
 });

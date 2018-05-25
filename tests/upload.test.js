@@ -42,9 +42,27 @@ describe('File Upload Capabilities', () => {
     done();
   });
 
-  it('should allow you to upload a file to FileMaker', () => {
+  it('should allow you to upload a file to a new record', () => {
     return expect(
       client.upload('./assets/placeholder.md', process.env.LAYOUT, 'image')
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId')
+      .and.property('modId', 1);
+  });
+
+  it('should allow you to upload a file to a specific record', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(record =>
+          client.upload(
+            './assets/placeholder.md',
+            process.env.LAYOUT,
+            'image',
+            record.recordId
+          )
+        )
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('modId')

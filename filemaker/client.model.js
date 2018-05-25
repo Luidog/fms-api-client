@@ -10,16 +10,16 @@ const { Credentials } = require('./credentials.model');
 const { Data } = require('./data.model');
 
 /**
- * @class Filemaker
+ * @class Client
  * @classdesc The class used to integrate with the FileMaker server Data API
  */
-class Filemaker extends Document {
+class Client extends Document {
   constructor(data) {
     super();
     this.schema({
       /**
        * The version of Data API to use.
-       * @member Filemaker#version
+       * @member Client#version
        * @type String
        */
       version: {
@@ -29,7 +29,7 @@ class Filemaker extends Document {
       },
       /**
        * The client application name.
-       * @member Filemaker#application
+       * @member Client#application
        * @type String
        */
       application: {
@@ -38,7 +38,7 @@ class Filemaker extends Document {
       },
       /**
        * The client application server.
-       * @member Filemaker#server
+       * @member Client#server
        * @type String
        */
 
@@ -48,7 +48,7 @@ class Filemaker extends Document {
       },
       /** The client data logger.
        * @public
-       * @member Filemaker#data
+       * @member Client#data
        * @type Object
        */
       data: {
@@ -57,7 +57,7 @@ class Filemaker extends Document {
       },
       /** The client application connection object.
        * @public
-       * @member Filemaker#connection
+       * @member Client#connection
        * @type Object
        */
       connection: {
@@ -186,7 +186,7 @@ class Filemaker extends Document {
   }
   /**
    * @method _sanitizeParameters
-   * @memberof Filemaker
+   * @memberof Client
    * @private
    * @description stringifys all values for an object. This is used to ensure that find requests and list requests
    * can use either strings or numbers when setting options.
@@ -200,7 +200,7 @@ class Filemaker extends Document {
   }
   /**
    * @method authenticate
-   * @memberof Filemaker
+   * @memberof Client
    * @public
    * @description Checks the private connection schema for a token and if the current time is between when that token was
    * issued and when it will expire. If the connection token is not a string (its empty) or the current time is
@@ -229,7 +229,7 @@ class Filemaker extends Document {
   /**
    * @method saveState
    * @private
-   * @memberof Filemaker
+   * @memberof Client
    * @description Triggers a save and returns the response. This is responsible for ensuring the documents are up to date.
    * @param {Any} response The response data from the data api request.
    * @return {Any} Returns the umodified response.
@@ -242,7 +242,7 @@ class Filemaker extends Document {
   /**
    * @method create
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description Creates a record in FileMaker. This method accepts a layout variable and a data variable.
    * @param {String} layout The layout to use when creating a record.
    * @param {Object} data The data to use when creating a record.
@@ -278,7 +278,7 @@ class Filemaker extends Document {
   /**
    * @method edit
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description Edits a filemaker record.
    * @param {String} layout The layout to use when editing the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
@@ -315,7 +315,7 @@ class Filemaker extends Document {
   /**
    * @method delete
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description Deletes a filemaker record.
    * @param {String} layout The layout to use when deleting the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
@@ -347,7 +347,7 @@ class Filemaker extends Document {
   /**
    * @method get
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description Retrieves a filemaker record based upon the layout and recordId.
    * @param {String} layout The layout to use when retrieving the record.
    * @param {String} recordId The FileMaker internal record ID to use when retrieving the record.
@@ -380,7 +380,7 @@ class Filemaker extends Document {
   /**
    * @method list
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description Retrieves a list of FileMaker records based upon a layout.
    * @param {String} layout The layout to use when retrieving the record.
    * @param {Object} parameters the parameters to use to modify the query.
@@ -413,7 +413,7 @@ class Filemaker extends Document {
   /**
    * @method find
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description performs a FileMaker find.
    * @param {String} layout The layout to use when performing the find.
    * @param {Object} query to use in the find request.
@@ -458,7 +458,7 @@ class Filemaker extends Document {
   /**
    * @method globals
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description Sets global fields for the current session.
    * @param  {Object|Array} data a json object containing the name value pairs to set.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
@@ -488,7 +488,7 @@ class Filemaker extends Document {
   /**
    * @method upload
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description Allows you to upload a file to a FileMaker record container field. This method
    * currently creates a record for each upload. This method will use fs to read the file at the given
    * path to a stream. If a record Id is not passed to this method a new record will be created.
@@ -547,7 +547,7 @@ class Filemaker extends Document {
   /**
    * @method script
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description A public method to make triggering a script easier. This method uses the list method with
    * a limit of 1. This is the lightest weight query possible while still allowing for a script to be triggered.
    * For a more robust query with scripts use the find method.
@@ -601,7 +601,7 @@ class Filemaker extends Document {
   /**
    * @method _toArray
    * @private
-   * @memberof Filemaker
+   * @memberof Client
    * @description _toArray is a helper method that converts an object into an array. This is used 
    * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
    * @return {Object}      a json object containing stringified data.
@@ -612,7 +612,7 @@ class Filemaker extends Document {
   /**
    * @method _stringify
    * @private
-   * @memberof Filemaker
+   * @memberof Client
    * @description _stringify is a helper method that converts numbers and objects / arrays to strings.
    * @param  {Object|Array} The data being used to create or update a record.
    * @return {Object}      a json object containing stringified data.
@@ -631,7 +631,7 @@ class Filemaker extends Document {
   /**
    * @method _filterResponse
    * @private
-   * @memberof Filemaker
+   * @memberof Client
    * @description This method filters the FileMaker DAPI response by testing if a script was triggered with
    * the request, then either selecting the response, script error, and script result from the response or
    * selecting just the response.
@@ -652,7 +652,7 @@ class Filemaker extends Document {
   /**
    * @method _isJson
    * @private
-   * @memberof Filemaker
+   * @memberof Client
    * @description This is a helper method for the _filterResponse method.
    * @return {Boolean}      a boolean result if the data passed to it is json
    */
@@ -667,7 +667,7 @@ class Filemaker extends Document {
   /**
    * @method _namespace
    * @private
-   * @memberof Filemaker
+   * @memberof Client
    * @description This method filters the FileMaker DAPI response by testing if a script was triggered with
    * the request, then either selecting the response, script error, and script result from the response or
    * selecting just the response.
@@ -684,7 +684,7 @@ class Filemaker extends Document {
   /**
    * @method fieldData
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description fieldData is a helper method that strips the filemaker structural layout and portal information
    * from a record. It returns only the data contained in the fieldData key and the recordId.
    * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
@@ -706,7 +706,7 @@ class Filemaker extends Document {
   /**
    * @method recordId
    * @public
-   * @memberof Filemaker
+   * @memberof Client
    * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
    * from a record. It returns only the data contained in the fieldData key adn the recordId.
    * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
@@ -719,8 +719,8 @@ class Filemaker extends Document {
   }
 }
 /**
- * @module Filemaker
+ * @module Client
  */
 module.exports = {
-  Filemaker
+  Client
 };

@@ -3,5 +3,5 @@
 const { Filemaker } = require('./filemaker');
 
 module.exports = {
-	Filemaker
+  Filemaker
 };
