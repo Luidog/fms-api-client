@@ -1,7 +1,7 @@
 'use strict';
 
-const { Filemaker } = require('./filemaker');
+const { Client } = require('./src');
 
 module.exports = {
-  Filemaker
+  Filemaker: Client
 };

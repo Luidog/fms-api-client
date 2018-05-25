@@ -12,7 +12,7 @@ const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
-const { Filemaker } = require('../filemaker');
+const { Filemaker } = require('../index.js');
 
 chai.use(chaiAsPromised);
 
