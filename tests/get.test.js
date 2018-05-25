@@ -57,10 +57,10 @@ describe('Get Capabilities', () => {
     return expect(
       client
         .create(process.env.LAYOUT, { name: 'Obi-Wan' })
-        .then(response => client.edit(process.env.LAYOUT, '', 'junk error'))
+        .then(response => client.get(process.env.LAYOUT, '-2'))
         .catch(error => error)
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('message');
+      .that.has.all.keys('code', 'message');
   });
 });
