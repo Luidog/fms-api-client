@@ -51,6 +51,14 @@ describe('File Upload Capabilities', () => {
       .and.property('modId', 1);
   });
 
+  it('should reject with a message if it can not find the file to upload', () => {
+    return expect(
+      client
+        .upload('./assets/none.md', process.env.LAYOUT, 'image')
+        .catch(error => error)
+    ).to.eventually.be.a('string');
+  });
+
   it('should allow you to upload a file to a specific record', () => {
     return expect(
       client

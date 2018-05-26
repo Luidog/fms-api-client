@@ -103,4 +103,17 @@ describe('Script Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('code', 'message');
   });
+
+  it('should allow return a result even if a script returns an error', () => {
+    return expect(
+      filemaker
+        .list(process.env.LAYOUT, {
+          limit: 2,
+          script: 'Error Script'
+        })
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('scriptResult', 'scriptError', 'data');
+  });
 });

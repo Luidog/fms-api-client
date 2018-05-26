@@ -46,4 +46,12 @@ describe('Global Capabilities', () => {
       filemaker.globals({ 'Globals::ship': 'Millenium Falcon' })
     ).to.eventually.be.a('object');
   });
+
+  it('should reject with a message and code if it fails to set a global', () => {
+    return expect(
+      filemaker.globals({ ship: 'Millenium Falcon' }).catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('message', 'code');
+  });
 });
