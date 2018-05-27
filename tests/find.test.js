@@ -129,6 +129,20 @@ describe('Find Capabilities', () => {
       .to.have.a.lengthOf(2);
   });
 
+  it('should return a response even if a script fails', () => {
+    return expect(
+      client.find(
+        process.env.LAYOUT,
+        { id: '*' },
+        { script: 'Error Script', limit: 2 }
+      )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data', 'scriptResult', 'scriptError')
+      .and.property('data')
+      .to.have.a.lengthOf(2);
+  });
+
   it('should allow you to send a parameter to the pre request script', () => {
     return expect(
       client.find(
