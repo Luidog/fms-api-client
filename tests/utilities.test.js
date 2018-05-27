@@ -88,33 +88,4 @@ describe('Utility Capabilities', () => {
         .then(record => client.recordId(record.data[0]))
     ).to.eventually.be.a('string');
   });
-
-  it('should filter responses with script parameters', () => {
-    return expect(
-      client.save().then(client => {
-        let mockData = {
-          data: {
-            response: '',
-            scriptError: 0,
-            scriptResult: 'some result'
-          }
-        };
-        return client._filterResponse(mockData);
-      })
-    ).to.eventually.be.a('object');
-  });
-
-  it('should not filter responses without parameters', () => {
-    return expect(
-      client.save().then(client => {
-        let mockData = {
-          data: {
-            response: '',
-            scriptResult: 'some result'
-          }
-        };
-        return client._filterResponse(mockData);
-      })
-    ).to.eventually.be.a('object');
-  });
 });

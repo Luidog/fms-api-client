@@ -58,7 +58,7 @@ describe('File Upload Capabilities', () => {
         process.env.LAYOUT,
         'image',
         undefined,
-        1
+        2
       )
     )
       .to.eventually.be.a('object')

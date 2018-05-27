@@ -135,7 +135,7 @@ describe('Script Capabilities', () => {
   it('should not parse script results if the results are not json', () => {
     return expect(
       filemaker
-        .list(process.env.LAYOUT, {
+        .script(process.env.LAYOUT, {
           limit: 2,
           script: 'Non JSON Script'
         })

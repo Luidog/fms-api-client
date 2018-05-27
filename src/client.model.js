@@ -669,16 +669,10 @@ class Client extends Document {
    * @return {Object}      a json object containing the selected data from the Data API Response.
    */
   _filterResponse(data) {
-    return data.scriptError
-      ? _.chain(data)
-          .map(object =>
-            _.pick(object, ['response', 'scriptError', 'scriptResult'])
-          )
-          .mapValues(value => (this._isJson(value) ? JSON.parse(value) : value))
-      : _.mapValues(
-          data.response,
-          value => (this._isJson(value) ? JSON.parse(value) : value)
-        );
+    return _.mapValues(
+      data.response,
+      value => (this._isJson(value) ? JSON.parse(value) : value)
+    );
   }
   /**
    * @method _isJson
