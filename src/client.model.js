@@ -262,7 +262,7 @@ class Client extends Document {
               .then(body => this.connection.remove(body))
               .then(body => this._saveState(body))
               .then(body => resolve(body.messages[0]))
-              .catch(error => reject(error))
+              .catch(error => reject(error.response.data.messages[0]))
           : reject({ message: 'No session to log out.' })
     );
   }

@@ -86,7 +86,22 @@ describe('Authentication Capabilities', () => {
       .that.has.all.keys('message');
   });
 
-  it('reject if the authentication request fails', () => {
+  it('should reject if the logout request fails', () => {
+    return expect(
+      client
+        .authenticate()
+        .then(token => {
+          client.connection.token = 'invalid';
+          return client;
+        })
+        .then(client => client.logout())
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should reject if the authentication request fails', () => {
     client.connection.credentials.password = 'incorrect';
     return expect(
       client
