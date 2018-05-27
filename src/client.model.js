@@ -169,6 +169,19 @@ class Client extends Document {
     return url;
   }
   /**
+   * @method _logoutURL
+   * @memberof Connection
+   * @private
+   * @description Generates a url for use when logging out of a FileMaker Session.
+   * @return {String} A URL
+   */
+  _logoutURL(token) {
+    let url = `${this.server}/fmi/data/v1/databases/${
+      this.application
+    }/sessions/${token}`;
+    return url;
+  }
+  /**
    * Generates a url for use when uploading files to FileMaker containers.
    * @private
    * @param {String} layout The layout to use when setting globals.
@@ -225,6 +238,33 @@ class Client extends Document {
           .catch(error => reject(error));
       }
     });
+  }
+  /**
+   * @method logout
+   * @memberof Client
+   * @public
+   * @description logs out of the current authentication session and removes the saved token.
+   * @see {@method Connnection#remove}
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   *
+   */
+  logout() {
+    return new Promise(
+      (resolve, reject) =>
+        this.connection.valid()
+          ? axios({
+              url: this._logoutURL(this.connection.token),
+              method: 'delete',
+              data: {}
+            })
+              .then(response => response.data)
+              .then(body => this.data.outgoing(body))
+              .then(body => this.connection.remove(body))
+              .then(body => this._saveState(body))
+              .then(body => resolve(body.messages[0]))
+              .catch(error => reject(error))
+          : reject({ message: 'No session to log out.' })
+    );
   }
   /**
    * @method saveState
