@@ -56,4 +56,17 @@ describe('Create Capabilities', () => {
       .to.eventually.be.an('object')
       .that.has.all.keys('code', 'message');
   });
+
+  it('should create FileMaker records with mixed types', () => {
+    return expect(
+      filemaker.create(process.env.LAYOUT, {
+        name: 'Han Solo',
+        array: ['ben'],
+        object: { 'co-pilot': 'chewbacca' },
+        height: 52
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('recordId', 'modId');
+  });
 });

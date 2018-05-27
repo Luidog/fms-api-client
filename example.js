@@ -104,9 +104,7 @@ connect('nedb://memory').then(db => {
             response
           )
         )
-        .catch(error =>
-          console.log('globals - That is no moon....'.red, error)
-        );
+        .catch(error => console.log('That is no moon....'.red, error));
 
       return client;
     })
@@ -129,7 +127,7 @@ connect('nedb://memory').then(db => {
             response
           )
         )
-        .catch(error => console.log('find - That is no moon...'.red, error));
+        .catch(error => console.log('That is no moon...'.red, error));
 
       client
         .upload('./assets/placeholder.md', 'Heroes', 'image')
@@ -166,7 +164,8 @@ connect('nedb://memory').then(db => {
   client
     .find('Heroes', [{ name: 'Darth Vader' }], {
       limit: 1,
-      script: 'example script'
+      script: 'example script',
+      'script.param': 'han'
     })
     .then(response =>
       console.log(

@@ -1,8 +1,10 @@
-# fms-api-client [![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client)[![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=tests-and-documentation)](https://coveralls.io/github/Luidog/fms-api-client?branch=tests-and-documentation)
+# fms-api-client [![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client)[![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=tests-and-documentation)](https://coveralls.io/github/Luidog/fms-api-client?branch=tests-and-documentation)[![Beerpay](https://beerpay.io/Luidog/fms-api-client/badge.svg)](https://beerpay.io/Luidog/fms-api-client)
 
 A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.
 
 For in depth documentation head to the [`docs`](https://luidog.github.io/fms-api-client)
+
+Like what I have done? buy me a beer @ [`beerpay`](https://beerpay.io/Luidog/fms-api-client)
 
 ## Installation
 
@@ -126,9 +128,7 @@ connect('nedb://memory').then(db => {
             response
           )
         )
-        .catch(error =>
-          console.log('globals - That is no moon....'.red, error)
-        );
+        .catch(error => console.log('That is no moon....'.red, error));
 
       return client;
     })
@@ -151,7 +151,7 @@ connect('nedb://memory').then(db => {
             response
           )
         )
-        .catch(error => console.log('find - That is no moon...'.red, error));
+        .catch(error => console.log('That is no moon...'.red, error));
 
       client
         .upload('./assets/placeholder.md', 'Heroes', 'image')
@@ -188,7 +188,8 @@ connect('nedb://memory').then(db => {
   client
     .find('Heroes', [{ name: 'Darth Vader' }], {
       limit: 1,
-      script: 'example script'
+      script: 'example script',
+      'script.param': 'han'
     })
     .then(response =>
       console.log(
@@ -230,52 +231,59 @@ npm test
 ```
 
 ```
-> fms-api-client@1.0.1 test /Users/luidelaparra/Documents/Development/fms-api-client
+> fms-api-client@1.0.2 test /Users/luidelaparra/Documents/Development/fms-api-client
 > nyc _mocha --recursive ./tests --timeout=30000
   Authentication Capabilities
     ✓ should authenticate into FileMaker. (144ms)
-    ✓ should automatically request an authentication token (153ms)
-    ✓ should reuse a saved authentication token (165ms)
-    ✓ reject if the authentication request fails (1410ms)
+    ✓ should automatically request an authentication token (166ms)
+    ✓ should reuse a saved authentication token (208ms)
+    ✓ should log out of the filemaker. (157ms)
+    ✓ should not attempt a logout if there is no valid token.
+    ✓ reject if the authentication request fails (1576ms)
   Create Capabilities
-    ✓ should create FileMaker records. (158ms)
-    ✓ should reject bad data with an error (164ms)
+    ✓ should create FileMaker records. (174ms)
+    ✓ should reject bad data with an error (484ms)
+    ✓ should create FileMaker records with mixed types (198ms)
   Delete Capabilities
-    ✓ should delete FileMaker records. (233ms)
-    ✓ should reject deletions that do not specify a recordId (227ms)
+    ✓ should delete FileMaker records. (240ms)
+    ✓ should reject deletions that do not specify a recordId (208ms)
   Edit Capabilities
     ✓ should edit FileMaker records.
-    ✓ should reject bad data with an error (239ms)
+    ✓ should reject bad data with an error (358ms)
   Find Capabilities
-    ✓ should perform a find request (167ms)
-    ✓ should allow you to use an object instead of an array for a find (159ms)
-    ✓ should specify omit Criterea (166ms)
-    ✓ should allow additional parameters to manipulate the results (160ms)
-    ✓ should allow you to use numbers in the find query parameters (166ms)
-    ✓ should allow you to sort the results (170ms)
-    ✓ should return an empty array if the find does not return results (625ms)
-    ✓ should allow you run a pre request script (167ms)
-    ✓ should allow you to send a parameter to the pre request script (160ms)
-    ✓ should allow you run script after the find and before the sort (168ms)
-    ✓ should allow you to pass a parameter to a script after the find and before the sort (164ms)
+    ✓ should perform a find request (229ms)
+    ✓ should allow you to use an object instead of an array for a find (234ms)
+    ✓ should specify omit Criterea (222ms)
+    ✓ should allow additional parameters to manipulate the results (273ms)
+    ✓ should allow you to use numbers in the find query parameters (214ms)
+    ✓ should allow you to sort the results (206ms)
+    ✓ should return an empty array if the find does not return results (196ms)
+    ✓ should allow you run a pre request script (290ms)
+    ✓ should return a response even if a script fails (162ms)
+    ✓ should allow you to send a parameter to the pre request script (229ms)
+    ✓ should allow you run script after the find and before the sort (205ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (209ms)
   Get Capabilities
-    ✓ should get specific FileMaker records. (233ms)
-    ✓ should reject get requests that do not specify a recordId (240ms)
+    ✓ should get specific FileMaker records. (252ms)
+    ✓ should reject get requests that do not specify a recordId (237ms)
   Global Capabilities
-    ✓ should allow you to set FileMaker globals (158ms)
+    ✓ should allow you to set FileMaker globals (219ms)
+    ✓ should reject with a message and code if it fails to set a global (240ms)
   List Capabilities
-    ✓ should allow you to list records (175ms)
-    ✓ should allow you use parameters to modify the list response (152ms)
-    ✓ should should allow you to use numbers in parameters (168ms)
-    ✓ should modify requests to comply with DAPI name reservations (162ms)
-    ✓ should allow strings while complying with DAPI name reservations (162ms)
-    ✓ should allow you to offset the list response (156ms)
-    ✓ should reject requests that use unexpected parameters (151ms)
+    ✓ should allow you to list records (217ms)
+    ✓ should allow you use parameters to modify the list response (3226ms)
+    ✓ should should allow you to use numbers in parameters (530ms)
+    ✓ should modify requests to comply with DAPI name reservations (161ms)
+    ✓ should allow strings while complying with DAPI name reservations (229ms)
+    ✓ should allow you to offset the list response (288ms)
+    ✓ should reject requests that use unexpected parameters (148ms)
   Script Capabilities
-    ✓ should allow you to trigger a script in FileMaker (164ms)
-    ✓ should allow you to trigger a script in FileMaker (168ms)
-    ✓ should allow you to trigger a script in a find (171ms)
-    ✓ should allow you to trigger a script in a list (165ms)
+    ✓ should allow you to trigger a script in FileMaker (166ms)
+    ✓ should allow you to trigger a script in FileMaker (222ms)
+    ✓ should allow you to trigger a script in a find (202ms)
+    ✓ should allow you to trigger a script in a list (171ms)
+    ✓ should allow reject a script that does not exist (193ms)
+    ✓ should allow return a result even if a script returns an error (210ms)
   Storage
     ✓ should allow an instance to be created
     ✓ should allow an instance to be saved.
@@ -283,26 +291,31 @@ npm test
     ✓ should allow insances to be listed
     ✓ should allow you to remove an instance
   File Upload Capabilities
-    ✓ should allow you to upload a file to FileMaker (1428ms)
+    ✓ should allow you to upload a file to a new record (1625ms)
+    ✓ should reject with a message if it can not find the file to upload (164ms)
+    ✓ should allow you to upload a file to a specific record (1460ms)
   Data Usage Tracking Capabilities
-    ✓ should track API usage data. (166ms)
-    ✓ should allow you to reset usage data. (151ms)
+    ✓ should track API usage data. (268ms)
+    ✓ should allow you to reset usage data. (160ms)
   Utility Capabilities
-    ✓ should extract field while maintaining the array (232ms)
-    ✓ should extract field data while maintaining the object (228ms)
-    ✓ should extract the recordId while maintaining the array (233ms)
-    ✓ should extract field data while maintaining the object (235ms)
-  47 passing (10s)
-----------------------|----------|----------|----------|----------|-------------------|
-File                  |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
-----------------------|----------|----------|----------|----------|-------------------|
-All files             |     96.5 |       70 |     95.1 |     96.5 |                   |
- connection.model.js  |      100 |      100 |      100 |      100 |                   |
- credentials.model.js |      100 |      100 |      100 |      100 |                   |
- data.model.js        |      100 |      100 |      100 |      100 |                   |
- filemaker.model.js   |    95.42 |    68.75 |    94.31 |    95.42 |... 41,596,644,646 |
- index.js             |      100 |      100 |      100 |      100 |                   |
-----------------------|----------|----------|----------|----------|-------------------|
+    ✓ should extract field while maintaining the array (286ms)
+    ✓ should extract field data while maintaining the object (269ms)
+    ✓ should extract the recordId while maintaining the array (288ms)
+    ✓ should extract field data while maintaining the object (346ms)
+  56 passing (18s)
+-----------------------|----------|----------|----------|----------|-------------------|
+File                   |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+-----------------------|----------|----------|----------|----------|-------------------|
+All files              |    98.61 |    76.92 |    98.04 |    98.61 |                   |
+ fms-api-client        |      100 |      100 |      100 |      100 |                   |
+  index.js             |      100 |      100 |      100 |      100 |                   |
+ fms-api-client/src    |     98.6 |    76.92 |    98.04 |     98.6 |                   |
+  client.model.js      |    98.16 |       76 |    97.73 |    98.16 |       265,684,686 |
+  connection.model.js  |      100 |      100 |      100 |      100 |                   |
+  credentials.model.js |      100 |      100 |      100 |      100 |                   |
+  data.model.js        |      100 |      100 |      100 |      100 |                   |
+  index.js             |      100 |      100 |      100 |      100 |                   |
+-----------------------|----------|----------|----------|----------|-------------------|
 ```
 
 ## Dependencies

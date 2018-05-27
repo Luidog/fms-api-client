@@ -143,6 +143,23 @@ class Connection extends EmbeddedDocument {
         .catch(error => reject(error))
     );
   }
+  /**
+   * @method remove
+   * @memberof Connection
+   * @public
+   * @description removes the currently saved token, exipres, and issued data by setting them to empty strings. This method
+   * returns whatever s based to it unmodified.
+   * @param {Object} response The response object.
+   * @return {Object} response The response recieved from the Data API.
+   *
+   */
+  remove(response) {
+    this.token = '';
+    this.issued = '';
+    this.expires = '';
+
+    return response;
+  }
 
   /**
    * @method extend
@@ -150,7 +167,7 @@ class Connection extends EmbeddedDocument {
    * @public
    * @description Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.
    * @param {Object} response The response object.
-   * @return {Promise} the response recieved from the Data API.
+   * @return {Object} response The response recieved from the Data API.
    *
    */
   extend(response) {
