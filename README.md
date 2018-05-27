@@ -231,57 +231,59 @@ npm test
 ```
 
 ```
-> fms-api-client@1.0.2 test /fms-api-client
+> fms-api-client@1.0.2 test /Users/luidelaparra/Documents/Development/fms-api-client
 > nyc _mocha --recursive ./tests --timeout=30000
   Authentication Capabilities
-    ✓ should authenticate into FileMaker. (148ms)
-    ✓ should automatically request an authentication token (251ms)
-    ✓ should reuse a saved authentication token (166ms)
-    ✓ should log out of the filemaker. (234ms)
+    ✓ should authenticate into FileMaker. (144ms)
+    ✓ should automatically request an authentication token (166ms)
+    ✓ should reuse a saved authentication token (208ms)
+    ✓ should log out of the filemaker. (157ms)
     ✓ should not attempt a logout if there is no valid token.
-    ✓ reject if the authentication request fails (1492ms)
+    ✓ reject if the authentication request fails (1576ms)
   Create Capabilities
-    ✓ should create FileMaker records. (158ms)
-    ✓ should reject bad data with an error (162ms)
+    ✓ should create FileMaker records. (174ms)
+    ✓ should reject bad data with an error (484ms)
+    ✓ should create FileMaker records with mixed types (198ms)
   Delete Capabilities
-    ✓ should delete FileMaker records. (303ms)
-    ✓ should reject deletions that do not specify a recordId (158ms)
+    ✓ should delete FileMaker records. (240ms)
+    ✓ should reject deletions that do not specify a recordId (208ms)
   Edit Capabilities
     ✓ should edit FileMaker records.
-    ✓ should reject bad data with an error (253ms)
+    ✓ should reject bad data with an error (358ms)
   Find Capabilities
-    ✓ should perform a find request (286ms)
-    ✓ should allow you to use an object instead of an array for a find (238ms)
-    ✓ should specify omit Criterea (197ms)
-    ✓ should allow additional parameters to manipulate the results (165ms)
-    ✓ should allow you to use numbers in the find query parameters (232ms)
-    ✓ should allow you to sort the results (176ms)
-    ✓ should return an empty array if the find does not return results (159ms)
-    ✓ should allow you run a pre request script (237ms)
-    ✓ should allow you to send a parameter to the pre request script (174ms)
-    ✓ should allow you run script after the find and before the sort (259ms)
+    ✓ should perform a find request (229ms)
+    ✓ should allow you to use an object instead of an array for a find (234ms)
+    ✓ should specify omit Criterea (222ms)
+    ✓ should allow additional parameters to manipulate the results (273ms)
+    ✓ should allow you to use numbers in the find query parameters (214ms)
+    ✓ should allow you to sort the results (206ms)
+    ✓ should return an empty array if the find does not return results (196ms)
+    ✓ should allow you run a pre request script (290ms)
+    ✓ should return a response even if a script fails (162ms)
+    ✓ should allow you to send a parameter to the pre request script (229ms)
+    ✓ should allow you run script after the find and before the sort (205ms)
     ✓ should allow you to pass a parameter to a script after the find and before the sort (209ms)
   Get Capabilities
-    ✓ should get specific FileMaker records. (226ms)
-    ✓ should reject get requests that do not specify a recordId (297ms)
+    ✓ should get specific FileMaker records. (252ms)
+    ✓ should reject get requests that do not specify a recordId (237ms)
   Global Capabilities
-    ✓ should allow you to set FileMaker globals (216ms)
-    ✓ should reject with a message and code if it fails to set a global (156ms)
+    ✓ should allow you to set FileMaker globals (219ms)
+    ✓ should reject with a message and code if it fails to set a global (240ms)
   List Capabilities
-    ✓ should allow you to list records (191ms)
-    ✓ should allow you use parameters to modify the list response (169ms)
-    ✓ should should allow you to use numbers in parameters (174ms)
-    ✓ should modify requests to comply with DAPI name reservations (320ms)
-    ✓ should allow strings while complying with DAPI name reservations (185ms)
-    ✓ should allow you to offset the list response (265ms)
-    ✓ should reject requests that use unexpected parameters (218ms)
+    ✓ should allow you to list records (217ms)
+    ✓ should allow you use parameters to modify the list response (3226ms)
+    ✓ should should allow you to use numbers in parameters (530ms)
+    ✓ should modify requests to comply with DAPI name reservations (161ms)
+    ✓ should allow strings while complying with DAPI name reservations (229ms)
+    ✓ should allow you to offset the list response (288ms)
+    ✓ should reject requests that use unexpected parameters (148ms)
   Script Capabilities
-    ✓ should allow you to trigger a script in FileMaker (172ms)
-    ✓ should allow you to trigger a script in FileMaker (169ms)
-    ✓ should allow you to trigger a script in a find (259ms)
-    ✓ should allow you to trigger a script in a list (237ms)
-    ✓ should allow reject a script that does not exist (232ms)
-    ✓ should allow return a result even if a script returns an error (242ms)
+    ✓ should allow you to trigger a script in FileMaker (166ms)
+    ✓ should allow you to trigger a script in FileMaker (222ms)
+    ✓ should allow you to trigger a script in a find (202ms)
+    ✓ should allow you to trigger a script in a list (171ms)
+    ✓ should allow reject a script that does not exist (193ms)
+    ✓ should allow return a result even if a script returns an error (210ms)
   Storage
     ✓ should allow an instance to be created
     ✓ should allow an instance to be saved.
@@ -289,18 +291,18 @@ npm test
     ✓ should allow insances to be listed
     ✓ should allow you to remove an instance
   File Upload Capabilities
-    ✓ should allow you to upload a file to a new record (1505ms)
-    ✓ should reject with a message if it can not find the file to upload (227ms)
-    ✓ should allow you to upload a file to a specific record (1497ms)
+    ✓ should allow you to upload a file to a new record (1625ms)
+    ✓ should reject with a message if it can not find the file to upload (164ms)
+    ✓ should allow you to upload a file to a specific record (1460ms)
   Data Usage Tracking Capabilities
-    ✓ should track API usage data. (161ms)
-    ✓ should allow you to reset usage data. (158ms)
+    ✓ should track API usage data. (268ms)
+    ✓ should allow you to reset usage data. (160ms)
   Utility Capabilities
-    ✓ should extract field while maintaining the array (324ms)
-    ✓ should extract field data while maintaining the object (375ms)
-    ✓ should extract the recordId while maintaining the array (338ms)
-    ✓ should extract field data while maintaining the object (272ms)
-  54 passing (14s)
+    ✓ should extract field while maintaining the array (286ms)
+    ✓ should extract field data while maintaining the object (269ms)
+    ✓ should extract the recordId while maintaining the array (288ms)
+    ✓ should extract field data while maintaining the object (346ms)
+  56 passing (18s)
 -----------------------|----------|----------|----------|----------|-------------------|
 File                   |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 -----------------------|----------|----------|----------|----------|-------------------|
