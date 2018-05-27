@@ -69,6 +69,23 @@ describe('Authentication Capabilities', () => {
     ).to.eventually.be.true;
   });
 
+  it('should log out of the filemaker.', () => {
+    return expect(
+      client
+        .authenticate()
+        .then(token => client.logout())
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should not attempt a logout if there is no valid token.', () => {
+    return expect(client.logout().catch(error => error))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('message');
+  });
+
   it('reject if the authentication request fails', () => {
     client.connection.credentials.password = 'incorrect';
     return expect(
