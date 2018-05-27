@@ -119,12 +119,10 @@ describe('Script Capabilities', () => {
 
   it('should parse script results if the results are json', () => {
     return expect(
-      filemaker
-        .list(process.env.LAYOUT, {
-          limit: 2,
-          script: 'Error Script'
-        })
-        .catch(error => error)
+      filemaker.list(process.env.LAYOUT, {
+        limit: 2,
+        script: 'Error Script'
+      })
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('scriptResult', 'scriptError', 'data')
@@ -133,15 +131,10 @@ describe('Script Capabilities', () => {
   });
 
   it('should not parse script results if the results are not json', () => {
-    return expect(
-      filemaker
-        .script(process.env.LAYOUT, {
-          limit: 2,
-          script: 'Non JSON Script'
-        })
-        .catch(error => error)
-    )
+    return expect(filemaker.script('Non JSON Script', process.env.LAYOUT))
       .to.eventually.be.a('object')
-      .that.has.all.keys('scriptResult', 'scriptError', 'data');
+      .that.has.all.keys('result')
+      .and.property('result')
+      .to.be.a('string');
   });
 });

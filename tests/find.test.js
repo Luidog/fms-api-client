@@ -201,4 +201,10 @@ describe('Find Capabilities', () => {
       .and.property('scriptError.presort')
       .to.equal(0);
   });
+
+  it('should reject of there is an issue with the find request', () => {
+    return expect(client.find('No Layout', { id: '*' }).catch(error => error))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
 });
