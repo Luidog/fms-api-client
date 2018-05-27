@@ -51,6 +51,21 @@ describe('File Upload Capabilities', () => {
       .and.property('modId', 1);
   });
 
+  it('should allow you to upload a file to a specific container repetition', () => {
+    return expect(
+      client.upload(
+        './assets/placeholder.md',
+        process.env.LAYOUT,
+        'image',
+        undefined,
+        1
+      )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId')
+      .and.property('modId', 1);
+  });
+
   it('should reject with a message if it can not find the file to upload', () => {
     return expect(
       client

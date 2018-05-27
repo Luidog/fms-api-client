@@ -116,4 +116,32 @@ describe('Script Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('scriptResult', 'scriptError', 'data');
   });
+
+  it('should parse script results if the results are json', () => {
+    return expect(
+      filemaker
+        .list(process.env.LAYOUT, {
+          limit: 2,
+          script: 'Error Script'
+        })
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('scriptResult', 'scriptError', 'data')
+      .and.property('scriptResult')
+      .to.be.a('object');
+  });
+
+  it('should not parse script results if the results are not json', () => {
+    return expect(
+      filemaker
+        .list(process.env.LAYOUT, {
+          limit: 2,
+          script: 'Non JSON Script'
+        })
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('scriptResult', 'scriptError', 'data');
+  });
 });

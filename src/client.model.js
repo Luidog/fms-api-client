@@ -372,7 +372,7 @@ class Client extends Document {
             headers: {
               Authorization: `Bearer ${token}`
             },
-            data: this._sanitizeParameters(parameters) || {}
+            data: this._sanitizeParameters(parameters)
           })
         )
         .then(response => response.data)
@@ -619,19 +619,12 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(
-          body =>
-            body.response.scriptError === '0'
-              ? resolve({
-                  result: this._isJson(body.response.scriptResult)
-                    ? JSON.parse(body.response.scriptResult)
-                    : body.response.scriptResult
-                })
-              : reject({
-                  result: this._isJson(body.response.scriptResult)
-                    ? JSON.parse(body.response.scriptResult)
-                    : body.response.scriptResult
-                })
+        .then(body =>
+          resolve({
+            result: this._isJson(body.response.scriptResult)
+              ? JSON.parse(body.response.scriptResult)
+              : body.response.scriptResult
+          })
         )
         .catch(error => reject(error.response.data.messages[0]))
     );
@@ -663,9 +656,7 @@ class Client extends Document {
       value =>
         typeof value === 'string'
           ? value
-          : typeof value === 'object'
-            ? JSON.stringify(value)
-            : typeof value === 'number' ? value.toString() : ''
+          : typeof value === 'object' ? JSON.stringify(value) : value.toString()
     );
   }
   /**
