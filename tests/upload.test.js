@@ -91,4 +91,41 @@ describe('File Upload Capabilities', () => {
       .that.has.all.keys('modId')
       .and.property('modId', 1);
   });
+
+  it('should allow you to upload a file to a specific record container repetition', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(record =>
+          client.upload(
+            './assets/placeholder.md',
+            process.env.LAYOUT,
+            'image',
+            record.recordId,
+            2
+          )
+        )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId')
+      .and.property('modId', 1);
+  });
+
+  it('should reject of the request is invalid', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(record =>
+          client.upload(
+            './assets/placeholder.md',
+            'No layout',
+            'image',
+            record.recordId
+          )
+        )
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
 });
