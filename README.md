@@ -6,10 +6,10 @@ For in depth documentation head to the [`docs`](https://luidog.github.io/fms-api
 
 ## Installation
 
-This is a [Node.js](https://nodejs.org/) module available through the
-[npm registry](https://www.npmjs.com/). It can be installed using the
+This is a [Node.js](https://nodejs.org/) module available through the 
+[npm registry](https://www.npmjs.com/). It can be installed using the 
 [`npm`](https://docs.npmjs.com/getting-started/installing-npm-packages-locally)
-or
+or 
 [`yarn`](https://yarnpkg.com/en/)
 command line tools.
 
@@ -31,7 +31,7 @@ const colors = require('colors');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
-const { Filemaker } = require('./index.js');
+const { Filemaker } = require('fms-api-client');
 environment.config({ path: './tests/.env' });
 
 varium(process.env, './tests/env.manifest');
@@ -219,6 +219,7 @@ const rewind = () => {
 };
 
 setTimeout(() => rewind(), 10000);
+
 ```
 
 ## Tests
@@ -227,65 +228,65 @@ setTimeout(() => rewind(), 10000);
 npm install
 npm test
 ```
-
 ```
-> fms-api-client@1.1.1 test /Users/luidelaparra/Documents/Development/fms-api-client
+
+> fms-api-client@1.1.2 test /fms-api-client
 > nyc _mocha --recursive ./tests --timeout=30000
   Authentication Capabilities
-    ✓ should authenticate into FileMaker. (144ms)
-    ✓ should automatically request an authentication token (169ms)
-    ✓ should reuse a saved authentication token (164ms)
-    ✓ should log out of the filemaker. (158ms)
+    ✓ should authenticate into FileMaker. (238ms)
+    ✓ should automatically request an authentication token (172ms)
+    ✓ should reuse a saved authentication token (156ms)
+    ✓ should log out of the filemaker. (152ms)
     ✓ should not attempt a logout if there is no valid token.
-    ✓ should reject if the logout request fails (153ms)
-    ✓ should reject if the authentication request fails (1407ms)
+    ✓ should reject if the logout request fails (163ms)
+    ✓ should reject if the authentication request fails (1405ms)
   Create Capabilities
-    ✓ should create FileMaker records. (160ms)
-    ✓ should reject bad data with an error (153ms)
-    ✓ should create FileMaker records with mixed types (157ms)
+    ✓ should create FileMaker records. (149ms)
+    ✓ should reject bad data with an error (158ms)
+    ✓ should create FileMaker records with mixed types (159ms)
   Delete Capabilities
-    ✓ should delete FileMaker records. (238ms)
-    ✓ should reject deletions that do not specify a recordId (161ms)
+    ✓ should delete FileMaker records. (249ms)
+    ✓ should reject deletions that do not specify a recordId (157ms)
   Edit Capabilities
     ✓ should edit FileMaker records.
-    ✓ should reject bad data with an error (255ms)
+    ✓ should reject bad data with an error (240ms)
   Find Capabilities
-    ✓ should perform a find request (191ms)
-    ✓ should allow you to use an object instead of an array for a find (194ms)
-    ✓ should specify omit Criterea (189ms)
-    ✓ should allow additional parameters to manipulate the results (163ms)
-    ✓ should allow you to use numbers in the find query parameters (165ms)
-    ✓ should allow you to sort the results (191ms)
-    ✓ should return an empty array if the find does not return results (166ms)
-    ✓ should allow you run a pre request script (175ms)
-    ✓ should return a response even if a script fails (171ms)
-    ✓ should allow you to send a parameter to the pre request script (164ms)
-    ✓ should allow you run script after the find and before the sort (195ms)
-    ✓ should allow you to pass a parameter to a script after the find and before the sort (201ms)
-    ✓ should reject of there is an issue with the find request (155ms)
+    ✓ should perform a find request (199ms)
+    ✓ should allow you to use an object instead of an array for a find (163ms)
+    ✓ should specify omit Criterea (201ms)
+    ✓ should allow additional parameters to manipulate the results (167ms)
+    ✓ should allow you to use numbers in the find query parameters (153ms)
+    ✓ should allow you to sort the results (172ms)
+    ✓ should return an empty array if the find does not return results (156ms)
+    ✓ should allow you run a pre request script (172ms)
+    ✓ should return a response even if a script fails (182ms)
+    ✓ should allow you to send a parameter to the pre request script (162ms)
+    ✓ should allow you run script after the find and before the sort (181ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (177ms)
+    ✓ should reject of there is an issue with the find request (162ms)
   Get Capabilities
-    ✓ should get specific FileMaker records. (238ms)
-    ✓ should reject get requests that do not specify a recordId (234ms)
+    ✓ should get specific FileMaker records. (247ms)
+    ✓ should reject get requests that do not specify a recordId (235ms)
   Global Capabilities
-    ✓ should allow you to set FileMaker globals (167ms)
-    ✓ should reject with a message and code if it fails to set a global (158ms)
+    ✓ should allow you to set FileMaker globals (164ms)
+    ✓ should reject with a message and code if it fails to set a global (150ms)
   List Capabilities
-    ✓ should allow you to list records (194ms)
-    ✓ should allow you use parameters to modify the list response (160ms)
-    ✓ should should allow you to use numbers in parameters (158ms)
-    ✓ should modify requests to comply with DAPI name reservations (151ms)
-    ✓ should allow strings while complying with DAPI name reservations (156ms)
+    ✓ should allow you to list records (209ms)
+    ✓ should allow you use parameters to modify the list response (154ms)
+    ✓ should should allow you to use numbers in parameters (160ms)
+    ✓ should modify requests to comply with DAPI name reservations (152ms)
+    ✓ should allow strings while complying with DAPI name reservations (154ms)
     ✓ should allow you to offset the list response (164ms)
-    ✓ should reject requests that use unexpected parameters (154ms)
+    ✓ should reject requests that use unexpected parameters (152ms)
   Script Capabilities
-    ✓ should allow you to trigger a script in FileMaker (171ms)
-    ✓ should allow you to trigger a script in FileMaker (175ms)
+    ✓ should allow you to trigger a script in FileMaker (169ms)
+    ✓ should allow you to trigger a script in FileMaker (183ms)
     ✓ should allow you to trigger a script in a find (206ms)
-    ✓ should allow you to trigger a script in a list (158ms)
-    ✓ should allow reject a script that does not exist (151ms)
-    ✓ should allow return a result even if a script returns an error (167ms)
-    ✓ should parse script results if the results are json (169ms)
-    ✓ should not parse script results if the results are not json (163ms)
+    ✓ should allow you to trigger a script in a list (173ms)
+    ✓ should allow reject a script that does not exist (157ms)
+    ✓ should allow return a result even if a script returns an error (171ms)
+    ✓ should parse script results if the results are json (163ms)
+    ✓ should not parse script results if the results are not json (180ms)
   Storage
     ✓ should allow an instance to be created
     ✓ should allow an instance to be saved.
@@ -293,63 +294,66 @@ npm test
     ✓ should allow insances to be listed
     ✓ should allow you to remove an instance
   File Upload Capabilities
-    ✓ should allow you to upload a file to a new record (1644ms)
-    ✓ should allow you to upload a file to a specific container repetition (1346ms)
-    ✓ should reject with a message if it can not find the file to upload (157ms)
-    ✓ should allow you to upload a file to a specific record (1326ms)
+    ✓ should allow you to upload a file to a new record (1400ms)
+    ✓ should allow you to upload a file to a specific container repetition (1426ms)
+    ✓ should reject with a message if it can not find the file to upload (159ms)
+    ✓ should allow you to upload a file to a specific record (1417ms)
+    ✓ should allow you to upload a file to a specific record container repetition (1424ms)
+    ✓ should reject of the request is invalid (304ms)
   Data Usage Tracking Capabilities
-    ✓ should track API usage data. (167ms)
-    ✓ should allow you to reset usage data. (161ms)
+    ✓ should track API usage data. (164ms)
+    ✓ should allow you to reset usage data. (158ms)
   Utility Capabilities
-    ✓ should extract field while maintaining the array (243ms)
-    ✓ should extract field data while maintaining the object (236ms)
+    ✓ should extract field while maintaining the array (235ms)
+    ✓ should extract field data while maintaining the object (248ms)
     ✓ should extract the recordId while maintaining the array (239ms)
-    ✓ should extract field data while maintaining the object (231ms)
-  61 passing (15s)
+    ✓ should extract field data while maintaining the object (230ms)
+  63 passing (16s)
 -----------------------|----------|----------|----------|----------|-------------------|
 File                   |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 -----------------------|----------|----------|----------|----------|-------------------|
-All files              |      100 |       95 |      100 |      100 |                   |
+All files              |      100 |      100 |      100 |      100 |                   |
  fms-api-client        |      100 |      100 |      100 |      100 |                   |
   index.js             |      100 |      100 |      100 |      100 |                   |
- fms-api-client/src    |      100 |       95 |      100 |      100 |                   |
-  client.model.js      |      100 |    94.74 |      100 |      100 |           194,581 |
+ fms-api-client/src    |      100 |      100 |      100 |      100 |                   |
+  client.model.js      |      100 |      100 |      100 |      100 |                   |
   connection.model.js  |      100 |      100 |      100 |      100 |                   |
   credentials.model.js |      100 |      100 |      100 |      100 |                   |
   data.model.js        |      100 |      100 |      100 |      100 |                   |
   index.js             |      100 |      100 |      100 |      100 |                   |
 -----------------------|----------|----------|----------|----------|-------------------|
+
 ```
 
 ## Dependencies
 
-* [axios](https://ghub.io/axios): Promise based HTTP client for the browser and node.js
-* [form-data](https://ghub.io/form-data): A library to create readable &quot;multipart/form-data&quot; streams. Can be used to submit forms and file uploads to other web applications.
-* [lodash](https://ghub.io/lodash): Lodash modular utilities.
-* [marpat](https://ghub.io/marpat): A class-based ES6 ODM for Mongo-like databases.
-* [moment](https://ghub.io/moment): Parse, validate, manipulate, and display dates
-* [object-sizeof](https://ghub.io/object-sizeof): Sizeof of a JavaScript object in Bytes
-* [prettysize](https://ghub.io/prettysize): Convert bytes to other sizes for prettier logging
+- [axios](https://ghub.io/axios): Promise based HTTP client for the browser and node.js
+- [form-data](https://ghub.io/form-data): A library to create readable &quot;multipart/form-data&quot; streams. Can be used to submit forms and file uploads to other web applications.
+- [lodash](https://ghub.io/lodash): Lodash modular utilities.
+- [marpat](https://ghub.io/marpat): A class-based ES6 ODM for Mongo-like databases.
+- [moment](https://ghub.io/moment): Parse, validate, manipulate, and display dates
+- [object-sizeof](https://ghub.io/object-sizeof): Sizeof of a JavaScript object in Bytes
+- [prettysize](https://ghub.io/prettysize): Convert bytes to other sizes for prettier logging
 
 ## Dev Dependencies
 
-* [chai](https://ghub.io/chai): BDD/TDD assertion library for node.js and the browser. Test framework agnostic.
-* [chai-as-promised](https://ghub.io/chai-as-promised): Extends Chai with assertions about promises.
-* [colors](https://ghub.io/colors): get colors in your node.js console
-* [coveralls](https://ghub.io/coveralls): takes json-cov output into stdin and POSTs to coveralls.io
-* [dotenv](https://ghub.io/dotenv): Loads environment variables from .env file
-* [eslint](https://ghub.io/eslint): An AST-based pattern checker for JavaScript.
-* [eslint-config-google](https://ghub.io/eslint-config-google): ESLint shareable config for the Google style
-* [eslint-config-prettier](https://ghub.io/eslint-config-prettier): Turns off all rules that are unnecessary or might conflict with Prettier.
-* [eslint-plugin-prettier](https://ghub.io/eslint-plugin-prettier): Runs prettier as an eslint rule
-* [jsdocs](https://ghub.io/jsdocs): jsdocs
-* [minami](https://ghub.io/minami): Clean and minimal JSDoc 3 Template / Theme
-* [mocha](https://ghub.io/mocha): simple, flexible, fun test framework
-* [mocha-lcov-reporter](https://ghub.io/mocha-lcov-reporter): LCOV reporter for Mocha
-* [nyc](https://ghub.io/nyc): the Istanbul command line interface
-* [package-json-to-readme](https://ghub.io/package-json-to-readme): Generate a README.md from package.json contents
-* [prettier](https://ghub.io/prettier): Prettier is an opinionated code formatter
-* [varium](https://ghub.io/varium): A strict parser and validator of environment config variables
+- [chai](https://ghub.io/chai): BDD/TDD assertion library for node.js and the browser. Test framework agnostic.
+- [chai-as-promised](https://ghub.io/chai-as-promised): Extends Chai with assertions about promises.
+- [colors](https://ghub.io/colors): get colors in your node.js console
+- [coveralls](https://ghub.io/coveralls): takes json-cov output into stdin and POSTs to coveralls.io
+- [dotenv](https://ghub.io/dotenv): Loads environment variables from .env file
+- [eslint](https://ghub.io/eslint): An AST-based pattern checker for JavaScript.
+- [eslint-config-google](https://ghub.io/eslint-config-google): ESLint shareable config for the Google style
+- [eslint-config-prettier](https://ghub.io/eslint-config-prettier): Turns off all rules that are unnecessary or might conflict with Prettier.
+- [eslint-plugin-prettier](https://ghub.io/eslint-plugin-prettier): Runs prettier as an eslint rule
+- [jsdocs](https://ghub.io/jsdocs): jsdocs
+- [minami](https://ghub.io/minami): Clean and minimal JSDoc 3 Template / Theme
+- [mocha](https://ghub.io/mocha): simple, flexible, fun test framework
+- [mocha-lcov-reporter](https://ghub.io/mocha-lcov-reporter): LCOV reporter for Mocha
+- [nyc](https://ghub.io/nyc): the Istanbul command line interface
+- [package-json-to-readme](https://ghub.io/package-json-to-readme): Generate a README.md from package.json contents
+- [prettier](https://ghub.io/prettier): Prettier is an opinionated code formatter
+- [varium](https://ghub.io/varium): A strict parser and validator of environment config variables
 
 ## License
 
