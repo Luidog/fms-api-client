@@ -540,7 +540,7 @@ class Client extends Document {
    * by default this is 1.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
-  upload(file, layout, containerFieldName, recordId = 0, fieldRepetition = 1) {
+  upload(file, layout, containerFieldName, recordId = 0, fieldRepetition) {
     return new Promise((resolve, reject) => {
       let form = new FormData();
       let resolveRecordId = () =>
