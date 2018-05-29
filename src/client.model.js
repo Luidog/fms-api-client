@@ -578,9 +578,9 @@ class Client extends Document {
         .then(response => resolve(response))
         .catch(
           error =>
-            error.errno !== undefined
-              ? reject(error.message)
-              : reject(error.response.data.messages[0])
+            error.errno === undefined
+              ? reject(error.response.data.messages[0])
+              : reject(error.message)
         );
     });
   }
