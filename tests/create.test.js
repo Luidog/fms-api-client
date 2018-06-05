@@ -130,7 +130,7 @@ describe('Create Capabilities', () => {
           object: { 'co-pilot': 'chewbacca' },
           height: 52
         },
-        { script: 'FMS Triggered Script','script.param': 1, merge: true }
+        { script: 'FMS Triggered Script', 'script.param': 1, merge: true }
       )
     )
       .to.eventually.be.a('object')
