@@ -10,6 +10,7 @@ const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker } = require('./index.js');
+
 environment.config({ path: './tests/.env' });
 
 varium(process.env, './tests/env.manifest');
@@ -52,12 +53,14 @@ connect('nedb://memory').then(db => {
         number: 5,
         array: ['1'],
         object: { driods: true }
-      })
+      },{merge:true})
       .then(record =>
         console.log('Some guy thought of a movie....'.yellow.underline, record)
       )
       .catch(error => console.log('That is no moon....'.red, error))
   );
+
+
   /**
    * Most methods on the client are promises. The only exceptions to this are
    * the utility methods of fieldData(), and recordId(). You can chain together

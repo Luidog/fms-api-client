@@ -201,15 +201,22 @@ class Client extends Document {
    * @method _sanitizeParameters
    * @memberof Client
    * @private
+   * @param {Object} layout the parameters to use when filtering safe parameters and stringifying values
+   * @param {Array} safeParameters String values to allow to be sent to filemaker.
    * @description stringifys all values for an object. This is used to ensure that find requests and list requests
    * can use either strings or numbers when setting options.
-   * @return {Object} returns an object with all values mapped to strings.
+   * @return {Object} returns an object with all safe keys and values mapped to strings.
    */
-  _sanitizeParameters(parameters) {
-    return _.mapValues(
-      parameters,
-      value => (_.isNumber(value) ? value.toString() : value)
-    );
+  _sanitizeParameters(parameters, safeParameters) {
+    return safeParameters
+      ? _.mapValues(
+          _.pick(parameters, safeParameters),
+          value => (_.isNumber(value) ? value.toString() : value)
+        )
+      : _.mapValues(
+          parameters,
+          value => (_.isNumber(value) ? value.toString() : value)
+        );
   }
   /**
    * @method authenticate
@@ -301,9 +308,20 @@ class Client extends Document {
               authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
-            data: Object.assign(parameters, {
-              fieldData: this._stringify(data)
-            })
+            data: Object.assign(
+              this._sanitizeParameters(parameters, [
+                'portalData',
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param'
+              ]),
+              {
+                fieldData: this._stringify(data)
+              }
+            )
           })
         )
         .then(response => response.data)
@@ -311,6 +329,10 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => this._filterResponse(body))
+        .then(
+          response =>
+            parameters.merge ? Object.assign(data, response) : response
+        )
         .then(response => resolve(response))
         .catch(error => reject(error.response.data.messages[0]))
     );
