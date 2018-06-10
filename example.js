@@ -48,18 +48,21 @@ connect('nedb://memory').then(db => {
      * they can be inserted into a filemaker field.
      */
     client
-      .create('Heroes', {
-        name: 'George Lucas',
-        number: 5,
-        array: ['1'],
-        object: { driods: true }
-      },{merge:true})
+      .create(
+        'Heroes',
+        {
+          name: 'George Lucas',
+          number: 5,
+          array: ['1'],
+          object: { driods: true }
+        },
+        { merge: true }
+      )
       .then(record =>
         console.log('Some guy thought of a movie....'.yellow.underline, record)
       )
       .catch(error => console.log('That is no moon....'.red, error))
   );
-
 
   /**
    * Most methods on the client are promises. The only exceptions to this are
