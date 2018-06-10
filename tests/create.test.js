@@ -69,4 +69,86 @@ describe('Create Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('recordId', 'modId');
   });
+
+  it('should substitute an empty object if data is not provided', () => {
+    return expect(filemaker.create(process.env.LAYOUT))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('recordId', 'modId');
+  });
+
+  it('should return an object with merged filemaker and data properties', () => {
+    return expect(
+      filemaker.create(
+        process.env.LAYOUT,
+        {
+          name: 'Han Solo',
+          array: ['ben'],
+          object: { 'co-pilot': 'chewbacca' },
+          height: 52
+        },
+        { merge: true }
+      )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys(
+        'recordId',
+        'name',
+        'array',
+        'object',
+        'height',
+        'modId'
+      );
+  });
+
+  it('should allow you to run a script when creating a record with a merge response', () => {
+    return expect(
+      filemaker.create(
+        process.env.LAYOUT,
+        {
+          name: 'Han Solo',
+          array: ['ben'],
+          object: { 'co-pilot': 'chewbacca' },
+          height: 52
+        },
+        { script: 'FMS Triggered Script', merge: true }
+      )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys(
+        'recordId',
+        'name',
+        'array',
+        'object',
+        'height',
+        'modId',
+        'scriptResult',
+        'scriptError'
+      );
+  });
+
+  it('should sanitize parameters when creating a new record', () => {
+    return expect(
+      filemaker.create(
+        process.env.LAYOUT,
+        {
+          name: 'Han Solo',
+          array: ['ben'],
+          object: { 'co-pilot': 'chewbacca' },
+          height: 52
+        },
+        { script: 'FMS Triggered Script', 'script.param': 1, merge: true }
+      )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys(
+        'recordId',
+        'name',
+        'array',
+        'object',
+        'height',
+        'modId',
+        'scriptResult',
+        'scriptError'
+      );
+  });
 });

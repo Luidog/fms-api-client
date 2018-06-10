@@ -5,7 +5,7 @@
     "A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.",
   "main": "index.js",
   "scripts": {
-    "test": "nyc _mocha --recursive ./tests --timeout=30000",
+    "test": "nyc _mocha --recursive ./tests --timeout=30000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "generate-readme":
       "node_modules/.bin/readme package.json --tests --travis > README.md",
