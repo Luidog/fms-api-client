@@ -297,7 +297,7 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
-  create(layout, data, parameters = {}) {
+  create(layout, data = {}, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>

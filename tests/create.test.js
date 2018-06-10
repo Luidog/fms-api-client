@@ -70,6 +70,12 @@ describe('Create Capabilities', () => {
       .that.has.all.keys('recordId', 'modId');
   });
 
+  it('should substitute an empty object if data is not provided', () => {
+    return expect(filemaker.create(process.env.LAYOUT))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('recordId', 'modId');
+  });
+
   it('should return an object with merged filemaker and data properties', () => {
     return expect(
       filemaker.create(
