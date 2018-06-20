@@ -1,13 +1,21 @@
 'use strict';
 
-const axios = require('axios');
-const _ = require('lodash');
 const fs = require('fs');
+const axios = require('axios');
 const FormData = require('form-data');
 const { Document } = require('marpat');
 const { Connection } = require('./connection.model');
 const { Credentials } = require('./credentials.model');
 const { Data } = require('./data.model');
+const {
+  toArray,
+  namespace,
+  isJson,
+  stringify,
+  map,
+  sanitizeParameters,
+  filterResponse
+} = require('./utilities.service');
 
 /**
  * @class Client
@@ -197,27 +205,7 @@ class Client extends Document {
     }/layouts/${layout}/records/${recordId}/containers/${fieldName}/${fieldRepetition}`;
     return url;
   }
-  /**
-   * @method _sanitizeParameters
-   * @memberof Client
-   * @private
-   * @param {Object} layout the parameters to use when filtering safe parameters and stringifying values
-   * @param {Array} safeParameters String values to allow to be sent to filemaker.
-   * @description stringifys all values for an object. This is used to ensure that find requests and list requests
-   * can use either strings or numbers when setting options.
-   * @return {Object} returns an object with all safe keys and values mapped to strings.
-   */
-  _sanitizeParameters(parameters, safeParameters) {
-    return safeParameters
-      ? _.mapValues(
-          _.pick(parameters, safeParameters),
-          value => (_.isNumber(value) ? value.toString() : value)
-        )
-      : _.mapValues(
-          parameters,
-          value => (_.isNumber(value) ? value.toString() : value)
-        );
-  }
+
   /**
    * @method authenticate
    * @memberof Client
@@ -309,7 +297,7 @@ class Client extends Document {
               'Content-Type': 'application/json'
             },
             data: Object.assign(
-              this._sanitizeParameters(parameters, [
+              sanitizeParameters(parameters, [
                 'portalData',
                 'script',
                 'script.param',
@@ -319,7 +307,7 @@ class Client extends Document {
                 'script.presort.param'
               ]),
               {
-                fieldData: this._stringify(data)
+                fieldData: this.data.incoming(stringify(data))
               }
             )
           })
@@ -328,7 +316,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => this._filterResponse(body))
+        .then(body => filterResponse(body))
         .then(
           response =>
             parameters.merge ? Object.assign(data, response) : response
@@ -360,8 +348,8 @@ class Client extends Document {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
-            data: Object.assign(this._sanitizeParameters(parameters), {
-              fieldData: this._stringify(data)
+            data: Object.assign(sanitizeParameters(parameters), {
+              fieldData: this.data.incoming(stringify(data))
             })
           })
         )
@@ -369,7 +357,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => this._filterResponse(body))
+        .then(body => filterResponse(body))
         .then(response => resolve(response))
         .catch(error => reject(error.response.data.messages[0]))
     );
@@ -394,14 +382,14 @@ class Client extends Document {
             headers: {
               Authorization: `Bearer ${token}`
             },
-            data: this._sanitizeParameters(parameters)
+            data: sanitizeParameters(parameters)
           })
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => this._filterResponse(body))
+        .then(body => filterResponse(body))
         .then(response => resolve(response))
         .catch(error => reject(error.response.data.messages[0]))
     );
@@ -427,14 +415,14 @@ class Client extends Document {
             headers: {
               Authorization: `Bearer ${token}`
             },
-            params: this._namespace(parameters)
+            params: namespace(parameters)
           })
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => this._filterResponse(body))
+        .then(body => filterResponse(body))
         .then(response => resolve(response))
         .catch(error => reject(error.response.data.messages[0]))
     );
@@ -460,14 +448,14 @@ class Client extends Document {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
-            params: this._namespace(parameters)
+            params: namespace(parameters)
           })
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => this._filterResponse(body))
+        .then(body => filterResponse(body))
         .then(response => resolve(response))
         .catch(error => reject(error.response.data.messages[0]))
     );
@@ -495,8 +483,8 @@ class Client extends Document {
               'Content-Type': 'application/json'
             },
             data: Object.assign(
-              { query: this._toArray(query) },
-              this._sanitizeParameters(parameters)
+              { query: toArray(query) },
+              sanitizeParameters(parameters)
             )
           })
         )
@@ -504,14 +492,14 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => this._filterResponse(body))
+        .then(body => filterResponse(body))
         .then(response => resolve(response))
         .catch(
           error =>
             error.response.data.messages[0].code === '401'
               ? resolve({
                   data: [],
-                  message: this._filterResponse(error.response.data)
+                  message: filterResponse(error.response.data)
                 })
               : reject(error.response.data.messages[0])
         )
@@ -596,7 +584,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => this._filterResponse(body))
+        .then(body => filterResponse(body))
         .then(response => resolve(response))
         .catch(
           error =>
@@ -629,10 +617,10 @@ class Client extends Document {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
-            params: this._sanitizeParameters(
+            params: sanitizeParameters(
               Object.assign(
-                { script: name, 'script.param': this._stringify(parameters) },
-                this._namespace({ limit: '1' })
+                { script: name, 'script.param': stringify(parameters) },
+                namespace({ limit: '1' })
               )
             )
           })
@@ -643,89 +631,12 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body =>
           resolve({
-            result: this._isJson(body.response.scriptResult)
+            result: isJson(body.response.scriptResult)
               ? JSON.parse(body.response.scriptResult)
               : body.response.scriptResult
           })
         )
         .catch(error => reject(error.response.data.messages[0]))
-    );
-  }
-
-  /**
-  /**
-   * @method _toArray
-   * @private
-   * @memberof Client
-   * @description _toArray is a helper method that converts an object into an array. This is used 
-   * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
-   * @return {Object}      a json object containing stringified data.
-   */
-  _toArray(data) {
-    return Array.isArray(data) ? data : [data];
-  }
-  /**
-   * @method _stringify
-   * @private
-   * @memberof Client
-   * @description _stringify is a helper method that converts numbers and objects / arrays to strings.
-   * @param  {Object|Array} The data being used to create or update a record.
-   * @return {Object}      a json object containing stringified data.
-   */
-  _stringify(data) {
-    return _.mapValues(
-      this.data.incoming(data),
-      value =>
-        typeof value === 'string'
-          ? value
-          : typeof value === 'object' ? JSON.stringify(value) : value.toString()
-    );
-  }
-  /**
-   * @method _filterResponse
-   * @private
-   * @memberof Client
-   * @description This method filters the FileMaker DAPI response by testing if a script was triggered with
-   * the request, then either selecting the response, script error, and script result from the response or
-   * selecting just the response.
-   * @return {Object}      a json object containing the selected data from the Data API Response.
-   */
-  _filterResponse(data) {
-    return _.mapValues(
-      data.response,
-      value => (this._isJson(value) ? JSON.parse(value) : value)
-    );
-  }
-  /**
-   * @method _isJson
-   * @private
-   * @memberof Client
-   * @description This is a helper method for the _filterResponse method.
-   * @return {Boolean}      a boolean result if the data passed to it is json
-   */
-  _isJson(data) {
-    try {
-      JSON.parse(data);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-  /**
-   * @method _namespace
-   * @private
-   * @memberof Client
-   * @description This method filters the FileMaker DAPI response by testing if a script was triggered with
-   * the request, then either selecting the response, script error, and script result from the response or
-   * selecting just the response.
-   * @return {Object}      a json object containing the selected data from the Data API Response.
-   */
-  _namespace(data) {
-    let underscored = ['limit', 'offset', 'sort'];
-
-    return _.mapKeys(
-      data,
-      (value, key) => (_.includes(underscored, key) ? `_${key}` : key)
     );
   }
   /**
@@ -739,7 +650,7 @@ class Client extends Document {
    */
   fieldData(data) {
     return Array.isArray(data)
-      ? _.map(data, object =>
+      ? map(data, object =>
           Object.assign({}, object.fieldData, {
             recordId: object.recordId,
             modId: object.modId
@@ -761,13 +672,11 @@ class Client extends Document {
    */
   recordId(data) {
     return Array.isArray(data)
-      ? _.map(data, object => object.recordId)
+      ? map(data, object => object.recordId)
       : data.recordId.toString();
   }
 }
-/**
- * @module Client
- */
+
 module.exports = {
   Client
 };

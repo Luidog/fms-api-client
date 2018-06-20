@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Connection - Documentation</title>
+    <title>Utilities - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Connection</h1>
+    <h1 class="page-title">Utilities</h1>
     
 
     
@@ -41,11 +41,6 @@
 
 <header>
     
-        <h2>
-        Connection
-        </h2>
-        
-            <div class="class-description"><p>The class used to connection with the FileMaker server Data API</p></div>
         
     
 </header>
@@ -54,85 +49,8 @@
     <div class="container-overview">
     
         
-<div class="section-method">
 
-    
-    <h2>Constructor</h2>
-    
-
-    <h4 class="name" id="Connection"><span class="type-signature"></span>new Connection<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line7">line 7</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
+        
     
     </div>
 
@@ -147,232 +65,6 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="credentials"><span class="type-signature"></span>credentials<span class="type-signature"> :Object</span></h4>
-
-
-
-
-<div class="description">
-    <p>The client credentials.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line30">line 30</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><code>Object</code></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="issued"><span class="type-signature"></span>issued<span class="type-signature"> :String</span></h4>
-
-
-
-
-<div class="description">
-    <p>A string containing the time the token token was issued.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line15">line 15</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><code>String</code></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="token"><span class="type-signature"></span>token<span class="type-signature"> :String</span></h4>
-
-
-
-
-<div class="description">
-    <p>The token to use when querying an endpoint.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line43">line 43</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><code>String</code></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-</div>
-
-        
-    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -383,14 +75,16 @@
 
     
 
-    <h4 class="name" id="._authURL"><span class="type-signature">(private, static) </span>_authURL<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="~filterResponse"><span class="type-signature">(inner) </span>filterResponse<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Generates a url for use when retrieving authentication tokens in exchange for Account credentials</p>
+    <p>This method filters the FileMaker DAPI response by testing if a script was triggered
+with the request, then either selecting the response, script error, and script result from the
+response or selecting just the response.</p>
 </div>
 
 
@@ -426,435 +120,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line59">line 59</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>String</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>A URL</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="._basicAuth"><span class="type-signature">(private, static) </span>_basicAuth<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
-
-    
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line74">line 74</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>String</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>A string containing the authentication</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="._logoutURL"><span class="type-signature">(private, static) </span>_logoutURL<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Generates a url for use when logging out of a FileMaker Session.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client.model.js.html">client.model.js</a>, <a href="client.model.js.html#line179">line 179</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>String</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>A URL</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="._saveToken"><span class="type-signature">(static) </span>_saveToken<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Saves a token retrieved from the Data API.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line87">line 87</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>String</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>a token retrieved from the private generation method</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".extend"><span class="type-signature">(static) </span>extend<span class="signature">(response)</span><span class="type-signature"> &rarr; {Object}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line164">line 164</a>
+        <a href="utilities.service.js.html">utilities.service.js</a>, <a href="utilities.service.js.html#line68">line 68</a>
     </li></ul></dd>
     
 
@@ -898,7 +164,7 @@
 
         <tr>
             
-                <td class="name"><code>response</code></td>
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
@@ -915,7 +181,7 @@
             
 
             <td class="description last">
-                <p>The response object.</p>
+                <p>The response recieved from the FileMaker DAPI.</p>
                 
             </td>
         </tr>
@@ -956,7 +222,7 @@
 
 
 <div class="param-desc">
-    <p>response The response recieved from the Data API.</p>
+    <p>A json object containing the selected data from the Data API Response.</p>
 </div>
 
     
@@ -971,16 +237,15 @@
 
     
 
-    <h4 class="name" id=".generate"><span class="type-signature">(static) </span>generate<span class="signature">()</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="~isJson"><span class="type-signature">(inner) </span>isJson<span class="signature">(data)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Retrieves an authentication token from the Data API. This promise method will check for
-a zero string in the response errorCode before resolving. If an http error code or a non zero response error code.
-is returned this will reject.</p>
+    <p>The isJson method uses the a try / catch to parse incoming data safely as json.
+This method will return tru if it is able to cast the incoming data as json.</p>
 </div>
 
 
@@ -1016,117 +281,7 @@ is returned this will reject.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line119">line 119</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Promise</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>returns a promise that will either resolve or reject based on the Data API.
-response</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".remove"><span class="type-signature">(static) </span>remove<span class="signature">(response)</span><span class="type-signature"> &rarr; {Object}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>removes the currently saved token, exipres, and issued data by setting them to empty strings. This method
-returns whatever s based to it unmodified.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line146">line 146</a>
+        <a href="utilities.service.js.html">utilities.service.js</a>, <a href="utilities.service.js.html#line35">line 35</a>
     </li></ul></dd>
     
 
@@ -1170,7 +325,355 @@ returns whatever s based to it unmodified.</p>
 
         <tr>
             
-                <td class="name"><code>response</code></td>
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Any</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The data to be evaluated as json.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Boolean</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>A boolean result depending on if the data passed to it is valid JSON</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~map"><span class="type-signature">(inner) </span>map<span class="signature">(data, iteratee)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>The map method abstracts the lodash map method to reduce the number of imports required
+for each model. This method accepts an array and a method to use when mapping the array of values.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utilities.service.js.html">utilities.service.js</a>, <a href="utilities.service.js.html#line104">line 104</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The data to use when invoking the method</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>iteratee</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>function</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The function to invoke on each item in the array</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Array</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>The mutated array of values after each value is passed to the iteratee method.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~namespace"><span class="type-signature">(inner) </span>namespace<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>The namespace method maps through an incoming data object's keys and replaces the properties
+of limit, offset, and sort with their _ counterparts.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utilities.service.js.html">utilities.service.js</a>, <a href="utilities.service.js.html#line20">line 20</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
@@ -1187,7 +690,7 @@ returns whatever s based to it unmodified.</p>
             
 
             <td class="description last">
-                <p>The response object.</p>
+                <p>An object used in a DAPI query.</p>
                 
             </td>
         </tr>
@@ -1228,7 +731,7 @@ returns whatever s based to it unmodified.</p>
 
 
 <div class="param-desc">
-    <p>response The response recieved from the Data API.</p>
+    <p>A modified object containing modified keys to match expected properties</p>
 </div>
 
     
@@ -1243,14 +746,16 @@ returns whatever s based to it unmodified.</p>
 
     
 
-    <h4 class="name" id=".valid"><span class="type-signature">(static) </span>valid<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="~sanitizeParameters"><span class="type-signature">(inner) </span>sanitizeParameters<span class="signature">(parameters, safeParameters)</span><span class="type-signature"> &rarr; {Object|Array}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Saves a token retrieved from the Data API.</p>
+    <p>The santizeParameters method filters unsafe parameters from its return object based
+on the safeOarameters array that is passed to it. This method is currently used in the client.create
+method to seperate the merge option from the paramaters that are safe to send to FileMaker.</p>
 </div>
 
 
@@ -1286,7 +791,7 @@ returns whatever s based to it unmodified.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="connection.model.js.html">connection.model.js</a>, <a href="connection.model.js.html#line104">line 104</a>
+        <a href="utilities.service.js.html">utilities.service.js</a>, <a href="utilities.service.js.html#line82">line 82</a>
     </li></ul></dd>
     
 
@@ -1303,6 +808,84 @@ returns whatever s based to it unmodified.</p>
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>parameters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>An array values being passed to the FileMaker DAPI.</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>safeParameters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>An array values allowed to be sent to filemaker.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -1328,7 +911,10 @@ returns whatever s based to it unmodified.</p>
     </dt>
     <dd>
         
-<span class="param-type"><code>String</code></span>
+<span class="param-type"><code>Object</code></span>
+|
+
+<span class="param-type"><code>Array</code></span>
 
 
     </dd>
@@ -1336,7 +922,336 @@ returns whatever s based to it unmodified.</p>
 
 
 <div class="param-desc">
-    <p>a token retrieved from the private generation method</p>
+    <p>returns an object or array of objects with only allowed keys
+and values mapped to strings.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~stringify"><span class="type-signature">(inner) </span>stringify<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>stringify is a helper method that converts numbers, objects, and arrays to strings.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utilities.service.js.html">utilities.service.js</a>, <a href="utilities.service.js.html#line52">line 52</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+|
+
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The data being used to create or update a record.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Object</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>a json object containing stringified data.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~toArray"><span class="type-signature">(inner) </span>toArray<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>The toArray method converts an object into an array. This method uses the object prototype method
+isArray to check if the incoming data is an array. If the incoming data is not an array this method will
+return the data in an array</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utilities.service.js.html">utilities.service.js</a>, <a href="utilities.service.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+|
+
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>An array or object containing query information. This can be an array or an object.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Object</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>An array containing the data passed to the method.</p>
 </div>
 
     

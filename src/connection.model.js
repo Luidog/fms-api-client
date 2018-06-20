@@ -178,6 +178,7 @@ class Connection extends EmbeddedDocument {
     return response;
   }
 }
+
 /**
  * @module Connection
  */
