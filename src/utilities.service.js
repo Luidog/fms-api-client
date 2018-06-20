@@ -107,6 +107,9 @@ const sanitizeParameters = (parameters, safeParameters) =>
  */
 const map = (data, iteratee) => _.map(data, iteratee);
 
+/**
+ * @module Utilities
+ */
 module.exports = {
   toArray,
   namespace,

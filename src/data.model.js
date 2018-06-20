@@ -100,6 +100,7 @@ class Data extends EmbeddedDocument {
     return status;
   }
 }
+
 /**
  * @module Data
  */
