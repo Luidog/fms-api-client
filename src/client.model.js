@@ -676,9 +676,7 @@ class Client extends Document {
       : data.recordId.toString();
   }
 }
-/**
- * @module Client
- */
+
 module.exports = {
   Client
 };

@@ -3,6 +3,10 @@
 const _ = require('lodash');
 
 /**
+ * @module Utilities
+ */
+
+/**
  * @method toArray
  * @description The toArray method converts an object into an array. This method uses the object prototype method
  * isArray to check if the incoming data is an array. If the incoming data is not an array this method will
@@ -107,9 +111,6 @@ const sanitizeParameters = (parameters, safeParameters) =>
  */
 const map = (data, iteratee) => _.map(data, iteratee);
 
-/**
- * @module Utilities
- */
 module.exports = {
   toArray,
   namespace,

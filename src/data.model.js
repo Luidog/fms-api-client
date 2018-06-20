@@ -4,6 +4,11 @@ const moment = require('moment');
 const sizeof = require('object-sizeof');
 const pretty = require('prettysize');
 const { EmbeddedDocument } = require('marpat');
+
+/**
+ * @module Data
+ */
+
 /**
  * @class Data
  * @classdesc The class used to track FileMaker API data usage.
@@ -101,9 +106,6 @@ class Data extends EmbeddedDocument {
   }
 }
 
-/**
- * @module Data
- */
 module.exports = {
   Data
 };
