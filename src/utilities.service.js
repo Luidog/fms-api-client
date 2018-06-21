@@ -93,7 +93,19 @@ const filterResponse = data =>
 const sanitizeParameters = (parameters, safeParameters) =>
   safeParameters
     ? _.mapValues(
-        _.pick(convertScripts(parameters), safeParameters),
+        _.pickBy(
+          convertScripts(parameters),
+          (value, key) =>
+            _.includes(safeParameters, key) ||
+            (_.includes(safeParameters, '_offset.*') &&
+              _.startsWith(key, '_offset.')) ||
+            (_.includes(safeParameters, '_limit.*') &&
+              _.startsWith(key, '_limit.')) ||
+            (_.includes(safeParameters, 'offset.*') &&
+              _.startsWith(key, 'offset.')) ||
+            (_.includes(safeParameters, 'limit.*') &&
+              _.startsWith(key, 'limit.'))
+        ),
         value => (_.isNumber(value) ? value.toString() : value)
       )
     : _.mapValues(
@@ -109,6 +121,7 @@ const sanitizeParameters = (parameters, safeParameters) =>
  * @param  {Function} iteratee The function to invoke on each item in the array
  * @return {Array}          The mutated array of values after each value is passed to the iteratee method.
  */
+
 const map = (data, iteratee) => _.map(data, iteratee);
 
 /**
