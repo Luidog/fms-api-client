@@ -42,11 +42,62 @@ describe('Delete Capabilities', () => {
     });
     done();
   });
+
   it('should delete FileMaker records.', () => {
     return expect(
       client
         .create(process.env.LAYOUT, { name: 'Darth Vader' })
         .then(response => client.delete(process.env.LAYOUT, response.recordId))
+    ).to.eventually.be.a('object');
+  });
+
+  it('should trigger scripts via an array when deleting records.', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Darth Vader' })
+        .then(response =>
+          client.delete(process.env.LAYOUT, response.recordId, {
+            scripts: [
+              {
+                name: 'Error Script',
+                phase: 'prerequest',
+                param: 'A Parameter'
+              },
+              { name: 'Error Script', param: 'A Parameter' },
+              { name: 'Error Script', phase: 'presort', param: 'A Parameter' }
+            ]
+          })
+        )
+    ).to.eventually.be.a('object');
+  });
+
+  it('should trigger scripts via parameters when deleting records.', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Darth Vader' })
+        .then(response =>
+          client.delete(process.env.LAYOUT, response.recordId, {
+            'script.prerequest': 'Error Script',
+            'script.prerequest.param': 'A Parameter'
+          })
+        )
+    ).to.eventually.be.a('object');
+  });
+
+  it('should allow you to mix script parameters and scripts array when deleting records.', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Darth Vader' })
+        .then(response =>
+          client.delete(process.env.LAYOUT, response.recordId, {
+            'script.prerequest': 'Error Script',
+            'script.prerequest.param': 'A Parameter',
+            scripts: [
+              { name: 'Error Script', param: 'A Parameter' },
+              { name: 'Error Script', phase: 'presort', param: 'A Parameter' }
+            ]
+          })
+        )
     ).to.eventually.be.a('object');
   });
 

@@ -17,7 +17,7 @@ const { Filemaker } = require('../index.js');
 chai.use(chaiAsPromised);
 
 describe('List Capabilities', () => {
-  let database, filemaker;
+  let database, client;
   before(done => {
     environment.config({ path: './tests/.env' });
     varium(process.env, './tests/env.manifest');
@@ -32,7 +32,7 @@ describe('List Capabilities', () => {
   });
 
   beforeEach(done => {
-    filemaker = Filemaker.create({
+    client = Filemaker.create({
       application: process.env.APPLICATION,
       server: process.env.SERVER,
       user: process.env.USERNAME,
@@ -42,14 +42,14 @@ describe('List Capabilities', () => {
   });
 
   it('should allow you to list records', () => {
-    return expect(filemaker.list(process.env.LAYOUT))
+    return expect(client.list(process.env.LAYOUT))
       .to.eventually.be.a('object')
       .that.has.all.keys('data')
       .and.property('data');
   });
 
   it('should allow you use parameters to modify the list response', () => {
-    return expect(filemaker.list(process.env.LAYOUT, { _limit: '2' }))
+    return expect(client.list(process.env.LAYOUT, { _limit: '2' }))
       .to.eventually.be.a('object')
       .that.has.all.keys('data')
       .and.property('data')
@@ -57,7 +57,7 @@ describe('List Capabilities', () => {
   });
 
   it('should should allow you to use numbers in parameters', () => {
-    return expect(filemaker.list(process.env.LAYOUT, { _limit: 2 }))
+    return expect(client.list(process.env.LAYOUT, { _limit: 2 }))
       .to.eventually.be.a('object')
       .that.has.all.keys('data')
       .and.property('data')
@@ -65,7 +65,7 @@ describe('List Capabilities', () => {
   });
 
   it('should modify requests to comply with DAPI name reservations', () => {
-    return expect(filemaker.list(process.env.LAYOUT, { limit: 2 }))
+    return expect(client.list(process.env.LAYOUT, { limit: 2 }))
       .to.eventually.be.a('object')
       .that.has.all.keys('data')
       .and.property('data')
@@ -73,7 +73,7 @@ describe('List Capabilities', () => {
   });
 
   it('should allow strings while complying with DAPI name reservations', () => {
-    return expect(filemaker.list(process.env.LAYOUT, { limit: '2' }))
+    return expect(client.list(process.env.LAYOUT, { limit: '2' }))
       .to.eventually.be.a('object')
       .that.has.all.keys('data')
       .and.property('data')
@@ -81,17 +81,53 @@ describe('List Capabilities', () => {
   });
 
   it('should allow you to offset the list response', () => {
-    return expect(filemaker.list(process.env.LAYOUT, { limit: 2, offset: 2 }))
+    return expect(client.list(process.env.LAYOUT, { limit: 2, offset: 2 }))
       .to.eventually.be.a('object')
       .that.has.all.keys('data')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
 
-  it('should reject requests that use unexpected parameters', () => {
+  it('should santize parameters that would cause unexpected parameters', () => {
     return expect(
-      filemaker
-        .list(process.env.LAYOUT, { error: 'fail', limit: 2, offset: 2 })
+      client.list(process.env.LAYOUT, { error: 'fail', limit: 2, offset: 2 })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data');
+  });
+
+  it('should allow you to limit the number of portal records to return', () => {
+    return expect(
+      client.list(process.env.LAYOUT, {
+        portal: ['planets'],
+        'limit.planets': 2,
+        limit: 2
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data')
+      .and.property('data')
+      .to.have.a.lengthOf(2);
+  });
+
+  it('should accept namespaced portal limit and offset parameters', () => {
+    return expect(
+      client.list(process.env.LAYOUT, {
+        portal: ['planets'],
+        '_limit.planets': 2,
+        limit: 2
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data')
+      .and.property('data')
+      .to.have.a.lengthOf(2);
+  });
+
+  it('should reject invalid parameters', () => {
+    return expect(
+      client
+        .list(process.env.LAYOUT, { error: 'fail', limit: -2, offset: 2 })
         .catch(error => error)
     )
       .to.eventually.be.a('object')

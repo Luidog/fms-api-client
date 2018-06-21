@@ -79,6 +79,20 @@ describe('Find Capabilities', () => {
       .to.have.a.lengthOf(2);
   });
 
+  it('should allow you to limit the number of portal records to return', () => {
+    return expect(
+      client.find(
+        process.env.LAYOUT,
+        { id: '*' },
+        { portal: ['planets'], 'limit.planets': 2, limit: 2 }
+      )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data')
+      .and.property('data')
+      .to.have.a.lengthOf(2);
+  });
+
   it('should allow you to use numbers in the find query parameters', () => {
     return expect(client.find(process.env.LAYOUT, { id: '*' }, { limit: 2 }))
       .to.eventually.be.a('object')

@@ -348,9 +348,21 @@ class Client extends Document {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
-            data: Object.assign(sanitizeParameters(parameters), {
-              fieldData: this.data.incoming(stringify(data))
-            })
+            data: Object.assign(
+              sanitizeParameters(parameters, [
+                'portalData',
+                'modId',
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param'
+              ]),
+              {
+                fieldData: this.data.incoming(stringify(data))
+              }
+            )
           })
         )
         .then(response => response.data)
@@ -382,7 +394,14 @@ class Client extends Document {
             headers: {
               Authorization: `Bearer ${token}`
             },
-            data: sanitizeParameters(parameters)
+            data: sanitizeParameters(parameters, [
+              'script',
+              'script.param',
+              'script.prerequest',
+              'script.prerequest.param',
+              'script.presort',
+              'script.presort.param'
+            ])
           })
         )
         .then(response => response.data)
@@ -415,7 +434,20 @@ class Client extends Document {
             headers: {
               Authorization: `Bearer ${token}`
             },
-            params: namespace(parameters)
+            params: stringify(
+              sanitizeParameters(namespace(parameters), [
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'layout.response',
+                'portal',
+                '_offset.*',
+                '_limit.*'
+              ])
+            )
           })
         )
         .then(response => response.data)
@@ -448,7 +480,23 @@ class Client extends Document {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
-            params: namespace(parameters)
+            params: stringify(
+              sanitizeParameters(namespace(parameters), [
+                '_limit',
+                '_offset',
+                '_sort',
+                'portal',
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'layout.response',
+                '_offset.*',
+                '_limit.*'
+              ])
+            )
           })
         )
         .then(response => response.data)
@@ -484,7 +532,21 @@ class Client extends Document {
             },
             data: Object.assign(
               { query: toArray(query) },
-              sanitizeParameters(parameters)
+              sanitizeParameters(parameters, [
+                'limit',
+                'sort',
+                'offset',
+                'portal',
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'layout.response',
+                'offset.*',
+                'limit.*'
+              ])
             )
           })
         )
@@ -620,7 +682,7 @@ class Client extends Document {
             params: sanitizeParameters(
               Object.assign(
                 { script: name, 'script.param': stringify(parameters) },
-                namespace({ limit: '1' })
+                namespace({ limit: 1 })
               )
             )
           })
@@ -676,7 +738,9 @@ class Client extends Document {
       : data.recordId.toString();
   }
 }
-
+/**
+ * @module Client
+ */
 module.exports = {
   Client
 };
