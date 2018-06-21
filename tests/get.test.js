@@ -63,4 +63,32 @@ describe('Get Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('code', 'message');
   });
+
+  it('should allow you to limit the number of portal records to return', () => {
+    return expect(
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
+        client.get(process.env.LAYOUT, response.recordId, {
+          portal: ['planets'],
+          'limit.planets': 2
+        })
+      )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data')
+      .and.property('data');
+  });
+
+  it('should accept namespaced portal limit and offset parameters', () => {
+    return expect(
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
+        client.get(process.env.LAYOUT, response.recordId, {
+          portal: ['planets'],
+          '_limit.planets': 2
+        })
+      )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data')
+      .and.property('data');
+  });
 });
