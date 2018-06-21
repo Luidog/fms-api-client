@@ -137,4 +137,42 @@ describe('Script Capabilities', () => {
       .and.property('result')
       .to.be.a('string');
   });
+
+  it('should parse an array of scripts', () => {
+    return expect(
+      filemaker.list(process.env.LAYOUT, {
+        limit: 2,
+        scripts: [{ name: 'Error Script', param: 'A Parameter' }]
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('scriptResult', 'scriptError', 'data')
+      .and.property('scriptResult')
+      .to.be.a('object');
+  });
+
+  it('should trigger scripts on all three script phases', () => {
+    return expect(
+      filemaker.list(process.env.LAYOUT, {
+        limit: 2,
+        scripts: [
+          { name: 'Error Script', phase: 'prerequest', param: 'A Parameter' },
+          { name: 'Error Script', param: 'A Parameter' },
+          { name: 'Error Script', phase: 'presort', param: 'A Parameter' }
+        ]
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys(
+        'scriptResult.prerequest',
+        'scriptError.prerequest',
+        'scriptResult.presort',
+        'scriptError.presort',
+        'scriptError',
+        'scriptResult',
+        'data'
+      )
+      .and.property('scriptResult')
+      .to.be.a('object');
+  });
 });

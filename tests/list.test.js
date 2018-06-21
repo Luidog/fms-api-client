@@ -88,13 +88,21 @@ describe('List Capabilities', () => {
       .to.have.a.lengthOf(2);
   });
 
-  it('should reject requests that use unexpected parameters', () => {
+  it('should santize parameters that would cause  unexpected parameters', () => {
+    return expect(
+      filemaker.list(process.env.LAYOUT, { error: 'fail', limit: 2, offset: 2 })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data');
+  });
+  
+  it('should reject invalid parameters', () => {
     return expect(
       filemaker
-        .list(process.env.LAYOUT, { error: 'fail', limit: 2, offset: 2 })
+        .list(process.env.LAYOUT, { error: 'fail', limit: -2, offset: 2 })
         .catch(error => error)
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('message', 'code');
+      .that.has.all.keys('message','code');
   });
 });
