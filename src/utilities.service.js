@@ -84,7 +84,7 @@ const filterResponse = data =>
  * @description The santizeParameters method filters unsafe parameters from its return object based
  * on the safeOarameters array that is passed to it. This method is currently used in the client.create
  * method to seperate the merge option from the paramaters that are safe to send to FileMaker.
- * @param {Array} parameters An array values being passed to the FileMaker DAPI.
+ * @param {Object} parameters An array values being passed to the FileMaker DAPI.
  * @param {Array} safeParameters An array values allowed to be sent to filemaker.
  * @return {Object|Array} returns an object or array of objects with only allowed keys
  * and values mapped to strings.
@@ -93,11 +93,11 @@ const filterResponse = data =>
 const sanitizeParameters = (parameters, safeParameters) =>
   safeParameters
     ? _.mapValues(
-        _.pick(parameters, safeParameters),
+        _.pick(convertScripts(parameters), safeParameters),
         value => (_.isNumber(value) ? value.toString() : value)
       )
     : _.mapValues(
-        parameters,
+        convertScripts(parameters),
         value => (_.isNumber(value) ? value.toString() : value)
       );
 
@@ -110,6 +110,34 @@ const sanitizeParameters = (parameters, safeParameters) =>
  * @return {Array}          The mutated array of values after each value is passed to the iteratee method.
  */
 const map = (data, iteratee) => _.map(data, iteratee);
+
+/**
+ * @method convertScripts
+ * @description The converScript method abstracts the lodash map method to reduce the number of imports required
+ * for each model. This method accepts an array and a method to use when mapping the array of values.
+ * @param  {Object} data The data to use when invoking the method
+ * @return {Object}      A new object based on the assignment of incoming properties.
+ */
+const convertScripts = data => {
+  let { scripts, ...parameters } = data;
+  let converted = Array.isArray(scripts)
+    ? _.chain(scripts)
+        .map(script =>
+          _.mapKeys(
+            script,
+            (value, key) =>
+              !_.isEmpty(script.phase)
+                ? key === 'name'
+                  ? `script.${script.phase}`
+                  : `script.${script.phase}.${key}`
+                : key === 'name' ? `script` : `script.${key}`
+          )
+        )
+        .map(script => _.omitBy(script, (value, key) => key.includes('.phase')))
+        .value()
+    : [];
+  return Object.assign({}, parameters, ...converted);
+};
 
 module.exports = {
   toArray,
