@@ -139,7 +139,7 @@ class Connection extends EmbeddedDocument {
       })
         .then(response => response.data)
         .then(body => this._saveToken(body))
-        .then(body => resolve(body.response.token))
+        .then(body => resolve(body))
         .catch(error => reject(error))
     );
   }

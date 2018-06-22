@@ -5,7 +5,6 @@ const axios = require('axios');
 const FormData = require('form-data');
 const { Document } = require('marpat');
 const { Connection } = require('./connection.model');
-const { Credentials } = require('./credentials.model');
 const { Data } = require('./data.model');
 const {
   toArray,
@@ -225,11 +224,9 @@ class Client extends Document {
       } else {
         this.connection
           .generate()
-          .then(token => {
-            this.save();
-            return token;
-          })
-          .then(token => resolve(token))
+          .then(body => this._saveState(body))
+          .then(body => this.data.outgoing(body))
+          .then(body => resolve(body.response.token))
           .catch(error => reject(error));
       }
     });
