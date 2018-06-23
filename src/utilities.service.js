@@ -94,7 +94,7 @@ const sanitizeParameters = (parameters, safeParameters) =>
   safeParameters
     ? _.mapValues(
         _.pickBy(
-          convertScripts(parameters),
+          convertParameters(parameters),
           (value, key) =>
             _.includes(safeParameters, key) ||
             (_.includes(safeParameters, '_offset.*') &&
@@ -109,7 +109,7 @@ const sanitizeParameters = (parameters, safeParameters) =>
         value => (_.isNumber(value) ? value.toString() : value)
       )
     : _.mapValues(
-        convertScripts(parameters),
+        convertParameters(parameters),
         value => (_.isNumber(value) ? value.toString() : value)
       );
 
@@ -132,7 +132,7 @@ const map = (data, iteratee) => _.map(data, iteratee);
  * @return {Object}      A new object based on the assignment of incoming properties.
  */
 const convertScripts = data => {
-  let { scripts, ...parameters } = data;
+  let { scripts } = data;
   let converted = Array.isArray(scripts)
     ? _.chain(scripts)
         .map(script =>
@@ -149,8 +149,33 @@ const convertScripts = data => {
         .map(script => _.omitBy(script, (value, key) => key.includes('.phase')))
         .value()
     : [];
-  return Object.assign({}, parameters, ...converted);
+  return Object.assign({}, ...converted);
 };
+
+const convertPortals = data => {
+  let portalArray = [];
+  let { portals } = data;
+  let converted = Array.isArray(portals)
+    ? _.chain(portals)
+        .map(portal =>
+          _.mapKeys(
+            portal,
+            (value, key) =>
+              key === 'limit'
+                ? `limit.${portal.name}`
+                : key === 'offset'
+                  ? `offset.${portal.name}`
+                  : key === 'name' ? portalArray.push(value) : `remove`
+          )
+        )
+        .map(portal => _.omitBy(portal, (value, key) => key.includes('remove')))
+        .value()
+    : [];
+  return Object.assign({ portals: portalArray }, converted);
+};
+
+const convertParameters = data =>
+  Object.assign(convertPortals(data), stringify(convertScripts(data)), data);
 
 module.exports = {
   toArray,
