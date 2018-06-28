@@ -201,7 +201,18 @@ describe('Create Capabilities', () => {
           object: { 'co-pilot': 'chewbacca' },
           height: 52
         },
-        { script: 'FMS Triggered Script', 'script.param': 1, merge: true }
+        {
+          script: 'FMS Triggered Script',
+          'script.param': 1,
+          merge: true,
+          scripts: [
+            {
+              name: 'FMS Triggered Script',
+              param: { data: true },
+              phase: 'prerequest'
+            }
+          ]
+        }
       )
     )
       .to.eventually.be.a('object')
@@ -213,6 +224,8 @@ describe('Create Capabilities', () => {
         'height',
         'modId',
         'scriptResult',
+        'scriptError.prerequest',
+        'scriptResult.prerequest',
         'scriptError'
       );
   });
@@ -231,7 +244,9 @@ describe('Create Capabilities', () => {
           script: 'FMS Triggered Script',
           'script.param': 1,
           merge: true,
-          scripts: [{ name: 'FMS Triggered Script', phase: 'prerequest',param:2 }]
+          scripts: [
+            { name: 'FMS Triggered Script', phase: 'prerequest', param: 2 }
+          ]
         }
       )
     )

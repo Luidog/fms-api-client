@@ -83,11 +83,10 @@ describe('List Capabilities', () => {
 
   it('should should remove non used properties from a portal object', () => {
     return expect(
-      client
-        .list(process.env.LAYOUT, {
-          _limit: 2,
-          portals: [{ name: 'planets', limit: 1, offset: 1, han: 'solo' }]
-        })
+      client.list(process.env.LAYOUT, {
+        _limit: 2,
+        portals: [{ name: 'planets', limit: 1, offset: 1, han: 'solo' }]
+      })
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('data')

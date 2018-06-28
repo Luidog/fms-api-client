@@ -111,8 +111,7 @@ describe('Delete Capabilities', () => {
             ]
           })
         )
-    )
-      .to.eventually.be.a('object'));
+    ).to.eventually.be.a('object'));
 
   it('should reject deletions that do not specify a recordId', () =>
     expect(client.delete(process.env.LAYOUT).catch(error => error))
