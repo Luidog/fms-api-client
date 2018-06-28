@@ -22,11 +22,10 @@ varium(process.env, './tests/env.manifest');
  * My fork of Camo - Marpat is designed to allow the use of multiple datastores
  * with the focus on encrypted storage.
  */
-
 connect('nedb://memory').then(db => {
   /**
-   * The client is the FileMaker class. The class then offers methods designed to
-   * make it easier to integrate into filemaker's api.
+   * The client is a Class. The Class then offers methods designed to
+   * make it easier to integrate into FileMaker's DAPI.
    */
 
   const client = Filemaker.create({
@@ -46,6 +45,9 @@ connect('nedb://memory').then(db => {
      * specify the layout to use and the data to insert on creation. The client
      * will automatically convert numbers, arrays, and objects into strings so
      * they can be inserted into a filemaker field.
+     *
+     * The create method accepts the option of merge. If merge is true the data
+     * used to create the with DAPI's response object on success
      */
     client
       .create(
@@ -85,8 +87,19 @@ connect('nedb://memory').then(db => {
       /**
        * You can use the client to list filemaker records. The List method
        * accepts a layout and parameter variable. The client will automatically
-       * santize the limit, offset, and sort keys to correspond with the Data
-       * API's requirements.
+       * santize the limit, offset, and sort keys to correspond with the DAPI's
+       * requirements.
+       *
+       * This List method also accepts an option of scripts. The script key is
+       * an array containing the following schema:
+       *
+       * "scripts": [
+       *   {
+       *    "name": "",
+       *    "phase": "",
+       *    "param": {} || ""
+       *  }
+       * ]
        */
       client
         .list('Heroes', { limit: 5 })
