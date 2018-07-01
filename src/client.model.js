@@ -367,6 +367,12 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
+        .then(
+          body =>
+            parameters.merge
+              ? Object.assign(data, { recordId: recordId }, body)
+              : body
+        )
         .then(response => resolve(response))
         .catch(error => reject(error.response.data.messages[0]))
     );

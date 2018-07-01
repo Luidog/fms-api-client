@@ -64,6 +64,40 @@ describe('List Capabilities', () => {
       .to.have.a.lengthOf(2);
   });
 
+  it('should should allow you to provide an array of portals in parameters', () => {
+    return expect(
+      client.list(process.env.LAYOUT, {
+        _limit: 2,
+        portals: [{ name: 'planets', limit: 1, offset: 1 }]
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data')
+      .and.property('data')
+      .to.be.a('array')
+      .and.property(0)
+      .to.have.all.keys('fieldData', 'modId', 'portalData', 'recordId')
+      .and.property('portalData')
+      .to.be.a('object');
+  });
+
+  it('should should remove non used properties from a portal object', () => {
+    return expect(
+      client.list(process.env.LAYOUT, {
+        _limit: 2,
+        portals: [{ name: 'planets', limit: 1, offset: 1, han: 'solo' }]
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data')
+      .and.property('data')
+      .to.be.a('array')
+      .and.property(0)
+      .to.have.all.keys('fieldData', 'modId', 'portalData', 'recordId')
+      .and.property('portalData')
+      .to.be.a('object');
+  });
+
   it('should modify requests to comply with DAPI name reservations', () => {
     return expect(client.list(process.env.LAYOUT, { limit: 2 }))
       .to.eventually.be.a('object')
