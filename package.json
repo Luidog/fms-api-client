@@ -6,9 +6,9 @@
   "scripts": {
     "test": "nyc _mocha --recursive ./tests --timeout=30000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "generate-readme": "node_modules/.bin/readme package.json --tests --travis > README.md",
+    "generate-readme": "mos",
     "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
-    "example": "node example.js"
+    "examples": "node examples/index.js"
   },
   "repository": {
     "type": "git",
@@ -48,8 +48,8 @@
     "minami": "^1.2.3",
     "mocha": "^5.0.4",
     "mocha-lcov-reporter": "^1.3.0",
+    "mos": "^1.3.1",
     "nyc": "^11.8.0",
-    "package-json-to-readme": "^2.1.1",
     "prettier": "^1.8.2",
     "varium": "^1.0.1"
   }
