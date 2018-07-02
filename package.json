@@ -4,7 +4,7 @@
   "description": "A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.",
   "main": "index.js",
   "scripts": {
-    "test": "nyc _mocha --recursive ./tests --timeout=30000 --exit",
+    "test": "nyc _mocha --recursive  ./tests --timeout=30000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "generate-readme": "mos",
     "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
@@ -49,6 +49,10 @@
     "mocha": "^5.0.4",
     "mocha-lcov-reporter": "^1.3.0",
     "mos": "^1.3.1",
+    "mos-plugin-dependencies": "^2.2.2",
+    "mos-plugin-installation": "^1.2.2",
+    "mos-plugin-license": "^1.2.2",
+    "mos-plugin-snippet": "^2.1.3",
     "nyc": "^11.8.0",
     "prettier": "^1.8.2",
     "varium": "^1.0.1"
