@@ -6,7 +6,7 @@ module.exports = {
         dictionaries: ['jsdoc']
     },
     source: {
-        include: ['README.md', 'src', 'example.js'],
+        include: ['README.md', 'src'],
         includePattern: '.js$',
         excludePattern: '(node_modules/|docs)'
     },
