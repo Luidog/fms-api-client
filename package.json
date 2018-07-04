@@ -50,6 +50,7 @@
     "mocha-lcov-reporter": "^1.3.0",
     "mos": "^1.3.1",
     "mos-plugin-dependencies": "^2.2.2",
+    "mos-plugin-execute": "^1.0.2",
     "mos-plugin-installation": "^1.2.2",
     "mos-plugin-license": "^1.2.2",
     "mos-plugin-snippet": "^2.1.3",
