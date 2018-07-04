@@ -2,8 +2,7 @@
 
 const logout = client => client.logout();
 
-const login = client =>
-  client.authenticate();
+const login = client => client.authenticate();
 
 const authentication = (client, examples) =>
   Promise.all([login(client)])

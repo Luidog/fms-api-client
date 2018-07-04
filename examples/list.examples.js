@@ -23,7 +23,7 @@ const listHeroes = client =>
 const lists = (client, examples) =>
   Promise.all([listHeroes(client)])
     .then(responses => {
-            examples.concat(responses);
+      examples.concat(responses);
       return client;
     })
     .catch(error => console.log('That is no moon....'.red, error));
