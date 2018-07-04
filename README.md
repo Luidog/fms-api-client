@@ -4,12 +4,16 @@
 
 [![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client) [![Known Vulnerabilities](https://snyk.io/test/github/Luidog/fms-api-client/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Luidog/fms-api-client?targetFile=package.json) [![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=master)](https://coveralls.io/github/Luidog/fms-api-client?branch=master) [![GitHub issues](https://img.shields.io/github/issues/Luidog/fms-api-client.svg?style=plastic)](https://github.com/Luidog/fms-api-client/issues) [![Github commits (since latest release)](https://img.shields.io/github/commits-since/luidog/fms-api-client/latest.svg)](https://img.shields.io/github/issues/Luidog/fms-api-client.svg)  [![GitHub license](https://img.shields.io/github/license/Luidog/fms-api-client.svg)](https://github.com/Luidog/fms-api-client/blob/master/LICENSE.md)
 
-A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.
+A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. You can find detailed documentation on this project here:
+
+[fms-api-client documentation]: https://luidog.github.io/fms-api-client/
 
 ## Installation
 
+The client is installed as an npm module. You will also have to install marpat alongside the client as a datastore
+
 ```sh
-npm install --save fms-api-client
+npm install --save  marpat fms-api-client
 ```
 
 <!--@installation()-->
@@ -23,13 +27,13 @@ npm install --save fms-api-client
 ## Usage
 
 ```js
-'use strict';
 
-/* eslint-disable */
-
-const colors = require('colors');
-
-/* eslint-enable */
+/**
+ * Connect must be called before the filemaker class is instiantiated. This
+ * connect uses Marpat. Marpat is a fork of Camo. much love to
+ * https://github.com/scottwrobinson for his creation and maintenance of Camo.
+ * My fork of Camo - Marpat is designed to allow the use of multiple datastores
+ * with the focus on encrypted storage. Find out more about [fms-api-client documentation]: https://luidog.github.io/fms-api-client/
 
 const environment = require('dotenv');
 const varium = require('varium');
@@ -40,13 +44,7 @@ environment.config({ path: './tests/.env' });
 
 varium(process.env, './tests/env.manifest');
 
-/**
- * Connect must be called before the filemaker class is instiantiated. This
- * connect uses Marpat. Marpat is a fork of Camo. much love to
- * https://github.com/scottwrobinson for his creation and maintenance of Camo.
- * My fork of Camo - Marpat is designed to allow the use of multiple datastores
- * with the focus on encrypted storage.
- */
+
 
 connect('nedb://memory').then(db => {
   /**
@@ -237,116 +235,150 @@ npm install
 npm test
 ```
 
-    > fms-api-client@1.2.0 test /fms-api-client
-    > nyc _mocha --recursive ./tests --timeout=30000 --exit
-      Authentication Capabilities
-        ✓ should authenticate into FileMaker. (145ms)
-        ✓ should automatically request an authentication token (169ms)
-        ✓ should reuse a saved authentication token (170ms)
-        ✓ should log out of the filemaker. (157ms)
-        ✓ should not attempt a logout if there is no valid token.
-        ✓ should reject if the logout request fails (160ms)
-        ✓ should reject if the authentication request fails (1417ms)
-      Create Capabilities
-        ✓ should create FileMaker records. (172ms)
-        ✓ should reject bad data with an error (165ms)
-        ✓ should create FileMaker records with mixed types (159ms)
-        ✓ should substitute an empty object if data is not provided (167ms)
-        ✓ should return an object with merged filemaker and data properties (167ms)
-        ✓ should allow you to run a script when creating a record with a merge response (169ms)
-        ✓ should sanitize parameters when creating a new record (172ms)
-      Delete Capabilities
-        ✓ should delete FileMaker records. (246ms)
-        ✓ should trigger scripts via an array when deleting records. (237ms)
-        ✓ should trigger scripts via parameters when deleting records. (234ms)
-        ✓ should allow you to mix script parameters and scripts array when deleting records. (240ms)
-        ✓ should reject deletions that do not specify a recordId (160ms)
-      Edit Capabilities
-        ✓ should edit FileMaker records.
-        ✓ should reject bad data with an error (243ms)
-      Find Capabilities
-        ✓ should perform a find request (258ms)
-        ✓ should allow you to use an object instead of an array for a find (245ms)
-        ✓ should specify omit Criterea (239ms)
-        ✓ should allow additional parameters to manipulate the results (161ms)
-        ✓ should allow you to limit the number of portal records to return (160ms)
-        ✓ should allow you to use numbers in the find query parameters (162ms)
-        ✓ should allow you to sort the results (215ms)
-        ✓ should return an empty array if the find does not return results (163ms)
-        ✓ should allow you run a pre request script (170ms)
-        ✓ should return a response even if a script fails (173ms)
-        ✓ should allow you to send a parameter to the pre request script (169ms)
-        ✓ should allow you run script after the find and before the sort (226ms)
-        ✓ should allow you to pass a parameter to a script after the find and before the sort (241ms)
-        ✓ should reject of there is an issue with the find request (161ms)
-      Get Capabilities
-        ✓ should get specific FileMaker records. (236ms)
-        ✓ should reject get requests that do not specify a recordId (231ms)
-        ✓ should allow you to limit the number of portal records to return (245ms)
-        ✓ should accept namespaced portal limit and offset parameters (235ms)
-      Global Capabilities
-        ✓ should allow you to set FileMaker globals (157ms)
-        ✓ should reject with a message and code if it fails to set a global (157ms)
-      List Capabilities
-        ✓ should allow you to list records (240ms)
-        ✓ should allow you use parameters to modify the list response (160ms)
-        ✓ should should allow you to use numbers in parameters (159ms)
-        ✓ should modify requests to comply with DAPI name reservations (160ms)
-        ✓ should allow strings while complying with DAPI name reservations (162ms)
-        ✓ should allow you to offset the list response (160ms)
-        ✓ should santize parameters that would cause unexpected parameters (156ms)
-        ✓ should allow you to limit the number of portal records to return (165ms)
-        ✓ should accept namespaced portal limit and offset parameters (160ms)
-        ✓ should reject invalid parameters (159ms)
-      Script Capabilities
-        ✓ should allow you to trigger a script in FileMaker (171ms)
-        ✓ should allow you to trigger a script in FileMaker (171ms)
-        ✓ should allow you to trigger a script in a find (247ms)
-        ✓ should allow you to trigger a script in a list (162ms)
-        ✓ should allow reject a script that does not exist (168ms)
-        ✓ should allow return a result even if a script returns an error (168ms)
-        ✓ should parse script results if the results are json (161ms)
-        ✓ should not parse script results if the results are not json (172ms)
-        ✓ should parse an array of scripts (167ms)
-        ✓ should trigger scripts on all three script phases (183ms)
-      Storage
-        ✓ should allow an instance to be created
-        ✓ should allow an instance to be saved.
-        ✓ should allow an instance to be recalled
-        ✓ should allow insances to be listed
-        ✓ should allow you to remove an instance
-      File Upload Capabilities
-        ✓ should allow you to upload a file to a new record (1324ms)
-        ✓ should allow you to upload a file to a specific container repetition (1553ms)
-        ✓ should reject with a message if it can not find the file to upload (156ms)
-        ✓ should allow you to upload a file to a specific record (1379ms)
-        ✓ should allow you to upload a file to a specific record container repetition (1333ms)
-        ✓ should reject of the request is invalid (289ms)
-      Data Usage Tracking Capabilities
-        ✓ should track API usage data. (168ms)
-        ✓ should allow you to reset usage data. (168ms)
-      Utility Capabilities
-        ✓ should extract field while maintaining the array (234ms)
-        ✓ should extract field data while maintaining the object (238ms)
-        ✓ should extract the recordId while maintaining the array (243ms)
-        ✓ should extract field data while maintaining the object (240ms)
-      78 passing (20s)
-    -----------------------|----------|----------|----------|----------|-------------------|
-    File                   |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
-    -----------------------|----------|----------|----------|----------|-------------------|
-    All files              |      100 |      100 |      100 |      100 |                   |
-     fms-api-client        |      100 |      100 |      100 |      100 |                   |
-      index.js             |      100 |      100 |      100 |      100 |                   |
-     fms-api-client/src    |      100 |      100 |      100 |      100 |                   |
-      client.model.js      |      100 |      100 |      100 |      100 |                   |
-      connection.model.js  |      100 |      100 |      100 |      100 |                   |
-      credentials.model.js |      100 |      100 |      100 |      100 |                   |
-      data.model.js        |      100 |      100 |      100 |      100 |                   |
-      index.js             |      100 |      100 |      100 |      100 |                   |
-      utilities.service.js |      100 |      100 |      100 |      100 |                   |
-    -----------------------|----------|----------|----------|----------|-------------------|
+<!--@execute('npm run test',[])-->
+```default
+> fms-api-client@1.3.0 test /Users/luidelaparra/Documents/Development/fms-api-client
+> nyc _mocha --recursive  ./tests --timeout=30000 --exit
 
-## Dependencies
+
+
+  Authentication Capabilities
+    ✓ should authenticate into FileMaker. (356ms)
+    ✓ should automatically request an authentication token (201ms)
+    ✓ should reuse a saved authentication token (203ms)
+    ✓ should log out of the filemaker. (204ms)
+    ✓ should not attempt a logout if there is no valid token.
+    ✓ should reject if the logout request fails (204ms)
+    ✓ should reject if the authentication request fails (1570ms)
+
+  Create Capabilities
+    ✓ should create FileMaker records. (189ms)
+    ✓ should reject bad data with an error (200ms)
+    ✓ should create FileMaker records with mixed types (185ms)
+    ✓ should substitute an empty object if data is not provided (209ms)
+    ✓ should return an object with merged filemaker and data properties (186ms)
+    ✓ should allow you to run a script when creating a record with a merge response (201ms)
+    ✓ should allow you to specify scripts as an array (201ms)
+    ✓ should allow you to specify scripts as an array with a merge response (185ms)
+    ✓ should sanitize parameters when creating a new record (189ms)
+    ✓ should accept both the default script parameters and a scripts array (186ms)
+
+  Delete Capabilities
+    ✓ should delete FileMaker records. (261ms)
+    ✓ should trigger scripts via an array when deleting records. (252ms)
+    ✓ should trigger scripts via parameters when deleting records. (254ms)
+    ✓ should allow you to mix script parameters and scripts array when deleting records. (262ms)
+    ✓ should stringify script parameters. (276ms)
+    ✓ should reject deletions that do not specify a recordId (184ms)
+    ✓ should reject deletions that do not specify an invalid recordId (169ms)
+
+  Edit Capabilities
+    ✓ should edit FileMaker records.
+    ✓ should reject bad data with an error (286ms)
+    ✓ should return an object with merged filemaker and data properties
+    ✓ should allow you to run a script when editing a record (278ms)
+    ✓ should allow you to run a script via a scripts array when editing a record (272ms)
+    ✓ should allow you to specify scripts as an array (190ms)
+    ✓ should allow you to specify scripts as an array with a merge response (185ms)
+    ✓ should sanitize parameters when creating a new record (178ms)
+    ✓ should accept both the default script parameters and a scripts array (201ms)
+
+  Find Capabilities
+    ✓ should perform a find request (283ms)
+    ✓ should allow you to use an object instead of an array for a find (174ms)
+    ✓ should specify omit Criterea (245ms)
+    ✓ should allow additional parameters to manipulate the results (175ms)
+    ✓ should allow you to limit the number of portal records to return (171ms)
+    ✓ should allow you to use numbers in the find query parameters (197ms)
+    ✓ should allow you to sort the results (182ms)
+    ✓ should return an empty array if the find does not return results (171ms)
+    ✓ should allow you run a pre request script (190ms)
+    ✓ should return a response even if a script fails (214ms)
+    ✓ should allow you to send a parameter to the pre request script (174ms)
+    ✓ should allow you run script after the find and before the sort (197ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (194ms)
+    ✓ should reject of there is an issue with the find request (171ms)
+
+  Get Capabilities
+    ✓ should get specific FileMaker records. (18921ms)
+    ✓ should reject get requests that do not specify a recordId (246ms)
+    ✓ should allow you to limit the number of portal records to return (267ms)
+    ✓ should accept namespaced portal limit and offset parameters (274ms)
+
+  Global Capabilities
+    ✓ should allow you to set FileMaker globals (193ms)
+    ✓ should reject with a message and code if it fails to set a global (170ms)
+
+  List Capabilities
+    ✓ should allow you to list records (260ms)
+    ✓ should allow you use parameters to modify the list response (180ms)
+    ✓ should should allow you to use numbers in parameters (180ms)
+    ✓ should should allow you to provide an array of portals in parameters (191ms)
+    ✓ should should remove non used properties from a portal object (182ms)
+    ✓ should modify requests to comply with DAPI name reservations (177ms)
+    ✓ should allow strings while complying with DAPI name reservations (192ms)
+    ✓ should allow you to offset the list response (198ms)
+    ✓ should santize parameters that would cause unexpected parameters (187ms)
+    ✓ should allow you to limit the number of portal records to return (240ms)
+    ✓ should accept namespaced portal limit and offset parameters (183ms)
+    ✓ should reject invalid parameters (174ms)
+
+  Script Capabilities
+    ✓ should allow you to trigger a script in FileMaker (182ms)
+    ✓ should allow you to trigger a script in FileMaker (198ms)
+    ✓ should allow you to trigger a script in a find (307ms)
+    ✓ should allow you to trigger a script in a list (232ms)
+    ✓ should allow reject a script that does not exist (217ms)
+    ✓ should allow return a result even if a script returns an error (202ms)
+    ✓ should parse script results if the results are json (204ms)
+    ✓ should not parse script results if the results are not json (180ms)
+    ✓ should parse an array of scripts (189ms)
+    ✓ should trigger scripts on all three script phases (200ms)
+
+  Storage
+    ✓ should allow an instance to be created
+    ✓ should allow an instance to be saved.
+    ✓ should allow an instance to be recalled
+    ✓ should allow insances to be listed
+    ✓ should allow you to remove an instance
+
+  File Upload Capabilities
+    ✓ should allow you to upload a file to a new record (1591ms)
+    ✓ should allow you to upload a file to a specific container repetition (1534ms)
+    ✓ should reject with a message if it can not find the file to upload (174ms)
+    ✓ should allow you to upload a file to a specific record (1668ms)
+    ✓ should allow you to upload a file to a specific record container repetition (1534ms)
+    ✓ should reject of the request is invalid (269ms)
+
+  Data Usage Tracking Capabilities
+    ✓ should track API usage data. (181ms)
+    ✓ should allow you to reset usage data. (173ms)
+
+  Utility Capabilities
+    ✓ should extract field while maintaining the array (259ms)
+    ✓ should extract field data while maintaining the object (273ms)
+    ✓ should extract the recordId while maintaining the array (258ms)
+    ✓ should extract field data while maintaining the object (345ms)
+
+
+  92 passing (44s)
+
+-----------------------|----------|----------|----------|----------|-------------------|
+File                   |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+-----------------------|----------|----------|----------|----------|-------------------|
+All files              |      100 |      100 |      100 |      100 |                   |
+ fms-api-client        |      100 |      100 |      100 |      100 |                   |
+  index.js             |      100 |      100 |      100 |      100 |                   |
+ fms-api-client/src    |      100 |      100 |      100 |      100 |                   |
+  client.model.js      |      100 |      100 |      100 |      100 |                   |
+  connection.model.js  |      100 |      100 |      100 |      100 |                   |
+  credentials.model.js |      100 |      100 |      100 |      100 |                   |
+  data.model.js        |      100 |      100 |      100 |      100 |                   |
+  index.js             |      100 |      100 |      100 |      100 |                   |
+  utilities.service.js |      100 |      100 |      100 |      100 |                   |
+-----------------------|----------|----------|----------|----------|-------------------|
+```
+<!--/@-->
 
 <!--@dependencies()-->
 ## <a name="dependencies">Dependencies</a>
@@ -360,8 +392,6 @@ npm test
 - [prettysize](https://github.com/davglass/prettysize): Convert bytes to other sizes for prettier logging
 
 <!--/@-->
-
-## Dev Dependencies
 
 <!--@devDependencies()-->
 ## <a name="dev-dependencies">Dev Dependencies</a>
@@ -381,6 +411,7 @@ npm test
 - [mocha-lcov-reporter](https://github.com/StevenLooman/mocha-lcov-reporter): LCOV reporter for Mocha
 - [mos](https://github.com/mosjs/mos): A pluggable module that injects content into your markdown files via hidden JavaScript snippets
 - [mos-plugin-dependencies](https://github.com/mosjs/mos/tree/master/packages/mos-plugin-dependencies): A mos plugin that creates dependencies sections
+- [mos-plugin-execute](https://github.com/team-767/mos-plugin-execute): Mos plugin to inline a process output
 - [mos-plugin-installation](https://github.com/mosjs/mos/tree/master/packages/mos-plugin-installation): A mos plugin for creating installation section
 - [mos-plugin-license](https://github.com/mosjs/mos-plugin-license): A mos plugin for generating a license section
 - [mos-plugin-snippet](https://github.com/mosjs/mos/tree/master/packages/mos-plugin-snippet): A mos plugin for embedding snippets from files
