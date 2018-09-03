@@ -1,9 +1,9 @@
 'use strict';
 
-const axios = require('axios');
 const moment = require('moment');
 const { EmbeddedDocument } = require('marpat');
 const { Credentials } = require('./credentials.model');
+const { request } = require('./request.service.js');
 /**
  * @class Connection
  * @classdesc The class used to connection with the FileMaker server Data API
@@ -146,7 +146,7 @@ class Connection extends EmbeddedDocument {
    */
   generate() {
     return new Promise((resolve, reject) =>
-      axios({
+      request({
         url: this._authURL(),
         method: 'post',
         headers: {

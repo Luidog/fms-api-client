@@ -1,11 +1,10 @@
 'use strict';
 
 const fs = require('fs');
-const axios = require('axios');
-const FormData = require('form-data');
 const { Document } = require('marpat');
 const { Connection } = require('./connection.model');
 const { Data } = require('./data.model');
+const { request, FormData } = require('./request.service.js');
 const {
   toArray,
   namespace,
@@ -244,7 +243,7 @@ class Client extends Document {
     return new Promise(
       (resolve, reject) =>
         this.connection.valid()
-          ? axios({
+          ? request({
               url: this._logoutURL(this.connection.token),
               method: 'delete',
               data: {}
@@ -286,7 +285,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._createURL(layout),
             method: 'post',
             headers: {
@@ -301,7 +300,8 @@ class Client extends Document {
                 'script.prerequest',
                 'script.prerequest.param',
                 'script.presort',
-                'script.presort.param'
+                'script.presort.param',
+                'request'
               ]),
               {
                 fieldData: this.data.incoming(stringify(data))
@@ -338,7 +338,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._updateURL(layout, recordId),
             method: 'patch',
             headers: {
@@ -354,7 +354,8 @@ class Client extends Document {
                 'script.prerequest',
                 'script.prerequest.param',
                 'script.presort',
-                'script.presort.param'
+                'script.presort.param',
+                'request'
               ]),
               {
                 fieldData: this.data.incoming(stringify(data))
@@ -391,7 +392,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._deleteURL(layout, recordId),
             method: 'delete',
             headers: {
@@ -403,7 +404,8 @@ class Client extends Document {
               'script.prerequest',
               'script.prerequest.param',
               'script.presort',
-              'script.presort.param'
+              'script.presort.param',
+              'request'
             ])
           })
         )
@@ -431,7 +433,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._getURL(layout, recordId),
             method: 'get',
             headers: {
@@ -448,7 +450,8 @@ class Client extends Document {
                 'layout.response',
                 'portal',
                 '_offset.*',
-                '_limit.*'
+                '_limit.*',
+                'request'
               ])
             )
           })
@@ -476,7 +479,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._listURL(layout),
             method: 'get',
             headers: {
@@ -497,7 +500,8 @@ class Client extends Document {
                 'script.presort.param',
                 'layout.response',
                 '_offset.*',
-                '_limit.*'
+                '_limit.*',
+                'request'
               ])
             )
           })
@@ -526,7 +530,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._findURL(layout),
             method: 'post',
             headers: {
@@ -548,7 +552,8 @@ class Client extends Document {
                 'script.presort.param',
                 'layout.response',
                 'offset.*',
-                'limit.*'
+                'limit.*',
+                'request'
               ])
             )
           })
@@ -582,7 +587,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._globalsURL(),
             method: 'patch',
             headers: {
@@ -628,7 +633,7 @@ class Client extends Document {
       resolveRecordId()
         .then(recordId =>
           this.authenticate().then(token =>
-            axios.post(
+            request.post(
               this._uploadURL(
                 layout,
                 recordId,
@@ -675,7 +680,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._listURL(layout),
             method: 'get',
             headers: {
