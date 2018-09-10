@@ -108,6 +108,20 @@ describe('Authentication Capabilities', () => {
         .save()
         .then(client => client.authenticate())
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should reject if the server errors', () => {
+    client.connection._authURL = () => 'https://httpstat.us/502';
+    return expect(
+      client
+        .save()
+        .then(client => client.authenticate())
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message');
   });
 });
