@@ -1,19 +1,19 @@
 'use strict';
 
 const fs = require('fs');
-const axios = require('axios');
-const FormData = require('form-data');
 const { Document } = require('marpat');
 const { Connection } = require('./connection.model');
 const { Data } = require('./data.model');
+const { request, FormData } = require('./request.service.js');
 const {
   toArray,
   namespace,
   isJson,
   stringify,
-  map,
   sanitizeParameters,
-  filterResponse
+  filterResponse,
+  fieldData,
+  recordId
 } = require('./utilities.service');
 
 /**
@@ -42,6 +42,14 @@ class Client extends Document {
       application: {
         type: String,
         required: true
+      },
+      /**
+       * A name for the client.
+       * @member Client#name
+       * @type String
+       */
+      name: {
+        type: String
       },
       /**
        * The client application server.
@@ -76,10 +84,12 @@ class Client extends Document {
   /**
    * preInit is a hook
    * @schema
+   * @description The client preInit hook  creates a data embedded document and a connection
+   * embedded document on create.
    * @return {null} The preInit hook does not return anything
    */
   preInit(data) {
-    this.data = Data.create();
+    this.data = Data.create({ track: data.usage === undefined });
     this.connection = Connection.create({
       server: data.server,
       application: data.application,
@@ -244,7 +254,7 @@ class Client extends Document {
     return new Promise(
       (resolve, reject) =>
         this.connection.valid()
-          ? axios({
+          ? request({
               url: this._logoutURL(this.connection.token),
               method: 'delete',
               data: {}
@@ -254,7 +264,7 @@ class Client extends Document {
               .then(body => this.connection.remove(body))
               .then(body => this._saveState(body))
               .then(body => resolve(body.messages[0]))
-              .catch(error => reject(error.response.data.messages[0]))
+              .catch(error => reject(error))
           : reject({ message: 'No session to log out.' })
     );
   }
@@ -286,7 +296,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._createURL(layout),
             method: 'post',
             headers: {
@@ -301,7 +311,8 @@ class Client extends Document {
                 'script.prerequest',
                 'script.prerequest.param',
                 'script.presort',
-                'script.presort.param'
+                'script.presort.param',
+                'request'
               ]),
               {
                 fieldData: this.data.incoming(stringify(data))
@@ -319,7 +330,7 @@ class Client extends Document {
             parameters.merge ? Object.assign(data, response) : response
         )
         .then(response => resolve(response))
-        .catch(error => reject(error.response.data.messages[0]))
+        .catch(error => reject(error))
     );
   }
   /**
@@ -338,7 +349,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._updateURL(layout, recordId),
             method: 'patch',
             headers: {
@@ -354,7 +365,8 @@ class Client extends Document {
                 'script.prerequest',
                 'script.prerequest.param',
                 'script.presort',
-                'script.presort.param'
+                'script.presort.param',
+                'request'
               ]),
               {
                 fieldData: this.data.incoming(stringify(data))
@@ -374,7 +386,7 @@ class Client extends Document {
               : body
         )
         .then(response => resolve(response))
-        .catch(error => reject(error.response.data.messages[0]))
+        .catch(error => reject(error))
     );
   }
   /**
@@ -391,7 +403,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._deleteURL(layout, recordId),
             method: 'delete',
             headers: {
@@ -403,7 +415,8 @@ class Client extends Document {
               'script.prerequest',
               'script.prerequest.param',
               'script.presort',
-              'script.presort.param'
+              'script.presort.param',
+              'request'
             ])
           })
         )
@@ -413,7 +426,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error.response.data.messages[0]))
+        .catch(error => reject(error))
     );
   }
   /**
@@ -431,7 +444,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._getURL(layout, recordId),
             method: 'get',
             headers: {
@@ -448,7 +461,8 @@ class Client extends Document {
                 'layout.response',
                 'portal',
                 '_offset.*',
-                '_limit.*'
+                '_limit.*',
+                'request'
               ])
             )
           })
@@ -459,7 +473,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error.response.data.messages[0]))
+        .catch(error => reject(error))
     );
   }
   /**
@@ -476,7 +490,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._listURL(layout),
             method: 'get',
             headers: {
@@ -497,7 +511,8 @@ class Client extends Document {
                 'script.presort.param',
                 'layout.response',
                 '_offset.*',
-                '_limit.*'
+                '_limit.*',
+                'request'
               ])
             )
           })
@@ -508,7 +523,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error.response.data.messages[0]))
+        .catch(error => reject(error))
     );
   }
   /**
@@ -526,7 +541,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._findURL(layout),
             method: 'post',
             headers: {
@@ -548,7 +563,8 @@ class Client extends Document {
                 'script.presort.param',
                 'layout.response',
                 'offset.*',
-                'limit.*'
+                'limit.*',
+                'request'
               ])
             )
           })
@@ -561,12 +577,12 @@ class Client extends Document {
         .then(response => resolve(response))
         .catch(
           error =>
-            error.response.data.messages[0].code === '401'
+            error.code === '401'
               ? resolve({
                   data: [],
-                  message: filterResponse(error.response.data)
+                  message: 'No records match the request'
                 })
-              : reject(error.response.data.messages[0])
+              : reject(error)
         )
     );
   }
@@ -582,7 +598,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._globalsURL(),
             method: 'patch',
             headers: {
@@ -597,7 +613,7 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => resolve(body.response))
-        .catch(error => reject(error.response.data.messages[0]))
+        .catch(error => reject(error))
     );
   }
   /**
@@ -623,12 +639,18 @@ class Client extends Document {
           ? this.create(layout, {}).then(response => response.recordId)
           : Promise.resolve(recordId);
 
-      form.append('upload', fs.createReadStream(file));
+      const stream = fs.createReadStream(file);
+
+      stream.on('error', error =>
+        reject({ message: error.message, code: error.code })
+      );
+
+      form.append('upload', stream);
 
       resolveRecordId()
         .then(recordId =>
           this.authenticate().then(token =>
-            axios.post(
+            request.post(
               this._uploadURL(
                 layout,
                 recordId,
@@ -651,12 +673,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(
-          error =>
-            error.errno === undefined
-              ? reject(error.response.data.messages[0])
-              : reject(error.message)
-        );
+        .catch(error => reject(error));
     });
   }
   /**
@@ -675,7 +692,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          axios({
+          request({
             url: this._listURL(layout),
             method: 'get',
             headers: {
@@ -701,7 +718,7 @@ class Client extends Document {
               : body.response.scriptResult
           })
         )
-        .catch(error => reject(error.response.data.messages[0]))
+        .catch(error => reject(error))
     );
   }
   /**
@@ -710,21 +727,12 @@ class Client extends Document {
    * @memberof Client
    * @description fieldData is a helper method that strips the filemaker structural layout and portal information
    * from a record. It returns only the data contained in the fieldData key and the recordId.
-   * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
-   * @return {Object}      a json object containing fieldData from the record.
+   * @deprecated since version 1.5.0. Use the exported module instead.
+   * @param  {Object|Array} data The raw data returned from a filemaker. This can be an array or an object.
+   * @return {Object|Array} A json object containing fieldData from the record.
    */
   fieldData(data) {
-    return Array.isArray(data)
-      ? map(data, object =>
-          Object.assign({}, object.fieldData, {
-            recordId: object.recordId,
-            modId: object.modId
-          })
-        )
-      : Object.assign(data.fieldData, {
-          recordId: data.recordId,
-          modId: data.modId
-        });
+    return fieldData(data);
   }
   /**
    * @method recordId
@@ -732,13 +740,12 @@ class Client extends Document {
    * @memberof Client
    * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
    * from a record. It returns only the data contained in the fieldData key adn the recordId.
-   * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
-   * @return {Object}      a json object containing fieldData from the record.
+   * @deprecated since version 1.5.0. Use the exported module instead.
+   * @param  {Object|Array} data The raw data returned from a filemaker. This can be an array or an object.
+   * @return {Object|Array} A json object containing fieldData from the record.
    */
   recordId(data) {
-    return Array.isArray(data)
-      ? map(data, object => object.recordId)
-      : data.recordId.toString();
+    return recordId(data);
   }
 }
 /**

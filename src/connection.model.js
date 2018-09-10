@@ -1,9 +1,9 @@
 'use strict';
 
-const axios = require('axios');
 const moment = require('moment');
 const { EmbeddedDocument } = require('marpat');
 const { Credentials } = require('./credentials.model');
+const { request } = require('./request.service.js');
 /**
  * @class Connection
  * @classdesc The class used to connection with the FileMaker server Data API
@@ -19,10 +19,28 @@ class Connection extends EmbeddedDocument {
       issued: {
         type: String
       },
+      /** A connection name.
+       * @public
+       * @member Connection#name
+       * @type String
+       */
+      name: {
+        type: String
+      },
+      /** The FileMaker server (host).
+       * @public
+       * @member Connection#server
+       * @type String
+       */
       server: {
         type: String,
         required: true
       },
+      /** The FileMaker application (database).
+       * @public
+       * @member Connection#application
+       * @type String
+       */
       application: {
         type: String,
         required: true
@@ -78,7 +96,7 @@ class Connection extends EmbeddedDocument {
    * @return {String} A string containing the authentication
    */
   _basicAuth() {
-    let auth = `Basic ${new Buffer(
+    const auth = `Basic ${new Buffer(
       `${this.credentials.user}:${this.credentials.password}`
     ).toString('base64')}`;
     return auth;
@@ -128,7 +146,7 @@ class Connection extends EmbeddedDocument {
    */
   generate() {
     return new Promise((resolve, reject) =>
-      axios({
+      request({
         url: this._authURL(),
         method: 'post',
         headers: {

@@ -6,17 +6,23 @@ const pretty = require('prettysize');
 const { EmbeddedDocument } = require('marpat');
 
 /**
- * @module Data
- */
-
-/**
  * @class Data
  * @classdesc The class used to track FileMaker API data usage.
  **/
+
 class Data extends EmbeddedDocument {
   constructor() {
     super();
     this.schema({
+      /** A boolean value set to true if the client should track data usage.
+       * @member Data#track
+       * @type Boolean
+       */
+      track: {
+        type: Boolean,
+        required: true,
+        default: true
+      },
       /** A number containing the total amount of data called since the class
        * was created or last cleared.
        * @member Data#in
@@ -48,6 +54,7 @@ class Data extends EmbeddedDocument {
       }
     });
   }
+
   /**
    * @method incoming
    * @public
@@ -57,10 +64,12 @@ class Data extends EmbeddedDocument {
    * @return {Any} Returns data unmutated.
    *
    */
+
   incoming(data) {
-    this.in += sizeof(data);
+    this.track ? (this.in += sizeof(data)) : null;
     return data;
   }
+
   /**
    * @method outgoing
    * @public
@@ -70,10 +79,12 @@ class Data extends EmbeddedDocument {
    * @return {Any} Returns data unmutated.
    *
    */
+
   outgoing(data) {
-    this.out += sizeof(data);
+    this.track ? (this.out += sizeof(data)) : null;
     return data;
   }
+
   /**
    * @method clear
    * @public
@@ -82,10 +93,12 @@ class Data extends EmbeddedDocument {
    * @return {null} This method does not return anything.
    *
    */
+
   clear() {
     this.since = moment().format();
     this.in = this.out = 0;
   }
+
   /**
    * @method status
    * @public
@@ -94,8 +107,9 @@ class Data extends EmbeddedDocument {
    * @return {Object} An object contain the key of data with keys of since, in, and out as strings.
    *
    */
+
   status() {
-    let status = {
+    const status = {
       data: {
         since: this.since,
         in: pretty(this.in),
@@ -105,6 +119,10 @@ class Data extends EmbeddedDocument {
     return status;
   }
 }
+
+/**
+ * @module Data
+ */
 
 module.exports = {
   Data
