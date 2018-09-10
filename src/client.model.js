@@ -49,8 +49,7 @@ class Client extends Document {
        * @type String
        */
       name: {
-        type: String,
-        required: true
+        type: String
       },
       /**
        * The client application server.
