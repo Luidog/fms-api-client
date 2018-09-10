@@ -12,7 +12,7 @@ const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
-const { Filemaker } = require('../index.js');
+const { Filemaker, recordId, fieldData } = require('../index.js');
 
 chai.use(chaiAsPromised);
 
@@ -42,7 +42,7 @@ describe('Utility Capabilities', () => {
       });
   });
 
-  it('should extract field while maintaining the array', () => {
+  it('*Depricated* it should extract field while maintaining the array', () => {
     return expect(
       client
         .create(process.env.LAYOUT, { name: 'Obi-Wan' })
@@ -56,7 +56,7 @@ describe('Utility Capabilities', () => {
       .and.to.not.include.keys('fieldData');
   });
 
-  it('should extract field data while maintaining the object', () => {
+  it('*Depricated* it should extract field data while maintaining the object', () => {
     return expect(
       client
         .create(process.env.LAYOUT, { name: 'Obi-Wan' })
@@ -68,7 +68,7 @@ describe('Utility Capabilities', () => {
       .and.to.not.include.keys('fieldData');
   });
 
-  it('should extract the recordId while maintaining the array', () => {
+  it('*Depricated* it should extract the recordId while maintaining the array', () => {
     return expect(
       client
         .create(process.env.LAYOUT, { name: 'Obi-Wan' })
@@ -80,12 +80,59 @@ describe('Utility Capabilities', () => {
       .to.be.a('string');
   });
 
-  it('should extract field data while maintaining the object', () => {
+  it('*Depricated* it should extract field data while maintaining the object', () => {
     return expect(
       client
         .create(process.env.LAYOUT, { name: 'Obi-Wan' })
         .then(response => client.get(process.env.LAYOUT, response.recordId))
         .then(record => client.recordId(record.data[0]))
+    ).to.eventually.be.a('string');
+  });
+
+    it('it should extract field while maintaining the array', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
+        .then(response => client.get(process.env.LAYOUT, response.recordId))
+        .then(record => fieldData(record.data))
+    )
+      .to.eventually.be.a('array')
+      .and.property('0')
+      .to.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
+      .and.to.not.include.keys('fieldData');
+  });
+
+  it('it should extract field data while maintaining the object', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
+        .then(response => client.get(process.env.LAYOUT, response.recordId))
+        .then(record => fieldData(record.data[0]))
+    )
+      .to.eventually.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
+      .and.to.not.include.keys('fieldData');
+  });
+
+  it('it should extract the recordId while maintaining the array', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
+        .then(response => client.get(process.env.LAYOUT, response.recordId))
+        .then(record => recordId(record.data))
+    )
+      .to.eventually.be.a('array')
+      .and.property('0')
+      .to.be.a('string');
+  });
+
+  it('it should extract field data while maintaining the object', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
+        .then(response => client.get(process.env.LAYOUT, response.recordId))
+        .then(record => recordId(record.data[0]))
     ).to.eventually.be.a('string');
   });
 });
