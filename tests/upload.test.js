@@ -71,7 +71,9 @@ describe('File Upload Capabilities', () => {
       client
         .upload('./assets/none.md', process.env.LAYOUT, 'image')
         .catch(error => error)
-    ).to.eventually.be.a('string');
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('message', 'code');
   });
 
   it('should allow you to upload a file to a specific record', () => {
