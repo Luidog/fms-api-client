@@ -13,6 +13,7 @@ const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker, recordId, fieldData } = require('../index.js');
+const { omit } = require('../src/utilities.service');
 
 chai.use(chaiAsPromised);
 
@@ -89,7 +90,7 @@ describe('Utility Capabilities', () => {
     ).to.eventually.be.a('string');
   });
 
-    it('it should extract field while maintaining the array', () => {
+  it('it should extract field while maintaining the array', () => {
     return expect(
       client
         .create(process.env.LAYOUT, { name: 'Obi-Wan' })
@@ -134,5 +135,29 @@ describe('Utility Capabilities', () => {
         .then(response => client.get(process.env.LAYOUT, response.recordId))
         .then(record => recordId(record.data[0]))
     ).to.eventually.be.a('string');
+  });
+
+  it('it should remove properties while maintaing the array', () => {
+    return expect(
+      omit(
+        [
+          { name: 'Luke Skywalker', planet: 'tatooine' },
+          { name: 'Luke Skywalker', planet: 'tatooine' }
+        ],
+        ['planet']
+      )
+    )
+      .to.be.a('array')
+      .and.property('0')
+      .to.be.a('object')
+      .and.to.not.include.keys('planet');
+  });
+
+  it('it should remove properties while maintaing the array', () => {
+    return expect(
+      omit({ name: 'Luke Skywalker', planet: 'tatooine' }, ['planet'])
+    )
+      .to.be.a('object')
+      .and.to.not.include.keys('planet');
   });
 });
