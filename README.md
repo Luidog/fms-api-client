@@ -228,103 +228,104 @@ npm test
 
 <!--@execute('npm run test',[])-->
 ```default
-> fms-api-client@1.4.0 test /fms-api-client
+> fms-api-client@1.4.5 test /Users/luidelaparra/Documents/Development/fms-api-client
 > nyc _mocha --recursive  ./tests --timeout=30000 --exit
 
 
 
   Authentication Capabilities
-    ✓ should authenticate into FileMaker. (149ms)
-    ✓ should automatically request an authentication token (172ms)
-    ✓ should reuse a saved authentication token (171ms)
-    ✓ should log out of the filemaker. (164ms)
+    ✓ should authenticate into FileMaker. (154ms)
+    ✓ should automatically request an authentication token (164ms)
+    ✓ should reuse a saved authentication token (189ms)
+    ✓ should log out of the filemaker. (190ms)
     ✓ should not attempt a logout if there is no valid token.
-    ✓ should reject if the logout request fails (172ms)
-    ✓ should reject if the authentication request fails (1419ms)
+    ✓ should reject if the logout request fails (162ms)
+    ✓ should reject if the authentication request fails (1543ms)
+    ✓ should reject if the server errors (121ms)
 
   Create Capabilities
-    ✓ should create FileMaker records. (172ms)
-    ✓ should reject bad data with an error (167ms)
-    ✓ should create FileMaker records with mixed types (168ms)
-    ✓ should substitute an empty object if data is not provided (159ms)
-    ✓ should return an object with merged filemaker and data properties (164ms)
-    ✓ should allow you to run a script when creating a record with a merge response (181ms)
-    ✓ should allow you to specify scripts as an array (178ms)
-    ✓ should allow you to specify scripts as an array with a merge response (177ms)
-    ✓ should sanitize parameters when creating a new record (178ms)
-    ✓ should accept both the default script parameters and a scripts array (179ms)
+    ✓ should create FileMaker records. (181ms)
+    ✓ should reject bad data with an error (168ms)
+    ✓ should create FileMaker records with mixed types (165ms)
+    ✓ should substitute an empty object if data is not provided (171ms)
+    ✓ should return an object with merged filemaker and data properties (161ms)
+    ✓ should allow you to run a script when creating a record with a merge response (189ms)
+    ✓ should allow you to specify scripts as an array (179ms)
+    ✓ should allow you to specify scripts as an array with a merge response (182ms)
+    ✓ should sanitize parameters when creating a new record (179ms)
+    ✓ should accept both the default script parameters and a scripts array (185ms)
 
   Delete Capabilities
-    ✓ should delete FileMaker records. (239ms)
-    ✓ should trigger scripts via an array when deleting records. (247ms)
-    ✓ should trigger scripts via parameters when deleting records. (244ms)
-    ✓ should allow you to mix script parameters and scripts array when deleting records. (246ms)
-    ✓ should stringify script parameters. (245ms)
-    ✓ should reject deletions that do not specify a recordId (169ms)
-    ✓ should reject deletions that do not specify an invalid recordId (166ms)
+    ✓ should delete FileMaker records. (253ms)
+    ✓ should trigger scripts via an array when deleting records. (253ms)
+    ✓ should trigger scripts via parameters when deleting records. (253ms)
+    ✓ should allow you to mix script parameters and scripts array when deleting records. (244ms)
+    ✓ should stringify script parameters. (237ms)
+    ✓ should reject deletions that do not specify a recordId (165ms)
+    ✓ should reject deletions that do not specify an invalid recordId (175ms)
 
   Edit Capabilities
     ✓ should edit FileMaker records.
-    ✓ should reject bad data with an error (257ms)
+    ✓ should reject bad data with an error (256ms)
     ✓ should return an object with merged filemaker and data properties
-    ✓ should allow you to run a script when editing a record (253ms)
-    ✓ should allow you to run a script via a scripts array when editing a record (261ms)
-    ✓ should allow you to specify scripts as an array (207ms)
-    ✓ should allow you to specify scripts as an array with a merge response (185ms)
-    ✓ should sanitize parameters when creating a new record (186ms)
-    ✓ should accept both the default script parameters and a scripts array (179ms)
+    ✓ should allow you to run a script when editing a record (261ms)
+    ✓ should allow you to run a script via a scripts array when editing a record (255ms)
+    ✓ should allow you to specify scripts as an array (183ms)
+    ✓ should allow you to specify scripts as an array with a merge response (179ms)
+    ✓ should sanitize parameters when creating a new record (184ms)
+    ✓ should accept both the default script parameters and a scripts array (185ms)
 
   Find Capabilities
-    ✓ should perform a find request (255ms)
-    ✓ should allow you to use an object instead of an array for a find (201ms)
-    ✓ should specify omit Criterea (249ms)
-    ✓ should allow additional parameters to manipulate the results (167ms)
-    ✓ should allow you to limit the number of portal records to return (176ms)
-    ✓ should allow you to use numbers in the find query parameters (167ms)
-    ✓ should allow you to sort the results (185ms)
-    ✓ should return an empty array if the find does not return results (173ms)
-    ✓ should allow you run a pre request script (169ms)
-    ✓ should return a response even if a script fails (179ms)
-    ✓ should allow you to send a parameter to the pre request script (178ms)
-    ✓ should allow you run script after the find and before the sort (201ms)
-    ✓ should allow you to pass a parameter to a script after the find and before the sort (202ms)
+    ✓ should perform a find request (261ms)
+    ✓ should allow you to use an object instead of an array for a find (253ms)
+    ✓ should specify omit Criterea (262ms)
+    ✓ should allow additional parameters to manipulate the results (169ms)
+    ✓ should allow you to limit the number of portal records to return (174ms)
+    ✓ should allow you to use numbers in the find query parameters (189ms)
+    ✓ should allow you to sort the results (328ms)
+    ✓ should return an empty array if the find does not return results (167ms)
+    ✓ should allow you run a pre request script (180ms)
+    ✓ should return a response even if a script fails (181ms)
+    ✓ should allow you to send a parameter to the pre request script (181ms)
+    ✓ should allow you run script after the find and before the sort (315ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (318ms)
     ✓ should reject of there is an issue with the find request (164ms)
 
   Get Capabilities
-    ✓ should get specific FileMaker records. (243ms)
-    ✓ should reject get requests that do not specify a recordId (238ms)
-    ✓ should allow you to limit the number of portal records to return (235ms)
-    ✓ should accept namespaced portal limit and offset parameters (240ms)
+    ✓ should get specific FileMaker records. (255ms)
+    ✓ should reject get requests that do not specify a recordId (241ms)
+    ✓ should allow you to limit the number of portal records to return (252ms)
+    ✓ should accept namespaced portal limit and offset parameters (242ms)
 
   Global Capabilities
-    ✓ should allow you to set FileMaker globals (163ms)
-    ✓ should reject with a message and code if it fails to set a global (165ms)
+    ✓ should allow you to set FileMaker globals (166ms)
+    ✓ should reject with a message and code if it fails to set a global (171ms)
 
   List Capabilities
-    ✓ should allow you to list records (253ms)
-    ✓ should allow you use parameters to modify the list response (169ms)
-    ✓ should should allow you to use numbers in parameters (170ms)
-    ✓ should should allow you to provide an array of portals in parameters (213ms)
-    ✓ should should remove non used properties from a portal object (174ms)
-    ✓ should modify requests to comply with DAPI name reservations (174ms)
+    ✓ should allow you to list records (265ms)
+    ✓ should allow you use parameters to modify the list response (172ms)
+    ✓ should should allow you to use numbers in parameters (175ms)
+    ✓ should should allow you to provide an array of portals in parameters (174ms)
+    ✓ should should remove non used properties from a portal object (177ms)
+    ✓ should modify requests to comply with DAPI name reservations (163ms)
     ✓ should allow strings while complying with DAPI name reservations (174ms)
-    ✓ should allow you to offset the list response (183ms)
-    ✓ should santize parameters that would cause unexpected parameters (173ms)
-    ✓ should allow you to limit the number of portal records to return (177ms)
-    ✓ should accept namespaced portal limit and offset parameters (170ms)
-    ✓ should reject invalid parameters (172ms)
+    ✓ should allow you to offset the list response (178ms)
+    ✓ should santize parameters that would cause unexpected parameters (175ms)
+    ✓ should allow you to limit the number of portal records to return (167ms)
+    ✓ should accept namespaced portal limit and offset parameters (171ms)
+    ✓ should reject invalid parameters (162ms)
 
   Script Capabilities
     ✓ should allow you to trigger a script in FileMaker (183ms)
-    ✓ should allow you to trigger a script in FileMaker (177ms)
-    ✓ should allow you to trigger a script in a find (254ms)
-    ✓ should allow you to trigger a script in a list (173ms)
-    ✓ should allow reject a script that does not exist (172ms)
-    ✓ should allow return a result even if a script returns an error (185ms)
-    ✓ should parse script results if the results are json (194ms)
-    ✓ should not parse script results if the results are not json (169ms)
-    ✓ should parse an array of scripts (188ms)
-    ✓ should trigger scripts on all three script phases (190ms)
+    ✓ should allow you to trigger a script in FileMaker (170ms)
+    ✓ should allow you to trigger a script in a find (258ms)
+    ✓ should allow you to trigger a script in a list (185ms)
+    ✓ should allow reject a script that does not exist (163ms)
+    ✓ should allow return a result even if a script returns an error (187ms)
+    ✓ should parse script results if the results are json (168ms)
+    ✓ should not parse script results if the results are not json (165ms)
+    ✓ should parse an array of scripts (178ms)
+    ✓ should trigger scripts on all three script phases (189ms)
 
   Storage
     ✓ should allow an instance to be created
@@ -334,38 +335,49 @@ npm test
     ✓ should allow you to remove an instance
 
   File Upload Capabilities
-    ✓ should allow you to upload a file to a new record (1355ms)
-    ✓ should allow you to upload a file to a specific container repetition (1345ms)
-    ✓ should reject with a message if it can not find the file to upload (164ms)
-    ✓ should allow you to upload a file to a specific record (1352ms)
-    ✓ should allow you to upload a file to a specific record container repetition (1535ms)
-    ✓ should reject of the request is invalid (313ms)
+    ✓ should allow you to upload a file to a new record (1563ms)
+    ✓ should allow you to upload a file to a specific container repetition (1341ms)
+    ✓ should reject with a message if it can not find the file to upload
+    ✓ should allow you to upload a file to a specific record (1420ms)
+    ✓ should allow you to upload a file to a specific record container repetition (1364ms)
+    ✓ should reject of the request is invalid (330ms)
 
-  Data Usage Tracking Capabilities
-    ✓ should track API usage data. (168ms)
-    ✓ should allow you to reset usage data. (168ms)
+  Data Usage 
+    Tracks Data Usage
+      ✓ should track API usage data. (184ms)
+      ✓ should allow you to reset usage data. (170ms)
+    Does Not Track Data Usage
+      ✓ should not track data usage in (172ms)
+      ✓ should not track data usage out (169ms)
 
   Utility Capabilities
-    ✓ should extract field while maintaining the array (242ms)
-    ✓ should extract field data while maintaining the object (247ms)
-    ✓ should extract the recordId while maintaining the array (247ms)
-    ✓ should extract field data while maintaining the object (243ms)
+    ✓ *Depricated* it should extract field while maintaining the array (250ms)
+    ✓ *Depricated* it should extract field data while maintaining the object (253ms)
+    ✓ *Depricated* it should extract the recordId while maintaining the array (261ms)
+    ✓ *Depricated* it should extract field data while maintaining the object (249ms)
+    ✓ it should extract field while maintaining the array (251ms)
+    ✓ it should extract field data while maintaining the object (241ms)
+    ✓ it should extract the recordId while maintaining the array (253ms)
+    ✓ it should extract field data while maintaining the object (270ms)
+    ✓ it should remove properties while maintaing the array
+    ✓ it should remove properties while maintaing the array
 
 
-  92 passing (23s)
+  101 passing (25s)
 
 -----------------------|----------|----------|----------|----------|-------------------|
 File                   |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 -----------------------|----------|----------|----------|----------|-------------------|
-All files              |      100 |      100 |      100 |      100 |                   |
+All files              |    99.62 |      100 |    99.43 |      100 |                   |
  fms-api-client        |      100 |      100 |      100 |      100 |                   |
   index.js             |      100 |      100 |      100 |      100 |                   |
- fms-api-client/src    |      100 |      100 |      100 |      100 |                   |
+ fms-api-client/src    |    99.62 |      100 |    99.43 |      100 |                   |
   client.model.js      |      100 |      100 |      100 |      100 |                   |
   connection.model.js  |      100 |      100 |      100 |      100 |                   |
   credentials.model.js |      100 |      100 |      100 |      100 |                   |
   data.model.js        |      100 |      100 |      100 |      100 |                   |
   index.js             |      100 |      100 |      100 |      100 |                   |
+  request.service.js   |    92.31 |      100 |       75 |      100 |                   |
   utilities.service.js |      100 |      100 |      100 |      100 |                   |
 -----------------------|----------|----------|----------|----------|-------------------|
 ```
