@@ -16,53 +16,108 @@ const { Filemaker } = require('../index.js');
 
 chai.use(chaiAsPromised);
 
-describe('Data Usage Tracking Capabilities', () => {
+describe('Data Usage ', () => {
   let database, client;
 
-  beforeEach(done => {
-    client = Filemaker.create({
-      application: process.env.APPLICATION,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: process.env.PASSWORD
-    });
-    done();
-  });
-
-  before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
-    connect('nedb://memory')
-      .then(db => {
-        database = db;
-        return database.dropDatabase();
-      })
-      .then(() => {
-        return done();
+  describe('Tracks Data Usage', () => {
+    beforeEach(done => {
+      client = Filemaker.create({
+        application: process.env.APPLICATION,
+        server: process.env.SERVER,
+        user: process.env.USERNAME,
+        password: process.env.PASSWORD
       });
-  });
+      done();
+    });
 
-  it('should track API usage data.', () => {
-    return expect(
-      client
-        .create(process.env.LAYOUT, { name: 'Luke Skywalker' })
-        .then(response => client.data.status())
-    )
-      .to.eventually.be.an('object')
-      .that.has.all.keys('data');
-  });
-
-  it('should allow you to reset usage data.', () => {
-    return expect(
-      client
-        .create(process.env.LAYOUT, { name: 'Luke Skywalker' })
-        .then(response => {
-          client.data.clear();
-          return client;
+    before(done => {
+      environment.config({ path: './tests/.env' });
+      varium(process.env, './tests/env.manifest');
+      connect('nedb://memory')
+        .then(db => {
+          database = db;
+          return database.dropDatabase();
         })
-        .then(filemaker => client.data.status())
-    )
-      .to.eventually.be.an('object')
-      .that.has.all.keys('data');
+        .then(() => {
+          return done();
+        });
+    });
+
+    it('should track API usage data.', () => {
+      return expect(
+        client
+          .create(process.env.LAYOUT, { name: 'Luke Skywalker' })
+          .then(response => client.data.status())
+      )
+        .to.eventually.be.an('object')
+        .that.has.all.keys('data');
+    });
+
+    it('should allow you to reset usage data.', () => {
+      return expect(
+        client
+          .create(process.env.LAYOUT, { name: 'Luke Skywalker' })
+          .then(response => {
+            client.data.clear();
+            return client;
+          })
+          .then(filemaker => client.data.status())
+      )
+        .to.eventually.be.an('object')
+        .that.has.all.keys('data');
+    });
+  });
+  describe('Does Not Track Data Usage', () => {
+    beforeEach(done => {
+      client = Filemaker.create({
+        application: process.env.APPLICATION,
+        server: process.env.SERVER,
+        user: process.env.USERNAME,
+        password: process.env.PASSWORD,
+        usage: false
+      });
+      done();
+    });
+
+    before(done => {
+      environment.config({ path: './tests/.env' });
+      varium(process.env, './tests/env.manifest');
+      connect('nedb://memory')
+        .then(db => {
+          database = db;
+          return database.dropDatabase();
+        })
+        .then(() => {
+          return done();
+        });
+    });
+
+    it('should not track data usage in', () => {
+      return expect(
+        client
+          .create(process.env.LAYOUT, { name: 'Luke Skywalker' })
+          .then(response => client.data.status())
+      )
+        .to.eventually.be.an('object')
+        .and.property('data')
+        .that.has.all.keys('in', 'out', 'since')
+        .and.property('in', '0 Bytes');
+    });
+
+    it('should not track data usage out', () => {
+      return expect(
+        client
+          .create(process.env.LAYOUT, { name: 'Luke Skywalker' })
+          .then(response => {
+            client.data.clear();
+            return client;
+          })
+          .then(filemaker => client.data.status())
+      )
+        .to.eventually.be.an('object')
+        .and.property('data')
+        .that.has.all.keys('in', 'out', 'since')
+        .and.property('out', '0 Bytes');
+    });
   });
 });
