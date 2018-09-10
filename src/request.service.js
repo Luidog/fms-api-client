@@ -34,9 +34,7 @@ const handleResponseError = error =>
       })
     : Promise.reject(error.response.data.messages[0]);
 
-request.interceptors.request.use(interceptRequest, error =>
-  Promise.reject(error)
-);
+request.interceptors.request.use(interceptRequest, error => error);
 
 request.interceptors.response.use(response => response, handleResponseError);
 
