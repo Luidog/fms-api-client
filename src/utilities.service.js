@@ -3,10 +3,6 @@
 const _ = require('lodash');
 
 /**
- * @module Utilities
- */
-
-/**
  * @method toArray
  * @description The toArray method converts an object into an array. This method uses the object prototype method
  * isArray to check if the incoming data is an array. If the incoming data is not an array this method will
@@ -73,6 +69,7 @@ const stringify = data =>
  * @param  {Object} data The response recieved from the FileMaker DAPI.
  * @return {Object}      A json object containing the selected data from the Data API Response.
  */
+
 const filterResponse = data =>
   _.mapValues(
     data.response,
@@ -114,23 +111,13 @@ const sanitizeParameters = (parameters, safeParameters) =>
       );
 
 /**
- * @method map
- * @description The map method abstracts the lodash map method to reduce the number of imports required
- * for each model. This method accepts an array and a method to use when mapping the array of values.
- * @param  {Array} data The data to use when invoking the method
- * @param  {Function} iteratee The function to invoke on each item in the array
- * @return {Array}          The mutated array of values after each value is passed to the iteratee method.
- */
-
-const map = (data, iteratee) => _.map(data, iteratee);
-
-/**
  * @method convertScripts
  * @description The converScript method abstracts the lodash map method to reduce the number of imports required
  * for each model. This method accepts an array and a method to use when mapping the array of values.
  * @param  {Object} data The data to use when invoking the method
  * @return {Object}      A new object based on the assignment of incoming properties.
  */
+
 const convertScripts = data => {
   let { scripts } = data;
   let converted = Array.isArray(scripts)
@@ -151,6 +138,14 @@ const convertScripts = data => {
     : [];
   return Object.assign({}, ...converted);
 };
+
+/**
+ * @method convertPortals
+ * @description The convertPortals method converts a request containing a portal array into the syntax
+ * supported by the filemaker data api.
+ * @param  {Object|Array} data The data to use when invoking the method
+ * @return {Object}      A new object with the FileMaker required parameters for portals.
+ */
 
 const convertPortals = data => {
   let portalArray = [];
@@ -174,15 +169,91 @@ const convertPortals = data => {
   return Object.assign({ portals: portalArray }, converted);
 };
 
+/**
+ * @function omit
+ * @public
+ * @description fieldData is a helper method that strips the filemaker structural layout and portal information
+ * from a record. It returns only the data contained in the fieldData key and the recordId.
+ * @deprecated since version 1.5.0. Use the exported module instead.
+ * @param  {Object|Array} data The raw data to use when omitting. his can be an array or an object.
+ * @param  {Array} properties An array properties to remove.
+ * @return {Object|Array} A json object or array of objects without the properties passed to it
+ */
+
+const omit = (data, properties) =>
+  Array.isArray(data)
+    ? _.map(data, object => _.omit(object, properties))
+    : _.omit(data, properties);
+
+/**
+ * @function convertParameters
+ * @public
+ * @description Handles converting portals and scripts from array based parameters to object key based
+ * parameters to FileMaker required parameters.
+ * @param  {Object|Array} data The raw data to use converting parameters
+ * @return {Object|Array} A json object or array of objects without the properties passed to it
+ */
+
 const convertParameters = data =>
   Object.assign(convertPortals(data), stringify(convertScripts(data)), data);
 
+/**
+ * @function fieldData
+ * @public
+ * @description fieldData is a helper method that strips the filemaker structural layout and portal information
+ * from a record. It returns only the data contained in the fieldData key and the recordId.
+ * @deprecated since version 1.5.0. Use the exported module instead.
+ * @param  {Object|Array} data The raw data returned from a filemaker. This can be an array or an object.
+ * @return {Object|Array} A json object containing fieldData from the record.
+ */
+
+const fieldData = data =>
+  Array.isArray(data)
+    ? _.map(data, object =>
+        Object.assign({}, object.fieldData, {
+          recordId: object.recordId,
+          modId: object.modId
+        })
+      )
+    : Object.assign(data.fieldData, {
+        recordId: data.recordId,
+        modId: data.modId
+      });
+
+/**
+ * @function recordId
+ * @public
+ * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
+ * from a record. It returns only the data contained in the fieldData key adn the recordId.
+ * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
+ * @return {Object}      a json object containing fieldData from the record.
+ */
+
+const recordId = data =>
+  Array.isArray(data)
+    ? _.map(data, object => object.recordId)
+    : data.recordId.toString();
+
+/**
+ * @module fieldData
+ * @module omit
+ * @module recordId
+ * @module toArray
+ * @module namespace
+ * @module isJson
+ * @module stringify
+ * @module filterResponse
+ * @module sanitizeParameters
+ */
+
 module.exports = {
+  fieldData,
+  omit,
+  recordId,
   toArray,
   namespace,
   isJson,
   stringify,
   filterResponse,
-  sanitizeParameters,
-  map
+  sanitizeParameters
 };
