@@ -50,6 +50,7 @@ describe('Storage', () => {
         'connection',
         '_id',
         'data',
+        'name',
         'application',
         'server',
         'version'
@@ -64,6 +65,7 @@ describe('Storage', () => {
         'connection',
         '_id',
         'data',
+        'name',
         'application',
         'server',
         'version'
@@ -78,6 +80,7 @@ describe('Storage', () => {
         'connection',
         '_id',
         'data',
+        'name',
         'application',
         'server',
         'version'
