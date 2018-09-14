@@ -45,7 +45,7 @@ connect('nedb://memory').then(db => {
 
   const client = Filemaker.create({
     application: process.env.APPLICATION,
-    server: process.env.SERVER,
+    server: process.env.SERVER, // Must be a full Url
     user: process.env.USERNAME,
     password: process.env.PASSWORD
   });
