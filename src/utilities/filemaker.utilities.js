@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const { stringify, isJson } = require('./conversion.utilities');
 
 /**
  * @function fieldData
