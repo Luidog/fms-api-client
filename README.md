@@ -18,20 +18,85 @@ npm install --save fms-api-client
 
 ## Usage
 
-## Tests
+### Introduction
 
-```sh
-npm install
-npm test
+Connect must be called before the filemaker class is instiantiated. This
+connect uses Marpat. Marpat is a fork of Camo. much love to 
+[Scott Robinson](https://github.com/scottwrobinson) for his creation and maintenance of Camo.
+My fork of Camo - Marpat is designed to allow the use of multiple datastores
+with the focus on encrypted storage.
+
+### Datastore Connection
+
+<!--@snippet('./examples/index.js#datastore-connect-example', { showSource: true })-->
+```js
+connect('nedb://memory')
 ```
+
+> Excerpt from [./examples/index.js](./examples/index.js#L22-L22)
+<!--/@-->
+
+### Client Creation
+
+After connecting to a datastore you can import and create clients. A client is created using the create method on the
+FileMaker client class. The client requires a server and application to connect to as well as valid credentials. Note that
+the server must be an http or https domain.
+
+<!--@snippet('./examples/index.js#client-create-example', { showSource: true })-->
+```js
+    const client = Filemaker.create({
+      application: process.env.APPLICATION,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+```
+
+> Excerpt from [./examples/index.js](./examples/index.js#L26-L31)
+<!--/@-->
+
+A client can be used directly after saving it. It is also stored on the
+datastore so that it can be reused later.
+
+<!--@snippet('./examples/index.js#client-save-example', { showSource: true })-->
+```js
+    return client
+      .save()
+      .then(client => creates(client, examples))
+      .then(client => lists(client, examples))
+      .then(client => globals(client, examples))
+      .then(client => finds(client, examples))
+      .then(client => scripts(client, examples))
+      .then(client => edits(client, examples))
+      .then(client => authentication(client, examples));
+```
+
+> Excerpt from [./examples/index.js](./examples/index.js#L34-L42)
+<!--/@-->
+
+### Client Use
+
+All public methods on the client are promises. You can chain together multiple calls.
+
+<!--@snippet('./examples/create.examples.js#create-many-records', { showSource: true })-->
+```js
+const createManyRecords = client =>
+  Promise.all([
+    client.create('Heroes', { name: 'Anakin Skywalker' }, { merge: true }),
+    client.create('Heroes', { name: 'Obi-Wan' }, { merge: true }),
+    client.create('Heroes', { name: 'Yoda' }, { merge: true })
+  ]);
+```
+
+> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L22-L27)
+<!--/@-->
+
+### Create Records
 
 Using the client you can create filemaker records. To create a record
 specify the layout to use and the data to insert on creation. The client
 will automatically convert numbers, arrays, and objects into strings so
 they can be inserted into a filemaker field.
-
-The create method accepts the option of merge. If merge is true the data
- used to create the with DAPI's response object on success
 
 <!--@snippet('./examples/create.examples.js#create-record-example', { showSource: true })-->
 ```js
@@ -44,13 +109,8 @@ const createRecord = client =>
 > Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L4-L7)
 <!--/@-->
 
-Using the client you can create filemaker records. To create a record
-specify the layout to use and the data to insert on creation. The client
-will automatically convert numbers, arrays, and objects into strings so
-they can be inserted into a filemaker field.
-
 The create method accepts the option of merge. If merge is true the data
-used to create the with DAPI's response object on success
+used to create the with DAPI's response object on success.
 
 <!--@snippet('./examples/create.examples.js#create-record-merge', { showSource: true })-->
 ```js
@@ -67,9 +127,34 @@ const mergeDataOnCreate = client =>
 > Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L11-L18)
 <!--/@-->
 
-Most methods on the client are promises. The only exceptions to this are
-the utility methods of fieldData(), and recordId(). You can chain together
-multiple methods such as record creation. 
+The create methods also allows you to trigger scripts when creating a record. Notice the scripts
+property in the following example. You can specify scripts to run using either FileMaker's script.key syntax
+or specify an array of scripts with a name, phase, and script parameter.
+
+<!--@snippet('./examples/create.examples.js#trigger-scripts-on-create', { showSource: true })-->
+```js
+const triggerScriptsOnCreate = client =>
+  client.create(
+    'Heroes',
+    { name: 'Anakin Skywalker' },
+    {
+      merge: true,
+      scripts: [
+        { name: 'Create Droids', param: { droids: ['C3-PO', 'R2-D2'] } }
+      ]
+    }
+  );
+```
+
+> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L31-L41)
+<!--/@-->
+
+## Tests
+
+```sh
+npm install
+npm test
+```
 
 <!--@dependencies()-->
 ## <a name="dependencies">Dependencies</a>
