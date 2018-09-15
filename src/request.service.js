@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 const FormData = require('form-data');
-const { omit } = require('./utilities.service');
+const { omit } = require('./utilities');
 
 const request = axios.create();
 
@@ -10,13 +10,18 @@ const request = axios.create();
  * @function interceptRequest
  * @description handles request data before it is sent to the resource. This method
  * will eventually be used to cancel the request and return the configuration body.
- * This function will re the request params and data request properties.
+ * This function will the request params and data request properties.
  * @param  {Object} config The axios request configuration
  * @return {Promise}      the request configuration object
  */
 
 const interceptRequest = config =>
-  omit(config, ['params.request', 'data.request']);
+  config.url.startsWith('https://') || config.url.startsWith('http://')
+    ? omit(config, ['params.request', 'data.request'])
+    : Promise.reject({
+        message: 'The Data API Requires https or http',
+        code: '1630'
+      });
 
 /**
  * @function handleResponseError
@@ -27,7 +32,7 @@ const interceptRequest = config =>
  */
 
 const handleResponseError = error =>
-  error.response.status === 502
+  error.response.status === 502 || typeof error.response.data !== 'object'
     ? Promise.reject({
         message: 'The Data API is currently unavailable',
         code: '1630'
