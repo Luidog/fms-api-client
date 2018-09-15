@@ -1,7 +1,7 @@
 'use strict';
 
 const { Client } = require('./client.model');
-const { fieldData, recordId } = require('./utilities.service');
+const { fieldData, recordId } = require('./utilities');
 
 /**
  * @module Client
