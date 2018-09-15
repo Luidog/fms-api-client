@@ -72,6 +72,18 @@ describe('Storage', () => {
       );
   });
 
+  it('should reject if a client can not be validated', () => {
+    client = Filemaker.create({
+      application: process.env.APPLICATION,
+      server: 'mutesymphony.com',
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+    return expect(client.save().catch(error => error)).to.eventually.be.an(
+      'error'
+    );
+  });
+
   it('should allow an instance to be recalled', () => {
     return expect(Filemaker.findOne({}))
       .to.eventually.be.an('object')

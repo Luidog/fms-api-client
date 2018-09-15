@@ -14,7 +14,7 @@ const {
   filterResponse,
   fieldData,
   recordId
-} = require('./utilities.service');
+} = require('./utilities');
 
 /**
  * @class Client
@@ -59,6 +59,8 @@ class Client extends Document {
 
       server: {
         type: String,
+        validate: data =>
+          data.startsWith('http://') || data.startsWith('https://'),
         required: true
       },
       /** The client data logger.

@@ -13,7 +13,7 @@ const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker, recordId, fieldData } = require('../index.js');
-const { omit } = require('../src/utilities.service');
+const { omit } = require('../src/utilities/conversion.utilities');
 
 chai.use(chaiAsPromised);
 
