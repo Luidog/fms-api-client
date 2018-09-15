@@ -1,29 +1,14 @@
 'use strict';
 
+// #create-record-example
 const createRecord = client =>
-  /**
-   * Using the client you can create filemaker records. To create a record
-   * specify the layout to use and the data to insert on creation. The client
-   * will automatically convert numbers, arrays, and objects into strings so
-   * they can be inserted into a filemaker field.
-   *
-   * The create method accepts the option of merge. If merge is true the data
-   * used to create the with DAPI's response object on success
-   */
   client.create('Heroes', {
     name: 'George Lucas'
   });
+// #
 
+// #create-record-merge
 const mergeDataOnCreate = client =>
-  /**
-   * Using the client you can create filemaker records. To create a record
-   * specify the layout to use and the data to insert on creation. The client
-   * will automatically convert numbers, arrays, and objects into strings so
-   * they can be inserted into a filemaker field.
-   *
-   * The create method accepts the option of merge. If merge is true the data
-   * used to create the with DAPI's response object on success
-   */
   client.create(
     'Heroes',
     {
@@ -31,6 +16,8 @@ const mergeDataOnCreate = client =>
     },
     { merge: true }
   );
+// #
+
 /**
  * Most methods on the client are promises. The only exceptions to this are
  * the utility methods of fieldData(), and recordId(). You can chain together
