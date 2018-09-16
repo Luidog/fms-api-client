@@ -1,21 +1,28 @@
 'use strict';
 
+const { log } = require('./logger.service');
+const { store } = require('./storage.service');
+
 // #create-record-example
 const createRecord = client =>
-  client.create('Heroes', {
-    name: 'George Lucas'
-  });
+  client
+    .create('Heroes', {
+      name: 'George Lucas'
+    })
+    .then(result => log('create-record', result));
 // #
 
 //#create-record-merge
 const mergeDataOnCreate = client =>
-  client.create(
-    'Heroes',
-    {
-      name: 'George Lucas'
-    },
-    { merge: true }
-  );
+  client
+    .create(
+      'Heroes',
+      {
+        name: 'George Lucas'
+      },
+      { merge: true }
+    )
+    .then(result => log('create-record-merge', result));
 // #
 
 //#create-many-records
@@ -24,21 +31,23 @@ const createManyRecords = client =>
     client.create('Heroes', { name: 'Anakin Skywalker' }, { merge: true }),
     client.create('Heroes', { name: 'Obi-Wan' }, { merge: true }),
     client.create('Heroes', { name: 'Yoda' }, { merge: true })
-  ]);
+  ]).then(result => log('create-many-records', result));
 //#
 
 //#trigger-scripts-on-create
 const triggerScriptsOnCreate = client =>
-  client.create(
-    'Heroes',
-    { name: 'Anakin Skywalker' },
-    {
-      merge: true,
-      scripts: [
-        { name: 'Create Droids', param: { droids: ['C3-PO', 'R2-D2'] } }
-      ]
-    }
-  );
+  client
+    .create(
+      'Heroes',
+      { name: 'Anakin Skywalker' },
+      {
+        merge: true,
+        scripts: [
+          { name: 'Create Droids', param: { droids: ['C3-PO', 'R2-D2'] } }
+        ]
+      }
+    )
+    .then(result => log('trigger-scripts-on-create', result));
 //#
 const creates = (client, examples) =>
   Promise.all([
@@ -48,7 +57,7 @@ const creates = (client, examples) =>
     triggerScriptsOnCreate(client)
   ])
     .then(responses => {
-      examples.push(responses);
+      store(responses);
       return client;
     })
     .catch(error => console.log('That is no moon....'.red, error));
