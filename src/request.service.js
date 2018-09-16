@@ -15,13 +15,16 @@ const request = axios.create();
  * @return {Promise}      the request configuration object
  */
 
-const interceptRequest = config =>
-  config.url.startsWith('https://') || config.url.startsWith('http://')
-    ? omit(config, ['params.request', 'data.request'])
-    : Promise.reject({
-        message: 'The Data API Requires https or http',
-        code: '1630'
-      });
+const interceptRequest = config => {
+  if (config.url.startsWith('http')) {
+    return omit(config, ['params.request', 'data.request']);
+  } else {
+    return Promise.reject({
+      message: 'The Data API Requires https or http',
+      code: '1630'
+    });
+  }
+};
 
 /**
  * @function handleResponseError
@@ -31,13 +34,21 @@ const interceptRequest = config =>
  * @return {Promise}      A promise rejection containing a code and a message
  */
 
-const handleResponseError = error =>
-  error.response.status === 502 || typeof error.response.data !== 'object'
-    ? Promise.reject({
-        message: 'The Data API is currently unavailable',
-        code: '1630'
-      })
-    : Promise.reject(error.response.data.messages[0]);
+const handleResponseError = error => {
+  if (!error.response) {
+    return Promise.reject(error);
+  } else if (
+    error.response.status === 502 ||
+    typeof error.response.data !== 'object'
+  ) {
+    return Promise.reject({
+      message: 'The Data API is currently unavailable',
+      code: '1630'
+    });
+  } else {
+    return Promise.reject(error.response.data.messages[0]);
+  }
+};
 
 request.interceptors.request.use(interceptRequest, error => error);
 

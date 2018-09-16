@@ -70,8 +70,9 @@ describe('Request Interceptor Capabilities', () => {
 
   it('should reject non http requests to the server with a json error', () => {
     client.connection._authURL = () =>
-      process.env.SERVER.replace('https://', '');
-      console.log(client.connection._authURL())
+      `${process.env.SERVER.replace('https://', '')}/fmi/data/v1/databases/${
+        process.env.application
+      }/sessions`;
     return expect(
       client
         .save()
@@ -84,8 +85,10 @@ describe('Request Interceptor Capabilities', () => {
 
   it('should reject non https requests to the server with a json error', () => {
     client.connection._authURL = () =>
-      process.env.SERVER.replace('https://', 'http://');
-      console.log(client.connection._authURL())
+      `${process.env.SERVER.replace(
+        'https://',
+        'http://'
+      )}/fmi/data/v1/databases/${process.env.application}/sessions`;
     return expect(
       client
         .save()
