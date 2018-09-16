@@ -1,8 +1,12 @@
 'use strict';
 
+//#client-logout-example
 const logout = client => client.logout();
+//#
 
+//#client-authenticate-example
 const login = client => client.authenticate();
+//#
 
 const authentication = (client, examples) =>
   Promise.all([login(client)])

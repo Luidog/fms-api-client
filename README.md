@@ -20,13 +20,17 @@ npm install --save fms-api-client
 
 ### Introduction
 
-Connect must be called before the filemaker class is instiantiated. This
-connect uses Marpat. Marpat is a fork of Camo. much love to 
-[Scott Robinson](https://github.com/scottwrobinson) for his creation and maintenance of Camo.
-My fork of Camo - Marpat is designed to allow the use of multiple datastores
-with the focus on encrypted storage.
+The fms-api-client is a wrapper around the [FileMaker Data API](https://fm.mutesymphony.com/fmi/data/apidoc/). Much :heart:
+to FileMaker for their work on the Data API.
 
 ### Datastore Connection
+
+Connect must be called before the filemaker class is instiantiated. This connect uses Marpat. 
+Marpat is a fork of Camo. Thanks and love to [Scott Robinson](https://github.com/scottwrobinson) 
+for his creation and maintenance of Camo. My fork of Camo - Marpat is designed to allow the 
+use of multiple datastores with the focus on encrypted file storage.
+
+For more information on marpat and the different types of supported storage visit [marpat](https://github.com/Luidog/marpat)
 
 <!--@snippet('./examples/index.js#datastore-connect-example', { showSource: true })-->
 ```js
@@ -38,9 +42,9 @@ connect('nedb://memory')
 
 ### Client Creation
 
-After connecting to a datastore you can import and create clients. A client is created using the create method on the
-FileMaker client class. The client requires a server and application to connect to as well as valid credentials. Note that
-the server must be an http or https domain.
+After connecting to a datastore you can import and create clients. A client is created using
+the create method on the client class. The client requires a server and application
+to connect to as well as valid credentials. Note that the server must be an http or https domain.
 
 <!--@snippet('./examples/index.js#client-create-example', { showSource: true })-->
 ```js
@@ -92,6 +96,24 @@ const createManyRecords = client =>
 <!--/@-->
 
 ### Authentication
+
+The client contains two methods for authentication. The authenticate method and the logout method.
+
+#### Authenticate Method
+
+The authenticate method is used to start a FileMaker user session and generate an authentication. 
+The client will automatically call the authenticate method if it does not have a valid token.
+
+<!--@snippet('./examples/authentication.examples.js#set-globals-example', { showSource: true })-->
+<!--/@-->
+
+#### Logout Method
+
+The logout method is used to close a FileMaker User session. This method will also remove the current 
+client's authenticationtoken.
+
+<!--@snippet('./examples/authentication.examples.js#set-globals-example', { showSource: true })-->
+<!--/@-->
 
 ### Create Records
 
@@ -173,29 +195,65 @@ requirements.
 
 ### Edit Records
 
-<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+The client's edit method requires a layout, recordId, and object to use for updating the record.
+
+<!--@snippet('./examples/edit.examples.js#edit-record-example', { showSource: true })-->
+<!--/@-->
+
+### Delete Records
+
+The client's delete method requires a layout and a record id.
+
+<!--@snippet('./examples/delete.examples.js#delete-record-example', { showSource: true })-->
 <!--/@-->
 
 ### Trigger Scripts
 
-<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+The client's script method requires a script to run and a layout to run on.
+
+<!--@snippet('./examples/script.examples.js#script-trigger-example', { showSource: true })-->
 <!--/@-->
 
 ### Upload Files
 
-<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+The client's upload method will upload file data to a filemaker file. The upload method requires 
+a file path, layout, and container field name.
+
+<!--@snippet('./examples/upload.examples.js#upload-image-example', { showSource: true })-->
+<!--/@-->
+
+You can also provide a record Id to the upload method and the file will be uploaded to that
+record.
+
+<!--@snippet('./examples/upload.examples.js#upload-specific-record-example', { showSource: true })-->
 <!--/@-->
 
 ### Set Session Globals
 
 You can also use the client to set FileMaker Globals for the session.
 
-<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+<!--@snippet('./examples/utility.examples.js#set-globals-example', { showSource: true })-->
 <!--/@-->
 
 ### Helper Methods
 
-<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+The client also provides helper methods to aid in parsing and manipulating FileMaker Data. There are 
+currently to helper methods. 
+
+#### recordId Method
+
+The recordId method takes either an object or an array of objects with recordId properties and returns
+either a single recordId or an array of recordIds as strings.
+
+<!--@snippet('./examples/utility.examples.js#recordId-utility-example', { showSource: true })-->
+<!--/@-->
+
+#### fieldData Method
+
+The fieldData method takes either an object or an array of objects and returns either a single object's
+fieldData or an array of fieldData objects.
+
+<!--@snippet('./examples/utility.examples.js#fielddata-utility-example', { showSource: true })-->
 <!--/@-->
 
 ## Tests

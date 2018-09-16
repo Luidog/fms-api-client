@@ -1,6 +1,8 @@
 'use strict';
 
+//# script-trigger-example
 const triggerScript = client => client.script('FMS Triggered Script', 'Heroes');
+//#
 
 const scripts = (client, examples) =>
   Promise.all([triggerScript(client)])

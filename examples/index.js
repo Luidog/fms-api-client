@@ -10,6 +10,7 @@ const { globals } = require('./globals.examples');
 const { finds } = require('./find.examples');
 const { scripts } = require('./script.examples');
 const { edits } = require('./edit.examples');
+const { deletes } = require('./delete.examples');
 const { authentication } = require('./authentication.examples');
 const { datastore } = require('./datastore.examples');
 
@@ -39,6 +40,7 @@ connect('nedb://memory')
       .then(client => edits(client, examples))
       .then(client => scripts(client, examples))
       .then(client => globals(client, examples))
+      .then(client => deletes(client, examples))
       .then(client => authentication(client, examples));
     // #
   })

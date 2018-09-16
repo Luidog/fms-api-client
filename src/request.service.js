@@ -10,7 +10,7 @@ const request = axios.create();
  * @function interceptRequest
  * @description handles request data before it is sent to the resource. This method
  * will eventually be used to cancel the request and return the configuration body.
- * This function will the request params and data request properties.
+ * This method will test the url for an http proticol and reject if none exist.
  * @param  {Object} config The axios request configuration
  * @return {Promise}      the request configuration object
  */
