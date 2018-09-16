@@ -91,6 +91,8 @@ const createManyRecords = client =>
 > Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L22-L27)
 <!--/@-->
 
+### Authentication
+
 ### Create Records
 
 Using the client you can create filemaker records. To create a record
@@ -147,6 +149,46 @@ const triggerScriptsOnCreate = client =>
 ```
 
 > Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L31-L41)
+<!--/@-->
+
+### List Records
+
+You can use the client to list filemaker records. The List method
+accepts a layout and parameter variable. The client will automatically
+santize the limit, offset, and sort keys to correspond with the DAPI's
+requirements.
+
+<!--@snippet('./examples/list.examples.js#list-records-example', { showSource: true })-->
+<!--/@-->
+
+### Find Records
+
+The client's find method  will accept either a single object as find
+parameters or an array. The find method will also santize the limit,
+sort, and offset parameters to conform with the Data API's
+requirements.
+
+<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+<!--/@-->
+
+### Edit Records
+
+<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+<!--/@-->
+
+### Trigger Scripts
+
+<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+<!--/@-->
+
+### Set Session Globals
+
+<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+<!--/@-->
+
+### Helper Methods
+
+<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
 <!--/@-->
 
 ## Tests

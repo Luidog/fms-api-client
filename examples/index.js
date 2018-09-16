@@ -35,10 +35,10 @@ connect('nedb://memory')
       .save()
       .then(client => creates(client, examples))
       .then(client => lists(client, examples))
-      .then(client => globals(client, examples))
       .then(client => finds(client, examples))
-      .then(client => scripts(client, examples))
       .then(client => edits(client, examples))
+      .then(client => scripts(client, examples))
+      .then(client => globals(client, examples))
       .then(client => authentication(client, examples));
     // #
   })
