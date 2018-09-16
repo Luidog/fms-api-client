@@ -1,6 +1,6 @@
 'use strict';
 
-//# script-trigger-example
+//#script-trigger-example
 const triggerScript = client => client.script('FMS Triggered Script', 'Heroes');
 //#
 

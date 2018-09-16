@@ -37,7 +37,7 @@ For more information on marpat and the different types of supported storage visi
 connect('nedb://memory')
 ```
 
-> Excerpt from [./examples/index.js](./examples/index.js#L22-L22)
+> Excerpt from [./examples/index.js](./examples/index.js#L23-L23)
 <!--/@-->
 
 ### Client Creation
@@ -56,7 +56,7 @@ to connect to as well as valid credentials. Note that the server must be an http
     });
 ```
 
-> Excerpt from [./examples/index.js](./examples/index.js#L26-L31)
+> Excerpt from [./examples/index.js](./examples/index.js#L27-L32)
 <!--/@-->
 
 A client can be used directly after saving it. It is also stored on the
@@ -68,14 +68,15 @@ datastore so that it can be reused later.
       .save()
       .then(client => creates(client, examples))
       .then(client => lists(client, examples))
-      .then(client => globals(client, examples))
       .then(client => finds(client, examples))
-      .then(client => scripts(client, examples))
       .then(client => edits(client, examples))
+      .then(client => scripts(client, examples))
+      .then(client => globals(client, examples))
+      .then(client => deletes(client, examples))
       .then(client => authentication(client, examples));
 ```
 
-> Excerpt from [./examples/index.js](./examples/index.js#L34-L42)
+> Excerpt from [./examples/index.js](./examples/index.js#L35-L44)
 <!--/@-->
 
 ### Client Use
@@ -104,7 +105,12 @@ The client contains two methods for authentication. The authenticate method and 
 The authenticate method is used to start a FileMaker user session and generate an authentication. 
 The client will automatically call the authenticate method if it does not have a valid token.
 
-<!--@snippet('./examples/authentication.examples.js#set-globals-example', { showSource: true })-->
+<!--@snippet('./examples/authentication.examples.js#client-authenticate-example', { showSource: true })-->
+```js
+const login = client => client.authenticate();
+```
+
+> Excerpt from [./examples/authentication.examples.js](./examples/authentication.examples.js#L8-L8)
 <!--/@-->
 
 #### Logout Method
@@ -112,7 +118,12 @@ The client will automatically call the authenticate method if it does not have a
 The logout method is used to close a FileMaker User session. This method will also remove the current 
 client's authenticationtoken.
 
-<!--@snippet('./examples/authentication.examples.js#set-globals-example', { showSource: true })-->
+<!--@snippet('./examples/authentication.examples.js#client-logout-example', { showSource: true })-->
+```js
+const logout = client => client.logout();
+```
+
+> Excerpt from [./examples/authentication.examples.js](./examples/authentication.examples.js#L4-L4)
 <!--/@-->
 
 ### Create Records
@@ -181,6 +192,12 @@ santize the limit, offset, and sort keys to correspond with the DAPI's
 requirements.
 
 <!--@snippet('./examples/list.examples.js#list-records-example', { showSource: true })-->
+```js
+const listHeroes = client =>
+  client.list('Heroes', { limit: 5 }).then(response => response.data);
+```
+
+> Excerpt from [./examples/list.examples.js](./examples/list.examples.js#L4-L5)
 <!--/@-->
 
 ### Find Records
@@ -190,7 +207,18 @@ parameters or an array. The find method will also santize the limit,
 sort, and offset parameters to conform with the Data API's
 requirements.
 
-<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+<!--@snippet('./examples/find.examples.js#find-records-example', { showSource: true })-->
+```js
+const findRecords = client =>
+  client
+    .find('Heroes', [{ name: 'Anakin Skywalker' }], { limit: 1 })
+    .then(response => client.recordId(response.data))
+    .then(recordIds =>
+      client.edit('Heroes', recordIds[0], { name: 'Darth Vader' })
+    );
+```
+
+> Excerpt from [./examples/find.examples.js](./examples/find.examples.js#L4-L10)
 <!--/@-->
 
 ### Edit Records
@@ -198,6 +226,11 @@ requirements.
 The client's edit method requires a layout, recordId, and object to use for updating the record.
 
 <!--@snippet('./examples/edit.examples.js#edit-record-example', { showSource: true })-->
+```js
+        client.edit('Heroes', recordId, { name: 'Darth Vader' })
+```
+
+> Excerpt from [./examples/edit.examples.js](./examples/edit.examples.js#L10-L10)
 <!--/@-->
 
 ### Delete Records
@@ -205,6 +238,15 @@ The client's edit method requires a layout, recordId, and object to use for upda
 The client's delete method requires a layout and a record id.
 
 <!--@snippet('./examples/delete.examples.js#delete-record-example', { showSource: true })-->
+```js
+const deleteRecords = client =>
+  client
+    .find('Heroes', [{ name: 'Mace Windu' }], { limit: 1 })
+    .then(response => response.data[0].recordId)
+    .then(recordId => client.delete('Heroes', recordId));
+```
+
+> Excerpt from [./examples/delete.examples.js](./examples/delete.examples.js#L4-L8)
 <!--/@-->
 
 ### Trigger Scripts
@@ -212,6 +254,11 @@ The client's delete method requires a layout and a record id.
 The client's script method requires a script to run and a layout to run on.
 
 <!--@snippet('./examples/script.examples.js#script-trigger-example', { showSource: true })-->
+```js
+const triggerScript = client => client.script('FMS Triggered Script', 'Heroes');
+```
+
+> Excerpt from [./examples/script.examples.js](./examples/script.examples.js#L4-L4)
 <!--/@-->
 
 ### Upload Files
@@ -220,19 +267,36 @@ The client's upload method will upload file data to a filemaker file. The upload
 a file path, layout, and container field name.
 
 <!--@snippet('./examples/upload.examples.js#upload-image-example', { showSource: true })-->
+```js
+const uploadImage = client =>
+  client.upload('./assets/placeholder.md', 'Heroes', 'image');
+```
+
+> Excerpt from [./examples/upload.examples.js](./examples/upload.examples.js#L4-L5)
 <!--/@-->
 
 You can also provide a record Id to the upload method and the file will be uploaded to that
 record.
 
 <!--@snippet('./examples/upload.examples.js#upload-specific-record-example', { showSource: true })-->
+```js
+        client.upload('./assets/placeholder.md', 'Heroes', 'image', recordId)
+```
+
+> Excerpt from [./examples/upload.examples.js](./examples/upload.examples.js#L15-L15)
 <!--/@-->
 
 ### Set Session Globals
 
 You can also use the client to set FileMaker Globals for the session.
 
-<!--@snippet('./examples/utility.examples.js#set-globals-example', { showSource: true })-->
+<!--@snippet('./examples/globals.examples.js#set-globals-example', { showSource: true })-->
+```js
+const setGlobals = client =>
+  client.globals({ 'Globals::ship': 'Millenium Falcon' });
+```
+
+> Excerpt from [./examples/globals.examples.js](./examples/globals.examples.js#L4-L5)
 <!--/@-->
 
 ### Helper Methods
@@ -245,7 +309,15 @@ currently to helper methods.
 The recordId method takes either an object or an array of objects with recordId properties and returns
 either a single recordId or an array of recordIds as strings.
 
-<!--@snippet('./examples/utility.examples.js#recordId-utility-example', { showSource: true })-->
+<!--@snippet('./examples/utility.examples.js#recordid-utility-example', { showSource: true })-->
+```js
+const extractRecordId = client =>
+  client
+    .find('Heroes', { name: 'Luke Skywalker' })
+    .then(response => recordId(response.data));
+```
+
+> Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L6-L9)
 <!--/@-->
 
 #### fieldData Method
@@ -254,6 +326,14 @@ The fieldData method takes either an object or an array of objects and returns e
 fieldData or an array of fieldData objects.
 
 <!--@snippet('./examples/utility.examples.js#fielddata-utility-example', { showSource: true })-->
+```js
+const extractFieldData = client =>
+  client
+    .find('Heroes', { name: 'Luke Skywalker' })
+    .then(response => fieldData(response.data));
+```
+
+> Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L13-L16)
 <!--/@-->
 
 ## Tests
@@ -262,6 +342,173 @@ fieldData or an array of fieldData objects.
 npm install
 npm test
 ```
+
+<!--@execute('npm run test',[])-->
+```default
+> fms-api-client@1.4.5 test /Users/luidelaparra/Documents/Development/fms-api-client
+> nyc _mocha --recursive  ./tests --timeout=30000 --exit
+
+
+
+  Authentication Capabilities
+    ✓ should authenticate into FileMaker. (159ms)
+    ✓ should automatically request an authentication token (190ms)
+    ✓ should reuse a saved authentication token (168ms)
+    ✓ should log out of the filemaker. (255ms)
+    ✓ should not attempt a logout if there is no valid token.
+    ✓ should reject if the logout request fails (220ms)
+    ✓ should reject if the authentication request fails (1416ms)
+
+  Create Capabilities
+    ✓ should create FileMaker records. (175ms)
+    ✓ should reject bad data with an error (221ms)
+    ✓ should create FileMaker records with mixed types (170ms)
+    ✓ should substitute an empty object if data is not provided (176ms)
+    ✓ should return an object with merged filemaker and data properties (168ms)
+    ✓ should allow you to run a script when creating a record with a merge response (186ms)
+    ✓ should allow you to specify scripts as an array (235ms)
+    ✓ should allow you to specify scripts as an array with a merge response (298ms)
+    ✓ should sanitize parameters when creating a new record (238ms)
+    ✓ should accept both the default script parameters and a scripts array (183ms)
+
+  Delete Capabilities
+    ✓ should delete FileMaker records. (256ms)
+    ✓ should trigger scripts via an array when deleting records. (284ms)
+    ✓ should trigger scripts via parameters when deleting records. (251ms)
+    ✓ should allow you to mix script parameters and scripts array when deleting records. (266ms)
+    ✓ should stringify script parameters. (347ms)
+    ✓ should reject deletions that do not specify a recordId (167ms)
+    ✓ should reject deletions that do not specify an invalid recordId (194ms)
+
+  Edit Capabilities
+    ✓ should edit FileMaker records.
+    ✓ should reject bad data with an error (247ms)
+    ✓ should return an object with merged filemaker and data properties
+    ✓ should allow you to run a script when editing a record (269ms)
+    ✓ should allow you to run a script via a scripts array when editing a record (349ms)
+    ✓ should allow you to specify scripts as an array (175ms)
+    ✓ should allow you to specify scripts as an array with a merge response (184ms)
+    ✓ should sanitize parameters when creating a new record (179ms)
+    ✓ should accept both the default script parameters and a scripts array (209ms)
+
+  Find Capabilities
+    ✓ should perform a find request (267ms)
+    ✓ should allow you to use an object instead of an array for a find (293ms)
+    ✓ should specify omit Criterea (259ms)
+    ✓ should allow additional parameters to manipulate the results (170ms)
+    ✓ should allow you to limit the number of portal records to return (171ms)
+    ✓ should allow you to use numbers in the find query parameters (169ms)
+    ✓ should allow you to sort the results (420ms)
+    ✓ should return an empty array if the find does not return results (164ms)
+    ✓ should allow you run a pre request script (178ms)
+    ✓ should return a response even if a script fails (197ms)
+    ✓ should allow you to send a parameter to the pre request script (178ms)
+    ✓ should allow you run script after the find and before the sort (420ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (448ms)
+    ✓ should reject of there is an issue with the find request (167ms)
+
+  Get Capabilities
+    ✓ should get specific FileMaker records. (254ms)
+    ✓ should reject get requests that do not specify a recordId (247ms)
+    ✓ should allow you to limit the number of portal records to return (245ms)
+    ✓ should accept namespaced portal limit and offset parameters (348ms)
+
+  Global Capabilities
+    ✓ should allow you to set FileMaker globals (171ms)
+    ✓ should reject with a message and code if it fails to set a global (165ms)
+
+  Request Interceptor Capabilities
+    ✓ should reject if the server errors (137ms)
+    ✓ should handle non JSON responses by rejecting with a json error (120ms)
+    ✓ should reject non http requests to the server with a json error
+*Notice* Data API response does not contain a code
+    ✓ should reject non https requests to the server with a json error (170ms)
+
+  List Capabilities
+    ✓ should allow you to list records (254ms)
+    ✓ should allow you use parameters to modify the list response (216ms)
+    ✓ should should allow you to use numbers in parameters (169ms)
+    ✓ should should allow you to provide an array of portals in parameters (235ms)
+    ✓ should should remove non used properties from a portal object (173ms)
+    ✓ should modify requests to comply with DAPI name reservations (189ms)
+    ✓ should allow strings while complying with DAPI name reservations (175ms)
+    ✓ should allow you to offset the list response (169ms)
+    ✓ should santize parameters that would cause unexpected parameters (192ms)
+    ✓ should allow you to limit the number of portal records to return (199ms)
+    ✓ should accept namespaced portal limit and offset parameters (175ms)
+    ✓ should reject invalid parameters (185ms)
+
+  Script Capabilities
+    ✓ should allow you to trigger a script in FileMaker (206ms)
+    ✓ should allow you to trigger a script in FileMaker (256ms)
+    ✓ should allow you to trigger a script in a find (262ms)
+    ✓ should allow you to trigger a script in a list (205ms)
+    ✓ should allow reject a script that does not exist (166ms)
+    ✓ should allow return a result even if a script returns an error (179ms)
+    ✓ should parse script results if the results are json (220ms)
+    ✓ should not parse script results if the results are not json (254ms)
+    ✓ should parse an array of scripts (182ms)
+    ✓ should trigger scripts on all three script phases (188ms)
+
+  Storage
+    ✓ should allow an instance to be created
+    ✓ should allow an instance to be saved.
+    ✓ should reject if a client can not be validated
+    ✓ should allow an instance to be recalled
+    ✓ should allow insances to be listed
+    ✓ should allow you to remove an instance
+
+  File Upload Capabilities
+    ✓ should allow you to upload a file to a new record (1378ms)
+    ✓ should allow you to upload a file to a specific container repetition (1534ms)
+    ✓ should reject with a message if it can not find the file to upload
+    ✓ should allow you to upload a file to a specific record (1353ms)
+    ✓ should allow you to upload a file to a specific record container repetition (1380ms)
+    ✓ should reject of the request is invalid (314ms)
+
+  Data Usage 
+    Tracks Data Usage
+      ✓ should track API usage data. (186ms)
+      ✓ should allow you to reset usage data. (219ms)
+    Does Not Track Data Usage
+      ✓ should not track data usage in (185ms)
+      ✓ should not track data usage out (170ms)
+
+  Utility Capabilities
+    ✓ *Depricated* it should extract field while maintaining the array (269ms)
+    ✓ *Depricated* it should extract field data while maintaining the object (259ms)
+    ✓ *Depricated* it should extract the recordId while maintaining the array (252ms)
+    ✓ *Depricated* it should extract field data while maintaining the object (273ms)
+    ✓ it should extract field while maintaining the array (299ms)
+    ✓ it should extract field data while maintaining the object (275ms)
+    ✓ it should extract the recordId while maintaining the array (330ms)
+    ✓ it should extract field data while maintaining the object (242ms)
+    ✓ it should remove properties while maintaing the array
+    ✓ it should remove properties while maintaing the array
+
+
+  105 passing (27s)
+
+------------------------------|----------|----------|----------|----------|-------------------|
+File                          |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+------------------------------|----------|----------|----------|----------|-------------------|
+All files                     |      100 |      100 |      100 |      100 |                   |
+ fms-api-client               |      100 |      100 |      100 |      100 |                   |
+  index.js                    |      100 |      100 |      100 |      100 |                   |
+ fms-api-client/src           |      100 |      100 |      100 |      100 |                   |
+  client.model.js             |      100 |      100 |      100 |      100 |                   |
+  connection.model.js         |      100 |      100 |      100 |      100 |                   |
+  credentials.model.js        |      100 |      100 |      100 |      100 |                   |
+  data.model.js               |      100 |      100 |      100 |      100 |                   |
+  index.js                    |      100 |      100 |      100 |      100 |                   |
+  request.service.js          |      100 |      100 |      100 |      100 |                   |
+ fms-api-client/src/utilities |      100 |      100 |      100 |      100 |                   |
+  conversion.utilities.js     |      100 |      100 |      100 |      100 |                   |
+  filemaker.utilities.js      |      100 |      100 |      100 |      100 |                   |
+  index.js                    |      100 |      100 |      100 |      100 |                   |
+------------------------------|----------|----------|----------|----------|-------------------|
+```
+<!--/@-->
 
 <!--@dependencies()-->
 ## <a name="dependencies">Dependencies</a>

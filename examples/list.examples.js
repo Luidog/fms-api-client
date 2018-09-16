@@ -1,6 +1,6 @@
 'use strict';
 
-//#list-record-example
+//#list-records-example
 const listHeroes = client =>
   client.list('Heroes', { limit: 5 }).then(response => response.data);
 //#

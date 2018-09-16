@@ -1,6 +1,6 @@
 'use strict';
 
-//#find-record-example
+//#find-records-example
 const findRecords = client =>
   client
     .find('Heroes', [{ name: 'Anakin Skywalker' }], { limit: 1 })
