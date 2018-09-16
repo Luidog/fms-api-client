@@ -84,6 +84,7 @@ describe('Request Interceptor Capabilities', () => {
   });
 
   it('should reject non https requests to the server with a json error', () => {
+    console.log('*Notice* Data API response does not contain a code');
     client.connection._authURL = () =>
       `${process.env.SERVER.replace(
         'https://',
@@ -96,6 +97,6 @@ describe('Request Interceptor Capabilities', () => {
         .catch(error => error)
     )
       .to.eventually.be.an('object')
-      .that.has.all.keys('code', 'message');
+      .that.has.all.keys('message');
   });
 });
