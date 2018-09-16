@@ -50,7 +50,7 @@ const handleResponseError = error => {
   }
 };
 
-request.interceptors.request.use(interceptRequest, error => error);
+request.interceptors.request.use(interceptRequest);
 
 request.interceptors.response.use(response => response, handleResponseError);
 
