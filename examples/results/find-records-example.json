@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "fieldData": {
+        "id": "72DD8D16-FA7B-9741-BD19-C97C2BC4A7C5",
+        "name": "Anakin Skywalker",
+        "image(1)": "",
+        "object": "",
+        "array": "",
+        "height": "",
+        "image(2)": ""
+      },
+      "portalData": {
+        "planets": []
+      },
+      "recordId": "728791",
+      "modId": "0"
+    }
+  ]
+}

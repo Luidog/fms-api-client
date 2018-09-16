@@ -18,16 +18,11 @@ coverage
 .eslintcache
 # Optional REPL history
 .node_repl_history
-# Output of 'npm pack'
 # dotenv environment variables file
 .env 
 #code coverage output
 .nyc_output
 .github
-#examples
-
-#documentation
-#assets
 docs/
 examples/
 assets/

@@ -18,7 +18,6 @@ environment.config({ path: './tests/.env' });
 
 varium(process.env, './tests/env.manifest');
 
-const examples = [];
 //#datastore-connect-example
 connect('nedb://memory')
   //#
@@ -34,14 +33,15 @@ connect('nedb://memory')
     //#client-save-example
     return client
       .save()
-      .then(client => creates(client, examples))
-      .then(client => lists(client, examples))
-      .then(client => finds(client, examples))
-      .then(client => edits(client, examples))
-      .then(client => scripts(client, examples))
-      .then(client => globals(client, examples))
-      .then(client => deletes(client, examples))
-      .then(client => authentication(client, examples));
+      .then(client => authentication(client))
+      .then(client => creates(client))
+      .then(client => lists(client))
+      .then(client => finds(client))
+      .then(client => edits(client))
+      .then(client => scripts(client))
+      .then(client => globals(client))
+      .then(client => deletes(client));
     // #
   })
-  .then(client => datastore(client, examples));
+  .then(client => datastore(client))
+  .catch(error => console.log(error));

@@ -1,7 +1,6 @@
 'use strict';
 
-const { log } = require('./logger.service');
-const { store } = require('./storage.service');
+const { log, store } = require('./services');
 
 // #create-record-example
 const createRecord = client =>
@@ -55,11 +54,9 @@ const creates = (client, examples) =>
     mergeDataOnCreate(client),
     createManyRecords(client),
     triggerScriptsOnCreate(client)
-  ])
-    .then(responses => {
-      store(responses);
-      return client;
-    })
-    .catch(error => console.log('That is no moon....'.red, error));
+  ]).then(responses => {
+    store(responses);
+    return client;
+  });
 
 module.exports = { creates };

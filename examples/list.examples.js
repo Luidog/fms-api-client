@@ -1,16 +1,15 @@
 'use strict';
 
+const { log } = require('./services');
+
 //#list-records-example
 const listHeroes = client =>
-  client.list('Heroes', { limit: 5 }).then(response => response.data);
+  client
+    .list('Heroes', { limit: 5 })
+    .then(result => log('list-records-example', result));
 //#
 
 const lists = (client, examples) =>
-  Promise.all([listHeroes(client)])
-    .then(responses => {
-      examples.concat(responses);
-      return client;
-    })
-    .catch(error => console.log('That is no moon....'.red, error));
+  Promise.all([listHeroes(client)]).then(responses => client);
 
 module.exports = { lists };

@@ -37,7 +37,7 @@ For more information on marpat and the different types of supported storage visi
 connect('nedb://memory')
 ```
 
-> Excerpt from [./examples/index.js](./examples/index.js#L23-L23)
+> Excerpt from [./examples/index.js](./examples/index.js#L22-L22)
 <!--/@-->
 
 ### Client Creation
@@ -56,7 +56,7 @@ to connect to as well as valid credentials. Note that the server must be an http
     });
 ```
 
-> Excerpt from [./examples/index.js](./examples/index.js#L27-L32)
+> Excerpt from [./examples/index.js](./examples/index.js#L26-L31)
 <!--/@-->
 
 A client can be used directly after saving it. It is also stored on the
@@ -66,17 +66,17 @@ datastore so that it can be reused later.
 ```js
     return client
       .save()
-      .then(client => creates(client, examples))
-      .then(client => lists(client, examples))
-      .then(client => finds(client, examples))
-      .then(client => edits(client, examples))
-      .then(client => scripts(client, examples))
-      .then(client => globals(client, examples))
-      .then(client => deletes(client, examples))
-      .then(client => authentication(client, examples));
+      .then(client => authentication(client))
+      .then(client => creates(client))
+      .then(client => lists(client))
+      .then(client => finds(client))
+      .then(client => edits(client))
+      .then(client => scripts(client))
+      .then(client => globals(client))
+      .then(client => deletes(client));
 ```
 
-> Excerpt from [./examples/index.js](./examples/index.js#L35-L44)
+> Excerpt from [./examples/index.js](./examples/index.js#L34-L43)
 <!--/@-->
 
 ### Client Use
@@ -90,10 +90,36 @@ const createManyRecords = client =>
     client.create('Heroes', { name: 'Anakin Skywalker' }, { merge: true }),
     client.create('Heroes', { name: 'Obi-Wan' }, { merge: true }),
     client.create('Heroes', { name: 'Yoda' }, { merge: true })
-  ]);
+  ]).then(result => log('create-many-records', result));
 ```
 
-> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L22-L27)
+> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L28-L33)
+<!--/@-->
+
+Results:
+
+<!--@snippet('./examples/results/create-many-records.json', { showSource: true })-->
+```json
+[
+  {
+    "name": "Anakin Skywalker",
+    "recordId": 728901,
+    "modId": 0
+  },
+  {
+    "name": "Obi-Wan",
+    "recordId": 728902,
+    "modId": 0
+  },
+  {
+    "name": "Yoda",
+    "recordId": 728906,
+    "modId": 0
+  }
+]
+```
+
+> File [./examples/results/create-many-records.json](./examples/results/create-many-records.json)
 <!--/@-->
 
 ### Authentication
@@ -110,7 +136,7 @@ The client will automatically call the authenticate method if it does not have a
 const login = client => client.authenticate();
 ```
 
-> Excerpt from [./examples/authentication.examples.js](./examples/authentication.examples.js#L8-L8)
+> Excerpt from [./examples/authentication.examples.js](./examples/authentication.examples.js#L11-L11)
 <!--/@-->
 
 #### Logout Method
@@ -120,10 +146,11 @@ client's authenticationtoken.
 
 <!--@snippet('./examples/authentication.examples.js#client-logout-example', { showSource: true })-->
 ```js
-const logout = client => client.logout();
+const logout = client =>
+  client.logout().then(result => log('client-logout-example', result));
 ```
 
-> Excerpt from [./examples/authentication.examples.js](./examples/authentication.examples.js#L4-L4)
+> Excerpt from [./examples/authentication.examples.js](./examples/authentication.examples.js#L6-L7)
 <!--/@-->
 
 ### Create Records
@@ -136,12 +163,27 @@ they can be inserted into a filemaker field.
 <!--@snippet('./examples/create.examples.js#create-record-example', { showSource: true })-->
 ```js
 const createRecord = client =>
-  client.create('Heroes', {
-    name: 'George Lucas'
-  });
+  client
+    .create('Heroes', {
+      name: 'George Lucas'
+    })
+    .then(result => log('create-record', result));
 ```
 
-> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L4-L7)
+> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L6-L11)
+<!--/@-->
+
+Result: 
+
+<!--@snippet('./examples/results/create-record.json', { showSource: true })-->
+```json
+{
+  "recordId": 728903,
+  "modId": 0
+}
+```
+
+> File [./examples/results/create-record.json](./examples/results/create-record.json)
 <!--/@-->
 
 The create method accepts the option of merge. If merge is true the data
@@ -150,16 +192,32 @@ used to create the with DAPI's response object on success.
 <!--@snippet('./examples/create.examples.js#create-record-merge', { showSource: true })-->
 ```js
 const mergeDataOnCreate = client =>
-  client.create(
-    'Heroes',
-    {
-      name: 'George Lucas'
-    },
-    { merge: true }
-  );
+  client
+    .create(
+      'Heroes',
+      {
+        name: 'George Lucas'
+      },
+      { merge: true }
+    )
+    .then(result => log('create-record-merge', result));
 ```
 
-> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L11-L18)
+> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L15-L24)
+<!--/@-->
+
+Result: 
+
+<!--@snippet('./examples/results/create-record-merge.json', { showSource: true })-->
+```json
+{
+  "name": "George Lucas",
+  "recordId": 728904,
+  "modId": 0
+}
+```
+
+> File [./examples/results/create-record-merge.json](./examples/results/create-record-merge.json)
 <!--/@-->
 
 The create methods also allows you to trigger scripts when creating a record. Notice the scripts
@@ -169,19 +227,21 @@ or specify an array of scripts with a name, phase, and script parameter.
 <!--@snippet('./examples/create.examples.js#trigger-scripts-on-create', { showSource: true })-->
 ```js
 const triggerScriptsOnCreate = client =>
-  client.create(
-    'Heroes',
-    { name: 'Anakin Skywalker' },
-    {
-      merge: true,
-      scripts: [
-        { name: 'Create Droids', param: { droids: ['C3-PO', 'R2-D2'] } }
-      ]
-    }
-  );
+  client
+    .create(
+      'Heroes',
+      { name: 'Anakin Skywalker' },
+      {
+        merge: true,
+        scripts: [
+          { name: 'Create Droids', param: { droids: ['C3-PO', 'R2-D2'] } }
+        ]
+      }
+    )
+    .then(result => log('trigger-scripts-on-create', result));
 ```
 
-> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L31-L41)
+> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L37-L49)
 <!--/@-->
 
 ### List Records
@@ -194,10 +254,12 @@ requirements.
 <!--@snippet('./examples/list.examples.js#list-records-example', { showSource: true })-->
 ```js
 const listHeroes = client =>
-  client.list('Heroes', { limit: 5 }).then(response => response.data);
+  client
+    .list('Heroes', { limit: 5 })
+    .then(result => log('list-records-example', result));
 ```
 
-> Excerpt from [./examples/list.examples.js](./examples/list.examples.js#L4-L5)
+> Excerpt from [./examples/list.examples.js](./examples/list.examples.js#L6-L9)
 <!--/@-->
 
 ### Find Records
@@ -212,13 +274,10 @@ requirements.
 const findRecords = client =>
   client
     .find('Heroes', [{ name: 'Anakin Skywalker' }], { limit: 1 })
-    .then(response => client.recordId(response.data))
-    .then(recordIds =>
-      client.edit('Heroes', recordIds[0], { name: 'Darth Vader' })
-    );
+    .then(result => log('find-records-example', result));
 ```
 
-> Excerpt from [./examples/find.examples.js](./examples/find.examples.js#L4-L10)
+> Excerpt from [./examples/find.examples.js](./examples/find.examples.js#L6-L9)
 <!--/@-->
 
 ### Edit Records
@@ -227,10 +286,15 @@ The client's edit method requires a layout, recordId, and object to use for upda
 
 <!--@snippet('./examples/edit.examples.js#edit-record-example', { showSource: true })-->
 ```js
-        client.edit('Heroes', recordId, { name: 'Darth Vader' })
+const editRecords = client =>
+  client
+    .find('Heroes', [{ name: 'Anakin Skywalker' }], { limit: 1 })
+    .then(response => response.data[0].recordId)
+    .then(recordId => client.edit('Heroes', recordId, { name: 'Darth Vader' }))
+    .then(result => log('edit-record-example', result));
 ```
 
-> Excerpt from [./examples/edit.examples.js](./examples/edit.examples.js#L10-L10)
+> Excerpt from [./examples/edit.examples.js](./examples/edit.examples.js#L6-L11)
 <!--/@-->
 
 ### Delete Records
@@ -243,10 +307,11 @@ const deleteRecords = client =>
   client
     .find('Heroes', [{ name: 'Mace Windu' }], { limit: 1 })
     .then(response => response.data[0].recordId)
-    .then(recordId => client.delete('Heroes', recordId));
+    .then(recordId => client.delete('Heroes', recordId))
+    .then(result => log('delete-record-example', result));
 ```
 
-> Excerpt from [./examples/delete.examples.js](./examples/delete.examples.js#L4-L8)
+> Excerpt from [./examples/delete.examples.js](./examples/delete.examples.js#L6-L11)
 <!--/@-->
 
 ### Trigger Scripts
@@ -255,10 +320,13 @@ The client's script method requires a script to run and a layout to run on.
 
 <!--@snippet('./examples/script.examples.js#script-trigger-example', { showSource: true })-->
 ```js
-const triggerScript = client => client.script('FMS Triggered Script', 'Heroes');
+const triggerScript = client =>
+  client
+    .script('FMS Triggered Script', 'Heroes', { name: 'Han' })
+    .then(result => log('script-trigger-example', result));
 ```
 
-> Excerpt from [./examples/script.examples.js](./examples/script.examples.js#L4-L4)
+> Excerpt from [./examples/script.examples.js](./examples/script.examples.js#L6-L9)
 <!--/@-->
 
 ### Upload Files
@@ -269,10 +337,12 @@ a file path, layout, and container field name.
 <!--@snippet('./examples/upload.examples.js#upload-image-example', { showSource: true })-->
 ```js
 const uploadImage = client =>
-  client.upload('./assets/placeholder.md', 'Heroes', 'image');
+  client
+    .upload('./assets/placeholder.md', 'Heroes', 'image')
+    .then(result => log('upload-image-example', result));
 ```
 
-> Excerpt from [./examples/upload.examples.js](./examples/upload.examples.js#L4-L5)
+> Excerpt from [./examples/upload.examples.js](./examples/upload.examples.js#L6-L9)
 <!--/@-->
 
 You can also provide a record Id to the upload method and the file will be uploaded to that
@@ -280,10 +350,17 @@ record.
 
 <!--@snippet('./examples/upload.examples.js#upload-specific-record-example', { showSource: true })-->
 ```js
-        client.upload('./assets/placeholder.md', 'Heroes', 'image', recordId)
+const uploadSpecificImage = client =>
+  client
+    .find('Heroes', [{ name: 'Luke Skywalker' }], { limit: 1 })
+    .then(response => response.data[0].recordId)
+    .then(recordId =>
+      client.upload('./assets/placeholder.md', 'Heroes', 'image', recordId)
+    )
+    .then(result => log('upload-specific-record-example', result));
 ```
 
-> Excerpt from [./examples/upload.examples.js](./examples/upload.examples.js#L15-L15)
+> Excerpt from [./examples/upload.examples.js](./examples/upload.examples.js#L13-L20)
 <!--/@-->
 
 ### Set Session Globals
@@ -293,10 +370,12 @@ You can also use the client to set FileMaker Globals for the session.
 <!--@snippet('./examples/globals.examples.js#set-globals-example', { showSource: true })-->
 ```js
 const setGlobals = client =>
-  client.globals({ 'Globals::ship': 'Millenium Falcon' });
+	client
+		.globals({ 'Globals::ship': 'Millenium Falcon' })
+		.then(result => log('set-globals-example', result));
 ```
 
-> Excerpt from [./examples/globals.examples.js](./examples/globals.examples.js#L4-L5)
+> Excerpt from [./examples/globals.examples.js](./examples/globals.examples.js#L6-L9)
 <!--/@-->
 
 ### Helper Methods
@@ -314,10 +393,11 @@ either a single recordId or an array of recordIds as strings.
 const extractRecordId = client =>
   client
     .find('Heroes', { name: 'Luke Skywalker' })
-    .then(response => recordId(response.data));
+    .then(response => recordId(response.data))
+    .then(result => log('recordid-utility-example', result));
 ```
 
-> Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L6-L9)
+> Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L7-L11)
 <!--/@-->
 
 #### fieldData Method
@@ -330,10 +410,11 @@ fieldData or an array of fieldData objects.
 const extractFieldData = client =>
   client
     .find('Heroes', { name: 'Luke Skywalker' })
-    .then(response => fieldData(response.data));
+    .then(response => fieldData(response.data))
+    .then(result => log('fielddata-utility-example', result));
 ```
 
-> Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L13-L16)
+> Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L15-L19)
 <!--/@-->
 
 ## Tests
@@ -342,6 +423,7 @@ const extractFieldData = client =>
 npm install
 npm test
 ```
+
 <!--@execute('npm run test',[])-->
 ```default
 > fms-api-client@1.4.5 test /Users/luidelaparra/Documents/Development/fms-api-client
@@ -350,104 +432,105 @@ npm test
 
 
   Authentication Capabilities
-    ✓ should authenticate into FileMaker. (159ms)
-    ✓ should automatically request an authentication token (190ms)
-    ✓ should reuse a saved authentication token (168ms)
-    ✓ should log out of the filemaker. (255ms)
+(node:17736) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+    ✓ should authenticate into FileMaker. (237ms)
+    ✓ should automatically request an authentication token (3622ms)
+    ✓ should reuse a saved authentication token (243ms)
+    ✓ should log out of the filemaker. (269ms)
     ✓ should not attempt a logout if there is no valid token.
-    ✓ should reject if the logout request fails (220ms)
-    ✓ should reject if the authentication request fails (1416ms)
+    ✓ should reject if the logout request fails (256ms)
+    ✓ should reject if the authentication request fails (1495ms)
 
   Create Capabilities
-    ✓ should create FileMaker records. (175ms)
-    ✓ should reject bad data with an error (221ms)
-    ✓ should create FileMaker records with mixed types (170ms)
-    ✓ should substitute an empty object if data is not provided (176ms)
-    ✓ should return an object with merged filemaker and data properties (168ms)
-    ✓ should allow you to run a script when creating a record with a merge response (186ms)
-    ✓ should allow you to specify scripts as an array (235ms)
-    ✓ should allow you to specify scripts as an array with a merge response (298ms)
-    ✓ should sanitize parameters when creating a new record (238ms)
-    ✓ should accept both the default script parameters and a scripts array (183ms)
+    ✓ should create FileMaker records. (228ms)
+    ✓ should reject bad data with an error (267ms)
+    ✓ should create FileMaker records with mixed types (236ms)
+    ✓ should substitute an empty object if data is not provided (300ms)
+    ✓ should return an object with merged filemaker and data properties (280ms)
+    ✓ should allow you to run a script when creating a record with a merge response (250ms)
+    ✓ should allow you to specify scripts as an array (314ms)
+    ✓ should allow you to specify scripts as an array with a merge response (264ms)
+    ✓ should sanitize parameters when creating a new record (245ms)
+    ✓ should accept both the default script parameters and a scripts array (200ms)
 
   Delete Capabilities
-    ✓ should delete FileMaker records. (256ms)
-    ✓ should trigger scripts via an array when deleting records. (284ms)
-    ✓ should trigger scripts via parameters when deleting records. (251ms)
-    ✓ should allow you to mix script parameters and scripts array when deleting records. (266ms)
-    ✓ should stringify script parameters. (347ms)
-    ✓ should reject deletions that do not specify a recordId (167ms)
-    ✓ should reject deletions that do not specify an invalid recordId (194ms)
+    ✓ should delete FileMaker records. (3674ms)
+    ✓ should trigger scripts via an array when deleting records. (390ms)
+    ✓ should trigger scripts via parameters when deleting records. (3700ms)
+    ✓ should allow you to mix script parameters and scripts array when deleting records. (279ms)
+    ✓ should stringify script parameters. (373ms)
+    ✓ should reject deletions that do not specify a recordId (542ms)
+    ✓ should reject deletions that do not specify an invalid recordId (9646ms)
 
   Edit Capabilities
     ✓ should edit FileMaker records.
-    ✓ should reject bad data with an error (247ms)
+    ✓ should reject bad data with an error (359ms)
     ✓ should return an object with merged filemaker and data properties
-    ✓ should allow you to run a script when editing a record (269ms)
-    ✓ should allow you to run a script via a scripts array when editing a record (349ms)
-    ✓ should allow you to specify scripts as an array (175ms)
-    ✓ should allow you to specify scripts as an array with a merge response (184ms)
-    ✓ should sanitize parameters when creating a new record (179ms)
-    ✓ should accept both the default script parameters and a scripts array (209ms)
+    ✓ should allow you to run a script when editing a record (385ms)
+    ✓ should allow you to run a script via a scripts array when editing a record (979ms)
+    ✓ should allow you to specify scripts as an array (838ms)
+    ✓ should allow you to specify scripts as an array with a merge response (303ms)
+    ✓ should sanitize parameters when creating a new record (325ms)
+    ✓ should accept both the default script parameters and a scripts array (203ms)
 
   Find Capabilities
-    ✓ should perform a find request (267ms)
-    ✓ should allow you to use an object instead of an array for a find (293ms)
-    ✓ should specify omit Criterea (259ms)
-    ✓ should allow additional parameters to manipulate the results (170ms)
-    ✓ should allow you to limit the number of portal records to return (171ms)
-    ✓ should allow you to use numbers in the find query parameters (169ms)
-    ✓ should allow you to sort the results (420ms)
-    ✓ should return an empty array if the find does not return results (164ms)
-    ✓ should allow you run a pre request script (178ms)
-    ✓ should return a response even if a script fails (197ms)
-    ✓ should allow you to send a parameter to the pre request script (178ms)
-    ✓ should allow you run script after the find and before the sort (420ms)
-    ✓ should allow you to pass a parameter to a script after the find and before the sort (448ms)
-    ✓ should reject of there is an issue with the find request (167ms)
+    ✓ should perform a find request (1325ms)
+    ✓ should allow you to use an object instead of an array for a find (311ms)
+    ✓ should specify omit Criterea (326ms)
+    ✓ should allow additional parameters to manipulate the results (303ms)
+    ✓ should allow you to limit the number of portal records to return (888ms)
+    ✓ should allow you to use numbers in the find query parameters (188ms)
+    ✓ should allow you to sort the results (706ms)
+    ✓ should return an empty array if the find does not return results (263ms)
+    ✓ should allow you run a pre request script (992ms)
+    ✓ should return a response even if a script fails (268ms)
+    ✓ should allow you to send a parameter to the pre request script (228ms)
+    ✓ should allow you run script after the find and before the sort (456ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (536ms)
+    ✓ should reject of there is an issue with the find request (203ms)
 
   Get Capabilities
-    ✓ should get specific FileMaker records. (254ms)
-    ✓ should reject get requests that do not specify a recordId (247ms)
-    ✓ should allow you to limit the number of portal records to return (245ms)
-    ✓ should accept namespaced portal limit and offset parameters (348ms)
+    ✓ should get specific FileMaker records. (351ms)
+    ✓ should reject get requests that do not specify a recordId (342ms)
+    ✓ should allow you to limit the number of portal records to return (403ms)
+    ✓ should accept namespaced portal limit and offset parameters (480ms)
 
   Global Capabilities
-    ✓ should allow you to set FileMaker globals (171ms)
-    ✓ should reject with a message and code if it fails to set a global (165ms)
+    ✓ should allow you to set FileMaker globals (252ms)
+    ✓ should reject with a message and code if it fails to set a global (241ms)
 
   Request Interceptor Capabilities
-    ✓ should reject if the server errors (137ms)
-    ✓ should handle non JSON responses by rejecting with a json error (120ms)
+    ✓ should reject if the server errors (251ms)
+    ✓ should handle non JSON responses by rejecting with a json error (130ms)
     ✓ should reject non http requests to the server with a json error
 *Notice* Data API response does not contain a code
-    ✓ should reject non https requests to the server with a json error (170ms)
+    ✓ should reject non https requests to the server with a json error (226ms)
 
   List Capabilities
-    ✓ should allow you to list records (254ms)
-    ✓ should allow you use parameters to modify the list response (216ms)
-    ✓ should should allow you to use numbers in parameters (169ms)
-    ✓ should should allow you to provide an array of portals in parameters (235ms)
-    ✓ should should remove non used properties from a portal object (173ms)
-    ✓ should modify requests to comply with DAPI name reservations (189ms)
-    ✓ should allow strings while complying with DAPI name reservations (175ms)
-    ✓ should allow you to offset the list response (169ms)
-    ✓ should santize parameters that would cause unexpected parameters (192ms)
-    ✓ should allow you to limit the number of portal records to return (199ms)
-    ✓ should accept namespaced portal limit and offset parameters (175ms)
-    ✓ should reject invalid parameters (185ms)
+    ✓ should allow you to list records (699ms)
+    ✓ should allow you use parameters to modify the list response (300ms)
+    ✓ should should allow you to use numbers in parameters (310ms)
+    ✓ should should allow you to provide an array of portals in parameters (273ms)
+    ✓ should should remove non used properties from a portal object (257ms)
+    ✓ should modify requests to comply with DAPI name reservations (289ms)
+    ✓ should allow strings while complying with DAPI name reservations (236ms)
+    ✓ should allow you to offset the list response (279ms)
+    ✓ should santize parameters that would cause unexpected parameters (531ms)
+    ✓ should allow you to limit the number of portal records to return (849ms)
+    ✓ should accept namespaced portal limit and offset parameters (180ms)
+    ✓ should reject invalid parameters (589ms)
 
   Script Capabilities
-    ✓ should allow you to trigger a script in FileMaker (206ms)
-    ✓ should allow you to trigger a script in FileMaker (256ms)
-    ✓ should allow you to trigger a script in a find (262ms)
-    ✓ should allow you to trigger a script in a list (205ms)
-    ✓ should allow reject a script that does not exist (166ms)
-    ✓ should allow return a result even if a script returns an error (179ms)
-    ✓ should parse script results if the results are json (220ms)
-    ✓ should not parse script results if the results are not json (254ms)
-    ✓ should parse an array of scripts (182ms)
-    ✓ should trigger scripts on all three script phases (188ms)
+    ✓ should allow you to trigger a script in FileMaker (784ms)
+    ✓ should allow you to trigger a script in FileMaker (210ms)
+    ✓ should allow you to trigger a script in a find (318ms)
+    ✓ should allow you to trigger a script in a list (273ms)
+    ✓ should allow reject a script that does not exist (226ms)
+    ✓ should allow return a result even if a script returns an error (256ms)
+    ✓ should parse script results if the results are json (293ms)
+    ✓ should not parse script results if the results are not json (3335ms)
+    ✓ should parse an array of scripts (234ms)
+    ✓ should trigger scripts on all three script phases (863ms)
 
   Storage
     ✓ should allow an instance to be created
@@ -458,35 +541,35 @@ npm test
     ✓ should allow you to remove an instance
 
   File Upload Capabilities
-    ✓ should allow you to upload a file to a new record (1378ms)
-    ✓ should allow you to upload a file to a specific container repetition (1534ms)
+    ✓ should allow you to upload a file to a new record (1763ms)
+    ✓ should allow you to upload a file to a specific container repetition (5036ms)
     ✓ should reject with a message if it can not find the file to upload
-    ✓ should allow you to upload a file to a specific record (1353ms)
-    ✓ should allow you to upload a file to a specific record container repetition (1380ms)
-    ✓ should reject of the request is invalid (314ms)
+    ✓ should allow you to upload a file to a specific record (1736ms)
+    ✓ should allow you to upload a file to a specific record container repetition (2213ms)
+    ✓ should reject of the request is invalid (763ms)
 
   Data Usage 
     Tracks Data Usage
-      ✓ should track API usage data. (186ms)
-      ✓ should allow you to reset usage data. (219ms)
+      ✓ should track API usage data. (232ms)
+      ✓ should allow you to reset usage data. (202ms)
     Does Not Track Data Usage
-      ✓ should not track data usage in (185ms)
-      ✓ should not track data usage out (170ms)
+      ✓ should not track data usage in (228ms)
+      ✓ should not track data usage out (512ms)
 
   Utility Capabilities
-    ✓ *Depricated* it should extract field while maintaining the array (269ms)
-    ✓ *Depricated* it should extract field data while maintaining the object (259ms)
-    ✓ *Depricated* it should extract the recordId while maintaining the array (252ms)
-    ✓ *Depricated* it should extract field data while maintaining the object (273ms)
-    ✓ it should extract field while maintaining the array (299ms)
-    ✓ it should extract field data while maintaining the object (275ms)
-    ✓ it should extract the recordId while maintaining the array (330ms)
-    ✓ it should extract field data while maintaining the object (242ms)
+    ✓ *Depricated* it should extract field while maintaining the array (888ms)
+    ✓ *Depricated* it should extract field data while maintaining the object (344ms)
+    ✓ *Depricated* it should extract the recordId while maintaining the array (335ms)
+    ✓ *Depricated* it should extract field data while maintaining the object (377ms)
+    ✓ it should extract field while maintaining the array (416ms)
+    ✓ it should extract field data while maintaining the object (314ms)
+    ✓ it should extract the recordId while maintaining the array (367ms)
+    ✓ it should extract field data while maintaining the object (617ms)
     ✓ it should remove properties while maintaing the array
     ✓ it should remove properties while maintaing the array
 
 
-  105 passing (27s)
+  105 passing (1m)
 
 ------------------------------|----------|----------|----------|----------|-------------------|
 File                          |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
@@ -529,11 +612,13 @@ All files                     |      100 |      100 |      100 |      100 |     
 - [chai-as-promised](https://github.com/domenic/chai-as-promised): Extends Chai with assertions about promises.
 - [colors](https://github.com/Marak/colors.js): get colors in your node.js console
 - [coveralls](https://github.com/nickmerwin/node-coveralls): takes json-cov output into stdin and POSTs to coveralls.io
+- [deep-map](https://github.com/mcmath/deep-map): Transforms nested values of complex objects
 - [dotenv](https://github.com/motdotla/dotenv): Loads environment variables from .env file
 - [eslint](https://github.com/eslint/eslint): An AST-based pattern checker for JavaScript.
 - [eslint-config-google](https://github.com/google/eslint-config-google): ESLint shareable config for the Google style
 - [eslint-config-prettier](https://github.com/prettier/eslint-config-prettier): Turns off all rules that are unnecessary or might conflict with Prettier.
 - [eslint-plugin-prettier](https://github.com/prettier/eslint-plugin-prettier): Runs prettier as an eslint rule
+- [fs-extra](https://github.com/jprichardson/node-fs-extra): fs-extra contains methods that aren't included in the vanilla Node.js fs package. Such as mkdir -p, cp -r, and rm -rf.
 - [jsdocs](https://github.com/xudafeng/jsdocs): jsdocs
 - [minami](https://github.com/Nijikokun/minami): Clean and minimal JSDoc 3 Template / Theme
 - [mocha](https://github.com/mochajs/mocha): simple, flexible, fun test framework
