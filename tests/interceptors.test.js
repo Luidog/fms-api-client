@@ -68,9 +68,10 @@ describe('Request Interceptor Capabilities', () => {
       .that.has.all.keys('code', 'message');
   });
 
-  it('should reject not http requests to the server with a json error', () => {
+  it('should reject non http requests to the server with a json error', () => {
     client.connection._authURL = () =>
-      process.env.SERVER.replace('http://', '');
+      process.env.SERVER.replace('https://', '');
+      console.log(client.connection._authURL())
     return expect(
       client
         .save()
@@ -80,9 +81,11 @@ describe('Request Interceptor Capabilities', () => {
       .to.eventually.be.an('object')
       .that.has.all.keys('code', 'message');
   });
-    it('should reject not https requests to the server with a json error', () => {
+
+  it('should reject non https requests to the server with a json error', () => {
     client.connection._authURL = () =>
       process.env.SERVER.replace('https://', 'http://');
+      console.log(client.connection._authURL())
     return expect(
       client
         .save()
