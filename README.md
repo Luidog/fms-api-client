@@ -6,7 +6,7 @@
 
 A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. You can find detailed documentation on this project here:
 
-[fms-api-client documentation]: (https://luidog.github.io/fms-api-client/)
+fms-api-client Documentation[fms-api-client documentation]: (https://luidog.github.io/fms-api-client/)
 
 <!--@installation()-->
 ## Installation
@@ -181,7 +181,14 @@ requirements.
 <!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
 <!--/@-->
 
+### Upload Files
+
+<!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
+<!--/@-->
+
 ### Set Session Globals
+
+You can also use the client to set FileMaker Globals for the session.
 
 <!--@snippet('./examples/find.examples.js#list-records-example', { showSource: true })-->
 <!--/@-->
