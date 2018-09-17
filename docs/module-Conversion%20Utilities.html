@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>request.service.js - Documentation</title>
+    <title>Conversion Utilities - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,81 +29,739 @@
 
 <div id="main">
     
-    <h1 class="page-title">request.service.js</h1>
+    <h1 class="page-title">Conversion Utilities</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>'use strict';
+        
+    
+</header>
 
-const axios = require('axios');
-const FormData = require('form-data');
-const { omit } = require('./utilities');
+<article>
+    <div class="container-overview">
+    
+        
 
-/**
- * @module request
- */
+        
+    
+    </div>
 
-const request = axios.create();
+    
 
-/**
- * @method interceptRequest
- * @private
- * @description handles request data before it is sent to the resource. This method
- * will eventually be used to cancel the request and return the configuration body.
- * This method will test the url for an http proticol and reject if none exist.
- * @param  {Object} config The axios request configuration
- * @return {Promise}      the request configuration object
- */
+    
 
-const interceptRequest = config => {
-  if (config.url.startsWith('http')) {
-    return omit(config, ['params.request', 'data.request']);
-  } else {
-    return Promise.reject({
-      message: 'The Data API Requires https or http',
-      code: '1630'
-    });
-  }
-};
+    
 
-/**
- * @method handleResponseError
- * @description handles a 502 error for the client model. If the request
- * generates a 502 status a message and code is generated for the rejection.
- * @param  {Object} error The error recieved from the requested resource.
- * @return {Promise}      A promise rejection containing a code and a message
- */
+     
 
-const handleResponseError = error => {
-  if (!error.response) {
-    return Promise.reject(error);
-  } else if (
-    error.response.status === 502 ||
-    typeof error.response.data !== 'object'
-  ) {
-    return Promise.reject({
-      message: 'The Data API is currently unavailable',
-      code: '1630'
-    });
-  } else {
-    return Promise.reject(error.response.data.messages[0]);
-  }
-};
+    
 
-request.interceptors.request.use(interceptRequest);
+    
 
-request.interceptors.response.use(response => response, handleResponseError);
+    
+        <h3 class="subsection-title">Methods</h3>
 
-module.exports = { request, FormData };
-</code></pre>
-        </article>
-    </section>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~isJson"><span class="type-signature">(inner) </span>isJson<span class="signature">(data)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>The isJson method uses the a try / catch to parse incoming data safely as json.
+This method will return tru if it is able to cast the incoming data as json.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line40">line 40</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Any</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The data to be evaluated as json.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Boolean</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>A boolean result depending on if the data passed to it is valid JSON</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~omit"><span class="type-signature">(inner) </span>omit<span class="signature">(data, properties)</span><span class="type-signature"> &rarr; {Object|Array}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>fieldData is a helper method that strips the filemaker structural layout and portal information
+from a record. It returns only the data contained in the fieldData key and the recordId.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <dt class="important tag-deprecated">Deprecated:</dt><dd><ul class="dummy"><li>since version 1.5.0. Use the exported module instead.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line58">line 58</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+|
+
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The raw data to use when omitting. his can be an array or an object.</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>An array properties to remove.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Object</code></span>
+|
+
+<span class="param-type"><code>Array</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>A json object or array of objects without the properties passed to it</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~stringify"><span class="type-signature">(inner) </span>stringify<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>stringify is a helper method that converts numbers, objects, and arrays to strings.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+|
+
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The data being used to create or update a record.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Object</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>a json object containing stringified data.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~toArray"><span class="type-signature">(inner) </span>toArray<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>The toArray method converts an object into an array. This method uses the object prototype method
+isArray to check if the incoming data is an array. If the incoming data is not an array this method will
+return the data in an array</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line28">line 28</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+|
+
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>An array or object containing query information. This can be an array or an object.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Object</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>An array containing the data passed to the method.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

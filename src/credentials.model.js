@@ -27,9 +27,7 @@ class Credentials extends EmbeddedDocument {
     });
   }
 }
-/**
- * @module Credentials
- */
+
 module.exports = {
   Credentials
 };

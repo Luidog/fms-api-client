@@ -4,10 +4,15 @@ const axios = require('axios');
 const FormData = require('form-data');
 const { omit } = require('./utilities');
 
+/**
+ * @module request
+ */
+
 const request = axios.create();
 
 /**
- * @function interceptRequest
+ * @method interceptRequest
+ * @private
  * @description handles request data before it is sent to the resource. This method
  * will eventually be used to cancel the request and return the configuration body.
  * This method will test the url for an http proticol and reject if none exist.
@@ -27,7 +32,7 @@ const interceptRequest = config => {
 };
 
 /**
- * @function handleResponseError
+ * @method handleResponseError
  * @description handles a 502 error for the client model. If the request
  * generates a 502 status a message and code is generated for the rejection.
  * @param  {Object} error The error recieved from the requested resource.
@@ -53,10 +58,5 @@ const handleResponseError = error => {
 request.interceptors.request.use(interceptRequest);
 
 request.interceptors.response.use(response => response, handleResponseError);
-
-/**
- * @module request
- * @module FormData
- */
 
 module.exports = { request, FormData };

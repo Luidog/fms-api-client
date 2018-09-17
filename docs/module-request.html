@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>request.service.js - Documentation</title>
+    <title>request - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,81 +29,378 @@
 
 <div id="main">
     
-    <h1 class="page-title">request.service.js</h1>
+    <h1 class="page-title">request</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>'use strict';
+        
+    
+</header>
 
-const axios = require('axios');
-const FormData = require('form-data');
-const { omit } = require('./utilities');
+<article>
+    <div class="container-overview">
+    
+        
 
-/**
- * @module request
- */
+        
+    
+    </div>
 
-const request = axios.create();
+    
 
-/**
- * @method interceptRequest
- * @private
- * @description handles request data before it is sent to the resource. This method
- * will eventually be used to cancel the request and return the configuration body.
- * This method will test the url for an http proticol and reject if none exist.
- * @param  {Object} config The axios request configuration
- * @return {Promise}      the request configuration object
- */
+    
 
-const interceptRequest = config => {
-  if (config.url.startsWith('http')) {
-    return omit(config, ['params.request', 'data.request']);
-  } else {
-    return Promise.reject({
-      message: 'The Data API Requires https or http',
-      code: '1630'
-    });
-  }
-};
+    
 
-/**
- * @method handleResponseError
- * @description handles a 502 error for the client model. If the request
- * generates a 502 status a message and code is generated for the rejection.
- * @param  {Object} error The error recieved from the requested resource.
- * @return {Promise}      A promise rejection containing a code and a message
- */
+     
 
-const handleResponseError = error => {
-  if (!error.response) {
-    return Promise.reject(error);
-  } else if (
-    error.response.status === 502 ||
-    typeof error.response.data !== 'object'
-  ) {
-    return Promise.reject({
-      message: 'The Data API is currently unavailable',
-      code: '1630'
-    });
-  } else {
-    return Promise.reject(error.response.data.messages[0]);
-  }
-};
+    
 
-request.interceptors.request.use(interceptRequest);
+    
 
-request.interceptors.response.use(response => response, handleResponseError);
+    
+        <h3 class="subsection-title">Methods</h3>
 
-module.exports = { request, FormData };
-</code></pre>
-        </article>
-    </section>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~handleResponseError"><span class="type-signature">(inner) </span>handleResponseError<span class="signature">(error)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>handles a 502 error for the client model. If the request
+generates a 502 status a message and code is generated for the rejection.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="request.service.js.html">request.service.js</a>, <a href="request.service.js.html#line34">line 34</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The error recieved from the requested resource.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>A promise rejection containing a code and a message</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~interceptRequest"><span class="type-signature">(private, inner) </span>interceptRequest<span class="signature">(config)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>handles request data before it is sent to the resource. This method
+will eventually be used to cancel the request and return the configuration body.
+This method will test the url for an http proticol and reject if none exist.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="request.service.js.html">request.service.js</a>, <a href="request.service.js.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>config</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The axios request configuration</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>the request configuration object</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

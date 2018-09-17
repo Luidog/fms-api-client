@@ -750,9 +750,7 @@ class Client extends Document {
     return recordId(data);
   }
 }
-/**
- * @module Client
- */
+
 module.exports = {
   Client
 };

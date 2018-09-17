@@ -3,7 +3,12 @@
 const _ = require('lodash');
 
 /**
+ * @module Conversion Utilities
+ */
+
+/**
  * @method stringify
+ * @public
  * @description stringify is a helper method that converts numbers, objects, and arrays to strings.
  * @param  {Object|Array} data The data being used to create or update a record.
  * @return {Object}      a json object containing stringified data.
@@ -22,6 +27,7 @@ const stringify = data =>
 
 /**
  * @method toArray
+ * @public
  * @description The toArray method converts an object into an array. This method uses the object prototype method
  * isArray to check if the incoming data is an array. If the incoming data is not an array this method will
  * return the data in an array
@@ -33,6 +39,7 @@ const toArray = data => (Array.isArray(data) ? data : [data]);
 
 /**
  * @method isJson
+ * @public
  * @description The isJson method uses the a try / catch to parse incoming data safely as json.
  * This method will return tru if it is able to cast the incoming data as json.
  * @param  {Any} data The data to be evaluated as json.
@@ -49,7 +56,7 @@ const isJson = data => {
 };
 
 /**
- * @function omit
+ * @method omit
  * @public
  * @description fieldData is a helper method that strips the filemaker structural layout and portal information
  * from a record. It returns only the data contained in the fieldData key and the recordId.

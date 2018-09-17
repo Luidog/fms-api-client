@@ -4,8 +4,11 @@ const _ = require('lodash');
 const { stringify, isJson } = require('./conversion.utilities');
 
 /**
- * @function fieldData
- * @public
+ * @module Filemaker Utilities
+ */
+
+/**
+ * @method fieldData
  * @description fieldData is a helper method that strips the filemaker structural layout and portal information
  * from a record. It returns only the data contained in the fieldData key and the recordId.
  * @deprecated since version 1.5.0. Use the exported module instead.
@@ -27,8 +30,7 @@ const fieldData = data =>
       });
 
 /**
- * @function recordId
- * @public
+ * @method recordId
  * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
  * from a record. It returns only the data contained in the fieldData key adn the recordId.
  * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
@@ -42,6 +44,7 @@ const recordId = data =>
 
 /**
  * @method convertPortals
+ * @public
  * @description The convertPortals method converts a request containing a portal array into the syntax
  * supported by the filemaker data api.
  * @param  {Object|Array} data The data to use when invoking the method
@@ -74,6 +77,7 @@ const convertPortals = data => {
 
 /**
  * @method convertScripts
+ * @public
  * @description The converScript method abstracts the lodash map method to reduce the number of imports required
  * for each model. This method accepts an array and a method to use when mapping the array of values.
  * @param  {Object} data The data to use when invoking the method
@@ -104,7 +108,7 @@ const convertScripts = data => {
 };
 
 /**
- * @function convertParameters
+ * @method convertParameters
  * @public
  * @description Handles converting portals and scripts from array based parameters to object key based
  * parameters to FileMaker required parameters.
@@ -117,6 +121,7 @@ const convertParameters = data =>
 
 /**
  * @method sanitizeParameters
+ * @public
  * @description The santizeParameters method filters unsafe parameters from its return object based
  * on the safeOarameters array that is passed to it. This method is currently used in the client.create
  * method to seperate the merge option from the paramaters that are safe to send to FileMaker.
@@ -151,6 +156,7 @@ const sanitizeParameters = (parameters, safeParameters) =>
 
 /**
  * @method filterResponse
+ * @public
  * @description This method filters the FileMaker DAPI response by testing if a script was triggered
  * with the request, then either selecting the response, script error, and script result from the
  * response or selecting just the response.
@@ -166,6 +172,7 @@ const filterResponse = data =>
 
 /**
  * @method namespace
+ * @public
  * @description The namespace method maps through an incoming data object's keys and replaces the properties
  * of limit, offset, and sort with their _ counterparts.
  * @param  {Object} data An object used in a DAPI query.

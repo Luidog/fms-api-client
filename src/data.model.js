@@ -120,10 +120,6 @@ class Data extends EmbeddedDocument {
   }
 }
 
-/**
- * @module Data
- */
-
 module.exports = {
   Data
 };
