@@ -1,4 +1,4 @@
-/* global describe before beforeEach it */
+/* global describe before after it */
 
 /* eslint-disable */
 
@@ -20,14 +20,21 @@ chai.use(chaiAsPromised);
 describe('Utility Capabilities', () => {
   let database, client;
 
-  beforeEach(done => {
+  before(done => {
     client = Filemaker.create({
       application: process.env.APPLICATION,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
     });
-    done();
+    client.save().then(client => done());
+  });
+
+  after(done => {
+    client
+      .logout()
+      .then(response => done())
+      .catch(error => done());
   });
 
   before(done => {
@@ -153,7 +160,7 @@ describe('Utility Capabilities', () => {
       .and.to.not.include.keys('planet');
   });
 
-  it('it should remove properties while maintaing the array', () => {
+  it('it should remove properties while maintaing the object', () => {
     return expect(
       omit({ name: 'Luke Skywalker', planet: 'tatooine' }, ['planet'])
     )

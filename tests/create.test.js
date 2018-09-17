@@ -1,6 +1,6 @@
 'use strict';
 
-/* global describe before beforeEach it */
+/* global describe before after it */
 
 /* eslint-disable */
 
@@ -19,7 +19,7 @@ const { Filemaker } = require('../index.js');
 chai.use(chaiAsPromised);
 
 describe('Create Capabilities', () => {
-  let database, filemaker;
+  let database, client;
   before(done => {
     environment.config({ path: './tests/.env' });
     varium(process.env, './tests/env.manifest');
@@ -33,33 +33,40 @@ describe('Create Capabilities', () => {
       });
   });
 
-  beforeEach(done => {
-    filemaker = Filemaker.create({
+  before(done => {
+    client = Filemaker.create({
       application: process.env.APPLICATION,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
     });
-    done();
+    client.save().then(client => done());
+  });
+
+  after(done => {
+    client
+      .logout()
+      .then(response => done())
+      .catch(error => done());
   });
 
   it('should create FileMaker records.', () => {
-    return expect(filemaker.create(process.env.LAYOUT, { name: 'Han Solo' }))
+    return expect(client.create(process.env.LAYOUT, { name: 'Han Solo' }))
       .to.eventually.be.a('object')
       .that.has.all.keys('recordId', 'modId');
   });
 
   it('should reject bad data with an error', () => {
     return expect(
-      filemaker.create(process.env.LAYOUT, 'junk data').catch(error => error)
+      client.create(process.env.LAYOUT, 'junk data').catch(error => error)
     )
       .to.eventually.be.an('object')
       .that.has.all.keys('code', 'message');
   });
 
-  it('should create FileMaker records with mixed types', () => {
+  it('should create records with mixed types', () => {
     return expect(
-      filemaker.create(process.env.LAYOUT, {
+      client.create(process.env.LAYOUT, {
         name: 'Han Solo',
         array: ['ben'],
         object: { 'co-pilot': 'chewbacca' },
@@ -71,14 +78,14 @@ describe('Create Capabilities', () => {
   });
 
   it('should substitute an empty object if data is not provided', () => {
-    return expect(filemaker.create(process.env.LAYOUT))
+    return expect(client.create(process.env.LAYOUT))
       .to.eventually.be.a('object')
       .that.has.all.keys('recordId', 'modId');
   });
 
-  it('should return an object with merged filemaker and data properties', () => {
+  it('should return an object with merged data properties', () => {
     return expect(
-      filemaker.create(
+      client.create(
         process.env.LAYOUT,
         {
           name: 'Han Solo',
@@ -102,7 +109,7 @@ describe('Create Capabilities', () => {
 
   it('should allow you to run a script when creating a record with a merge response', () => {
     return expect(
-      filemaker.create(
+      client.create(
         process.env.LAYOUT,
         {
           name: 'Han Solo',
@@ -128,7 +135,7 @@ describe('Create Capabilities', () => {
 
   it('should allow you to specify scripts as an array', () => {
     return expect(
-      filemaker.create(
+      client.create(
         process.env.LAYOUT,
         {
           name: 'Han Solo',
@@ -161,7 +168,7 @@ describe('Create Capabilities', () => {
 
   it('should allow you to specify scripts as an array with a merge response', () => {
     return expect(
-      filemaker.create(
+      client.create(
         process.env.LAYOUT,
         {
           name: 'Han Solo',
@@ -193,7 +200,7 @@ describe('Create Capabilities', () => {
 
   it('should sanitize parameters when creating a new record', () => {
     return expect(
-      filemaker.create(
+      client.create(
         process.env.LAYOUT,
         {
           name: 'Han Solo',
@@ -232,7 +239,7 @@ describe('Create Capabilities', () => {
 
   it('should accept both the default script parameters and a scripts array', () => {
     return expect(
-      filemaker.create(
+      client.create(
         process.env.LAYOUT,
         {
           name: 'Han Solo',

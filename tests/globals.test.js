@@ -1,4 +1,4 @@
-/* global describe before beforeEach it */
+/* global describe before after it */
 
 /* eslint-disable */
 
@@ -17,7 +17,7 @@ const { Filemaker } = require('../index.js');
 chai.use(chaiAsPromised);
 
 describe('Global Capabilities', () => {
-  let database, filemaker;
+  let database, client;
   before(done => {
     environment.config({ path: './tests/.env' });
     varium(process.env, './tests/env.manifest');
@@ -31,25 +31,32 @@ describe('Global Capabilities', () => {
       });
   });
 
-  beforeEach(done => {
-    filemaker = Filemaker.create({
+  before(done => {
+    client = Filemaker.create({
       application: process.env.APPLICATION,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
     });
-    done();
+    client.save().then(client => done());
   });
 
-  it('should allow you to set FileMaker globals', () => {
+  after(done => {
+    client
+      .logout()
+      .then(response => done())
+      .catch(error => done());
+  });
+
+  it('should allow you to set session globals', () => {
     return expect(
-      filemaker.globals({ 'Globals::ship': 'Millenium Falcon' })
+      client.globals({ 'Globals::ship': 'Millenium Falcon' })
     ).to.eventually.be.a('object');
   });
 
   it('should reject with a message and code if it fails to set a global', () => {
     return expect(
-      filemaker.globals({ ship: 'Millenium Falcon' }).catch(error => error)
+      client.globals({ ship: 'Millenium Falcon' }).catch(error => error)
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('message', 'code');

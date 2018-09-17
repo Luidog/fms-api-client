@@ -1,6 +1,6 @@
 'use strict';
 
-/* global describe before beforeEach it */
+/* global describe before after it */
 
 /* eslint-disable */
 
@@ -34,14 +34,21 @@ describe('Request Interceptor Capabilities', () => {
       });
   });
 
-  beforeEach(done => {
+  before(done => {
     client = Filemaker.create({
       application: process.env.APPLICATION,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
     });
-    done();
+    client.save().then(client => done());
+  });
+
+  after(done => {
+    client
+      .logout()
+      .then(response => done())
+      .catch(error => done());
   });
 
   it('should reject if the server errors', () => {
@@ -84,7 +91,9 @@ describe('Request Interceptor Capabilities', () => {
   });
 
   it('should reject non https requests to the server with a json error', () => {
-    console.log('*Notice* Data API response does not contain a code');
+    console.log(
+      ' * Notice * Data API response does not contain a code. Only a message'
+    );
     client.connection._authURL = () =>
       `${process.env.SERVER.replace(
         'https://',
