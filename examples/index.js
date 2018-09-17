@@ -4,14 +4,16 @@ const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker } = require('../index.js');
+const { authentication } = require('./authentication.examples');
 const { creates } = require('./create.examples');
 const { lists } = require('./list.examples');
-const { globals } = require('./globals.examples');
 const { finds } = require('./find.examples');
-const { scripts } = require('./script.examples');
 const { edits } = require('./edit.examples');
+const { scripts } = require('./script.examples');
+const { globals } = require('./globals.examples');
 const { deletes } = require('./delete.examples');
-const { authentication } = require('./authentication.examples');
+const { uploads } = require('./upload.examples');
+const { utilities } = require('./utility.examples');
 const { datastore } = require('./datastore.examples');
 
 environment.config({ path: './tests/.env' });
@@ -40,7 +42,9 @@ connect('nedb://memory')
       .then(client => edits(client))
       .then(client => scripts(client))
       .then(client => globals(client))
-      .then(client => deletes(client));
+      .then(client => deletes(client))
+      .then(client => uploads(client))
+      .then(client => utilities(client));
     // #
   })
   .then(client => datastore(client))
