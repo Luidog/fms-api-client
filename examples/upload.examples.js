@@ -1,22 +1,31 @@
 'use strict';
 
-const uploadImage = client =>
-  client.upload('./assets/placeholder.md', 'Heroes', 'image');
+const { log, store } = require('./services');
 
+//#upload-image-example
+const uploadImage = client =>
+  client
+    .upload('./assets/placeholder.md', 'Heroes', 'image')
+    .then(result => log('upload-image-example', result));
+//#
+
+//#upload-specific-record-example
 const uploadSpecificImage = client =>
   client
-    .find('Heroes', [{ name: 'Luke Skywalker' }], { limit: 1 })
-    .then(response => client.recordId(response.data))
-    .then(recordIds =>
-      client.upload('./assets/placeholder.md', 'Heroes', 'image', recordIds[0])
-    );
+    .find('Heroes', [{ name: 'yoda' }], { limit: 1 })
+    .then(response => response.data[0].recordId)
+    .then(recordId =>
+      client.upload('./assets/placeholder.md', 'Heroes', 'image', recordId)
+    )
+    .then(result => log('upload-specific-record-example', result));
+//#
 
-const uploads = (client, examples) =>
-  Promise.all([uploadImage(client), uploadSpecificImage(client)])
-    .then(responses => {
-      examples.concat(responses);
+const uploads = (client) =>
+  Promise.all([uploadImage(client), uploadSpecificImage(client)]).then(
+    responses => {
+      store(responses);
       return client;
-    })
-    .catch(error => console.log('That is no moon....'.red, error));
+    }
+  );
 
 module.exports = { uploads };

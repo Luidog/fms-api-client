@@ -17,7 +17,7 @@ const { Filemaker } = require('../index.js');
 chai.use(chaiAsPromised);
 
 describe('Script Capabilities', () => {
-  let database, filemaker;
+  let database, client;
 
   before(done => {
     environment.config({ path: './tests/.env' });
@@ -32,32 +32,26 @@ describe('Script Capabilities', () => {
       });
   });
 
-  beforeEach(done => {
-    filemaker = Filemaker.create({
+  before(done => {
+    client = Filemaker.create({
       application: process.env.APPLICATION,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
     });
-    done();
+    client.save().then(client => done());
   });
 
-  it('should allow you to trigger a script in FileMaker', () => {
-    return expect(
-      filemaker.script('FMS Triggered Script', process.env.LAYOUT, {
-        name: 'han',
-        number: 102,
-        object: { child: 'ben' },
-        array: ['leia', 'chewbacca']
-      })
-    )
-      .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+  after(done => {
+    client
+      .logout()
+      .then(response => done())
+      .catch(error => done());
   });
 
-  it('should allow you to trigger a script in FileMaker', () => {
+  it('should allow you to trigger a script', () => {
     return expect(
-      filemaker.script('FMS Triggered Script', process.env.LAYOUT, {
+      client.script('FMS Triggered Script', process.env.LAYOUT, {
         name: 'han',
         number: 102,
         object: { child: 'ben' },
@@ -70,7 +64,7 @@ describe('Script Capabilities', () => {
 
   it('should allow you to trigger a script in a find', () => {
     return expect(
-      filemaker.find(
+      client.find(
         process.env.LAYOUT,
         { id: '*' },
         { script: 'FMS Triggered Script' }
@@ -82,7 +76,7 @@ describe('Script Capabilities', () => {
 
   it('should allow you to trigger a script in a list', () => {
     return expect(
-      filemaker.list(process.env.LAYOUT, {
+      client.list(process.env.LAYOUT, {
         limit: 2,
         script: 'FMS Triggered Script'
       })
@@ -93,7 +87,7 @@ describe('Script Capabilities', () => {
 
   it('should allow reject a script that does not exist', () => {
     return expect(
-      filemaker
+      client
         .script(process.env.LAYOUT, {
           limit: 2,
           script: 'Made up Script'
@@ -106,7 +100,7 @@ describe('Script Capabilities', () => {
 
   it('should allow return a result even if a script returns an error', () => {
     return expect(
-      filemaker
+      client
         .list(process.env.LAYOUT, {
           limit: 2,
           script: 'Error Script'
@@ -119,7 +113,7 @@ describe('Script Capabilities', () => {
 
   it('should parse script results if the results are json', () => {
     return expect(
-      filemaker.list(process.env.LAYOUT, {
+      client.list(process.env.LAYOUT, {
         limit: 2,
         script: 'Error Script'
       })
@@ -131,7 +125,7 @@ describe('Script Capabilities', () => {
   });
 
   it('should not parse script results if the results are not json', () => {
-    return expect(filemaker.script('Non JSON Script', process.env.LAYOUT))
+    return expect(client.script('Non JSON Script', process.env.LAYOUT))
       .to.eventually.be.a('object')
       .that.has.all.keys('result')
       .and.property('result')
@@ -140,7 +134,7 @@ describe('Script Capabilities', () => {
 
   it('should parse an array of scripts', () => {
     return expect(
-      filemaker.list(process.env.LAYOUT, {
+      client.list(process.env.LAYOUT, {
         limit: 2,
         scripts: [{ name: 'Error Script', param: 'A Parameter' }]
       })
@@ -153,7 +147,7 @@ describe('Script Capabilities', () => {
 
   it('should trigger scripts on all three script phases', () => {
     return expect(
-      filemaker.list(process.env.LAYOUT, {
+      client.list(process.env.LAYOUT, {
         limit: 2,
         scripts: [
           { name: 'Error Script', phase: 'prerequest', param: 'A Parameter' },

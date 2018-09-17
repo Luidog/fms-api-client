@@ -1,17 +1,15 @@
 'use strict';
 
+const { log } = require('./services');
+
+//#set-globals-example
 const setGlobals = client =>
-  /**
-   * You can also use the client to set FileMaker Globals for the session.
-   */
-  client.globals({ 'Globals::ship': 'Millenium Falcon' });
+	client
+		.globals({ 'Globals::ship': 'Millenium Falcon' })
+		.then(result => log('set-globals-example', result));
+//#
 
 const globals = (client, examples) =>
-  Promise.all([setGlobals(client)])
-    .then(responses => {
-            examples.concat(responses);
-      return client;
-    })
-    .catch(error => console.log('That is no moon....'.red, error));
+	Promise.all([setGlobals(client)]).then(responses => client);
 
 module.exports = { globals };

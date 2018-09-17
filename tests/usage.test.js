@@ -1,4 +1,4 @@
-/* global describe before beforeEach it */
+/* global describe before after it */
 
 /* eslint-disable */
 
@@ -20,16 +20,6 @@ describe('Data Usage ', () => {
   let database, client;
 
   describe('Tracks Data Usage', () => {
-    beforeEach(done => {
-      client = Filemaker.create({
-        application: process.env.APPLICATION,
-        server: process.env.SERVER,
-        user: process.env.USERNAME,
-        password: process.env.PASSWORD
-      });
-      done();
-    });
-
     before(done => {
       environment.config({ path: './tests/.env' });
       varium(process.env, './tests/env.manifest');
@@ -41,6 +31,23 @@ describe('Data Usage ', () => {
         .then(() => {
           return done();
         });
+    });
+
+    before(done => {
+      client = Filemaker.create({
+        application: process.env.APPLICATION,
+        server: process.env.SERVER,
+        user: process.env.USERNAME,
+        password: process.env.PASSWORD
+      });
+      client.save().then(client => done());
+    });
+
+    after(done => {
+      client
+        .logout()
+        .then(response => done())
+        .catch(error => done());
     });
 
     it('should track API usage data.', () => {
@@ -68,17 +75,6 @@ describe('Data Usage ', () => {
     });
   });
   describe('Does Not Track Data Usage', () => {
-    beforeEach(done => {
-      client = Filemaker.create({
-        application: process.env.APPLICATION,
-        server: process.env.SERVER,
-        user: process.env.USERNAME,
-        password: process.env.PASSWORD,
-        usage: false
-      });
-      done();
-    });
-
     before(done => {
       environment.config({ path: './tests/.env' });
       varium(process.env, './tests/env.manifest');
@@ -90,6 +86,24 @@ describe('Data Usage ', () => {
         .then(() => {
           return done();
         });
+    });
+
+    before(done => {
+      client = Filemaker.create({
+        application: process.env.APPLICATION,
+        server: process.env.SERVER,
+        user: process.env.USERNAME,
+        password: process.env.PASSWORD,
+        usage: false
+      });
+      client.save().then(client => done());
+    });
+
+    after(done => {
+      client
+        .logout()
+        .then(response => done())
+        .catch(error => done());
     });
 
     it('should not track data usage in', () => {

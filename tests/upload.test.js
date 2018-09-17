@@ -1,4 +1,4 @@
-/* global describe before beforeEach it */
+/* global describe before after it */
 
 /* eslint-disable */
 
@@ -32,14 +32,21 @@ describe('File Upload Capabilities', () => {
       });
   });
 
-  beforeEach(done => {
+  before(done => {
     client = Filemaker.create({
       application: process.env.APPLICATION,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
     });
-    done();
+    client.save().then(client => done());
+  });
+
+  after(done => {
+    client
+      .logout()
+      .then(response => done())
+      .catch(error => done());
   });
 
   it('should allow you to upload a file to a new record', () => {

@@ -79,8 +79,6 @@ class Connection extends EmbeddedDocument {
    * @memberof Connection
    * @private
    * @description Generates a url for use when retrieving authentication tokens in exchange for Account credentials
-
-
    * @return {String} A URL
    */
   _authURL() {
@@ -197,9 +195,6 @@ class Connection extends EmbeddedDocument {
   }
 }
 
-/**
- * @module Connection
- */
 module.exports = {
   Connection
 };

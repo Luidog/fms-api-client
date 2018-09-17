@@ -1,19 +1,13 @@
 'use strict';
 
-const _ = require('lodash');
+const { examples } = require('./services');
 const { Filemaker } = require('../index.js');
 
-const removeExampleRecords = (client, examples) =>
+const removeExampleRecords = client =>
   Filemaker.findOne({ _id: client._id }).then(client =>
-    recordIds(examples).map(recordId => client.delete('Heroes', recordId))
+    examples.map(object => client.delete('Heroes', object.recordId))
   );
 
-const recordIds = data => _.map(_.flattenDeep(data), datum => datum.recordId);
-
-const datastore = (client, data) => {
-  return Promise.all([removeExampleRecords(client, data)]).catch(error =>
-    console.log('That is no moon....'.red, error)
-  );
-};
+const datastore = client => Promise.all([removeExampleRecords(client)]);
 
 module.exports = { datastore };

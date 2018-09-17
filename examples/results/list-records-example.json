@@ -1,0 +1,84 @@
+{
+  "data": [
+    {
+      "fieldData": {
+        "id": "91C249FB-2127-8B47-9FBD-A4B004D95D5F",
+        "name": "Yoda",
+        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/07680AA37D5FF57418036B4A1664401C5ED1C192845407761F52BDE15DAD2D7A?RCType=EmbeddedRCFileProcessor",
+        "object": "",
+        "array": "",
+        "height": "",
+        "image(2)": ""
+      },
+      "portalData": {
+        "planets": []
+      },
+      "recordId": "729057",
+      "modId": "1"
+    },
+    {
+      "fieldData": {
+        "id": "921B1983-2AC9-3647-9EC9-1C99F5BC7259",
+        "name": "Darth Vader",
+        "image(1)": "",
+        "object": "",
+        "array": "",
+        "height": "",
+        "image(2)": ""
+      },
+      "portalData": {
+        "planets": []
+      },
+      "recordId": "729058",
+      "modId": "1"
+    },
+    {
+      "fieldData": {
+        "id": "97A3CF0E-869C-EF42-821D-AF59AF650BD9",
+        "name": "Obi-Wan",
+        "image(1)": "",
+        "object": "",
+        "array": "",
+        "height": "",
+        "image(2)": ""
+      },
+      "portalData": {
+        "planets": []
+      },
+      "recordId": "729061",
+      "modId": "0"
+    },
+    {
+      "fieldData": {
+        "id": "8AFDEF46-0481-5644-8683-95EC04810BE1",
+        "name": "",
+        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/691AF27E7EBA2A7BF58E2F52BD4756C46C9301CF7CCE14214C6763EEEF500423?RCType=EmbeddedRCFileProcessor",
+        "object": "",
+        "array": "",
+        "height": "",
+        "image(2)": ""
+      },
+      "portalData": {
+        "planets": []
+      },
+      "recordId": "729064",
+      "modId": "1"
+    },
+    {
+      "fieldData": {
+        "id": "BBA9D269-0089-F142-ABCA-A3194836C5D3",
+        "name": "George Lucas",
+        "image(1)": "",
+        "object": "",
+        "array": "",
+        "height": "",
+        "image(2)": ""
+      },
+      "portalData": {
+        "planets": []
+      },
+      "recordId": "729065",
+      "modId": "0"
+    }
+  ]
+}
