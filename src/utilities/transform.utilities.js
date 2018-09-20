@@ -65,9 +65,10 @@ const transformObject = (object, options = {}) => {
   let transformedFieldData =
     options.convert !== false ? transformRelatedTables(fieldData) : fieldData;
   let transformedPortalData =
-    options.convert !== false ? transformPortals(portalData) : portalData;
-  let portals =
-    options.portalData !== false ? _.merge(...transformedPortalData) : {};
+    options.convert !== false
+      ? _.merge(...transformPortals(portalData))
+      : portalData;
+  let portals = options.portalData !== false ? transformedPortalData : {};
   let fields = options.fieldData !== false ? transformedFieldData : {};
   return Object.assign(fields, portals, { recordId, modId });
 };
