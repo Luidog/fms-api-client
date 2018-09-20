@@ -247,8 +247,8 @@ class Client extends Document {
    * @method logout
    * @memberof Client
    * @public
-   * @description logs out of the current authentication session and removes the saved token.
-   * @see {@method Connnection#remove}
+   * @description logs out of the current authentication session and clears the saved token.
+   * @see {@method Connnection#clear}
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
@@ -263,7 +263,7 @@ class Client extends Document {
             })
               .then(response => response.data)
               .then(body => this.data.outgoing(body))
-              .then(body => this.connection.remove(body))
+              .then(body => this.connection.clear(body))
               .then(body => this._saveState(body))
               .then(body => resolve(body.messages[0]))
               .catch(error => reject(error))

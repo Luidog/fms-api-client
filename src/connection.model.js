@@ -160,16 +160,16 @@ class Connection extends EmbeddedDocument {
     );
   }
   /**
-   * @method remove
+   * @method clears
    * @memberof Connection
    * @public
-   * @description removes the currently saved token, exipres, and issued data by setting them to empty strings. This method
-   * returns whatever s based to it unmodified.
+   * @description clears the currently saved token, expiration, and issued data by setting them to empty strings. This method
+   * returns whatever is passed to it unmodified.
    * @param {Object} response The response object.
    * @return {Object} response The response recieved from the Data API.
    *
    */
-  remove(response) {
+  clear(response) {
     this.token = '';
     this.issued = '';
     this.expires = '';
