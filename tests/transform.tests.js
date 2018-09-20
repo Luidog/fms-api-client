@@ -16,7 +16,7 @@ const { Filemaker, transform } = require('../index');
 
 chai.use(chaiAsPromised);
 
-describe('Utility Capabilities', () => {
+describe('Transform Capabilities', () => {
   let database, client;
 
   before(done => {
