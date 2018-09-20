@@ -10,6 +10,8 @@ const {
 
 const { omit, stringify, toArray, isJson } = require('./conversion.utilities');
 
+const { transform } = require('./transform.utilities');
+
 module.exports = {
   fieldData,
   omit,
@@ -19,5 +21,6 @@ module.exports = {
   isJson,
   namespace,
   filterResponse,
-  sanitizeParameters
+  sanitizeParameters,
+  transform
 };

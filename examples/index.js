@@ -41,10 +41,10 @@ connect('nedb://memory')
       .then(client => finds(client))
       .then(client => edits(client))
       .then(client => scripts(client))
-      .then(client => globals(client))
-      .then(client => deletes(client))
-      .then(client => uploads(client))
-      .then(client => utilities(client));
+    .then(client => globals(client))
+    .then(client => deletes(client))
+    // .then(client => uploads(client))
+    .then(client => utilities(client));
     // #
   })
   .then(client => datastore(client))
