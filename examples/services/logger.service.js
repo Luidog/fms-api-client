@@ -16,7 +16,10 @@ const filter = values =>
   );
 
 const log = (file, result) => {
-  fse.outputJson(toFile(file), filter(result), { spaces: 2 });
+  if (process.env.RESULTS) {
+    fse.outputJson(toFile(file), filter(result), { spaces: 2 });
+  }
+  console.log(result)
   return result;
 };
 

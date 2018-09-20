@@ -19,21 +19,28 @@ const extractFieldData = client =>
     .then(result => log('fielddata-utility-example', result));
 //#
 
-//#fielddata-utility-example
+//#transform-utility-example
 const transformData = client =>
   client
     .find('Transform', { name: 'Han Solo' }, { limit: 1 })
-    .then(result =>
-      transform(result.data, { fieldData: false, portalData: false })
-    )
+    .then(result => transform(result.data))
     .then(result => log('transform-utility-example', result));
+//#
+
+//#transform-utility-no-convert-example
+const transformDataNoConvert = client =>
+  client
+    .find('Transform', { name: 'Han Solo' }, { limit: 1 })
+    .then(result => transform(result.data, { convert: false }))
+    .then(result => log('transform-utility-no-convert-example', result));
 //#
 
 const utilities = client =>
   Promise.all([
     extractFieldData(client),
     extractRecordId(client),
-    transformData(client)
+    transformData(client),
+    transformDataNoConvert(client)
   ]).then(responses => client);
 
 module.exports = { utilities };

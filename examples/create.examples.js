@@ -8,7 +8,7 @@ const createRecord = client =>
     .create('Heroes', {
       name: 'George Lucas'
     })
-    .then(result => log('create-record', result));
+    .then(result => log('create-record-example', result));
 // #
 
 //#create-record-merge
@@ -21,7 +21,7 @@ const mergeDataOnCreate = client =>
       },
       { merge: true }
     )
-    .then(result => log('create-record-merge', result));
+    .then(result => log('create-record-merge-example', result));
 // #
 
 //#create-many-records
@@ -30,7 +30,7 @@ const createManyRecords = client =>
     client.create('Heroes', { name: 'Anakin Skywalker' }, { merge: true }),
     client.create('Heroes', { name: 'Obi-Wan' }, { merge: true }),
     client.create('Heroes', { name: 'Yoda' }, { merge: true })
-  ]).then(result => log('create-many-records', result));
+  ]).then(result => log('create-many-records-example', result));
 //#
 
 //#trigger-scripts-on-create
@@ -46,7 +46,7 @@ const triggerScriptsOnCreate = client =>
         ]
       }
     )
-    .then(result => log('trigger-scripts-on-create', result));
+    .then(result => log('trigger-scripts-on-create-example', result));
 //#
 const creates = (client, examples) =>
   Promise.all([

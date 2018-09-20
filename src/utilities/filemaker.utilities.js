@@ -11,7 +11,6 @@ const { stringify, isJson } = require('./conversion.utilities');
  * @method fieldData
  * @description fieldData is a helper method that strips the filemaker structural layout and portal information
  * from a record. It returns only the data contained in the fieldData key and the recordId.
- * @deprecated since version 1.5.0. Use the exported module instead.
  * @param  {Object|Array} data The raw data returned from a filemaker. This can be an array or an object.
  * @return {Object|Array} A json object containing fieldData from the record.
  */
