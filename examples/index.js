@@ -29,6 +29,8 @@ connect('nedb://memory')
       application: process.env.APPLICATION,
       server: process.env.SERVER,
       user: process.env.USERNAME,
+      name: process.env.CLIENT_NAME,
+      usage: process.env.CLIENT_USAGE_TRACKING,
       password: process.env.PASSWORD
     });
     //#
@@ -41,10 +43,10 @@ connect('nedb://memory')
       .then(client => finds(client))
       .then(client => edits(client))
       .then(client => scripts(client))
-    .then(client => globals(client))
-    .then(client => deletes(client))
-    // .then(client => uploads(client))
-    .then(client => utilities(client));
+      .then(client => globals(client))
+      .then(client => deletes(client))
+      .then(client => uploads(client))
+      .then(client => utilities(client));
     // #
   })
   .then(client => datastore(client))
