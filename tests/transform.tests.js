@@ -4,7 +4,7 @@
 
 const assert = require('assert');
 const { expect, should } = require('chai');
-
+const _ = require('lodash');
 /* eslint-enable */
 
 const chai = require('chai');
@@ -30,10 +30,7 @@ describe('Transform Capabilities', () => {
   });
 
   after(done => {
-    client
-      .logout()
-      .then(response => done())
-      .catch(error => done());
+    client.logout().then(response => done());
   });
 
   before(done => {
@@ -60,5 +57,101 @@ describe('Transform Capabilities', () => {
       .to.be.a('object')
       .and.to.all.include.keys('modId', 'recordId')
       .and.to.not.include.keys('portalData', 'fieldData');
+  });
+
+  it('should merge portal data and field data from an object', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(response => transform(response.data[0]))
+    )
+      .to.eventually.to.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
+      .and.to.not.include.keys('portalData', 'fieldData');
+  });
+
+  it('should optionally not convert table::field keys from an array', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(response => transform(response.data, { convert: false }))
+    )
+      .to.eventually.be.a('array')
+      .and.property('0')
+      .to.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
+      .and.to.not.include.keys('portalData', 'fieldData');
+  });
+
+  it('should optionally not convert table::field keys from an object', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(response => transform(response.data[0], { convert: false }))
+    )
+      .to.eventually.to.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
+      .and.to.not.include.keys('portalData', 'fieldData');
+  });
+
+  it('should allow you to remove field data from an array', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(response => transform(response.data, { fieldData: false }))
+    )
+      .to.eventually.be.a('array')
+      .and.property('0')
+      .to.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
+      .and.to.not.include.keys('fieldData');
+  });
+
+  it('should allow you to remove field data from an object', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(response => transform(response.data[0], { fieldData: false }))
+    )
+      .to.eventually.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
+      .and.to.not.include.keys('fieldData');
+  });
+
+  it('should allow you to remove portal data from an array', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(response => transform(response.data, { portalData: false }))
+    )
+      .to.eventually.be.a('array')
+      .and.property('0')
+      .to.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
+      .and.to.not.include.keys('portalData');
+  });
+
+  it('should allow you to remove portal data from an object', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(response => transform(response.data, { portalData: false }))
+    )
+      .to.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
+      .and.to.not.include.keys('portalData');
+  });
+
+  it('should merge portal data and portal data from an array', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(response => transform(response.data, { portalData: false }))
+    )
+      .to.eventually.be.a('array')
+      .and.property('0')
+      .to.be.a('object')
+      .and.to.all.include.keys('modId', 'recordId')
+      .and.to.not.include.keys('portalData');
   });
 });
