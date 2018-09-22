@@ -137,7 +137,7 @@ describe('Transform Capabilities', () => {
         .find(process.env.LAYOUT, { name: 'Han Solo' })
         .then(response => transform(response.data, { portalData: false }))
     )
-      .to.be.a('object')
+      .to.eventually.to.be.a('object')
       .and.to.all.include.keys('modId', 'recordId')
       .and.to.not.include.keys('portalData');
   });
