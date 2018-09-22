@@ -138,29 +138,31 @@ describe('Edit Capabilities', () => {
 
   it('should allow you to specify scripts as an array', () =>
     expect(
-      client.create(
-        process.env.LAYOUT,
-        {
-          name: 'Han Solo',
-          array: ['ben'],
-          object: { 'co-pilot': 'chewbacca' },
-          height: 52
-        },
-        {
-          scripts: [
-            { name: 'FMS Triggered Script', param: 'data' },
-            {
-              name: 'FMS Triggered Script',
-              phase: 'prerequest',
-              param: { data: 2 }
-            }
-          ]
-        }
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
+        client.edit(
+          process.env.LAYOUT,
+          response.recordId,
+          {
+            name: 'Han Solo',
+            array: ['ben'],
+            object: { 'co-pilot': 'chewbacca' },
+            height: 52
+          },
+          {
+            scripts: [
+              { name: 'FMS Triggered Script', param: 'data' },
+              {
+                name: 'FMS Triggered Script',
+                phase: 'prerequest',
+                param: { data: 2 }
+              }
+            ]
+          }
+        )
       )
     )
       .to.eventually.be.a('object')
       .that.has.all.keys(
-        'recordId',
         'modId',
         'scriptResult',
         'scriptError.prerequest',
@@ -170,19 +172,22 @@ describe('Edit Capabilities', () => {
 
   it('should allow you to specify scripts as an array with a merge response', () => {
     return expect(
-      client.create(
-        process.env.LAYOUT,
-        {
-          name: 'Han Solo',
-          array: ['ben'],
-          object: { 'co-pilot': 'chewbacca' },
-          height: 52
-        },
-        {
-          script: 'FMS Triggered Script',
-          merge: true,
-          scripts: [{ name: 'FMS Triggered Script', phase: 'prerequest' }]
-        }
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
+        client.edit(
+          process.env.LAYOUT,
+          response.recordId,
+          {
+            name: 'Han Solo',
+            array: ['ben'],
+            object: { 'co-pilot': 'chewbacca' },
+            height: 52
+          },
+          {
+            script: 'FMS Triggered Script',
+            merge: true,
+            scripts: [{ name: 'FMS Triggered Script', phase: 'prerequest' }]
+          }
+        )
       )
     )
       .to.eventually.be.a('object')
@@ -200,28 +205,32 @@ describe('Edit Capabilities', () => {
       );
   });
 
-  it('should sanitize parameters when creating a new record', () => {
+  it('should sanitize parameters when creating a editing record', () => {
     return expect(
-      client.create(
-        process.env.LAYOUT,
-        {
-          name: 'Han Solo',
-          array: ['ben'],
-          object: { 'co-pilot': 'chewbacca' },
-          height: 52
-        },
-        {
-          script: 'FMS Triggered Script',
-          'script.param': 1,
-          merge: true,
-          scripts: [
-            {
-              name: 'FMS Triggered Script',
-              param: { data: true },
-              phase: 'prerequest'
-            }
-          ]
-        }
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
+        client.edit(
+          process.env.LAYOUT,
+          response.recordId,
+          {
+            name: 'Han Solo',
+            array: ['ben'],
+            object: { 'co-pilot': 'chewbacca' },
+            height: 52
+          },
+          {
+            script: 'FMS Triggered Script',
+            'script.param': 1,
+            merge: true,
+            error: true,
+            scripts: [
+              {
+                name: 'FMS Triggered Script',
+                param: { data: true },
+                phase: 'prerequest'
+              }
+            ]
+          }
+        )
       )
     )
       .to.eventually.be.a('object')
@@ -241,22 +250,25 @@ describe('Edit Capabilities', () => {
 
   it('should accept both the default script parameters and a scripts array', () => {
     return expect(
-      client.create(
-        process.env.LAYOUT,
-        {
-          name: 'Han Solo',
-          array: ['ben'],
-          object: { 'co-pilot': 'chewbacca' },
-          height: 52
-        },
-        {
-          script: 'FMS Triggered Script',
-          'script.param': 1,
-          merge: true,
-          scripts: [
-            { name: 'FMS Triggered Script', phase: 'prerequest', param: 2 }
-          ]
-        }
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
+        client.edit(
+          process.env.LAYOUT,
+          response.recordId,
+          {
+            name: 'Han Solo',
+            array: ['ben'],
+            object: { 'co-pilot': 'chewbacca' },
+            height: 52
+          },
+          {
+            script: 'FMS Triggered Script',
+            'script.param': 1,
+            merge: true,
+            scripts: [
+              { name: 'FMS Triggered Script', phase: 'prerequest', param: 2 }
+            ]
+          }
+        )
       )
     )
       .to.eventually.be.a('object')
@@ -272,5 +284,26 @@ describe('Edit Capabilities', () => {
         'scriptError.prerequest',
         'scriptResult.prerequest'
       );
+  });
+  it('should remove an expired token', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
+        .then(response => {
+          client.connection.token = `${client.connection.token}-error`;
+          return client.edit(process.env.LAYOUT, response.recordId, {
+            name: 'Han Solo'
+          });
+        })
+        .catch(error => {
+          let errorWithToken = Object.assign(error, {
+            token: client.connection.token
+          });
+          return errorWithToken;
+        })
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message', 'token')
+      .and.property('token').to.be.empty;
   });
 });
