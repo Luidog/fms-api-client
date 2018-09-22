@@ -137,4 +137,21 @@ describe('File Upload Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('code', 'message');
   });
+
+  it('should remove an expired token', () => {
+    client.connection.token = `${client.connection.token}-error`;
+    return expect(
+      client
+        .upload('./assets/placeholder.md', process.env.LAYOUT, 'image')
+        .catch(error => {
+          let errorWithToken = Object.assign(error, {
+            token: client.connection.token
+          });
+          return errorWithToken;
+        })
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message', 'token')
+      .and.property('token').to.be.empty;
+  });
 });

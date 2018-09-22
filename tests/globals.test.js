@@ -61,4 +61,19 @@ describe('Global Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('message', 'code');
   });
+
+  it('should remove an expired token', () => {
+    client.connection.token = `${client.connection.token}-error`;
+    return expect(
+      client.globals({ 'Globals::ship': 'Millenium Falcon' }).catch(error => {
+        let errorWithToken = Object.assign(error, {
+          token: client.connection.token
+        });
+        return errorWithToken;
+      })
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message', 'token')
+      .and.property('token').to.be.empty;
+  });
 });

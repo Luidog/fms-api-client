@@ -169,4 +169,26 @@ describe('Script Capabilities', () => {
       .and.property('scriptResult')
       .to.be.a('object');
   });
+
+  it('should remove an expired token', () => {
+    client.connection.token = `${client.connection.token}-error`;
+    return expect(
+      client
+        .script('FMS Triggered Script', process.env.LAYOUT, {
+          name: 'han',
+          number: 102,
+          object: { child: 'ben' },
+          array: ['leia', 'chewbacca']
+        })
+        .catch(error => {
+          let errorWithToken = Object.assign(error, {
+            token: client.connection.token
+          });
+          return errorWithToken;
+        })
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message', 'token')
+      .and.property('token').to.be.empty;
+  });
 });

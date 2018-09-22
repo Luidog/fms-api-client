@@ -135,7 +135,7 @@ describe('Transform Capabilities', () => {
     return expect(
       client
         .find(process.env.LAYOUT, { name: 'Han Solo' })
-        .then(response => transform(response.data, { portalData: false }))
+        .then(response => transform(response.data[0], { portalData: false }))
     )
       .to.eventually.to.be.a('object')
       .and.to.all.include.keys('modId', 'recordId')
