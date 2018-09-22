@@ -13,20 +13,14 @@
     "type": "git",
     "url": "git+https://Luidog@github.com/Luidog/fms-api-client.git"
   },
-  "keywords": [
-    "FileMaker",
-    "Data-API",
-    "Marpat"
-  ],
+  "keywords": ["FileMaker", "Data", "API","REST", "Marpat"],
   "author": "Lui de la Parra",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Luidog/fms-api-client/issues"
   },
   "mos": {
-    "plugins": [
-      "execute"
-    ]
+    "plugins": ["execute"]
   },
   "homepage": "https://github.com/Luidog/fms-api-client",
   "dependencies": {
