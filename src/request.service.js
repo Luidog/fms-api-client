@@ -20,16 +20,13 @@ const request = axios.create();
  * @return {Promise}      the request configuration object
  */
 
-const interceptRequest = config => {
-  if (config.url.startsWith('http')) {
-    return omit(config, ['params.request', 'data.request']);
-  } else {
-    return Promise.reject({
-      message: 'The Data API Requires https or http',
-      code: '1630'
-    });
-  }
-};
+const interceptRequest = config =>
+  config.url.startsWith('http')
+    ? omit(config, ['params.request', 'data.request'])
+    : Promise.reject({
+        message: 'The Data API Requires https or http',
+        code: '1630'
+      });
 
 /**
  * @method handleResponseError
@@ -50,6 +47,10 @@ const handleResponseError = error => {
       message: 'The Data API is currently unavailable',
       code: '1630'
     });
+  } else if (error.response.data.messages[0].code === '952') {
+    return Promise.reject(
+      Object.assign(error.response.data.messages[0], { expired: true })
+    );
   } else {
     return Promise.reject(error.response.data.messages[0]);
   }

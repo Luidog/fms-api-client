@@ -266,9 +266,18 @@ class Client extends Document {
               .then(body => this.connection.clear(body))
               .then(body => this._saveState(body))
               .then(body => resolve(body.messages[0]))
-              .catch(error => reject(error))
+              .catch(error => reject(this._checkToken(error)))
           : reject({ message: 'No session to log out.' })
     );
+  }
+
+  _checkToken(error) {
+    if (error.expired) {
+      delete error.expired;
+      this.connection.clear();
+      this.save();
+    }
+    return error;
   }
   /**
    * @method saveState
@@ -332,7 +341,7 @@ class Client extends Document {
             parameters.merge ? Object.assign(data, response) : response
         )
         .then(response => resolve(response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -388,7 +397,7 @@ class Client extends Document {
               : body
         )
         .then(response => resolve(response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -428,7 +437,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -475,7 +484,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -525,7 +534,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -584,7 +593,7 @@ class Client extends Document {
                   data: [],
                   message: 'No records match the request'
                 })
-              : reject(error)
+              : reject(this._checkToken(error))
         )
     );
   }
@@ -615,7 +624,7 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => resolve(body.response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -675,7 +684,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error));
+        .catch(error => reject(this._checkToken(error)));
     });
   }
   /**
@@ -720,7 +729,7 @@ class Client extends Document {
               : body.response.scriptResult
           })
         )
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
