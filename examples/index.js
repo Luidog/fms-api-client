@@ -47,7 +47,7 @@ connect('nedb://memory')
       .then(client => scripts(client))
       .then(client => globals(client))
       .then(client => deletes(client))
-      .then(client => uploads(client))
+      // .then(client => uploads(client))
       .then(client => utilities(client));
     // #
   })

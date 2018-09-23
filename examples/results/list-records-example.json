@@ -31,54 +31,6 @@
       },
       "recordId": "729951",
       "modId": "0"
-    },
-    {
-      "fieldData": {
-        "name": "Darth Vader",
-        "image(1)": "",
-        "object": "",
-        "array": "",
-        "height": "",
-        "id": "FBE83EE0-E382-DA42-AB70-D126B0D64FAF"
-      },
-      "portalData": {
-        "Planets": [],
-        "Vehicles": []
-      },
-      "recordId": "729952",
-      "modId": "1"
-    },
-    {
-      "fieldData": {
-        "name": "Darth Vader",
-        "image(1)": "",
-        "object": "",
-        "array": "",
-        "height": "",
-        "id": "AC2472BE-09D5-6A4A-AA19-82FB682626D4"
-      },
-      "portalData": {
-        "Planets": [],
-        "Vehicles": []
-      },
-      "recordId": "729953",
-      "modId": "1"
-    },
-    {
-      "fieldData": {
-        "name": "George Lucas",
-        "image(1)": "",
-        "object": "",
-        "array": "",
-        "height": "",
-        "id": "21E9E7A0-9F2C-854B-B17D-2886905ADB73"
-      },
-      "portalData": {
-        "Planets": [],
-        "Vehicles": []
-      },
-      "recordId": "729954",
-      "modId": "0"
     }
   ]
 }
