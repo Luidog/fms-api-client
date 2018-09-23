@@ -5,11 +5,24 @@
     "species": "",
     "biography": "",
     "birthYear": "",
-    "id": "0C4F649B-75E8-3D43-8993-912788068174",
+    "id": "193B8CEE-00CE-D942-92F0-FEEF4DA87967",
     "name": "Han Solo",
-    "Planets": [],
-    "Vehicles": [],
-    "recordId": "732908",
-    "modId": "0"
+    "Planets": [
+      {
+        "recordId": "2",
+        "Planets::name": "Coriella",
+        "modId": "2"
+      }
+    ],
+    "Vehicles": [
+      {
+        "recordId": "1",
+        "Vehicles::name": "Millenium Falcon",
+        "Vehicles::type": "Starship",
+        "modId": "2"
+      }
+    ],
+    "recordId": "732824",
+    "modId": "2"
   }
 ]

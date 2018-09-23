@@ -1,22 +1,22 @@
 [
   {
-    "name": "Yoda",
-    "image(1)": "",
-    "object": "",
-    "array": "",
-    "height": "",
-    "id": "EE6044AD-9EBF-F34E-B197-3EEFE6B1762A",
-    "recordId": "732956",
-    "modId": "0"
-  },
-  {
     "name": "yoda",
-    "image(1)": "",
+    "image(1)": "https://some-server.com/Streaming_SSL/MainDB/8A6FC35A32218599D121FB8BF669449225A3267E10B6FC0919B88A32D20CF303?RCType=EmbeddedRCFileProcessor",
     "object": "",
     "array": "",
     "height": "",
     "id": "B6C1804F-427E-3C47-A307-9D0623A9A6F2",
     "recordId": "732961",
+    "modId": "1"
+  },
+  {
+    "name": "Yoda",
+    "image(1)": "",
+    "object": "",
+    "array": "",
+    "height": "",
+    "id": "EAB9F6B4-EFC1-B540-965B-C83713A45827",
+    "recordId": "733016",
     "modId": "0"
   }
 ]
