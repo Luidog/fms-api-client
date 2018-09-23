@@ -105,12 +105,12 @@ The FileMaker class accepts an object with the following properties:
 
 | Property    |   Type  |                                           Description                                          |
 | ----------- | :-----: | :--------------------------------------------------------------------------------------------: |
-| application |  String |                  _required_ The FileMaker application / database to connect to                 |
-| server      |  String | _required_ The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
-| user        |  String |     _required_ The FileMaker user account to be used when authenticating into the Data API     |
-| password    |  String |                        _required_ The FileMaker user account's password.                       |
-| name        |  String |                                _optional_ A name for the client.                               |
-| usage       | Boolean |          _optional_ Track Data API usage for this client. **Note:** Default is `true`          |
+| application |  String |                  _*required*_ The FileMaker application / database to connect to                 |
+| server      |  String | _*required*_ The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
+| user        |  String |     _*required*_ The FileMaker user account to be used when authenticating into the Data API     |
+| password    |  String |                        _*required*_ The FileMaker user account's password.                       |
+| name        |  String |                                _*optional*_ A name for the client.                               |
+| usage       | Boolean |          _*optional*_ Track Data API usage for this client. **Note:** Default is `true`          |
 
 <!--@snippet('./examples/index.js#client-create-example', { showSource: true })-->
 ```js
@@ -144,14 +144,14 @@ A client can be used directly after saving it. The `client.save()` method takes 
       .then(client => scripts(client))
       .then(client => globals(client))
       .then(client => deletes(client))
-      // .then(client => uploads(client))
+      .then(client => uploads(client))
       .then(client => utilities(client));
 ```
 
 > Excerpt from [./examples/index.js](./examples/index.js#L39-L51)
 <!--/@-->
 
-A client can be removed using either the `client.delete()` method, the `Filemaker.deleteOne(query)` method or the `FileMaker.deleteMany()` method.
+A client can be removed using either the `client.delete()` method, the `Filemaker.deleteOne(query)` method or the `Filemaker.deleteMany(query)` method.
 
 **Note** Deleting a client does not close its Data API session. To close a session you need to call `client.logout()`.
 
@@ -198,7 +198,7 @@ Results:
 > File [./examples/results/create-many-records.json](./examples/results/create-many-records.json)
 <!--/@-->
 
-### Authentication
+### Data API Sessions
 
 The client will automatically handle creating and closing Data API sessions. If required the client will authenticate and generate a new session token with each method call. The Data API session is also monitored, updated, and saved as the client interacts with the Data API. Additionally, the client will always attempt to reuse a valid token whenever possible.
 
@@ -242,6 +242,14 @@ const logout = client =>
 Using the client you can create filemaker records. To create a record specify the layout to use and the data to insert on creation. The client will automatically convert numbers, arrays, and objects into strings so they can be inserted into a filemaker field.
 
 `client.create(layout, data, parameters)`
+
+| Input      |    Type | Description                                                                   |
+|------------|--------:|-------------------------------------------------------------------------------|
+| Layout     | String  | The layout to use as context for creating the record                          |
+| Data       | Object  | The data to use when creating a record.                                       |
+| Parameters | Object  | The parameters to use when creating a record.                                 |
+| Merge      | Boolean | Merge the data parameter and response when creating a record. Default is true |
+| Script     |         |                                                                               |
 
 <!--@snippet('./examples/create.examples.js#create-record-example', { showSource: true })-->
 ```js
