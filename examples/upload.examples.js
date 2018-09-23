@@ -20,7 +20,7 @@ const uploadSpecificImage = client =>
     .then(result => log('upload-specific-record-example', result));
 //#
 
-const uploads = (client) =>
+const uploads = client =>
   Promise.all([uploadImage(client), uploadSpecificImage(client)]).then(
     responses => {
       store(responses);

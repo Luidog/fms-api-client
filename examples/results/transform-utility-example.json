@@ -1,5 +1,27 @@
 [
   {
+    "starships": "",
+    "vehicles": "",
+    "species": "",
+    "biography": "",
+    "birthYear": "",
+    "id": "48717C2C-1D36-401A-99F4-0DBB46135D98",
+    "name": "Han Solo",
+    "Planets": [
+      {
+        "recordId": "2",
+        "name": "Coriella",
+        "modId": "1"
+      }
+    ],
+    "Vehicles": [
+      {
+        "recordId": "1",
+        "name": "Millenium Falcon",
+        "type": "Starship",
+        "modId": "1"
+      }
+    ],
     "recordId": "730267",
     "modId": "0"
   }

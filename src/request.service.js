@@ -30,8 +30,10 @@ const interceptRequest = config =>
 
 /**
  * @method handleResponseError
- * @description handles a 502 error for the client model. If the request
- * generates a 502 status a message and code is generated for the rejection.
+ * @description This method evaluates the error response. This method will substitute
+ * a non json error or a bad gateway status with a json code and message error. This
+ * method will add an expired property to the error response if it recieves a invalid
+ * token response.
  * @param  {Object} error The error recieved from the requested resource.
  * @return {Promise}      A promise rejection containing a code and a message
  */
