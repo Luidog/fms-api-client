@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "fieldData": {
+        "name": "yoda",
+        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/4925904E56F384153D09AFD463F6B92CE2404985769B060F7CCDDE10BFA6C944?RCType=EmbeddedRCFileProcessor",
+        "object": "",
+        "array": "",
+        "height": "",
+        "id": "7C40FE16-4472-6549-97D5-6527A766D7C5"
+      },
+      "portalData": {
+        "Planets": [],
+        "Vehicles": []
+      },
+      "recordId": "732903",
+      "modId": "1"
+    }
+  ]
+}

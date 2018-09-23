@@ -9,18 +9,25 @@ const uploadImage = client =>
     .then(result => log('upload-image-example', result));
 //#
 
-//#upload-specific-record-example
 const uploadSpecificImage = client =>
   client
     .find('Heroes', [{ name: 'yoda' }], { limit: 1 })
     .then(response => response.data[0].recordId)
     .then(recordId =>
-      client.upload('./assets/placeholder.md', 'Heroes', 'image', recordId)
-    )
-    .then(result => log('upload-specific-record-example', result));
+      setTimeout(
+        () =>
+          //#upload-specific-record-example
+          client
+            .upload('./assets/placeholder.md', 'Heroes', 'image', recordId)
+            .then(result => log('upload-specific-record-example', result)),
+        //#
+        1000
+      )
+    );
+
 //#
 
-const uploads = (client) =>
+const uploads = client =>
   Promise.all([uploadImage(client), uploadSpecificImage(client)]).then(
     responses => {
       store(responses);

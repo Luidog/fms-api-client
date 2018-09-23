@@ -78,8 +78,9 @@ class Connection extends EmbeddedDocument {
    * @method _authURL
    * @memberof Connection
    * @private
-   * @description Generates a url for use when retrieving authentication tokens in exchange for Account credentials
-   * @return {String} A URL
+   * @description Generates a url for use when retrieving authentication tokens
+   * in exchange for Account credentials.
+   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
    */
   _authURL() {
     let url = `${this.server}/fmi/data/v1/databases/${
@@ -91,7 +92,10 @@ class Connection extends EmbeddedDocument {
    * @method _basicAuth
    * @private
    * @memberof Connection
-   * @return {String} A string containing the authentication
+   * @description This method constructs the basic authentication headers used
+   * when authenticating a FileMaker DAPI session.
+   * @return {String} A string containing the user and password authentication
+   * pair.
    */
   _basicAuth() {
     const auth = `Basic ${new Buffer(
@@ -140,7 +144,7 @@ class Connection extends EmbeddedDocument {
    * a zero string in the response errorCode before resolving. If an http error code or a non zero response error code.
    * is returned this will reject.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   * response
+   * response.
    */
   generate() {
     return new Promise((resolve, reject) =>
@@ -160,16 +164,16 @@ class Connection extends EmbeddedDocument {
     );
   }
   /**
-   * @method remove
+   * @method clears
    * @memberof Connection
    * @public
-   * @description removes the currently saved token, exipres, and issued data by setting them to empty strings. This method
-   * returns whatever s based to it unmodified.
+   * @description clears the currently saved token, expiration, and issued data by setting them to empty strings. This method
+   * returns whatever is passed to it unmodified.
    * @param {Object} response The response object.
    * @return {Object} response The response recieved from the Data API.
    *
    */
-  remove(response) {
+  clear(response) {
     this.token = '';
     this.issued = '';
     this.expires = '';

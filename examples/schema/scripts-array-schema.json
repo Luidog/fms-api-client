@@ -1,0 +1,18 @@
+{
+  "scripts": [
+    {
+      "name": "At Mos Eisley",
+      "phase": "presort",
+      "param": "awesome bar"
+    },
+    {
+      "name": "First Shot",
+      "phase": "prerequest",
+      "param": "Han"
+    },
+    {
+      "name": "Moof Milker",
+      "param": "Greedo"
+    }
+  ]
+}

@@ -20,21 +20,20 @@ const request = axios.create();
  * @return {Promise}      the request configuration object
  */
 
-const interceptRequest = config => {
-  if (config.url.startsWith('http')) {
-    return omit(config, ['params.request', 'data.request']);
-  } else {
-    return Promise.reject({
-      message: 'The Data API Requires https or http',
-      code: '1630'
-    });
-  }
-};
+const interceptRequest = config =>
+  config.url.startsWith('http')
+    ? omit(config, ['params.request', 'data.request'])
+    : Promise.reject({
+        message: 'The Data API Requires https or http',
+        code: '1630'
+      });
 
 /**
  * @method handleResponseError
- * @description handles a 502 error for the client model. If the request
- * generates a 502 status a message and code is generated for the rejection.
+ * @description This method evaluates the error response. This method will substitute
+ * a non json error or a bad gateway status with a json code and message error. This
+ * method will add an expired property to the error response if it recieves a invalid
+ * token response.
  * @param  {Object} error The error recieved from the requested resource.
  * @return {Promise}      A promise rejection containing a code and a message
  */
@@ -50,6 +49,10 @@ const handleResponseError = error => {
       message: 'The Data API is currently unavailable',
       code: '1630'
     });
+  } else if (error.response.data.messages[0].code === '952') {
+    return Promise.reject(
+      Object.assign(error.response.data.messages[0], { expired: true })
+    );
   } else {
     return Promise.reject(error.response.data.messages[0]);
   }

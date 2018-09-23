@@ -1,6 +1,6 @@
 'use strict';
 
-const { Client, fieldData, recordId } = require('./src');
+const { Client, fieldData, recordId, transform } = require('./src');
 
 /**
  * @module Filemaker
@@ -8,5 +8,6 @@ const { Client, fieldData, recordId } = require('./src');
 module.exports = {
   Filemaker: Client,
   fieldData,
-  recordId
+  recordId,
+  transform
 };

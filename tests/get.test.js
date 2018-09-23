@@ -98,4 +98,18 @@ describe('Get Capabilities', () => {
       .that.has.all.keys('data')
       .and.property('data');
   });
+  it('should remove an expired token', () => {
+    client.connection.token = `${client.connection.token}-error`;
+    return expect(
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).catch(error => {
+        let errorWithToken = Object.assign(error, {
+          token: client.connection.token
+        });
+        return errorWithToken;
+      })
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message', 'token')
+      .and.property('token').to.be.empty;
+  });
 });

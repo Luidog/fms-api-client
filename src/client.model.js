@@ -88,7 +88,8 @@ class Client extends Document {
    * @schema
    * @description The client preInit hook  creates a data embedded document and a connection
    * embedded document on create.
-   * @return {null} The preInit hook does not return anything
+   * @param {Object} data The data used to create the client.
+   * @return {null} The preInit hook does not return anything.
    */
   preInit(data) {
     this.data = Data.create({ track: data.usage === undefined });
@@ -100,10 +101,12 @@ class Client extends Document {
     });
   }
   /**
-   * Generates a url for use when creating a record.
+   * @method _createURL
+   * @memberof Client
    * @private
+   * @description Generates a url for use when creating a record.
    * @param {String} layout The layout to use when creating a record.
-   * @return {String} A URL
+   * @return {String} A URL to use when creating records.
    */
   _createURL(layout) {
     let url = `${this.server}/fmi/data/v1/databases/${
@@ -112,11 +115,13 @@ class Client extends Document {
     return url;
   }
   /**
-   * Generates a url for use when updating a record.
+   * @method _updateURL
+   * @memberof Client
    * @private
+   * @description Generates a url for use when updating a record.
    * @param {String} layout The layout to use when updating a record.
    * @param {String} recordId The FileMaker internal record id to use.
-   * @return {String} A URL
+   * @return {String} A URL to use when updating records.
    */
   _updateURL(layout, recordId) {
     let url = `${this.server}/fmi/data/v1/databases/${
@@ -125,11 +130,13 @@ class Client extends Document {
     return url;
   }
   /**
-   * Generates a url for use when deleting a record.
+   * @method _deleteURL
+   * @memberof Client
    * @private
+   * @description Generates a url for use when deleting a record.
    * @param {String} layout The layout to use when creating a record.
    * @param {String} recordId The FileMaker internal record id to use.
-   * @return {String} A URL
+   * @return {String} A URL to use when deleting records.
    */
   _deleteURL(layout, recordId) {
     let url = `${this.server}/fmi/data/v1/databases/${
@@ -137,13 +144,14 @@ class Client extends Document {
     }/layouts/${layout}/records/${recordId}`;
     return url;
   }
-
   /**
-   * Generates a url to access a record.
+   * @method _getURL
    * @private
+   * @memberOf Client
+   * @description Generates a url to access a record.
    * @param {String} layout The layout to use when acessing a record.
    * @param {String} recordId The FileMaker internal record id to use.
-   * @return {String} A URL
+   * @return {String} A URL to used when getting one record.
    */
   _getURL(layout, recordId) {
     let url = `${this.server}/fmi/data/v1/databases/${
@@ -152,10 +160,12 @@ class Client extends Document {
     return url;
   }
   /**
-   * Generates a url for use when listing records.
+   * @method _listURL
    * @private
+   * @memberOf Client
+   * @descriptionGenerates a url for use when listing records.
    * @param {String} layout The layout to use when listing records.
-   * @return {String} A URL
+   * @return {String} A URL to use when listing records.
    */
   _listURL(layout) {
     let url = `${this.server}/fmi/data/v1/databases/${
@@ -164,10 +174,12 @@ class Client extends Document {
     return url;
   }
   /**
-   * Generates a url for use when performing a find request.
+   * @method _findURL
    * @private
+   * @memberOf Client
+   * @description Generates a url for use when performing a find request.
    * @param {String} layout The layout to use when listing records.
-   * @return {String} A URL
+   * @return {String} A URL to use when performing a find.
    */
   _findURL(layout) {
     let url = `${this.server}/fmi/data/v1/databases/${
@@ -176,10 +188,13 @@ class Client extends Document {
     return url;
   }
   /**
-   * Generates a url for use when setting globals.
+   * @method _globalsURL
    * @private
+   * @memberOf Client
+   * @description Generates a url for use when setting globals. Like FileMaker
+   * globals, these values will only be set for the current session.
    * @param {String} layout The layout to use when setting globals.
-   * @return {String} A URL
+   * @return {String} A URL to use when setting globals
    */
   _globalsURL() {
     let url = `${this.server}/fmi/data/v1/databases/${
@@ -189,10 +204,10 @@ class Client extends Document {
   }
   /**
    * @method _logoutURL
-   * @memberof Connection
+   * @memberof Client
    * @private
    * @description Generates a url for use when logging out of a FileMaker Session.
-   * @return {String} A URL
+   * @return {String} A URL to use when logging out of a FileMaker DAPI session.
    */
   _logoutURL(token) {
     let url = `${this.server}/fmi/data/v1/databases/${
@@ -201,14 +216,16 @@ class Client extends Document {
     return url;
   }
   /**
-   * Generates a url for use when uploading files to FileMaker containers.
+   * @method _uploadURL
+   * @memberOf Client
+   * @description Generates a url for use when uploading files to FileMaker containers.
    * @private
    * @param {String} layout The layout to use when setting globals.
    * @param {String} recordId the record id to use when inserting the file.
    * @param {String} fieldName the field to use when inserting a file.
    * @param {String} fieldRepetition The repetition to use when inserting the file.
    * default is 1.
-   * @return {String} A URL
+   * @return {String} A URL to use when uploading files to FileMaker.
    */
   _uploadURL(layout, recordId, fieldName, fieldRepetition = 1) {
     let url = `${this.server}/fmi/data/v1/databases/${
@@ -247,8 +264,8 @@ class Client extends Document {
    * @method logout
    * @memberof Client
    * @public
-   * @description logs out of the current authentication session and removes the saved token.
-   * @see {@method Connnection#remove}
+   * @description logs out of the current authentication session and clears the saved token.
+   * @see {@method Connnection#clear}
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
@@ -263,12 +280,31 @@ class Client extends Document {
             })
               .then(response => response.data)
               .then(body => this.data.outgoing(body))
-              .then(body => this.connection.remove(body))
+              .then(body => this.connection.clear(body))
               .then(body => this._saveState(body))
               .then(body => resolve(body.messages[0]))
-              .catch(error => reject(error))
+              .catch(error => reject(this._checkToken(error)))
           : reject({ message: 'No session to log out.' })
     );
+  }
+  /**
+   * @method _checkToken
+   * @private
+   * @description The _checkToken method will check the error based to it
+   * for an expired property and if found will delete that property, clear
+   * the current token and save the client. This method is used to discard
+   * tokens which have been invalidated before their 15 minute expiration
+   * lifespan is exceed.
+   * @param {Object} error The layout to use when acessing a record.
+   * @return {Object} The error object with the expired key removed
+   */
+  _checkToken(error) {
+    if (error.expired) {
+      delete error.expired;
+      this.connection.clear();
+      this.save();
+    }
+    return error;
   }
   /**
    * @method saveState
@@ -332,7 +368,7 @@ class Client extends Document {
             parameters.merge ? Object.assign(data, response) : response
         )
         .then(response => resolve(response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -388,7 +424,7 @@ class Client extends Document {
               : body
         )
         .then(response => resolve(response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -428,7 +464,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -475,7 +511,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -525,7 +561,7 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
         .then(response => resolve(response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -584,7 +620,7 @@ class Client extends Document {
                   data: [],
                   message: 'No records match the request'
                 })
-              : reject(error)
+              : reject(this._checkToken(error))
         )
     );
   }
@@ -615,7 +651,7 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => resolve(body.response))
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
@@ -674,8 +710,10 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
-        .then(response => resolve(response))
-        .catch(error => reject(error));
+        .then(response =>
+          resolve(Object.assign(response, { recordId: recordId }))
+        )
+        .catch(error => reject(this._checkToken(error)));
     });
   }
   /**
@@ -720,7 +758,7 @@ class Client extends Document {
               : body.response.scriptResult
           })
         )
-        .catch(error => reject(error))
+        .catch(error => reject(this._checkToken(error)))
     );
   }
   /**
