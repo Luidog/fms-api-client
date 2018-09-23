@@ -54,7 +54,7 @@ describe('File Upload Capabilities', () => {
       client.upload('./assets/placeholder.md', process.env.LAYOUT, 'image')
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('modId')
+      .that.has.all.keys('modId', 'recordId')
       .and.property('modId', 1);
   });
 
@@ -69,7 +69,7 @@ describe('File Upload Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('modId')
+      .that.has.all.keys('modId', 'recordId')
       .and.property('modId', 1);
   });
 
@@ -97,7 +97,7 @@ describe('File Upload Capabilities', () => {
         )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('modId')
+      .that.has.all.keys('modId', 'recordId')
       .and.property('modId', 1);
   });
 
@@ -116,7 +116,7 @@ describe('File Upload Capabilities', () => {
         )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('modId')
+      .that.has.all.keys('modId','recordId')
       .and.property('modId', 1);
   });
 

@@ -710,7 +710,9 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => filterResponse(body))
-        .then(response => resolve(response))
+        .then(response =>
+          resolve(Object.assign(response, { recordId: recordId }))
+        )
         .catch(error => reject(this._checkToken(error)));
     });
   }
