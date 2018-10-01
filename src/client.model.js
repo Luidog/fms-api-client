@@ -11,7 +11,7 @@ const {
   isJson,
   stringify,
   sanitizeParameters,
-  filterResponse,
+  parseScriptResult,
   fieldData,
   recordId
 } = require('./utilities');
@@ -362,7 +362,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => filterResponse(body))
+        .then(body => parseScriptResult(body))
         .then(
           response =>
             parameters.merge ? Object.assign(data, response) : response
@@ -416,7 +416,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => filterResponse(body))
+        .then(body => parseScriptResult(body))
         .then(
           body =>
             parameters.merge
@@ -462,7 +462,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => filterResponse(body))
+        .then(body => parseScriptResult(body))
         .then(response => resolve(response))
         .catch(error => reject(this._checkToken(error)))
     );
@@ -509,7 +509,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => filterResponse(body))
+        .then(body => parseScriptResult(body))
         .then(response => resolve(response))
         .catch(error => reject(this._checkToken(error)))
     );
@@ -559,7 +559,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => filterResponse(body))
+        .then(body => parseScriptResult(body))
         .then(response => resolve(response))
         .catch(error => reject(this._checkToken(error)))
     );
@@ -611,7 +611,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(body => filterResponse(body))
+        .then(body => parseScriptResult(body))
         .then(response => resolve(response))
         .catch(
           error =>
@@ -709,7 +709,7 @@ class Client extends Document {
             .then(body => this.data.outgoing(body))
             .then(body => this.connection.extend(body))
             .then(body => this._saveState(body))
-            .then(body => filterResponse(body))
+            .then(body => parseScriptResult(body))
             .then(response => Object.assign(response, { recordId: resolvedId }))
         )
         .then(response => resolve(response))

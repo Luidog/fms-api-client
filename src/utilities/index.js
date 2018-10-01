@@ -4,7 +4,7 @@ const {
   fieldData,
   recordId,
   namespace,
-  filterResponse,
+  parseScriptResult,
   sanitizeParameters
 } = require('./filemaker.utilities');
 
@@ -20,7 +20,7 @@ module.exports = {
   toArray,
   isJson,
   namespace,
-  filterResponse,
+  parseScriptResult,
   sanitizeParameters,
   transform
 };

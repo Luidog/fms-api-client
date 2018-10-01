@@ -71,9 +71,19 @@ const omit = (data, properties) =>
     ? _.map(data, object => _.omit(object, properties))
     : _.omit(data, properties);
 
+/**
+ * @method parse
+ * @public
+ * @description parse performs a try catch before attempting to parse the value as json. If the value is not valid json it wil return the value.
+ * @param  {Any} values The value to attempt to parse.
+ * @return {Object|Any} A json object or array of objects without the properties passed to it
+ */
+const parse = value => (isJson(value) ? JSON.parse(value) : value);
+
 module.exports = {
   stringify,
   toArray,
   isJson,
-  omit
+  omit,
+  parse
 };

@@ -115,7 +115,7 @@ describe('Script Capabilities', () => {
     return expect(
       client.list(process.env.LAYOUT, {
         limit: 2,
-        script: 'Error Script'
+        scripts: [{ name: 'FMS Triggered Script', param: { name: 'Han' } }]
       })
     )
       .to.eventually.be.a('object')
@@ -136,7 +136,7 @@ describe('Script Capabilities', () => {
     return expect(
       client.list(process.env.LAYOUT, {
         limit: 2,
-        scripts: [{ name: 'Error Script', param: 'A Parameter' }]
+        scripts: [{ name: 'FMS Triggered Script', param: { name: 'Han' } }]
       })
     )
       .to.eventually.be.a('object')
@@ -150,9 +150,17 @@ describe('Script Capabilities', () => {
       client.list(process.env.LAYOUT, {
         limit: 2,
         scripts: [
-          { name: 'Error Script', phase: 'prerequest', param: 'A Parameter' },
-          { name: 'Error Script', param: 'A Parameter' },
-          { name: 'Error Script', phase: 'presort', param: 'A Parameter' }
+          {
+            name: 'FMS Triggered Script',
+            param: { name: 'Han' },
+            phase: 'prerequest'
+          },
+          { name: 'FMS Triggered Script', param: { name: 'Han' } },
+          {
+            name: 'FMS Triggered Script',
+            param: { name: 'Han' },
+            phase: 'presort'
+          }
         ]
       })
     )

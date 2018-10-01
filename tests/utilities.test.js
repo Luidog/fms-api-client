@@ -13,7 +13,7 @@ const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker, recordId, fieldData } = require('../index.js');
-const { omit } = require('../src/utilities/conversion.utilities');
+const { omit, parse } = require('../src/utilities/conversion.utilities');
 
 chai.use(chaiAsPromised);
 
@@ -166,5 +166,16 @@ describe('Utility Capabilities', () => {
     )
       .to.be.a('object')
       .and.to.not.include.keys('planet');
+  });
+
+  describe('JSON Parsing Capabilities', () => {
+    it('it should return a string when given a string', () => {
+      return expect(parse('A String')).to.be.a('string');
+    });
+    it('it should return an object when given a stringified object', () => {
+      return expect(parse(JSON.stringify({ name: 'Han Solo' })))
+        .to.be.a('object')
+        .and.to.include.keys('name');
+    });
   });
 });
