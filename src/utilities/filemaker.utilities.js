@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
-const { stringify, isJson } = require('./conversion.utilities');
+const { stringify, isJson, parse } = require('./conversion.utilities');
 
 /**
  * @module Filemaker Utilities
@@ -154,7 +154,7 @@ const sanitizeParameters = (parameters, safeParameters) =>
       );
 
 /**
- * @method filterResponse
+ * @method parseScriptResults
  * @public
  * @description This method filters the FileMaker DAPI response by testing if a script was triggered
  * with the request, then either selecting the response, script error, and script result from the
@@ -163,10 +163,13 @@ const sanitizeParameters = (parameters, safeParameters) =>
  * @return {Object}      A json object containing the selected data from the Data API Response.
  */
 
-const filterResponse = data =>
+const parseScriptResult = data =>
   _.mapValues(
     data.response,
-    value => (isJson(value) ? JSON.parse(value) : value)
+    (value, property, object) =>
+      property.includes('scriptResult')
+        ? (object[property] = parse(value))
+        : value
   );
 
 /**
@@ -189,6 +192,6 @@ module.exports = {
   fieldData,
   recordId,
   namespace,
-  filterResponse,
+  parseScriptResult,
   sanitizeParameters
 };

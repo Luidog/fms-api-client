@@ -55,7 +55,7 @@ describe('File Upload Capabilities', () => {
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('modId', 'recordId')
-      .and.property('modId', 1);
+      .and.property('modId', '1');
   });
 
   it('should allow you to upload a file to a specific container repetition', () => {
@@ -70,7 +70,7 @@ describe('File Upload Capabilities', () => {
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('modId', 'recordId')
-      .and.property('modId', 1);
+      .and.property('modId', '1');
   });
 
   it('should reject with a message if it can not find the file to upload', () => {
@@ -98,7 +98,7 @@ describe('File Upload Capabilities', () => {
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('modId', 'recordId')
-      .and.property('modId', 1);
+      .and.property('modId', '1');
   });
 
   it('should allow you to upload a file to a specific record container repetition', () => {
@@ -117,7 +117,7 @@ describe('File Upload Capabilities', () => {
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('modId','recordId')
-      .and.property('modId', 1);
+      .and.property('modId', '1');
   });
 
   it('should reject of the request is invalid', () => {

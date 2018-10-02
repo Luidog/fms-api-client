@@ -179,18 +179,18 @@ Results:
 [
   {
     "name": "Anakin Skywalker",
-    "recordId": 733439,
-    "modId": 0
+    "recordId": "734965",
+    "modId": "0"
   },
   {
     "name": "Obi-Wan",
-    "recordId": 733437,
-    "modId": 0
+    "recordId": "734963",
+    "modId": "0"
   },
   {
     "name": "Yoda",
-    "recordId": 733440,
-    "modId": 0
+    "recordId": "734966",
+    "modId": "0"
   }
 ]
 ```
@@ -267,8 +267,8 @@ Result:
 <!--@snippet('./examples/results/create-record-example.json', { showSource: true })-->
 ```json
 {
-  "recordId": 733435,
-  "modId": 0
+  "recordId": "734964",
+  "modId": "0"
 }
 ```
 
@@ -300,8 +300,8 @@ Result:
 ```json
 {
   "name": "George Lucas",
-  "recordId": 733436,
-  "modId": 0
+  "recordId": "734961",
+  "modId": "0"
 }
 ```
 
@@ -336,9 +336,9 @@ Result:
 ```json
 {
   "name": "Anakin Skywalker",
-  "scriptError": 0,
-  "recordId": 733438,
-  "modId": 0
+  "scriptError": "0",
+  "recordId": "734962",
+  "modId": "0"
 }
 ```
 
@@ -367,19 +367,19 @@ Result:
   "data": [
     {
       "fieldData": {
-        "name": "Yoda",
-        "image(1)": "",
+        "name": "yoda",
+        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/0845084DE1647CEDFC51BB41835D5D000578F819FE6BF783C697CD13E953EB8C?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
-        "id": "EE6044AD-9EBF-F34E-B197-3EEFE6B1762A"
+        "id": "70E9F945-628E-B949-BC74-EB4A563695C1"
       },
       "portalData": {
         "Planets": [],
         "Vehicles": []
       },
-      "recordId": "732956",
-      "modId": "0"
+      "recordId": "733025",
+      "modId": "1"
     }
   ]
 }
@@ -414,7 +414,7 @@ Result:
     {
       "fieldData": {
         "name": "George Lucas",
-        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/6B94F630936803610D3A8640422B84510A95A89DC8FE715AF50848F83E6D8A3A?RCType=EmbeddedRCFileProcessor",
+        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/AD16755790404E85A99A90A4D2AB976364B1AD293DEBACA245B49ECC3FE3C1B2?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -480,13 +480,13 @@ Result:
         "object": "",
         "array": "",
         "height": "",
-        "id": "EAEFCC70-339A-F041-9B04-52EEB6DAB05A"
+        "id": "B64B9097-CF05-B44E-965B-17D89D58244B"
       },
       "portalData": {
         "Planets": [],
         "Vehicles": []
       },
-      "recordId": "733052",
+      "recordId": "733092",
       "modId": "0"
     }
   ]
@@ -520,7 +520,7 @@ Result:
 <!--@snippet('./examples/results/edit-record-example.json', { showSource: true })-->
 ```json
 {
-  "modId": 2
+  "modId": "1"
 }
 ```
 
@@ -612,8 +612,8 @@ Result:
 <!--@snippet('./examples/results/upload-image-example.json', { showSource: true })-->
 ```json
 {
-  "modId": 1,
-  "recordId": 0
+  "modId": "1",
+  "recordId": "734968"
 }
 ```
 
@@ -638,8 +638,8 @@ Result:
 <!--@snippet('./examples/results/upload-specific-record-example.json', { showSource: true })-->
 ```json
 {
-  "modId": 1,
-  "recordId": "732961"
+  "modId": "1",
+  "recordId": "733026"
 }
 ```
 
@@ -675,13 +675,11 @@ Result:
 
 ### Utility Methods
 
-The client also provides helper methods to aid in parsing and manipulating FileMaker Data. There are
-currently to helper methods.
+The client also provides utility methods to aid in parsing and manipulating FileMaker Data. The client exports the `recordId(data)`, `fieldData(data)`, and `transform(data, options)` to aid in transforming Data API response data into other formats. Each utility method is capable of recieving either an object or a array.
 
 #### recordId Method
 
-The recordId method takes either an object or an array of objects with recordId properties and returns
-either a single recordId or an array of recordIds as strings.
+The recordId method retrieves the `recordId` properties for a response. This method will return either a single string or an array of strings.
 
 `recordId(data)`
 
@@ -702,8 +700,8 @@ Result:
 <!--@snippet('./examples/results/recordid-utility-example.json', { showSource: true })-->
 ```json
 [
-  "732961",
-  "733016"
+  "733026",
+  "733032"
 ]
 ```
 
@@ -712,8 +710,7 @@ Result:
 
 #### fieldData Method
 
-The fieldData method takes either an object or an array of objects and returns either a single object's
-fieldData or an array of fieldData objects.
+The fieldData method retrieves the `fieldData`, `recordId`, and `modId` properties from a Data API response. The fieldData method will merge the `recordId` and `modId` properties into fielData properties. This method will not convert `table::field` properties.
 
 `fieldData(data)`
 
@@ -735,23 +732,23 @@ Result:
 ```json
 [
   {
-    "name": "yoda",
-    "image(1)": "https://some-server.com/Streaming_SSL/MainDB/8A6FC35A32218599D121FB8BF669449225A3267E10B6FC0919B88A32D20CF303?RCType=EmbeddedRCFileProcessor",
+    "name": "Yoda",
+    "image(1)": "https://some-server.com/Streaming_SSL/MainDB/52D3C47B36F480D179175B239F2E790CD4873BC618502A5AD7DA23CCF9501168?RCType=EmbeddedRCFileProcessor",
     "object": "",
     "array": "",
     "height": "",
-    "id": "B6C1804F-427E-3C47-A307-9D0623A9A6F2",
-    "recordId": "732961",
+    "id": "C99E5753-831F-394A-BF90-3BBAEAE424E9",
+    "recordId": "733026",
     "modId": "1"
   },
   {
-    "name": "Yoda",
+    "name": "yoda",
     "image(1)": "",
     "object": "",
     "array": "",
     "height": "",
-    "id": "EAB9F6B4-EFC1-B540-965B-C83713A45827",
-    "recordId": "733016",
+    "id": "E8FF89DE-45EA-6946-8E3A-AB214FACB0CB",
+    "recordId": "733032",
     "modId": "0"
   }
 ]
@@ -762,51 +759,59 @@ Result:
 
 #### Transform Method
 
-The transform method takes either an object or an array of objects and returns either a single object or an array. This method is used to transform and modify Data API responses.
+The transform method converts Data API response data by converting `table::field` properties to objects. This method will transverse the response data and converting `{ table::field : value}` properties to `{ table:{ field : value } }`. The transform method will also convert `portalData` into arrays of objects. 
+
+The transform method accepts three option properties. The three option properties are all booleans and true by default. The three option properties are `convert`,`fieldData`,`portalData`. The `convert` property controls the transfomation of `table::field` properties. The `fieldData` property controls the merging of fieldData to the result. The `portalData` property controls the merging of portalData to the result. Setting any propery to false its transformation off. 
 
 `transform(data,options)`
 
-<!--@snippet('./examples/utility.examples.js#fielddata-utility-example', { showSource: true })-->
+<!--@snippet('./examples/utility.examples.js#transform-utility-example', { showSource: true })-->
 ```js
-const extractFieldData = client =>
+const transformData = client =>
   client
-    .find('Heroes', { name: 'yoda' }, { limit: 2 })
-    .then(response => fieldData(response.data))
-    .then(result => log('fielddata-utility-example', result));
+    .find('Transform', { name: 'Han Solo' }, { limit: 1 })
+    .then(result => transform(result.data))
+    .then(result => log('transform-utility-example', result));
 ```
 
-> Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L15-L19)
+> Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L23-L27)
 <!--/@-->
 
 Result:
 
-<!--@snippet('./examples/results/fielddata-utility-example.json', { showSource: true })-->
+<!--@snippet('./examples/results/transform-utility-example.json', { showSource: true })-->
 ```json
 [
   {
-    "name": "yoda",
-    "image(1)": "https://some-server.com/Streaming_SSL/MainDB/8A6FC35A32218599D121FB8BF669449225A3267E10B6FC0919B88A32D20CF303?RCType=EmbeddedRCFileProcessor",
-    "object": "",
-    "array": "",
-    "height": "",
-    "id": "B6C1804F-427E-3C47-A307-9D0623A9A6F2",
-    "recordId": "732961",
-    "modId": "1"
-  },
-  {
-    "name": "Yoda",
-    "image(1)": "",
-    "object": "",
-    "array": "",
-    "height": "",
-    "id": "EAB9F6B4-EFC1-B540-965B-C83713A45827",
-    "recordId": "733016",
-    "modId": "0"
+    "starships": "",
+    "vehicles": "",
+    "species": "",
+    "biography": "",
+    "birthYear": "",
+    "id": "193B8CEE-00CE-D942-92F0-FEEF4DA87967",
+    "name": "Han Solo",
+    "Planets": [
+      {
+        "recordId": "2",
+        "name": "Coriella",
+        "modId": "2"
+      }
+    ],
+    "Vehicles": [
+      {
+        "recordId": "1",
+        "name": "Millenium Falcon",
+        "type": "Starship",
+        "modId": "2"
+      }
+    ],
+    "recordId": "732824",
+    "modId": "2"
   }
 ]
 ```
 
-> File [./examples/results/fielddata-utility-example.json](./examples/results/fielddata-utility-example.json)
+> File [./examples/results/transform-utility-example.json](./examples/results/transform-utility-example.json)
 <!--/@-->
 
 ## Tests
@@ -818,117 +823,117 @@ npm test
 
 <!--@execute('npm run test',[])-->
 ```default
-> fms-api-client@1.5.0 test /Users/luidelaparra/Documents/Development/fms-api-client
+> fms-api-client@1.5.1 test /Users/luidelaparra/Documents/Development/fms-api-client
 > nyc _mocha --recursive  ./tests --timeout=30000 --exit
 
 
 
   Authentication Capabilities
-    ✓ should authenticate into FileMaker. (145ms)
+    ✓ should authenticate into FileMaker. (149ms)
     ✓ should automatically request an authentication token (169ms)
-    ✓ should reuse a saved authentication token (170ms)
-    ✓ should log out of the filemaker. (165ms)
+    ✓ should reuse a saved authentication token (164ms)
+    ✓ should log out of the filemaker. (177ms)
     ✓ should not attempt a logout if there is no valid token.
-    ✓ should reject if the logout request fails (171ms)
-    ✓ should reject if the authentication request fails (1422ms)
+    ✓ should reject if the logout request fails (177ms)
+    ✓ should reject if the authentication request fails (1412ms)
 
   Create Capabilities
-    ✓ should create FileMaker records. (163ms)
-    ✓ should reject bad data with an error (80ms)
-    ✓ should create records with mixed types (82ms)
-    ✓ should substitute an empty object if data is not provided (80ms)
-    ✓ should return an object with merged data properties (80ms)
-    ✓ should allow you to run a script when creating a record with a merge response (95ms)
-    ✓ should allow you to specify scripts as an array (94ms)
-    ✓ should allow you to specify scripts as an array with a merge response (90ms)
-    ✓ should sanitize parameters when creating a new record (83ms)
-    ✓ should accept both the default script parameters and a scripts array (90ms)
-    ✓ should remove an expired token (78ms)
+    ✓ should create FileMaker records. (174ms)
+    ✓ should reject bad data with an error (77ms)
+    ✓ should create records with mixed types (75ms)
+    ✓ should substitute an empty object if data is not provided (75ms)
+    ✓ should return an object with merged data properties (79ms)
+    ✓ should allow you to run a script when creating a record with a merge response (93ms)
+    ✓ should allow you to specify scripts as an array (92ms)
+    ✓ should allow you to specify scripts as an array with a merge response (79ms)
+    ✓ should sanitize parameters when creating a new record (90ms)
+    ✓ should accept both the default script parameters and a scripts array (85ms)
+    ✓ should remove an expired token (81ms)
 
   Delete Capabilities
-    ✓ should delete FileMaker records. (255ms)
-    ✓ should trigger scripts via an array when deleting records. (159ms)
-    ✓ should trigger scripts via parameters when deleting records. (156ms)
-    ✓ should allow you to mix script parameters and scripts array when deleting records. (157ms)
-    ✓ should stringify script parameters. (154ms)
-    ✓ should reject deletions that do not specify a recordId (81ms)
-    ✓ should reject deletions that do not specify an invalid recordId (83ms)
-    ✓ should remove an expired token (78ms)
+    ✓ should delete FileMaker records. (234ms)
+    ✓ should trigger scripts via an array when deleting records. (157ms)
+    ✓ should trigger scripts via parameters when deleting records. (154ms)
+    ✓ should allow you to mix script parameters and scripts array when deleting records. (163ms)
+    ✓ should stringify script parameters. (163ms)
+    ✓ should reject deletions that do not specify a recordId (82ms)
+    ✓ should reject deletions that do not specify an invalid recordId (73ms)
+    ✓ should remove an expired token (77ms)
 
   Edit Capabilities
     ✓ should edit FileMaker records.
-    ✓ should reject bad data with an error (258ms)
+    ✓ should reject bad data with an error (256ms)
     ✓ should return an object with merged filemaker and data properties
-    ✓ should allow you to run a script when editing a record (172ms)
-    ✓ should allow you to run a script via a scripts array when editing a record (171ms)
-    ✓ should allow you to specify scripts as an array (169ms)
+    ✓ should allow you to run a script when editing a record (173ms)
+    ✓ should allow you to run a script via a scripts array when editing a record (158ms)
+    ✓ should allow you to specify scripts as an array (164ms)
     ✓ should allow you to specify scripts as an array with a merge response (167ms)
-    ✓ should sanitize parameters when creating a editing record (165ms)
-    ✓ should accept both the default script parameters and a scripts array (168ms)
-    ✓ should remove an expired token (162ms)
+    ✓ should sanitize parameters when creating a editing record (164ms)
+    ✓ should accept both the default script parameters and a scripts array (167ms)
+    ✓ should remove an expired token (143ms)
 
   Find Capabilities
-    ✓ should perform a find request (293ms)
-    ✓ should allow you to use an object instead of an array for a find (129ms)
-    ✓ should specify omit Criterea (138ms)
-    ✓ should allow additional parameters to manipulate the results (78ms)
-    ✓ should allow you to limit the number of portal records to return (83ms)
-    ✓ should allow you to use numbers in the find query parameters (79ms)
-    ✓ should allow you to sort the results (101ms)
-    ✓ should return an empty array if the find does not return results (81ms)
-    ✓ should allow you run a pre request script (85ms)
-    ✓ should return a response even if a script fails (90ms)
-    ✓ should allow you to send a parameter to the pre request script (85ms)
-    ✓ should allow you run script after the find and before the sort (91ms)
-    ✓ should allow you to pass a parameter to a script after the find and before the sort (94ms)
-    ✓ should reject of there is an issue with the find request (75ms)
-    ✓ should remove an expired token (81ms)
-
-  Get Capabilities
-    ✓ should get specific FileMaker records. (259ms)
-    ✓ should reject get requests that do not specify a recordId (165ms)
-    ✓ should allow you to limit the number of portal records to return (158ms)
-    ✓ should accept namespaced portal limit and offset parameters (171ms)
-    ✓ should remove an expired token (83ms)
-
-  Global Capabilities
-    ✓ should allow you to set session globals (167ms)
-    ✓ should reject with a message and code if it fails to set a global (76ms)
-    ✓ should remove an expired token (78ms)
-
-  Request Interceptor Capabilities
-    ✓ should reject if the server errors (127ms)
-    ✓ should handle non JSON responses by rejecting with a json error (119ms)
-    ✓ should reject non http requests to the server with a json error
- * Notice * Data API response does not contain a code. Only a message
-    ✓ should reject non https requests to the server with a json error (135ms)
-
-  List Capabilities
-    ✓ should allow you to list records (302ms)
-    ✓ should allow you use parameters to modify the list response (83ms)
-    ✓ should should allow you to use numbers in parameters (75ms)
-    ✓ should should allow you to provide an array of portals in parameters (82ms)
-    ✓ should should remove non used properties from a portal object (79ms)
-    ✓ should modify requests to comply with DAPI name reservations (83ms)
-    ✓ should allow strings while complying with DAPI name reservations (83ms)
-    ✓ should allow you to offset the list response (75ms)
-    ✓ should santize parameters that would cause unexpected parameters (79ms)
-    ✓ should allow you to limit the number of portal records to return (82ms)
-    ✓ should accept namespaced portal limit and offset parameters (83ms)
-    ✓ should reject invalid parameters (80ms)
+    ✓ should perform a find request (294ms)
+    ✓ should allow you to use an object instead of an array for a find (200ms)
+    ✓ should specify omit Criterea (121ms)
+    ✓ should allow additional parameters to manipulate the results (88ms)
+    ✓ should allow you to limit the number of portal records to return (80ms)
+    ✓ should allow you to use numbers in the find query parameters (80ms)
+    ✓ should allow you to sort the results (160ms)
+    ✓ should return an empty array if the find does not return results (76ms)
+    ✓ should allow you run a pre request script (91ms)
+    ✓ should return a response even if a script fails (87ms)
+    ✓ should allow you to send a parameter to the pre request script (87ms)
+    ✓ should allow you run script after the find and before the sort (121ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (116ms)
+    ✓ should reject of there is an issue with the find request (81ms)
     ✓ should remove an expired token (79ms)
 
+  Get Capabilities
+    ✓ should get specific FileMaker records. (244ms)
+    ✓ should reject get requests that do not specify a recordId (164ms)
+    ✓ should allow you to limit the number of portal records to return (155ms)
+    ✓ should accept namespaced portal limit and offset parameters (152ms)
+    ✓ should remove an expired token (85ms)
+
+  Global Capabilities
+    ✓ should allow you to set session globals (166ms)
+    ✓ should reject with a message and code if it fails to set a global (77ms)
+    ✓ should remove an expired token (76ms)
+
+  Request Interceptor Capabilities
+    ✓ should reject if the server errors (133ms)
+    ✓ should handle non JSON responses by rejecting with a json error (118ms)
+    ✓ should reject non http requests to the server with a json error
+ * Notice * Data API response does not contain a code. Only a message
+    ✓ should reject non https requests to the server with a json error (123ms)
+
+  List Capabilities
+    ✓ should allow you to list records (305ms)
+    ✓ should allow you use parameters to modify the list response (75ms)
+    ✓ should should allow you to use numbers in parameters (75ms)
+    ✓ should should allow you to provide an array of portals in parameters (73ms)
+    ✓ should should remove non used properties from a portal object (73ms)
+    ✓ should modify requests to comply with DAPI name reservations (77ms)
+    ✓ should allow strings while complying with DAPI name reservations (105ms)
+    ✓ should allow you to offset the list response (77ms)
+    ✓ should santize parameters that would cause unexpected parameters (75ms)
+    ✓ should allow you to limit the number of portal records to return (78ms)
+    ✓ should accept namespaced portal limit and offset parameters (74ms)
+    ✓ should reject invalid parameters (74ms)
+    ✓ should remove an expired token (75ms)
+
   Script Capabilities
-    ✓ should allow you to trigger a script (170ms)
-    ✓ should allow you to trigger a script in a find (209ms)
-    ✓ should allow you to trigger a script in a list (85ms)
-    ✓ should allow reject a script that does not exist (77ms)
-    ✓ should allow return a result even if a script returns an error (84ms)
-    ✓ should parse script results if the results are json (80ms)
-    ✓ should not parse script results if the results are not json (84ms)
-    ✓ should parse an array of scripts (86ms)
-    ✓ should trigger scripts on all three script phases (92ms)
-    ✓ should remove an expired token (80ms)
+    ✓ should allow you to trigger a script (177ms)
+    ✓ should allow you to trigger a script in a find (210ms)
+    ✓ should allow you to trigger a script in a list (84ms)
+    ✓ should allow reject a script that does not exist (74ms)
+    ✓ should allow return a result even if a script returns an error (81ms)
+    ✓ should parse script results if the results are json (85ms)
+    ✓ should not parse script results if the results are not json (82ms)
+    ✓ should parse an array of scripts (84ms)
+    ✓ should trigger scripts on all three script phases (88ms)
+    ✓ should remove an expired token (86ms)
 
   Storage
     ✓ should allow an instance to be created
@@ -939,47 +944,50 @@ npm test
     ✓ should allow you to remove an instance
 
   Transform Capabilities
-    ✓ should merge portal data and field data from an array (305ms)
-    ✓ should merge portal data and field data from an object (115ms)
-    ✓ should optionally not convert table::field keys from an array (117ms)
+    ✓ should merge portal data and field data from an array (300ms)
+    ✓ should merge portal data and field data from an object (110ms)
+    ✓ should optionally not convert table::field keys from an array (110ms)
     ✓ should optionally not convert table::field keys from an object (117ms)
-    ✓ should allow you to remove field data from an array (120ms)
-    ✓ should allow you to remove field data from an object (120ms)
-    ✓ should allow you to remove portal data from an array (121ms)
-    ✓ should allow you to remove portal data from an object (110ms)
-    ✓ should merge portal data and portal data from an array (118ms)
+    ✓ should allow you to remove field data from an array (114ms)
+    ✓ should allow you to remove field data from an object (127ms)
+    ✓ should allow you to remove portal data from an array (114ms)
+    ✓ should allow you to remove portal data from an object (112ms)
+    ✓ should merge portal data and portal data from an array (113ms)
 
   File Upload Capabilities
-    ✓ should allow you to upload a file to a new record (1352ms)
-    ✓ should allow you to upload a file to a specific container repetition (1248ms)
+    ✓ should allow you to upload a file to a new record (1419ms)
+    ✓ should allow you to upload a file to a specific container repetition (1245ms)
     ✓ should reject with a message if it can not find the file to upload
-    ✓ should allow you to upload a file to a specific record (1274ms)
-    ✓ should allow you to upload a file to a specific record container repetition (1252ms)
+    ✓ should allow you to upload a file to a specific record (1320ms)
+    ✓ should allow you to upload a file to a specific record container repetition (1381ms)
     ✓ should reject of the request is invalid (230ms)
-    ✓ should remove an expired token (78ms)
+    ✓ should remove an expired token (75ms)
 
   Data Usage 
     Tracks Data Usage
-      ✓ should track API usage data. (169ms)
+      ✓ should track API usage data. (159ms)
       ✓ should allow you to reset usage data. (78ms)
     Does Not Track Data Usage
-      ✓ should not track data usage in (168ms)
-      ✓ should not track data usage out (81ms)
+      ✓ should not track data usage in (167ms)
+      ✓ should not track data usage out (85ms)
 
   Utility Capabilities
-    ✓ *Depricated* it should extract field while maintaining the array (249ms)
-    ✓ *Depricated* it should extract field data while maintaining the object (156ms)
-    ✓ *Depricated* it should extract the recordId while maintaining the array (152ms)
-    ✓ *Depricated* it should extract field data while maintaining the object (160ms)
-    ✓ it should extract field while maintaining the array (156ms)
-    ✓ it should extract field data while maintaining the object (163ms)
-    ✓ it should extract the recordId while maintaining the array (160ms)
-    ✓ it should extract field data while maintaining the object (154ms)
+    ✓ *Depricated* it should extract field while maintaining the array (254ms)
+    ✓ *Depricated* it should extract field data while maintaining the object (157ms)
+    ✓ *Depricated* it should extract the recordId while maintaining the array (154ms)
+    ✓ *Depricated* it should extract field data while maintaining the object (155ms)
+    ✓ it should extract field while maintaining the array (159ms)
+    ✓ it should extract field data while maintaining the object (159ms)
+    ✓ it should extract the recordId while maintaining the array (155ms)
+    ✓ it should extract field data while maintaining the object (155ms)
     ✓ it should remove properties while maintaing the array
     ✓ it should remove properties while maintaing the object
+    JSON Parsing Capabilities
+      ✓ it should return a string when given a string
+      ✓ it should return an object when given a stringified object
 
 
-  122 passing (20s)
+  124 passing (20s)
 
 ------------------------------|----------|----------|----------|----------|-------------------|
 File                          |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |

@@ -202,7 +202,7 @@ describe('Find Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('data', 'scriptResult.presort', 'scriptError.presort')
       .and.property('scriptError.presort')
-      .to.equal(0);
+      .to.equal('0');
   });
 
   it('should allow you to pass a parameter to a script after the find and before the sort', () => {
@@ -220,7 +220,7 @@ describe('Find Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('data', 'scriptResult.presort', 'scriptError.presort')
       .and.property('scriptError.presort')
-      .to.equal(0);
+      .to.equal('0');
   });
 
   it('should reject of there is an issue with the find request', () => {
