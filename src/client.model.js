@@ -277,6 +277,20 @@ class Client extends Document {
     });
   }
   /**
+   * @method login
+   * @memberof Client
+   * @public
+   * @description creates a session with the Data API and returns a token.
+   * @see {@method Client#authenticate}
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   *
+   */
+  login() {
+    return this.authenticate().then(token => ({
+      token
+    }));
+  }
+  /**
    * @method logout
    * @memberof Client
    * @public
