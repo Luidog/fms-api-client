@@ -22,8 +22,9 @@ npm install --save fms-api-client
 
 The fms-api-client is a wrapper around the [FileMaker Data API](https://fm.mutesymphony.com/fmi/data/apidoc/). Much :heart: to FileMaker for their work on the Data API. The client attempts to follow the terminology used by FileMaker wherever possible. the client uses a lightweight datastore to hold Data API connections. The client contains methods which are modeled after the Data API Endpoints.
 
-The client requires that you first connect to a datastore before creating or querying the FileMaker class. You can use the datastore to save a multitude of clients. Each client committed to the datastore will automatically handle Data API Sessions. Once recalled from the
-data store a client's methods can be used to interact with a FileMaker Database without the need for additional authentication.
+The client requires that you first connect to a datastore before creating or querying the FileMaker class. You can use the datastore to save a multitude of clients. Each client committed to the datastore will automatically handle Data API Sessions. Once saved to the data store a client's methods can be used to interact with a FileMaker Database without the need for additional authentication.
+
+Each client will manage their own FileMaker Data API session, but the clients can manually open or close their FileMaker sessions by calling either the `client.login()` method or the `client.logout()` method. To remove a client from a datastore and log out a session call `client.destroy()`.
 
 The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters. Any method that accepts script or portals in a query or body parameters will also accept the following script and portal parameters:
 
@@ -100,8 +101,7 @@ connect('nedb://memory')
 
 ### Client Creation
 
-After connecting to a datastore you can import and create clients. A client is created using the create method on the Filemaker class.
-The FileMaker class accepts an object with the following properties:
+After connecting to a datastore you can import and create clients. A client is created using the create method on the Filemaker class. The FileMaker class accepts an object with the following properties:
 
 | Property    |   Type  |                                            Description                                           |
 | ----------- | :-----: | :----------------------------------------------------------------------------------------------: |
@@ -151,9 +151,9 @@ A client can be used directly after saving it. The `client.save()` method takes 
 > Excerpt from [./examples/index.js](./examples/index.js#L39-L51)
 <!--/@-->
 
-A client can be removed using either the `client.delete()` method, the `Filemaker.deleteOne(query)` method or the `Filemaker.deleteMany(query)` method.
+A client can be removed using either the `client.destroy()` method, the `Filemaker.deleteOne(query)` method or the `Filemaker.deleteMany(query)` method.
 
-**Note** Deleting a client does not close its Data API session. To close a session you need to call `client.logout()`.
+**Note** Only the `client.destroy()` method will close a FileMaker session. Any client removed using the the `Filemaker.deleteOne(query)` method or the `Filemaker.deleteMany(query)` method will not log out before being destroyed.
 
 ### Client Use
 
@@ -202,17 +202,16 @@ Results:
 
 The client will automatically handle creating and closing Data API sessions. If required the client will authenticate and generate a new session token with each method call. The Data API session is also monitored, updated, and saved as the client interacts with the Data API. A client will always attempt to reuse a valid token whenever possible.
 
-The client contains two methods related to Data API sessions.These methods are `client.authenticate()` and `client.logout()`. The authenticate method is used to start a Data API session and the logout method will end a Data API session.
+The client contains two methods related to Data API sessions.These methods are `client.login()` and `client.logout()`. The login method is used to start a Data API session and the logout method will end a Data API session.
 
-#### Authenticate Method
+#### Login Method
 
-The client will automatically call the authenticate method if it does not have a valid token. This method returns a string rather than an object. The string returned is the authentication token for the session. This method will also save the token to the client's connection for future use.
+The client will automatically call the login method if it does not have a valid token. This method returns an object with a token property. This method will also save the token to the client's connection for future use.
 
-`client.authenticate()`
+`client.login()`
 
-**Note** The authenticate will change in an upcoming release. It will be modified to return an object.
 
-<!--@snippet('./examples/authentication.examples.js#client-authenticate-example', { showSource: true })-->
+<!--@snippet('./examples/authentication.examples.js#client-login-example', { showSource: true })-->
 ```js
 const login = client => client.authenticate();
 ```
@@ -560,9 +559,7 @@ Result:
 
 The client's script method requires a script to run and a layout to run on.
 
-`client.script(script, layout, parameter)`
-
-**Note** The trigger script parameter order while change in a future release. It will be modified to swap the script name parameter with the layout parameter.
+`client.script(layout, script, parameter)`
 
 <!--@snippet('./examples/script.examples.js#script-trigger-example', { showSource: true })-->
 ```js
