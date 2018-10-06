@@ -2,9 +2,10 @@
 
 const fs = require('fs');
 const { Document } = require('marpat');
+const FormData = require('form-data');
 const { Connection } = require('./connection.model');
 const { Data } = require('./data.model');
-const { request, FormData } = require('./request.service.js');
+const { Axios } = require('./axios.model.js');
 const {
   toArray,
   namespace,
@@ -19,7 +20,7 @@ const {
  * @classdesc The class used to integrate with the FileMaker server Data API
  */
 class Client extends Document {
-  constructor(data) {
+  constructor() {
     super();
     this.schema({
       /**
@@ -78,6 +79,10 @@ class Client extends Document {
       connection: {
         type: Connection,
         required: true
+      },
+      axios: {
+        type: Axios,
+        required: true
       }
     });
   }
@@ -97,6 +102,7 @@ class Client extends Document {
       user: data.user,
       password: data.password
     });
+    this.axios = Axios.create(data.configuration || {});
   }
   /**
    * preDelete is a hook
@@ -251,6 +257,21 @@ class Client extends Document {
   }
 
   /**
+   * @method _authURL
+   * @memberof Client
+   * @private
+   * @description Generates a url for use when retrieving authentication tokens
+   * in exchange for Account credentials.
+   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
+   */
+  _authURL() {
+    let url = `${this.server}/fmi/data/v1/databases/${
+      this.application
+    }/sessions`;
+    return url;
+  }
+
+  /**
    * @method authenticate
    * @memberof Client
    * @private
@@ -268,7 +289,7 @@ class Client extends Document {
         resolve(this.connection.token);
       } else {
         this.connection
-          .generate()
+          .generate(this.axios.request, this._authURL())
           .then(body => this._saveState(body))
           .then(body => this.data.outgoing(body))
           .then(body => resolve(body.response.token))
@@ -303,11 +324,12 @@ class Client extends Document {
     return new Promise(
       (resolve, reject) =>
         this.connection.valid()
-          ? request({
-              url: this._logoutURL(this.connection.token),
-              method: 'delete',
-              data: {}
-            })
+          ? this.axios
+              .request({
+                url: this._logoutURL(this.connection.token),
+                method: 'delete',
+                data: {}
+              })
               .then(response => response.data)
               .then(body => this.data.outgoing(body))
               .then(body => this.connection.clear(body))
@@ -364,7 +386,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          this.axios.request({
             url: this._createURL(layout),
             method: 'post',
             headers: {
@@ -417,7 +439,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          this.axios.request({
             url: this._updateURL(layout, recordId),
             method: 'patch',
             headers: {
@@ -471,7 +493,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          this.axios.request({
             url: this._deleteURL(layout, recordId),
             method: 'delete',
             headers: {
@@ -512,7 +534,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          this.axios.request({
             url: this._getURL(layout, recordId),
             method: 'get',
             headers: {
@@ -558,7 +580,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          this.axios.request({
             url: this._listURL(layout),
             method: 'get',
             headers: {
@@ -609,7 +631,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          this.axios.request({
             url: this._findURL(layout),
             method: 'post',
             headers: {
@@ -666,7 +688,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          this.axios.request({
             url: this._globalsURL(),
             method: 'patch',
             headers: {
@@ -719,21 +741,20 @@ class Client extends Document {
         .then(resolvedId =>
           this.authenticate()
             .then(token =>
-              request.post(
-                this._uploadURL(
+              this.axios.request({
+                url: this._uploadURL(
                   layout,
                   resolvedId,
                   containerFieldName,
                   fieldRepetition
                 ),
-                form,
-                {
-                  headers: {
-                    ...form.getHeaders(),
-                    Authorization: `Bearer ${token}`
-                  }
+                method: 'post',
+                data: form,
+                headers: {
+                  ...form.getHeaders(),
+                  Authorization: `Bearer ${token}`
                 }
-              )
+              })
             )
             .then(response => response.data)
             .then(body => this.data.outgoing(body))
@@ -762,7 +783,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          request({
+          this.axios.request({
             url: this._listURL(layout),
             method: 'get',
             headers: {

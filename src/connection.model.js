@@ -3,7 +3,6 @@
 const moment = require('moment');
 const { EmbeddedDocument } = require('marpat');
 const { Credentials } = require('./credentials.model');
-const { request } = require('./request.service.js');
 /**
  * @class Connection
  * @classdesc The class used to connection with the FileMaker server Data API
@@ -81,20 +80,6 @@ class Connection extends EmbeddedDocument {
     });
   }
   /**
-   * @method _authURL
-   * @memberof Connection
-   * @private
-   * @description Generates a url for use when retrieving authentication tokens
-   * in exchange for Account credentials.
-   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
-   */
-  _authURL() {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/sessions`;
-    return url;
-  }
-  /**
    * @method _basicAuth
    * @private
    * @memberof Connection
@@ -152,10 +137,10 @@ class Connection extends EmbeddedDocument {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    * response.
    */
-  generate() {
+  generate(axios, url) {
     return new Promise((resolve, reject) =>
-      request({
-        url: this._authURL(),
+      axios({
+        url: url,
         method: 'post',
         headers: {
           'Content-Type': 'application/json',

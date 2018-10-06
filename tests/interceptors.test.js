@@ -52,7 +52,7 @@ describe('Request Interceptor Capabilities', () => {
   });
 
   it('should reject if the server errors', () => {
-    client.connection._authURL = () => 'https://httpstat.us/502';
+    client._authURL = () => 'https://httpstat.us/502';
     return expect(
       client
         .save()
@@ -64,7 +64,7 @@ describe('Request Interceptor Capabilities', () => {
   });
 
   it('should handle non JSON responses by rejecting with a json error', () => {
-    client.connection._authURL = () => 'https://httpstat.us/404';
+    client._authURL = () => 'https://httpstat.us/404';
     return expect(
       client
         .save()
@@ -76,7 +76,7 @@ describe('Request Interceptor Capabilities', () => {
   });
 
   it('should reject non http requests to the server with a json error', () => {
-    client.connection._authURL = () =>
+    client._authURL = () =>
       `${process.env.SERVER.replace('https://', '')}/fmi/data/v1/databases/${
         process.env.application
       }/sessions`;
@@ -91,10 +91,7 @@ describe('Request Interceptor Capabilities', () => {
   });
 
   it('should reject non https requests to the server with a json error', () => {
-    console.log(
-      ' * Notice * Data API response does not contain a code. Only a message'
-    );
-    client.connection._authURL = () =>
+    client._authURL = () =>
       `${process.env.SERVER.replace(
         'https://',
         'http://'

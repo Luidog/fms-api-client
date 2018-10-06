@@ -1,14 +1,10 @@
 'use strict';
 
-const axios = require('axios');
-const FormData = require('form-data');
-const { omit } = require('./utilities');
+const { omit } = require('./conversion.utilities');
 
 /**
  * @module request
  */
-
-const request = axios.create();
 
 /**
  * @method interceptRequest
@@ -58,8 +54,4 @@ const handleResponseError = error => {
   }
 };
 
-request.interceptors.request.use(interceptRequest);
-
-request.interceptors.response.use(response => response, handleResponseError);
-
-module.exports = { request, FormData };
+module.exports = { interceptRequest, handleResponseError };
