@@ -36,20 +36,19 @@ connect('nedb://memory')
     });
     //#
     //#client-save-example
-    return client
-      .save()
-      .then(client => authentication(client))
-      .then(client => creates(client))
-      .then(client => gets(client))
-      .then(client => lists(client))
-      .then(client => finds(client))
-      .then(client => edits(client))
-      .then(client => scripts(client))
-      .then(client => globals(client))
-      .then(client => deletes(client))
-      .then(client => uploads(client))
-      .then(client => utilities(client));
-    // #
+    return client.save();
   })
+  .then(client => authentication(client))
+  .then(client => creates(client))
+  .then(client => gets(client))
+  .then(client => lists(client))
+  .then(client => finds(client))
+  .then(client => edits(client))
+  .then(client => scripts(client))
+  .then(client => globals(client))
+  .then(client => deletes(client))
+  .then(client => uploads(client))
+  .then(client => utilities(client))
+  // #
   .then(client => datastore(client))
-  .catch(error => console.log(error));
+  .catch(error => console.log('error', error));

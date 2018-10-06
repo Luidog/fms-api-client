@@ -51,7 +51,7 @@ describe('Script Capabilities', () => {
 
   it('should allow you to trigger a script', () => {
     return expect(
-      client.script('FMS Triggered Script', process.env.LAYOUT, {
+      client.script(process.env.LAYOUT, 'FMS Triggered Script', {
         name: 'han',
         number: 102,
         object: { child: 'ben' },
@@ -125,7 +125,7 @@ describe('Script Capabilities', () => {
   });
 
   it('should not parse script results if the results are not json', () => {
-    return expect(client.script('Non JSON Script', process.env.LAYOUT))
+    return expect(client.script(process.env.LAYOUT,'Non JSON Script'))
       .to.eventually.be.a('object')
       .that.has.all.keys('result')
       .and.property('result')

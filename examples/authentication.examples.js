@@ -7,12 +7,12 @@ const logout = client =>
   client.logout().then(result => log('client-logout-example', result));
 //#
 
-//#client-authenticate-example
-const login = client => client.authenticate();
+//#client-login-example
+const login = client => client.login();
 //#
 
 const authentication = client =>
-  Promise.all([login(client), logout]).then(responses => {
+  Promise.all([login(client), logout(client)]).then(responses => {
     store(responses);
     return client;
   });

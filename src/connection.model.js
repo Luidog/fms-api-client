@@ -67,7 +67,13 @@ class Connection extends EmbeddedDocument {
       }
     });
   }
-
+  /**
+   * preInit is a hook
+   * @schema
+   * @description The connection preInit hook creates an embedded credentials document on create
+   * @param {Object} data The data used to create the client.
+   * @return {null} The preInit hook does not return anything.
+   */
   preInit(data) {
     this.credentials = Credentials.create({
       user: data.user,
