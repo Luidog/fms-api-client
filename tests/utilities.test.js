@@ -50,53 +50,6 @@ describe('Utility Capabilities', () => {
       });
   });
 
-  it('*Depricated* it should extract field while maintaining the array', () => {
-    return expect(
-      client
-        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
-        .then(response => client.get(process.env.LAYOUT, response.recordId))
-        .then(record => client.fieldData(record.data))
-    )
-      .to.eventually.be.a('array')
-      .and.property('0')
-      .to.be.a('object')
-      .and.to.all.include.keys('modId', 'recordId')
-      .and.to.not.include.keys('fieldData');
-  });
-
-  it('*Depricated* it should extract field data while maintaining the object', () => {
-    return expect(
-      client
-        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
-        .then(response => client.get(process.env.LAYOUT, response.recordId))
-        .then(record => client.fieldData(record.data[0]))
-    )
-      .to.eventually.be.a('object')
-      .and.to.all.include.keys('modId', 'recordId')
-      .and.to.not.include.keys('fieldData');
-  });
-
-  it('*Depricated* it should extract the recordId while maintaining the array', () => {
-    return expect(
-      client
-        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
-        .then(response => client.get(process.env.LAYOUT, response.recordId))
-        .then(record => client.recordId(record.data))
-    )
-      .to.eventually.be.a('array')
-      .and.property('0')
-      .to.be.a('string');
-  });
-
-  it('*Depricated* it should extract field data while maintaining the object', () => {
-    return expect(
-      client
-        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
-        .then(response => client.get(process.env.LAYOUT, response.recordId))
-        .then(record => client.recordId(record.data[0]))
-    ).to.eventually.be.a('string');
-  });
-
   it('it should extract field while maintaining the array', () => {
     return expect(
       client
@@ -143,32 +96,30 @@ describe('Utility Capabilities', () => {
         .then(record => recordId(record.data[0]))
     ).to.eventually.be.a('string');
   });
-
-  it('it should remove properties while maintaing the array', () => {
-    return expect(
-      omit(
-        [
-          { name: 'Luke Skywalker', planet: 'tatooine' },
-          { name: 'Luke Skywalker', planet: 'tatooine' }
-        ],
-        ['planet']
-      )
-    )
-      .to.be.a('array')
-      .and.property('0')
-      .to.be.a('object')
-      .and.to.not.include.keys('planet');
-  });
-
-  it('it should remove properties while maintaing the object', () => {
-    return expect(
-      omit({ name: 'Luke Skywalker', planet: 'tatooine' }, ['planet'])
-    )
-      .to.be.a('object')
-      .and.to.not.include.keys('planet');
-  });
-
   describe('JSON Parsing Capabilities', () => {
+    it('it should remove properties while maintaing the array', () => {
+      return expect(
+        omit(
+          [
+            { name: 'Luke Skywalker', planet: 'tatooine' },
+            { name: 'Luke Skywalker', planet: 'tatooine' }
+          ],
+          ['planet']
+        )
+      )
+        .to.be.a('array')
+        .and.property('0')
+        .to.be.a('object')
+        .and.to.not.include.keys('planet');
+    });
+
+    it('it should remove properties while maintaing the object', () => {
+      return expect(
+        omit({ name: 'Luke Skywalker', planet: 'tatooine' }, ['planet'])
+      )
+        .to.be.a('object')
+        .and.to.not.include.keys('planet');
+    });
     it('it should return a string when given a string', () => {
       return expect(parse('A String')).to.be.a('string');
     });

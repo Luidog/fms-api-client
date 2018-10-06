@@ -11,9 +11,7 @@ const {
   isJson,
   stringify,
   sanitizeParameters,
-  parseScriptResult,
-  fieldData,
-  recordId
+  parseScriptResult
 } = require('./utilities');
 
 /**
@@ -99,6 +97,24 @@ class Client extends Document {
       user: data.user,
       password: data.password
     });
+  }
+  /**
+   * preDelete is a hook
+   * @schema
+   * @description The client delete hook ensures a client attempts to log out before it is destroyed.
+   * @param {Object} data The data used to create the client.
+   * @return {null} The delete hook does not return anything.
+   */
+  preDelete() {
+    return new Promise((resolve, reject) =>
+      this.logout()
+        .then(response => resolve(response))
+        .catch(error => resolve(error))
+    );
+  }
+
+  destroy() {
+    return super.delete();
   }
   /**
    * @method _createURL
@@ -237,7 +253,7 @@ class Client extends Document {
   /**
    * @method authenticate
    * @memberof Client
-   * @public
+   * @private
    * @description Checks the private connection schema for a token and if the current time is between when that token was
    * issued and when it will expire. If the connection token is not a string (its empty) or the current time is
    * not between when the token is issued and the time it will expire this method calls the private
@@ -723,12 +739,12 @@ class Client extends Document {
    * @description A public method to make triggering a script easier. This method uses the list method with
    * a limit of 1. This is the lightest weight query possible while still allowing for a script to be triggered.
    * For a more robust query with scripts use the find method.
-   * @param  {String} name       The name of the script
    * @param  {String} layout     The layout to use for the list request
+   * @param  {String} name       The name of the script
    * @param  {Object} parameters Parameters to pass to the script
    * @return {Promise}           returns a promise that will either resolve or reject based on the Data API.
    */
-  script(name, layout, parameters = {}) {
+  script(layout, name, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
@@ -760,32 +776,6 @@ class Client extends Document {
         )
         .catch(error => reject(this._checkToken(error)))
     );
-  }
-  /**
-   * @method fieldData
-   * @public
-   * @memberof Client
-   * @description fieldData is a helper method that strips the filemaker structural layout and portal information
-   * from a record. It returns only the data contained in the fieldData key and the recordId.
-   * @deprecated since version 1.5.0. Use the exported module instead.
-   * @param  {Object|Array} data The raw data returned from a filemaker. This can be an array or an object.
-   * @return {Object|Array} A json object containing fieldData from the record.
-   */
-  fieldData(data) {
-    return fieldData(data);
-  }
-  /**
-   * @method recordId
-   * @public
-   * @memberof Client
-   * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
-   * from a record. It returns only the data contained in the fieldData key adn the recordId.
-   * @deprecated since version 1.5.0. Use the exported module instead.
-   * @param  {Object|Array} data The raw data returned from a filemaker. This can be an array or an object.
-   * @return {Object|Array} A json object containing fieldData from the record.
-   */
-  recordId(data) {
-    return recordId(data);
   }
 }
 
