@@ -45,7 +45,9 @@ describe('Authentication Capabilities', () => {
   });
 
   it('should authenticate into FileMaker.', () => {
-    return expect(client.authenticate()).to.eventually.be.a('string');
+    return expect(client.login())
+      .to.eventually.be.a('object')
+      .that.has.all.keys('token');
   });
 
   it('should automatically request an authentication token', () => {
@@ -106,10 +108,38 @@ describe('Authentication Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => client.authenticate())
+        .then(client => client.login())
         .catch(error => error)
     )
       .to.eventually.be.an('object')
       .that.has.all.keys('code', 'message');
+  });
+
+  it('should attempt to log out before being removed', () => {
+    client = Filemaker.create({
+      application: process.env.APPLICATION,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+    return expect(
+      client
+        .save()
+        .then(client => client.login().then(response => client.destroy()))
+    )
+      .to.eventually.be.an('number')
+      .and.equal(1);
+  });
+
+  it('should catch the log out error before being removed if the login is not valid', () => {
+    client = Filemaker.create({
+      application: process.env.APPLICATION,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: 'wrong-password'
+    });
+    return expect(client.save().then(client => client.destroy()))
+      .to.eventually.be.an('number')
+      .and.equal(1);
   });
 });

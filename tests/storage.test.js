@@ -108,27 +108,4 @@ describe('Storage', () => {
       .to.eventually.be.an('number')
       .and.equal(1);
   });
-
-  it('should attempt to log out before being removed', () => {
-    client = Filemaker.create({
-      application: process.env.APPLICATION,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: process.env.PASSWORD
-    });
-    return expect(client.save().then(client => client.destroy()))
-      .to.eventually.be.an('number')
-      .and.equal(1);
-  });
-  it('should catch the log out error before being removed if the login is not valid', () => {
-    client = Filemaker.create({
-      application: process.env.APPLICATION,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: 'wrong-password'
-    });
-    return expect(client.save().then(client => client.destroy()))
-      .to.eventually.be.an('number')
-      .and.equal(1);
-  });
 });
