@@ -289,7 +289,7 @@ class Client extends Document {
         resolve(this.connection.token);
       } else {
         this.connection
-          .generate(this.axios.request, this._authURL())
+          .generate(this.axios, this._authURL())
           .then(body => this._saveState(body))
           .then(body => this.data.outgoing(body))
           .then(body => resolve(body.response.token))

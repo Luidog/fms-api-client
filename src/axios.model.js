@@ -1,6 +1,8 @@
 'use strict';
 
 const axios = require('axios');
+const https = require('https');
+const http = require('http');
 const { EmbeddedDocument } = require('marpat');
 const { interceptRequest, handleResponseError } = require('./utilities');
 
@@ -25,16 +27,26 @@ class Axios extends EmbeddedDocument {
     });
   }
 
-  preInit(data) {}
-
-  request(data) {
-    const instance = axios.create();
+  preInit(data) {
+    let configuration = {};
+    if (data.httpsAgent) {
+      configuration.httpsAgent = new https.Agent(data.httpsAgent);
+    } else if (data.httpAgent) {
+      configuration.httpAgent = new http.Agent(data.httpAgent);
+    }
+    const instance = axios.create(Object.assign(data, configuration));
     instance.interceptors.request.use(interceptRequest);
     instance.interceptors.response.use(
       response => response,
       handleResponseError
     );
-    return instance(data);
+    this.instance = instance;
+  }
+
+  instance() {}
+
+  request(data) {
+    return this.instance(data);
   }
 }
 

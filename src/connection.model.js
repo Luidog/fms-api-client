@@ -139,15 +139,16 @@ class Connection extends EmbeddedDocument {
    */
   generate(axios, url) {
     return new Promise((resolve, reject) =>
-      axios({
-        url: url,
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: this._basicAuth()
-        },
-        data: {}
-      })
+      axios
+        .request({
+          url: url,
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: this._basicAuth()
+          },
+          data: {}
+        })
         .then(response => response.data)
         .then(body => this._saveToken(body))
         .then(body => resolve(body))
