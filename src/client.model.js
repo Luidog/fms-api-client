@@ -5,7 +5,7 @@ const { Document } = require('marpat');
 const FormData = require('form-data');
 const { Connection } = require('./connection.model');
 const { Data } = require('./data.model');
-const { Axios } = require('./axios.model.js');
+const { Agent } = require('./agent.model.js');
 const {
   toArray,
   namespace,
@@ -80,8 +80,8 @@ class Client extends Document {
         type: Connection,
         required: true
       },
-      axios: {
-        type: Axios,
+      agent: {
+        type: Agent,
         required: true
       }
     });
@@ -102,7 +102,7 @@ class Client extends Document {
       user: data.user,
       password: data.password
     });
-    this.axios = Axios.create(data.configuration || {});
+    this.agent = Agent.create(data.agent);
   }
   /**
    * preDelete is a hook
@@ -289,7 +289,7 @@ class Client extends Document {
         resolve(this.connection.token);
       } else {
         this.connection
-          .generate(this.axios, this._authURL())
+          .generate(this.agent, this._authURL())
           .then(body => this._saveState(body))
           .then(body => this.data.outgoing(body))
           .then(body => resolve(body.response.token))
@@ -324,7 +324,7 @@ class Client extends Document {
     return new Promise(
       (resolve, reject) =>
         this.connection.valid()
-          ? this.axios
+          ? this.agent
               .request({
                 url: this._logoutURL(this.connection.token),
                 method: 'delete',
@@ -386,7 +386,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.axios.request({
+          this.agent.request({
             url: this._createURL(layout),
             method: 'post',
             headers: {
@@ -439,7 +439,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.axios.request({
+          this.agent.request({
             url: this._updateURL(layout, recordId),
             method: 'patch',
             headers: {
@@ -493,7 +493,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.axios.request({
+          this.agent.request({
             url: this._deleteURL(layout, recordId),
             method: 'delete',
             headers: {
@@ -534,7 +534,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.axios.request({
+          this.agent.request({
             url: this._getURL(layout, recordId),
             method: 'get',
             headers: {
@@ -580,7 +580,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.axios.request({
+          this.agent.request({
             url: this._listURL(layout),
             method: 'get',
             headers: {
@@ -631,7 +631,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.axios.request({
+          this.agent.request({
             url: this._findURL(layout),
             method: 'post',
             headers: {
@@ -688,7 +688,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.axios.request({
+          this.agent.request({
             url: this._globalsURL(),
             method: 'patch',
             headers: {
@@ -741,7 +741,7 @@ class Client extends Document {
         .then(resolvedId =>
           this.authenticate()
             .then(token =>
-              this.axios.request({
+              this.agent.request({
                 url: this._uploadURL(
                   layout,
                   resolvedId,
@@ -783,7 +783,7 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.axios.request({
+          this.agent.request({
             url: this._listURL(layout),
             method: 'get',
             headers: {
