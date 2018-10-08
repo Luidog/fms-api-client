@@ -70,7 +70,9 @@ class Agent extends EmbeddedDocument {
   }
 
   preSave() {
-    this.agent ? this.globalize(this.protocol, this.agent) : null;
+    this.agent && !this.global
+      ? this.globalize(this.protocol, this.agent)
+      : null;
   }
 
   preDelete() {

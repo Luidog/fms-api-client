@@ -241,7 +241,7 @@ describe('Agent Configuration Capabilities', () => {
       )
       .and.property('agent')
       .to.be.a('object')
-      .to.have.any.keys('rejectUnauthorized');
+      .to.have.any.keys('rejectUnauthorized ');
   });
 
   it('should accept a timeout property', () => {
