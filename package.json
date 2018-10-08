@@ -1,12 +1,12 @@
 {
   "name": "fms-api-client",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.",
   "main": "index.js",
   "scripts": {
     "test": "nyc _mocha --recursive  ./tests --timeout=30000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "generate-docs": "node examples/index.js RESULTS=true && mos && node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
+    "generate-docs": "RESULTS=true node examples/index.js  && mos && node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
     "examples": "node examples/index.js"
   },
   "repository": {
