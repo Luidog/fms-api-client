@@ -12,7 +12,7 @@ const login = client => client.login();
 //#
 
 const authentication = client =>
-  Promise.all([login(client), logout(client)]).then(responses => {
+  Promise.all([login(client)]).then(responses => {
     store(responses);
     return client;
   });
