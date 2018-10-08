@@ -102,7 +102,7 @@ describe('Storage', () => {
       );
   });
 
-  it('should allow insances to be listed', () => {
+  it('should allow instances to be listed', () => {
     return expect(Filemaker.find({})).to.eventually.be.an('array');
   });
 

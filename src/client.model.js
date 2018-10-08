@@ -95,14 +95,11 @@ class Client extends Document {
    * @return {null} The preInit hook does not return anything.
    */
   preInit(data) {
-    this.data = Data.create({ track: data.usage === undefined });
-    this.connection = Connection.create({
-      server: data.server,
-      application: data.application,
-      user: data.user,
-      password: data.password
-    });
-    this.agent = Agent.create(data.agent);
+    let { agent, timeout, usage, proxy, ...connection } = data;
+    let protocol = data.server.startsWith('https') ? 'https' : 'http';
+    this.data = Data.create({ track: usage === undefined });
+    this.connection = Connection.create(connection);
+    this.agent = Agent.create({ agent, proxy, timeout, protocol });
   }
   /**
    * preDelete is a hook

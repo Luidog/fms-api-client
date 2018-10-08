@@ -3,6 +3,7 @@
 const axios = require('axios');
 const https = require('https');
 const http = require('http');
+const uuidv4 = require('uuid/v4');
 const { EmbeddedDocument } = require('marpat');
 const { interceptRequest, handleResponseError } = require('./utilities');
 
@@ -24,25 +25,71 @@ class Agent extends EmbeddedDocument {
        * @member Client#version
        * @type String
        */
-      configuration: {
-        type: Object,
-        required: false,
-        default: {}
+      global: {
+        type: String
+      },
+      protocol: {
+        type: String,
+        required: true,
+        choices: ['http', 'https']
+      },
+      agent: {
+        type: Object
+      },
+      timeout: {
+        type: Number
+      },
+      proxy: {
+        type: Object
       }
     });
   }
 
   preInit(data) {
-    let { http, https, ...configuration } = data;
-    this.configuration = Object.assign(
-      configuration,
-      http ? new http.Agent(data.http) : {},
-      https ? new https.Agent(data.https) : {}
-    );
+    let { agent, protocol } = data;
+    agent ? this.globalize(protocol, agent) : null;
+  }
+
+  globalize(protocol, agent) {
+    !global.AGENTS ? (global.AGENTS = {}) : null;
+    !this.global ? (this.global = uuidv4()) : null;
+    this.agent && !global.AGENTS[this.global]
+      ? (global.AGENTS[this.global] =
+          protocol === 'https'
+            ? {
+                httpsAgent: new https.Agent(Agent)
+              }
+            : {
+                httpAgent: new http.Agent(Agent)
+              })
+      : null;
+  }
+
+  localize() {
+    return global.AGENTS[this.global];
+  }
+
+  preSave() {
+    this.agent ? this.globalize(this.protocol, this.agent) : null;
+  }
+
+  preDelete() {
+    global.AGENTS[this.global] ? this.localize().destroy() : null;
+  }
+
+  destroy() {
+    return super.delete();
   }
 
   request(data, configuration = {}) {
-    return instance(Object.assign(data, this.configuration, configuration));
+    return instance(
+      Object.assign(
+        data,
+        { proxy: this.proxy, timeout: this.timeout },
+        this.agent ? this.localize() : {},
+        configuration
+      )
+    );
   }
 }
 

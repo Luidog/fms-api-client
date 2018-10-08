@@ -33,10 +33,7 @@ connect('nedb://memory')
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
       usage: process.env.CLIENT_USAGE_TRACKING,
-      requests: {
-        timeout: 2500,
-        agent: {}
-      }
+      agent: { rejectUnauthorized: false }
     });
     //#
     //#client-save-example
