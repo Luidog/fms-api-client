@@ -70,6 +70,12 @@ describe('Script Capabilities', () => {
       .that.has.all.keys('result');
   });
 
+  it('should allow you to trigger a script specifying a number as a parameter', () => {
+    return expect(client.script(process.env.LAYOUT, 'FMS Triggered Script', 1))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('result');
+  });
+
   it('should allow you to trigger a script specifying an object as a parameter', () => {
     return expect(
       client.script(process.env.LAYOUT, 'FMS Triggered Script', {
