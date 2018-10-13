@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
-const { stringify, isJson, parse } = require('./conversion.utilities');
+const { stringify, parse } = require('./conversion.utilities');
 
 /**
  * @module Filemaker Utilities

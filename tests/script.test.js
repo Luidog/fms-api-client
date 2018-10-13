@@ -1,4 +1,4 @@
-/* global describe before beforeEach it */
+/* global describe before after it */
 
 /* eslint-disable */
 
@@ -62,6 +62,24 @@ describe('Script Capabilities', () => {
       .that.has.all.keys('result');
   });
 
+  it('should allow you to trigger a script specifying a string as a parameter', () => {
+    return expect(
+      client.script(process.env.LAYOUT, 'FMS Triggered Script', 'string-here')
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('result');
+  });
+
+  it('should allow you to trigger a script specifying an object as a parameter', () => {
+    return expect(
+      client.script(process.env.LAYOUT, 'FMS Triggered Script', {
+        object: true
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('result');
+  });
+
   it('should allow you to trigger a script in a find', () => {
     return expect(
       client.find(
@@ -85,7 +103,7 @@ describe('Script Capabilities', () => {
       .that.has.all.keys('scriptResult', 'scriptError', 'data');
   });
 
-  it('should allow reject a script that does not exist', () => {
+  it('should reject a script that does not exist', () => {
     return expect(
       client
         .script(process.env.LAYOUT, {
@@ -125,7 +143,7 @@ describe('Script Capabilities', () => {
   });
 
   it('should not parse script results if the results are not json', () => {
-    return expect(client.script(process.env.LAYOUT,'Non JSON Script'))
+    return expect(client.script(process.env.LAYOUT, 'Non JSON Script'))
       .to.eventually.be.a('object')
       .that.has.all.keys('result')
       .and.property('result')
