@@ -47,12 +47,19 @@ const toArray = data => (Array.isArray(data) ? data : [data]);
  */
 
 const isJson = data => {
+  data = typeof data !== 'string' ? JSON.stringify(data) : data;
+
   try {
-    JSON.parse(data);
+    data = JSON.parse(data);
   } catch (e) {
     return false;
   }
-  return true;
+
+  if (typeof data === 'object' && data !== null) {
+    return true;
+  }
+
+  return false;
 };
 
 /**

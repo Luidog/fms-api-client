@@ -771,7 +771,12 @@ class Client extends Document {
             },
             params: sanitizeParameters(
               Object.assign(
-                { script: name, 'script.param': stringify(parameters) },
+                {
+                  script: name,
+                  'script.param': isJson(parameters)
+                    ? stringify(parameters)
+                    : parameters.toString()
+                },
                 namespace({ limit: 1 })
               )
             )
