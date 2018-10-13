@@ -2,18 +2,20 @@
   "data": [
     {
       "fieldData": {
-        "name": "yoda",
-        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/98C6029AFE031625FD7B96A36AB3A5A690E8A2F7E09AB68E45366C25F33BA5EC?RCType=EmbeddedRCFileProcessor",
+        "name": "Yoda",
+        "image(1)": "",
         "object": "",
         "array": "",
         "height": "",
-        "id": "EED86CE1-41D1-D847-AA9B-62B91E69D7D2"
+        "id": "78786E05-C0E8-1C43-9E19-1FA66B250257",
+        "imageName": "",
+        "faceDescriptor": ""
       },
       "portalData": {
         "Planets": [],
         "Vehicles": []
       },
-      "recordId": "733077",
+      "recordId": "733105",
       "modId": "1"
     }
   ]

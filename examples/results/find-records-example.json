@@ -7,14 +7,16 @@
         "object": "",
         "array": "",
         "height": "",
-        "id": "9BBDF8D1-420A-9040-945B-90D5360DFDBF"
+        "id": "8C970740-5DE9-4E40-8B7F-165E4253DD74",
+        "imageName": "",
+        "faceDescriptor": ""
       },
       "portalData": {
         "Planets": [],
         "Vehicles": []
       },
-      "recordId": "736951",
-      "modId": "0"
+      "recordId": "736975",
+      "modId": "1"
     }
   ]
 }
