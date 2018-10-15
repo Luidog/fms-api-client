@@ -48,11 +48,54 @@ describe('Edit Capabilities', () => {
       .catch(error => done());
   });
 
-  it('should edit FileMaker records.', () => {
+  it('should edit FileMaker records without fieldData', () => {
     client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
       expect(
         client.edit(process.env.LAYOUT, response.recordId, {
           name: 'Luke Skywalker'
+        })
+      )
+        .to.eventually.be.a('object')
+        .that.has.all.keys('modId')
+    );
+  });
+
+  it('should edit FileMaker records using fieldData', () => {
+    client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
+      expect(
+        client.edit(process.env.LAYOUT, response.recordId, {
+          fieldData: { name: 'Luke Skywalker' }
+        })
+      )
+        .to.eventually.be.a('object')
+        .that.has.all.keys('modId')
+    );
+  });
+
+  it('should edit FileMaker records with portalData', () => {
+    client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
+      expect(
+        client.edit(process.env.LAYOUT, response.recordId, {
+          fieldData: { name: 'Han Solo' },
+          portalData: { Vehicles: [{ 'Vehicles::name': 'Millenium Falcon' }] }
+        })
+      )
+        .to.eventually.be.a('object')
+        .that.has.all.keys('modId')
+    );
+  });
+
+  it('should edit FileMaker records with portalData and allow portalData to be an array.', () => {
+    client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
+      expect(
+        client.edit(process.env.LAYOUT, response.recordId, {
+          fieldData: { name: 'Han Solo' },
+          portalData: {
+            Vehicles: [
+              { 'Vehicles::name': { name: 'Millenium Falcon -test' } },
+              { 'Vehicles::name': 5 }
+            ]
+          }
         })
       )
         .to.eventually.be.a('object')
