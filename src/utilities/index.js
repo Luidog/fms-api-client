@@ -5,7 +5,8 @@ const {
   recordId,
   namespace,
   parseScriptResult,
-  sanitizeParameters
+  sanitizeParameters,
+  setData
 } = require('./filemaker.utilities');
 
 const { omit, stringify, toArray, isJson } = require('./conversion.utilities');
@@ -22,6 +23,7 @@ module.exports = {
   omit,
   recordId,
   stringify,
+  setData,
   toArray,
   isJson,
   namespace,

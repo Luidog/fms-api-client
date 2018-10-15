@@ -3,18 +3,27 @@
     {
       "fieldData": {
         "name": "George Lucas",
-        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/164DAF9AA28E4308B1EF6EC6236C0175B5E585C4A9F03D12465AE3AC616E7A0A?RCType=EmbeddedRCFileProcessor",
+        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/DB5E99F42B607870E97F1400F017B2D89A2C7E0E01C7C05974390A6571DAD3DD?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
-        "id": "0E6DF26C-761E-7947-9A3C-C312C285EE55"
+        "id": "0E6DF26C-761E-7947-9A3C-C312C285EE55",
+        "imageName": "placeholder.md",
+        "faceDescriptor": ""
       },
       "portalData": {
         "Planets": [],
-        "Vehicles": []
+        "Vehicles": [
+          {
+            "recordId": "3",
+            "Vehicles::name": "test",
+            "Vehicles::type": "",
+            "modId": "0"
+          }
+        ]
       },
       "recordId": "732765",
-      "modId": "6"
+      "modId": "7"
     },
     {
       "fieldData": {
@@ -23,14 +32,16 @@
         "object": "",
         "array": "",
         "height": "",
-        "id": "0F628510-432C-0E47-8D03-BA90AAF2EA17"
+        "id": "0F628510-432C-0E47-8D03-BA90AAF2EA17",
+        "imageName": "",
+        "faceDescriptor": ""
       },
       "portalData": {
         "Planets": [],
         "Vehicles": []
       },
       "recordId": "732766",
-      "modId": "0"
+      "modId": "1"
     }
   ]
 }

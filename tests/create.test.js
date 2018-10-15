@@ -50,8 +50,43 @@ describe('Create Capabilities', () => {
       .catch(error => done());
   });
 
-  it('should create FileMaker records.', () => {
+  it('should create FileMaker records without fieldData', () => {
     return expect(client.create(process.env.LAYOUT, { name: 'Han Solo' }))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('recordId', 'modId');
+  });
+
+  it('should create FileMaker records using fieldData', () => {
+    return expect(
+      client.create(process.env.LAYOUT, { fieldData: { name: 'Han Solo' } })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('recordId', 'modId');
+  });
+
+  it('should create FileMaker records with portalData', () => {
+    return expect(
+      client.create(process.env.LAYOUT, {
+        fieldData: { name: 'Han Solo' },
+        portalData: { Vehicles: [{ 'Vehicles::name': 'Millenium Falcon' }] }
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('recordId', 'modId');
+  });
+
+  it('should allow portalData to be an object or number', () => {
+    return expect(
+      client.create(process.env.LAYOUT, {
+        fieldData: { name: 'Han Solo' },
+        portalData: {
+          Vehicles: [
+            { 'Vehicles::name': { name: 'Millenium Falcon -test' } },
+            { 'Vehicles::name': 5 }
+          ]
+        }
+      })
+    )
       .to.eventually.be.a('object')
       .that.has.all.keys('recordId', 'modId');
   });

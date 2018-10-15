@@ -12,7 +12,8 @@ const {
   isJson,
   stringify,
   sanitizeParameters,
-  parseScriptResult
+  parseScriptResult,
+  setData
 } = require('./utilities');
 
 /**
@@ -401,9 +402,7 @@ class Client extends Document {
                 'script.presort.param',
                 'request'
               ]),
-              {
-                fieldData: this.data.incoming(stringify(data))
-              }
+              this.data.incoming(setData(data))
             )
           })
         )
@@ -455,9 +454,7 @@ class Client extends Document {
                 'script.presort.param',
                 'request'
               ]),
-              {
-                fieldData: this.data.incoming(stringify(data))
-              }
+              this.data.incoming(setData(data))
             )
           })
         )
@@ -789,7 +786,12 @@ class Client extends Document {
             },
             params: sanitizeParameters(
               Object.assign(
-                { script: name, 'script.param': stringify(parameters) },
+                {
+                  script: name,
+                  'script.param': isJson(parameters)
+                    ? stringify(parameters)
+                    : parameters.toString()
+                },
                 namespace({ limit: 1 })
               )
             )
