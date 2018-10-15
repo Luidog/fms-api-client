@@ -198,7 +198,7 @@ const namespace = data =>
  * @return {Object}      A modified object containing with the fieldData property
  */
 
-const setFieldData = data =>
+const setData = data =>
   Object.assign(
     {},
     {
