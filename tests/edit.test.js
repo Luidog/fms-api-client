@@ -92,7 +92,7 @@ describe('Edit Capabilities', () => {
           fieldData: { name: 'Han Solo' },
           portalData: {
             Vehicles: [
-              { 'Vehicles::name': { name: 'Millenium Falcon -test' } },
+              { 'Vehicles::name': { name: 'Millenium Falcon' } },
               { 'Vehicles::name': 5 }
             ]
           }

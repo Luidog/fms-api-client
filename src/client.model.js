@@ -12,7 +12,7 @@ const {
   stringify,
   sanitizeParameters,
   parseScriptResult,
-  setFieldData
+  setData
 } = require('./utilities');
 
 /**
@@ -383,7 +383,7 @@ class Client extends Document {
                 'script.presort.param',
                 'request'
               ]),
-              this.data.incoming(setFieldData(data))
+              this.data.incoming(setData(data))
             )
           })
         )
@@ -435,7 +435,7 @@ class Client extends Document {
                 'script.presort.param',
                 'request'
               ]),
-              this.data.incoming(setFieldData(data))
+              this.data.incoming(setData(data))
             )
           })
         )

@@ -189,9 +189,9 @@ const namespace = data =>
   );
 
 /**
- * @method setFieldData
+ * @method setData
  * @public
- * @description The setFieldData method checks the incoming data for a fieldData property.
+ * @description The setData method checks the incoming data for a fieldData property.
  * the fieldData property is not found it will create the property and add all properties
  * except portalData to the fieldData property.
  * @param  {Object} data An object to use when creating or editing records.
@@ -208,8 +208,8 @@ const setFieldData = data =>
     },
     _.has(data, 'portalData')
       ? {
-          portalData: _.mapValues(data.portalData, datum =>
-            _.map(datum, object => stringify(object))
+          portalData: _.mapValues(data.portalData, data =>
+            _.map(data, object => stringify(object))
           )
         }
       : {}
@@ -221,5 +221,5 @@ module.exports = {
   namespace,
   parseScriptResult,
   sanitizeParameters,
-  setFieldData
+  setData
 };
