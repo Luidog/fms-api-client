@@ -3,7 +3,7 @@
     {
       "fieldData": {
         "name": "George Lucas",
-        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/1218E61A34D3E75485AB20BE46B7ACF27D668994AA08EC2D9A0B4B0CD9E67F11?RCType=EmbeddedRCFileProcessor",
+        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/DB5E99F42B607870E97F1400F017B2D89A2C7E0E01C7C05974390A6571DAD3DD?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -13,7 +13,14 @@
       },
       "portalData": {
         "Planets": [],
-        "Vehicles": []
+        "Vehicles": [
+          {
+            "recordId": "3",
+            "Vehicles::name": "test",
+            "Vehicles::type": "",
+            "modId": "0"
+          }
+        ]
       },
       "recordId": "732765",
       "modId": "7"

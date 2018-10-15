@@ -191,11 +191,12 @@ const namespace = data =>
 /**
  * @method setData
  * @public
- * @description The setData method checks the incoming data for a fieldData property.
+ * @description The setData method checks the incoming data for a fieldData property. If
  * the fieldData property is not found it will create the property and add all properties
- * except portalData to the fieldData property.
+ * except portalData to this new property. It will also stringify any numbers or objects
+ * in portalData's properties.
  * @param  {Object} data An object to use when creating or editing records.
- * @return {Object}      A modified object containing with the fieldData property
+ * @return {Object}      A modified object containing a fieldData property.
  */
 
 const setData = data =>
