@@ -188,10 +188,38 @@ const namespace = data =>
       _.includes(['limit', 'offset', 'sort'], key) ? `_${key}` : key
   );
 
+/**
+ * @method setData
+ * @public
+ * @description The setData method checks the incoming data for a fieldData property.
+ * the fieldData property is not found it will create the property and add all properties
+ * except portalData to the fieldData property.
+ * @param  {Object} data An object to use when creating or editing records.
+ * @return {Object}      A modified object containing with the fieldData property
+ */
+
+const setData = data =>
+  Object.assign(
+    {},
+    {
+      fieldData: !_.has(data, 'fieldData')
+        ? stringify(_.omit(data, 'portalData'))
+        : stringify(data.fieldData)
+    },
+    _.has(data, 'portalData')
+      ? {
+          portalData: _.mapValues(data.portalData, data =>
+            _.map(data, object => stringify(object))
+          )
+        }
+      : {}
+  );
+
 module.exports = {
   fieldData,
   recordId,
   namespace,
   parseScriptResult,
-  sanitizeParameters
+  sanitizeParameters,
+  setData
 };

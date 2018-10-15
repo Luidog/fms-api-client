@@ -41,7 +41,7 @@ const toArray = data => (Array.isArray(data) ? data : [data]);
  * @method isJson
  * @public
  * @description The isJson method uses the a try / catch to parse incoming data safely as json.
- * This method will return tru if it is able to cast the incoming data as json.
+ * This method will return true if it is able to cast the incoming data as json.
  * @param  {Any} data The data to be evaluated as json.
  * @return {Boolean}      A boolean result depending on if the data passed to it is valid JSON
  */
