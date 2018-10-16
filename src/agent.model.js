@@ -8,7 +8,7 @@ const { EmbeddedDocument } = require('marpat');
 const { interceptRequest, handleResponseError } = require('./utilities');
 
 /**
- * @class Request
+ * @class Agent
  * @classdesc The class used to integrate with the FileMaker server Data API
  */
 
@@ -54,34 +54,32 @@ class Agent extends EmbeddedDocument {
   globalize(protocol, agent) {
     !global.AGENTS ? (global.AGENTS = {}) : null;
     !this.global ? (this.global = uuidv4()) : null;
-    this.agent && !global.AGENTS[this.global]
-      ? (global.AGENTS[this.global] =
-          protocol === 'https'
-            ? {
-                httpsAgent: new https.Agent(Agent)
-              }
-            : {
-                httpAgent: new http.Agent(Agent)
-              })
-      : null;
+    if (this.agent && !global.AGENTS[this.global]) {
+      global.AGENTS[this.global] =
+        protocol === 'https'
+          ? {
+              httpsAgent: new https.Agent(this.agent)
+            }
+          : {
+              httpAgent: new http.Agent(this.Agent)
+            };
+      return global.AGENTS[this.global];
+    } 
   }
 
   localize() {
-    return global.AGENTS[this.global];
-  }
-
-  preSave() {
-    this.agent && !this.global
-      ? this.globalize(this.protocol, this.agent)
-      : null;
+    if (global.AGENTS[this.global]) {
+      return global.AGENTS[this.global];
+    } else {
+      return this.globalize(this.protocol, this.agent);
+    }
   }
 
   preDelete() {
-    global.AGENTS[this.global] ? this.localize().destroy() : null;
-  }
-
-  destroy() {
-    return super.delete();
+    if (global.AGENTS[this.global]) {
+      this.localize()[`${this.protocol}Agent`].destroy();
+      delete global.AGENTS[this.global];
+    }
   }
 
   request(data, configuration = {}) {

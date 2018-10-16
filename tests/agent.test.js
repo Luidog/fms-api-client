@@ -14,6 +14,19 @@ const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
+const http = require('http');
+const httpProxy = require('http-proxy');
+
+const proxy = httpProxy.createProxyServer();
+
+http
+  .createServer(function(req, res) {
+    proxy.web(req, res, {
+      target: process.env.SERVER
+    });
+  })
+  .listen(9000);
+
 const { Filemaker } = require('../index.js');
 
 chai.use(chaiAsPromised);
@@ -28,9 +41,7 @@ describe('Agent Configuration Capabilities', () => {
         database = db;
         return database.dropDatabase();
       })
-      .then(() => {
-        return done();
-      });
+      .then(() => done());
   });
 
   before(done => {
@@ -208,6 +219,39 @@ describe('Agent Configuration Capabilities', () => {
       .to.be.a('array');
   });
 
+  it('should use a created request agent', () => {
+    let client = Filemaker.create({
+      application: process.env.APPLICATION,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      agent: { rejectUnauthorized: true }
+    });
+    return expect(
+      client.save().then(client => global.AGENTS[client.agent.global])
+    ).to.eventually.be.an('object');
+  });
+
+  it('should destory the agent when the client is deleted', () => {
+    let globalId = '';
+    let client = Filemaker.create({
+      application: process.env.APPLICATION,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      agent: { rejectUnauthorized: true }
+    });
+    return expect(
+      client
+        .save()
+        .then(client => {
+          globalId = client.agent.global;
+          return client.destroy();
+        })
+        .then(() => global.AGENTS[globalId])
+    ).to.eventually.be.undefined;
+  });
+
   it('should create a http agent', () => {
     let client = Filemaker.create({
       application: process.env.APPLICATION,
@@ -251,11 +295,7 @@ describe('Agent Configuration Capabilities', () => {
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
       usage: true,
-      timeout: 2500,
-      agent: {
-        keepAlive: true,
-        rejectUnauthorized: false
-      }
+      timeout: 2500
     });
     return expect(client.save())
       .to.eventually.be.a('object')
@@ -280,5 +320,73 @@ describe('Agent Configuration Capabilities', () => {
         'timeout',
         'agent'
       );
+  });
+
+  it('should use a timeout if one is set', () => {
+    let client = Filemaker.create({
+      application: process.env.APPLICATION,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      usage: true,
+      timeout: 10
+    });
+    return expect(
+      client
+        .save()
+        .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
+        .catch(error => error)
+    ).to.eventually.be.an('error');
+  });
+
+  it('should use a proxy if one is set', () => {
+    let client = Filemaker.create({
+      application: process.env.APPLICATION,
+      server: process.env.SERVER.replace('https://', 'http://'),
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      usage: true,
+      proxy: {
+        host: '127.0.0.1',
+        port: 9000
+      }
+    });
+    return expect(
+      client
+        .save()
+        .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('data');
+  });
+
+  it('should automatically recreate an agent if one is deleted', () => {
+    let globalId;
+    let client = Filemaker.create({
+      application: process.env.APPLICATION,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      usage: true,
+      agent: { rejectUnauthorized: true }
+    });
+    return expect(
+      client
+        .save()
+        .then(client => {
+          globalId = client.agent.global;
+          delete global.AGENTS[globalId];
+          return client.list(process.env.LAYOUT, { limit: 1 });
+        })
+        .then(response => {
+          response.agent = global.AGENTS[globalId];
+          return response;
+        })
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('data', 'agent')
+      .and.property('agent')
+      .is.an('object');
   });
 });
