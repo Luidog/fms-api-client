@@ -7,15 +7,16 @@ const uuidv4 = require('uuid/v4');
 const { EmbeddedDocument } = require('marpat');
 const { interceptRequest, handleResponseError } = require('./utilities');
 
-const instance = axios.create(this.configuration);
-
-instance.interceptors.request.use(interceptRequest);
-instance.interceptors.response.use(response => response, handleResponseError);
-
 /**
  * @class Request
  * @classdesc The class used to integrate with the FileMaker server Data API
  */
+
+const instance = axios.create();
+
+instance.interceptors.request.use(interceptRequest);
+instance.interceptors.response.use(response => response, handleResponseError);
+
 class Agent extends EmbeddedDocument {
   constructor() {
     super();
@@ -87,7 +88,8 @@ class Agent extends EmbeddedDocument {
     return instance(
       Object.assign(
         data,
-        { proxy: this.proxy, timeout: this.timeout },
+        this.timeout ? { timeout: this.timeout } : {},
+        this.proxy ? { proxy: this.proxy } : {},
         this.agent ? this.localize() : {},
         configuration
       )
