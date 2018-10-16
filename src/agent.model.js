@@ -9,7 +9,7 @@ const { interceptRequest, handleResponseError } = require('./utilities');
 
 /**
  * @class Agent
- * @classdesc The class used to integrate with the FileMaker server Data API
+ * @classdesc The class used to model the axios http instance and agent
  */
 
 const instance = axios.create();
@@ -22,24 +22,44 @@ class Agent extends EmbeddedDocument {
     super();
     this.schema({
       /**
-       * The version of Data API to use.
-       * @member Client#version
+       * The global id for an http or https.agent.
+       * @member Agent#global
        * @type String
        */
       global: {
         type: String
       },
+      /**
+       * The protocol for the client.
+       * @member Agent#protocol
+       * @type String
+       */
       protocol: {
         type: String,
         required: true,
         choices: ['http', 'https']
       },
+      /**
+       * The client's http or https agent.
+       * @member Agent#agent
+       * @type String
+       */
       agent: {
         type: Object
       },
+      /**
+       * A timeout for requests.
+       * @member Agent#timeout
+       * @type String
+       */
       timeout: {
         type: Number
       },
+      /**
+       * A proxy to use for requests.
+       * @member Agent#proxy
+       * @type String
+       */
       proxy: {
         type: Object
       }
