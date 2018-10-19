@@ -3,11 +3,11 @@
     {
       "fieldData": {
         "name": "yoda",
-        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/A1677AFCC561391CFF00B142C736D24C276E374678EC0E31149D2BED4BC355AC?RCType=EmbeddedRCFileProcessor",
+        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/E8ADD6FFD6AE5AC1F43014030280FAE36E79E5AD03FF4C52BF31649D3798644A?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
-        "id": "C5CC852A-EA14-2542-89EC-B947906C33B7",
+        "id": "3FFF23CF-EE1E-2C4D-8599-95F2744AFD3C",
         "imageName": "placeholder.md",
         "faceDescriptor": ""
       },
@@ -15,7 +15,7 @@
         "Planets": [],
         "Vehicles": []
       },
-      "recordId": "733109",
+      "recordId": "733117",
       "modId": "2"
     }
   ]
