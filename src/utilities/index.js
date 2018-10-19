@@ -1,8 +1,6 @@
 'use strict';
 
 const {
-  fieldData,
-  recordId,
   namespace,
   parseScriptResult,
   sanitizeParameters,
@@ -11,17 +9,13 @@ const {
 
 const { omit, stringify, toArray, isJson } = require('./conversion.utilities');
 
-const { transform } = require('./transform.utilities');
-
 const {
   interceptRequest,
   handleResponseError
 } = require('./request.utilities');
 
 module.exports = {
-  fieldData,
   omit,
-  recordId,
   stringify,
   setData,
   toArray,
@@ -30,6 +24,5 @@ module.exports = {
   parseScriptResult,
   sanitizeParameters,
   interceptRequest,
-  handleResponseError,
-  transform
+  handleResponseError
 };

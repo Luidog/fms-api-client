@@ -15,12 +15,13 @@ const {
   sanitizeParameters,
   parseScriptResult,
   setData
-} = require('./utilities');
+} = require('../utilities');
 
 /**
  * @class Client
  * @classdesc The class used to integrate with the FileMaker server Data API
  */
+
 class Client extends Document {
   constructor() {
     super();
@@ -103,6 +104,7 @@ class Client extends Document {
     this.connection = Connection.create(connection);
     this.agent = Agent.create({ agent, proxy, timeout, protocol });
   }
+
   /**
    * preDelete is a hook
    * @schema
@@ -110,6 +112,7 @@ class Client extends Document {
    * @param {Object} data The data used to create the client.
    * @return {null} The delete hook does not return anything.
    */
+
   preDelete() {
     return new Promise((resolve, reject) =>
       this.logout()
@@ -118,9 +121,19 @@ class Client extends Document {
     );
   }
 
+  /**
+   * @method destroy
+   * @memberof Client
+   * @public
+   * @description The destroy method is tied to the base model's
+   * delete method method. This allows you to delete a client.
+   * @return {null} The delete method does not return anything.
+   */
+
   destroy() {
     return super.delete();
   }
+
   /**
    * @method _createURL
    * @memberof Client
@@ -129,12 +142,14 @@ class Client extends Document {
    * @param {String} layout The layout to use when creating a record.
    * @return {String} A URL to use when creating records.
    */
+
   _createURL(layout) {
     let url = `${this.server}/fmi/data/v1/databases/${
       this.application
     }/layouts/${layout}/records`;
     return url;
   }
+
   /**
    * @method _updateURL
    * @memberof Client
@@ -144,6 +159,7 @@ class Client extends Document {
    * @param {String} recordId The FileMaker internal record id to use.
    * @return {String} A URL to use when updating records.
    */
+
   _updateURL(layout, recordId) {
     let url = `${this.server}/fmi/data/v1/databases/${
       this.application
@@ -296,6 +312,7 @@ class Client extends Document {
       }
     });
   }
+
   /**
    * @method login
    * @memberof Client
@@ -305,11 +322,13 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
+
   login() {
     return this.authenticate().then(token => ({
       token
     }));
   }
+
   /**
    * @method logout
    * @memberof Client
@@ -319,6 +338,7 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
+
   logout() {
     return new Promise(
       (resolve, reject) =>
@@ -338,6 +358,7 @@ class Client extends Document {
           : reject({ message: 'No session to log out.' })
     );
   }
+
   /**
    * @method _checkToken
    * @private
@@ -349,6 +370,7 @@ class Client extends Document {
    * @param {Object} error The layout to use when acessing a record.
    * @return {Object} The error object with the expired key removed
    */
+
   _checkToken(error) {
     if (error.expired) {
       delete error.expired;
@@ -357,6 +379,7 @@ class Client extends Document {
     }
     return error;
   }
+
   /**
    * @method saveState
    * @private
@@ -366,10 +389,12 @@ class Client extends Document {
    * @return {Any} Returns the umodified response.
    *
    */
+
   _saveState(response) {
     this.save();
     return response;
   }
+
   /**
    * @method create
    * @public
@@ -381,6 +406,7 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
+
   create(layout, data = {}, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
@@ -423,6 +449,7 @@ class Client extends Document {
         .catch(error => reject(this._checkToken(error)))
     );
   }
+
   /**
    * @method edit
    * @public
@@ -435,6 +462,7 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
+
   edit(layout, recordId, data, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
@@ -480,6 +508,7 @@ class Client extends Document {
         .catch(error => reject(this._checkToken(error)))
     );
   }
+
   /**
    * @method delete
    * @public
@@ -490,6 +519,7 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
+
   delete(layout, recordId, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
@@ -523,6 +553,7 @@ class Client extends Document {
         .catch(error => reject(this._checkToken(error)))
     );
   }
+
   /**
    * @method get
    * @public
@@ -534,6 +565,7 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
+
   get(layout, recordId, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
@@ -573,6 +605,7 @@ class Client extends Document {
         .catch(error => reject(this._checkToken(error)))
     );
   }
+
   /**
    * @method list
    * @public
@@ -583,6 +616,7 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
+
   list(layout, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
@@ -626,6 +660,7 @@ class Client extends Document {
         .catch(error => reject(this._checkToken(error)))
     );
   }
+
   /**
    * @method find
    * @public
@@ -637,6 +672,7 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
+
   find(layout, query, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.authenticate()
@@ -689,6 +725,7 @@ class Client extends Document {
         )
     );
   }
+
   /**
    * @method globals
    * @public
@@ -697,6 +734,7 @@ class Client extends Document {
    * @param  {Object|Array} data a json object containing the name value pairs to set.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
+
   globals(data, parameters) {
     return new Promise((resolve, reject) =>
       this.authenticate()
@@ -722,6 +760,7 @@ class Client extends Document {
         .catch(error => reject(this._checkToken(error)))
     );
   }
+
   /**
    * @method upload
    * @public
@@ -737,6 +776,7 @@ class Client extends Document {
    * by default this is 1.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
+
   upload(file, layout, containerFieldName, recordId = 0, parameters = {}) {
     return new Promise((resolve, reject) => {
       let stream;
@@ -791,6 +831,7 @@ class Client extends Document {
         .catch(error => reject(this._checkToken(error)));
     });
   }
+
   /**
    * @method script
    * @public
@@ -803,6 +844,7 @@ class Client extends Document {
    * @param  {Object} parameters Parameters to pass to the script
    * @return {Promise}           returns a promise that will either resolve or reject based on the Data API.
    */
+
   script(layout, script, param = {}, parameters) {
     return new Promise((resolve, reject) =>
       this.authenticate()

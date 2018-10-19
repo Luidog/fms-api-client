@@ -26,6 +26,7 @@ const interceptRequest = config =>
 
 /**
  * @method handleResponseError
+ * @private
  * @description This method evaluates the error response. This method will substitute
  * a non json error or a bad gateway status with a json code and message error. This
  * method will add an expired property to the error response if it recieves a invalid

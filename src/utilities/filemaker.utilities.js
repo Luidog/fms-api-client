@@ -8,40 +8,6 @@ const { stringify, parse } = require('./conversion.utilities');
  */
 
 /**
- * @method fieldData
- * @description fieldData is a helper method that strips the filemaker structural layout and portal information
- * from a record. It returns only the data contained in the fieldData key and the recordId.
- * @param  {Object|Array} data The raw data returned from a filemaker. This can be an array or an object.
- * @return {Object|Array} A json object containing fieldData from the record.
- */
-
-const fieldData = data =>
-  Array.isArray(data)
-    ? _.map(data, object =>
-        Object.assign({}, object.fieldData, {
-          recordId: object.recordId,
-          modId: object.modId
-        })
-      )
-    : Object.assign(data.fieldData, {
-        recordId: data.recordId,
-        modId: data.modId
-      });
-
-/**
- * @method recordId
- * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
- * from a record. It returns only the data contained in the fieldData key adn the recordId.
- * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
- * @return {Object}      a json object containing fieldData from the record.
- */
-
-const recordId = data =>
-  Array.isArray(data)
-    ? _.map(data, object => object.recordId)
-    : data.recordId.toString();
-
-/**
  * @method convertPortals
  * @public
  * @description The convertPortals method converts a request containing a portal array into the syntax
@@ -217,8 +183,6 @@ const setData = data =>
   );
 
 module.exports = {
-  fieldData,
-  recordId,
   namespace,
   parseScriptResult,
   sanitizeParameters,

@@ -1,7 +1,7 @@
 'use strict';
 
-const { Client } = require('./client.model');
-const { fieldData, recordId, transform } = require('./utilities');
+const { Client } = require('./models');
+const { fieldData, recordId, transform } = require('./services');
 
 module.exports = {
   Client,
