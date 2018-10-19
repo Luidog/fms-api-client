@@ -899,17 +899,17 @@ Result:
 > File [./examples/results/transform-utility-example.json](./examples/results/transform-utility-example.json)
 <!--/@-->
 
-### Custom Request Agents, Custom Request Parameters and Proxies
+## Custom Request Agents, Custom Request Parameters and Proxies
 
 The client has the ability to create custom agents and modify requests parameters or use a proxy. Agents, request parameters, and proxies can be configured either when the client is created or when a request is being made.
 
-## Custom Request Agents
+### Custom Request Agents
 
 A client can have a custom [Agent](https://nodejs.org/api/http.html#http_class_http_agent). Using a custom request agent will allow you to configure an agent designed for your specific needs. A request agent can be configured to not reject unauthorized request such as those with invalid SSLs, keep the connection alive, or limit the number of sockets to a host. There is no need to create an agent unless theses options are needed.
 
 **Note** If you are using a custom agent you are responsible for destroying that agent with `client.destroy` once the agent is no longer used.
 
-## Custom Request Parameters
+### Custom Request Parameters
 
 All client methods except `client.login()` and `client.logout()` accept request parameters. These parameters are `request.proxy` and `request.timeout`, `request.agent`. These properties will apply only to the current request. 
 
@@ -926,7 +926,7 @@ npm test
 
 <!--@execute('npm run test',[])-->
 ```default
-> fms-api-client@1.6.2 test /Users/luidelaparra/Documents/Development/fms-api-client
+> fms-api-client@1.0.0 test /Users/luidelaparra/Documents/Development/fms-api-client
 > nyc _mocha --recursive  ./tests --timeout=30000 --exit
 
 
