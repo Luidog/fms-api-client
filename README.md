@@ -111,6 +111,12 @@ After connecting to a datastore you can import and create clients. A client is c
 | password    |  String |                        **required** The FileMaker user account's password.                       |
 | name        |  String |                                **optional** A name for the client.                               |
 | usage       | Boolean |          **optional** Track Data API usage for this client. **Note:** Default is `true`          |
+| timeout     | Number  |          **optional** The default timeout time for requests **Note:** Default is 0, (no timeout) |
+| proxy       | Object  |          **optional** settings for a proxy server                                                |
+| agent       | Object  |          **optional** settings for a custom request agent                                        |
+
+:warning: You should only use the agent parameter when absolutely necessary. The Data API was designed to be used on https. Deviating from the intended use should be done with caution.
+
 
 <!--@snippet('./examples/index.js#client-create-example', { showSource: true })-->
 ```js
@@ -237,7 +243,7 @@ const logout = client =>
 
 ### Create Records
 
-Using the client you can create filemaker records. To create a record specify the layout to use and the data to insert on creation. The client will automatically convert numbers, arrays, and objects into strings so they can be inserted into a filemaker field.
+Using the client you can create filemaker records. To create a record specify the layout to use and the data to insert on creation. The client will automatically convert numbers, arrays, and objects into strings so they can be inserted into a filemaker field. The create method will automatically create a fieldData and add data to that property if there is no fieldData property present.
 
 `client.create(layout, data, parameters)`
 
@@ -306,7 +312,7 @@ Result:
 > File [./examples/results/create-record-merge-example.json](./examples/results/create-record-merge-example.json)
 <!--/@-->
 
-The create methods also allows you to trigger scripts when creating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of scripts with a name, phase, and script parameter.
+The create method also allows you to trigger scripts when creating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of scripts with a name, phase, and script parameter.
 
 <!--@snippet('./examples/create.examples.js#trigger-scripts-on-create', { showSource: true })-->
 ```js
@@ -345,7 +351,15 @@ Result:
 
 ### Get Record Details
 
+The Get method will return a specific FileMaker record based on the recordId passed to it. The recordId can be a string or a number.
+
 `client.get(layout, recordId, parameters)`
+
+| Input      |   Type           | Description                                          |
+| ---------- | -----:           | ---------------------------------------------------- |
+| layout     | String           | The layout to use as context for creating the record.|
+| recordId   | String | Number  | The RecordId to use to get the record.               |
+| parameters | Object           | The parameters to use when getting a record a record.|
 
 <!--@snippet('./examples/get.examples.js#get-record-example', { showSource: true })-->
 ```js
@@ -393,6 +407,11 @@ Result:
 You can use the client to list filemaker records. The list method accepts a layout and parameter variable. The client will automatically santize the limit, offset, and sort keys to correspond with the DAPI's requirements.
 
 `client.list(layout, parameters)`
+
+| Input      |   Type | Description                                          |
+| ---------- | -----: | ---------------------------------------------------- |
+| layout     | String | The layout to use as context for listing records.    |
+| parameters | Object | The parameters to use when listing records.          |
 
 <!--@snippet('./examples/list.examples.js#list-records-example', { showSource: true })-->
 ```js
@@ -467,6 +486,12 @@ The client's find method will accept either a single object as find parameters o
 
 `client.find(layout, query, parameters)`
 
+| Input      |   Type         | Description                                          |
+| ---------- | -------------: | ---------------------------------------------------- |
+| layout     | String         | The layout to use when performing a find.            |
+| query      | Object | Array | The query to use when performing a find.             |
+| parameters | Object         | The parameters to use when listing records.          |
+
 <!--@snippet('./examples/find.examples.js#find-records-example', { showSource: true })-->
 ```js
 const findRecords = client =>
@@ -515,6 +540,14 @@ The client's edit method requires a layout, recordId, and object to use for upda
 
 `client.edit(layout, recordId, data, parameters)`
 
+| Input      |   Type          | Description                                          |
+| ---------- | -------------:  | ---------------------------------------------------- |
+| layout     | String          | The layout to use when editing the record.           |
+| recordId   | String | Number | The recordId to target for edits.                    |
+| data       | Object          | The data to use to edit the record.                  |
+| parameters | Object          | The parameters to use when editing a record.         |
+
+
 <!--@snippet('./examples/edit.examples.js#edit-record-example', { showSource: true })-->
 ```js
 const editRecord = client =>
@@ -542,9 +575,15 @@ Result:
 
 ### Delete Records
 
-The client's delete method requires a layout and a record id.
+The client's delete method requires a layout and a record id. The recordId can be a number or a string.
 
 `client.delete(layout, recordId, parameters)`
+
+| Input      |   Type          | Description                                          |
+| ---------- | -------------:  | ---------------------------------------------------- |
+| layout     | String          | The layout to use when deleting the record.          |
+| recordId   | String | Number | The recordId to target for deletion.                 |
+| parameters | Object          | The parameters to use when deleting a record.        |
 
 <!--@snippet('./examples/delete.examples.js#delete-record-example', { showSource: true })-->
 ```js
@@ -569,11 +608,18 @@ Result:
 > File [./examples/results/delete-record-example.json](./examples/results/delete-record-example.json)
 <!--/@-->
 
-### Trigger Scripts
+### Trigger Script
 
-The client's script method requires a script to run and a layout to run on.
+The client's script method will trigger a script. You can also trigger scripts with the create, edit, list, find, and delete methods. This method performs a list with a limit of one on the specified layout before triggering the script. this is the most lightweight request possible while still being able to trigger a script.
 
-`client.script(layout, script, parameter)`
+`client.script(layout, script, param, parameters)`
+
+| Input      |   Type   | Description                                          |
+| ---------- | -------: | ---------------------------------------------------- |
+| layout     | String   | The layout to use when triggering the script.        |
+| script     | String   | The script to trigger.                               |
+| param      | Any      | The parameter to send to the script                  |
+| parameters | Object   | The parameters to use making the request.            |
 
 <!--@snippet('./examples/script.examples.js#script-trigger-example', { showSource: true })-->
 ```js
@@ -602,10 +648,17 @@ Result:
 
 ### Upload Files
 
-The client's upload method will upload file data to a filemaker file. The upload method requires
-a file path, layout, and container field name.
+The upload method will upload binary data to a container. The file parameter should be either a path to a file or a buffer. If you need to set a field repetition, you can set that in parameters. If recordId is 0 or undefined a new record will be created.
 
-`client.upload(file, layout, containerFieldName, recordId, fieldRepetition)`
+`client.upload(file, layout, container, recordId, parameters)`
+
+| Input      |   Type          | Description                                                                    |
+| ---------- | -------:        | ------------------------------------------------------------------------------ |
+| file       | Buffer | String | The file to upload, Either a buffer or a path to a file.                       |
+| layout     | String          | The layout to use when uploading a file.                                       |
+| container  | String          | The container field name to upload into.                                       |
+| recordId   | String | Number | The recordId to upload to. If omitted or set to zero a record will be created. |
+| parameters | Object          | The parameters to use making the request.                                      |
 
 <!--@snippet('./examples/upload.examples.js#upload-image-example', { showSource: true })-->
 ```js
@@ -659,9 +712,13 @@ Result:
 
 ### Set Session Globals
 
-You can also use the client to set FileMaker Globals for the session.
+The globals method will set global fields for the current session.
 
-`client.globals(object)`
+`client.globals(data, parameters)`
+
+| Input      |   Type  | Description                                                        |
+| ---------- | ------: | ------------------------------------------------------------------ |
+| data       | Object  | The global fields to set for the session                           |
 
 <!--@snippet('./examples/globals.examples.js#set-globals-example', { showSource: true })-->
 ```js
@@ -694,6 +751,10 @@ The recordId method retrieves the `recordId` properties for a response. This met
 
 `recordId(data)`
 
+| Input      |   Type          | Description                                                        |
+| ---------- | --------------: | ------------------------------------------------------------------ |
+| data       | Array | Object  | The FileMaker data to transform. This can be a object or an array. |
+
 <!--@snippet('./examples/utility.examples.js#recordid-utility-example', { showSource: true })-->
 ```js
 const extractRecordId = client =>
@@ -724,6 +785,10 @@ Result:
 The fieldData method retrieves the `fieldData`, `recordId`, and `modId` properties from a Data API response. The fieldData method will merge the `recordId` and `modId` properties into fielData properties. This method will not convert `table::field` properties.
 
 `fieldData(data)`
+
+| Input      |   Type          | Description                                                        |
+| ---------- | --------------: | ------------------------------------------------------------------ |
+| data       | Array | Object  | The FileMaker data to transform. This can be a object or an array. |
 
 <!--@snippet('./examples/utility.examples.js#fielddata-utility-example', { showSource: true })-->
 ```js
@@ -778,7 +843,12 @@ The transform method converts Data API response data by converting `table::field
 
 The transform method accepts three option properties. The three option properties are all booleans and true by default. The three option properties are `convert`,`fieldData`,`portalData`. The `convert` property controls the transfomation of `table::field` properties. The `fieldData` property controls the merging of fieldData to the result. The `portalData` property controls the merging of portalData to the result. Setting any propery to false its transformation off. 
 
-`transform(data,options)`
+`transform(data, parameters)`
+
+| Input      |   Type          | Description                                                        |
+| ---------- | --------------: | ------------------------------------------------------------------ |
+| data       | Array | Object  | The FileMaker data to transform. This can be a object or an array. |
+| parameters | Object          | The parameters to use when converting the data.                    |
 
 <!--@snippet('./examples/utility.examples.js#transform-utility-example', { showSource: true })-->
 ```js
@@ -828,6 +898,24 @@ Result:
 
 > File [./examples/results/transform-utility-example.json](./examples/results/transform-utility-example.json)
 <!--/@-->
+
+### Custom Request Agents, Custom Request Parameters and Proxies
+
+The client has the ability to create custom agents and modify requests parameters or use a proxy. Agents, request parameters, and proxies can be configured either when the client is created or when a request is being made.
+
+## Custom Request Agents
+
+A client can have a custom [Agent](https://nodejs.org/api/http.html#http_class_http_agent). Using a custom request agent will allow you to configure an agent designed for your specific needs. A request agent can be configured to not reject unauthorized request such as those with invalid SSLs, keep the connection alive, or limit the number of sockets to a host. There is no need to create an agent unless theses options are needed.
+
+**Note** If you are using a custom agent you are responsible for destroying that agent with `client.destroy` once the agent is no longer used.
+
+## Custom Request Parameters
+
+All client methods except `client.login()` and `client.logout()` accept request parameters. These parameters are `request.proxy` and `request.timeout`, `request.agent`. These properties will apply only to the current request. 
+
+### Proxies
+
+The client can be configured to use a proxy. The proxy can be configured either for every request by specifying the proxy during the creation of the client, or just for a particular request by specifying the proxy in the request parameters.
 
 ## Tests
 
