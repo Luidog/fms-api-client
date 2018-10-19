@@ -74,17 +74,15 @@ class Agent extends EmbeddedDocument {
   globalize(protocol, agent) {
     !global.AGENTS ? (global.AGENTS = {}) : null;
     !this.global ? (this.global = uuidv4()) : null;
-    if (this.agent && !global.AGENTS[this.global]) {
-      global.AGENTS[this.global] =
-        protocol === 'https'
-          ? {
-              httpsAgent: new https.Agent(this.agent)
-            }
-          : {
-              httpAgent: new http.Agent(this.Agent)
-            };
-      return global.AGENTS[this.global];
-    } 
+    global.AGENTS[this.global] =
+      protocol === 'https'
+        ? {
+            httpsAgent: new https.Agent(this.agent)
+          }
+        : {
+            httpAgent: new http.Agent(this.Agent)
+          };
+    return global.AGENTS[this.global];
   }
 
   localize() {
@@ -102,14 +100,14 @@ class Agent extends EmbeddedDocument {
     }
   }
 
-  request(data, configuration = {}) {
+  request(data, parameters = {}) {
     return instance(
       Object.assign(
         data,
         this.timeout ? { timeout: this.timeout } : {},
         this.proxy ? { proxy: this.proxy } : {},
         this.agent ? this.localize() : {},
-        configuration
+        parameters.request || {}
       )
     );
   }
