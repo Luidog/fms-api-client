@@ -54,6 +54,19 @@ describe('Global Capabilities', () => {
     ).to.eventually.be.a('object');
   });
 
+  it('should allow you to specify a timeout', () => {
+    return expect(
+      client
+        .globals(
+          { 'Globals::ship': 'Millenium Falcon' },
+          {
+            request: { timeout: 10 }
+          }
+        )
+        .catch(error => error)
+    ).to.eventually.be.an('error');
+  });
+
   it('should reject with a message and code if it fails to set a global', () => {
     return expect(
       client.globals({ ship: 'Millenium Falcon' }).catch(error => error)

@@ -3,6 +3,10 @@
 const _ = require('lodash');
 
 /**
+ * @module Transformation Service
+ */
+
+/**
  * @method transformRelatedTables
  * @public
  * @description This method tranforms an object given by turning related tables into objects
@@ -34,7 +38,7 @@ const transformRelatedTables = (object, parentKey) =>
 
 /**
  * @method transformPortals
- * @public
+ * @private
  * @description this method transforms portals by mapping keys found in the portalData object into the
  * transformRelatedTables function. This method passes the parent portal key to properly transform
  * portal data related to the main portal table occurance.
@@ -51,7 +55,7 @@ const transformPortals = portals =>
 
 /**
  * @method transformObject
- * @public
+ * @private
  * @description this method transforms portals by mapping keys found in the portalData object into the
  * transformRelatedTables function. This method passes the parent portal key to properly transform
  * portal data related to the main portal table occurance.
@@ -74,6 +78,42 @@ const transformObject = (object, options = {}) => {
 };
 
 /**
+ * @method fieldData
+ * @public
+ * @description fieldData is a helper method that strips the filemaker structural layout and portal information
+ * from a record. It returns only the data contained in the fieldData key and the recordId.
+ * @param  {Object|Array} data The raw data returned from a filemaker. This can be an array or an object.
+ * @return {Object|Array} A json object containing fieldData from the record.
+ */
+
+const fieldData = data =>
+  Array.isArray(data)
+    ? _.map(data, object =>
+        Object.assign({}, object.fieldData, {
+          recordId: object.recordId,
+          modId: object.modId
+        })
+      )
+    : Object.assign(data.fieldData, {
+        recordId: data.recordId,
+        modId: data.modId
+      });
+
+/**
+ * @method recordId
+ * @public
+ * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
+ * from a record. It returns only the data contained in the fieldData key adn the recordId.
+ * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
+ * @return {Object}      a json object containing fieldData from the record.
+ */
+
+const recordId = data =>
+  Array.isArray(data)
+    ? _.map(data, object => object.recordId)
+    : data.recordId.toString();
+
+/**
  * @method transform
  * @public
  * @description this method transforms portals by mapping keys found in the portalData object into the
@@ -88,4 +128,4 @@ const transform = (data, options) =>
     ? _.map(data, object => transformObject(object, options))
     : transformObject(data, options);
 
-module.exports = { transform };
+module.exports = { recordId, fieldData, transform };

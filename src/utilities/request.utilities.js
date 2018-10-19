@@ -1,14 +1,10 @@
 'use strict';
 
-const axios = require('axios');
-const FormData = require('form-data');
-const { omit } = require('./utilities');
+const { omit } = require('./conversion.utilities');
 
 /**
  * @module request
  */
-
-const request = axios.create();
 
 /**
  * @method interceptRequest
@@ -30,6 +26,7 @@ const interceptRequest = config =>
 
 /**
  * @method handleResponseError
+ * @private
  * @description This method evaluates the error response. This method will substitute
  * a non json error or a bad gateway status with a json code and message error. This
  * method will add an expired property to the error response if it recieves a invalid
@@ -58,8 +55,4 @@ const handleResponseError = error => {
   }
 };
 
-request.interceptors.request.use(interceptRequest);
-
-request.interceptors.response.use(response => response, handleResponseError);
-
-module.exports = { request, FormData };
+module.exports = { interceptRequest, handleResponseError };

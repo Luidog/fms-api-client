@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Conversion Utilities - Documentation</title>
+    <title>models/data.model.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,902 +29,144 @@
 
 <div id="main">
     
-    <h1 class="page-title">Conversion Utilities</h1>
-    
-
-    
-
-
-
-
-<section>
-
-<header>
-    
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="~isJson"><span class="type-signature">(inner) </span>isJson<span class="signature">(data)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>The isJson method uses the a try / catch to parse incoming data safely as json.
-This method will return true if it is able to cast the incoming data as json.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line40">line 40</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Any</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The data to be evaluated as json.</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Boolean</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>A boolean result depending on if the data passed to it is valid JSON</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="~omit"><span class="type-signature">(inner) </span>omit<span class="signature">(data, properties)</span><span class="type-signature"> &rarr; {Object|Array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>fieldData is a helper method that strips the filemaker structural layout and portal information
-from a record. It returns only the data contained in the fieldData key and the recordId.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <dt class="important tag-deprecated">Deprecated:</dt><dd><ul class="dummy"><li>since version 1.5.0. Use the exported module instead.</li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line65">line 65</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Object</code></span>
-|
-
-<span class="param-type"><code>Array</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The raw data to use when omitting. his can be an array or an object.</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>properties</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Array</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>An array properties to remove.</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Object</code></span>
-|
-
-<span class="param-type"><code>Array</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>A json object or array of objects without the properties passed to it</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="~parse"><span class="type-signature">(inner) </span>parse<span class="signature">(values)</span><span class="type-signature"> &rarr; {Object|Any}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>parse performs a try catch before attempting to parse the value as json. If the value is not valid json it wil return the value.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line81">line 81</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>values</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Any</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The value to attempt to parse.</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Object</code></span>
-|
-
-<span class="param-type"><code>Any</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>A json object or array of objects without the properties passed to it</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="~stringify"><span class="type-signature">(inner) </span>stringify<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>stringify is a helper method that converts numbers, objects, and arrays to strings.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line9">line 9</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Object</code></span>
-|
-
-<span class="param-type"><code>Array</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The data being used to create or update a record.</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Object</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>a json object containing stringified data.</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="~toArray"><span class="type-signature">(inner) </span>toArray<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>The toArray method converts an object into an array. This method uses the object prototype method
-isArray to check if the incoming data is an array. If the incoming data is not an array this method will
-return the data in an array</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line28">line 28</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Object</code></span>
-|
-
-<span class="param-type"><code>Array</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>An array or object containing query information. This can be an array or an object.</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Object</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>An array containing the data passed to the method.</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <h1 class="page-title">models/data.model.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+const moment = require('moment');
+const sizeof = require('object-sizeof');
+const pretty = require('prettysize');
+const { EmbeddedDocument } = require('marpat');
+
+/**
+ * @class Data
+ * @classdesc The class used to track FileMaker API data usage.
+ **/
+
+class Data extends EmbeddedDocument {
+  constructor() {
+    super();
+    this.schema({
+      /** A boolean value set to true if the client should track data usage.
+       * @member Data#track
+       * @type Boolean
+       */
+      track: {
+        type: Boolean,
+        required: true,
+        default: true
+      },
+      /** A number containing the total amount of data called since the class
+       * was created or last cleared.
+       * @member Data#in
+       * @type Number
+       */
+      in: {
+        type: Number,
+        required: true,
+        default: 0
+      },
+      /** A number containing the total amount of data called since the class
+       * was created or last cleared.
+       * @member Data#out
+       * @type Number
+       */
+      out: {
+        type: Number,
+        required: true,
+        default: 0
+      },
+      /** A string containing the ISO date from the last time the class was created or last cleared.
+       * @member Data#out
+       * @type string
+       */
+      since: {
+        type: String,
+        required: true,
+        default: () => moment().format()
+      }
+    });
+  }
+
+  /**
+   * @method incoming
+   * @public
+   * @memberof Data
+   * @description increments the amount of data being sent to FileMaker.
+   * @param {Any} data The data to record.
+   * @return {Any} Returns data unmutated.
+   *
+   */
+
+  incoming(data) {
+    this.track ? (this.in += sizeof(data)) : null;
+    return data;
+  }
+
+  /**
+   * @method outgoing
+   * @public
+   * @memberof Data
+   * @description increments the amount of data being recieved from filemaker.
+   * @param {Any} data The data to record.
+   * @return {Any} Returns data unmutated.
+   *
+   */
+
+  outgoing(data) {
+    this.track ? (this.out += sizeof(data)) : null;
+    return data;
+  }
+
+  /**
+   * @method clear
+   * @public
+   * @memberof Data
+   * @description Clears the data in and out and resets the since date to the current time as an ISO date string.
+   * @return {null} This method does not return anything.
+   *
+   */
+
+  clear() {
+    this.since = moment().format();
+    this.in = this.out = 0;
+  }
+
+  /**
+   * @method status
+   * @public
+   * @memberof Data
+   * @description Prettifies the class data by stringifying the in and out data and returning since.
+   * @return {Object} An object contain the key of data with keys of since, in, and out as strings.
+   *
+   */
+
+  status() {
+    const status = {
+      data: {
+        since: this.since,
+        in: pretty(this.in),
+        out: pretty(this.out)
+      }
+    };
+    return status;
+  }
+}
+
+module.exports = {
+  Data
+};
+</code></pre>
+        </article>
+    </section>
 
 
 

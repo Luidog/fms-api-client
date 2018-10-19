@@ -57,6 +57,19 @@ describe('Delete Capabilities', () => {
         .then(response => client.delete(process.env.LAYOUT, response.recordId))
     ).to.eventually.be.a('object'));
 
+  it('should allow you to specify a timeout', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Darth Vader' })
+        .then(response =>
+          client.delete(process.env.LAYOUT, response.recordId, {
+            request: { timeout: 10 }
+          })
+        )
+        .catch(error => error)
+    ).to.eventually.be.an('error');
+  });
+
   it('should trigger scripts via an array when deleting records.', () =>
     expect(
       client

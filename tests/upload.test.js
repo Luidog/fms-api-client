@@ -7,6 +7,7 @@ const { expect, should } = require('chai');
 
 /* eslint-enable */
 
+const fs = require('fs');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
@@ -49,9 +50,37 @@ describe('File Upload Capabilities', () => {
       .catch(error => done());
   });
 
+  it('should allow you to specify a timeout', () => {
+    return expect(
+      client
+        .upload(
+          './assets/placeholder.md',
+          process.env.LAYOUT,
+          'image',
+          undefined,
+          {
+            request: { timeout: 10 }
+          }
+        )
+        .catch(error => error)
+    ).to.eventually.be.an('error');
+  });
+
   it('should allow you to upload a file to a new record', () => {
     return expect(
       client.upload('./assets/placeholder.md', process.env.LAYOUT, 'image')
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId', 'recordId')
+      .and.property('modId', '1');
+  });
+
+  it('should allow you to upload a buffer to a new record', () => {
+    const buffer = fs.readFileSync('./assets/placeholder.md');
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(record => client.upload(buffer, process.env.LAYOUT, 'image'))
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('modId', 'recordId')
@@ -65,8 +94,20 @@ describe('File Upload Capabilities', () => {
         process.env.LAYOUT,
         'image',
         undefined,
-        2
+        { fieldRepetition: 2 }
       )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId', 'recordId')
+      .and.property('modId', '1');
+  });
+
+  it('should allow you to upload a buffer to a specific container repetition', () => {
+    const buffer = fs.readFileSync('./assets/placeholder.md');
+    return expect(
+      client.upload(buffer, process.env.LAYOUT, 'image', undefined, {
+        fieldRepetition: 2
+      })
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('modId', 'recordId')
@@ -101,6 +142,20 @@ describe('File Upload Capabilities', () => {
       .and.property('modId', '1');
   });
 
+  it('should allow you to upload a file to a specific record', () => {
+    const buffer = fs.readFileSync('./assets/placeholder.md');
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(record =>
+          client.upload(buffer, process.env.LAYOUT, 'image', record.recordId)
+        )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId', 'recordId')
+      .and.property('modId', '1');
+  });
+
   it('should allow you to upload a file to a specific record container repetition', () => {
     return expect(
       client
@@ -111,12 +166,26 @@ describe('File Upload Capabilities', () => {
             process.env.LAYOUT,
             'image',
             record.recordId,
-            2
+            { fieldRepetition: 2 }
           )
         )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('modId','recordId')
+      .that.has.all.keys('modId', 'recordId')
+      .and.property('modId', '1');
+  });
+
+  it('should allow you to upload a buffer to a specific record container repetition', () => {
+    const buffer = fs.readFileSync('./assets/placeholder.md');
+    return expect(
+      client.create(process.env.LAYOUT, { name: 'Han Solo' }).then(record =>
+        client.upload(buffer, process.env.LAYOUT, 'image', record.recordId, {
+          fieldRepetition: 2
+        })
+      )
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId', 'recordId')
       .and.property('modId', '1');
   });
 

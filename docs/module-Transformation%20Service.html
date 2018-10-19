@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Conversion Utilities - Documentation</title>
+    <title>Transformation Service - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Conversion Utilities</h1>
+    <h1 class="page-title">Transformation Service</h1>
     
 
     
@@ -75,168 +75,7 @@
 
     
 
-    <h4 class="name" id="~isJson"><span class="type-signature">(inner) </span>isJson<span class="signature">(data)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>The isJson method uses the a try / catch to parse incoming data safely as json.
-This method will return true if it is able to cast the incoming data as json.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line40">line 40</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Any</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The data to be evaluated as json.</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Boolean</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>A boolean result depending on if the data passed to it is valid JSON</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="~omit"><span class="type-signature">(inner) </span>omit<span class="signature">(data, properties)</span><span class="type-signature"> &rarr; {Object|Array}</span></h4>
+    <h4 class="name" id="~fieldData"><span class="type-signature">(inner) </span>fieldData<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object|Array}</span></h4>
 
     
 
@@ -268,8 +107,6 @@ from a record. It returns only the data contained in the fieldData key and the r
     
 
     
-        <dt class="important tag-deprecated">Deprecated:</dt><dd><ul class="dummy"><li>since version 1.5.0. Use the exported module instead.</li></ul></dd>
-    
 
     
 
@@ -282,7 +119,7 @@ from a record. It returns only the data contained in the fieldData key and the r
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line65">line 65</a>
+        <a href="services_transform.service.js.html">services/transform.service.js</a>, <a href="services_transform.service.js.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -346,33 +183,7 @@ from a record. It returns only the data contained in the fieldData key and the r
             
 
             <td class="description last">
-                <p>The raw data to use when omitting. his can be an array or an object.</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>properties</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Array</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>An array properties to remove.</p>
+                <p>The raw data returned from a filemaker. This can be an array or an object.</p>
                 
             </td>
         </tr>
@@ -416,7 +227,7 @@ from a record. It returns only the data contained in the fieldData key and the r
 
 
 <div class="param-desc">
-    <p>A json object or array of objects without the properties passed to it</p>
+    <p>A json object containing fieldData from the record.</p>
 </div>
 
     
@@ -431,14 +242,15 @@ from a record. It returns only the data contained in the fieldData key and the r
 
     
 
-    <h4 class="name" id="~parse"><span class="type-signature">(inner) </span>parse<span class="signature">(values)</span><span class="type-signature"> &rarr; {Object|Any}</span></h4>
+    <h4 class="name" id="~recordId"><span class="type-signature">(inner) </span>recordId<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>parse performs a try catch before attempting to parse the value as json. If the value is not valid json it wil return the value.</p>
+    <p>returns record ids for the data parameters passed to it. This can be an array of ids or an object.
+from a record. It returns only the data contained in the fieldData key adn the recordId.</p>
 </div>
 
 
@@ -474,170 +286,7 @@ from a record. It returns only the data contained in the fieldData key and the r
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line81">line 81</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>values</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Any</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The value to attempt to parse.</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Object</code></span>
-|
-
-<span class="param-type"><code>Any</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>A json object or array of objects without the properties passed to it</p>
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="~stringify"><span class="type-signature">(inner) </span>stringify<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>stringify is a helper method that converts numbers, objects, and arrays to strings.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line9">line 9</a>
+        <a href="services_transform.service.js.html">services/transform.service.js</a>, <a href="services_transform.service.js.html#line102">line 102</a>
     </li></ul></dd>
     
 
@@ -701,7 +350,7 @@ from a record. It returns only the data contained in the fieldData key and the r
             
 
             <td class="description last">
-                <p>The data being used to create or update a record.</p>
+                <p>the raw data returned from a filemaker. This can be an array or an object.</p>
                 
             </td>
         </tr>
@@ -742,7 +391,7 @@ from a record. It returns only the data contained in the fieldData key and the r
 
 
 <div class="param-desc">
-    <p>a json object containing stringified data.</p>
+    <p>a json object containing fieldData from the record.</p>
 </div>
 
     
@@ -757,16 +406,16 @@ from a record. It returns only the data contained in the fieldData key and the r
 
     
 
-    <h4 class="name" id="~toArray"><span class="type-signature">(inner) </span>toArray<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="~transform"><span class="type-signature">(inner) </span>transform<span class="signature">(object)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>The toArray method converts an object into an array. This method uses the object prototype method
-isArray to check if the incoming data is an array. If the incoming data is not an array this method will
-return the data in an array</p>
+    <p>this method transforms portals by mapping keys found in the portalData object into the
+transformRelatedTables function. This method passes the parent portal key to properly transform
+portal data related to the main portal table occurance.</p>
 </div>
 
 
@@ -802,7 +451,7 @@ return the data in an array</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities_conversion.utilities.js.html">utilities/conversion.utilities.js</a>, <a href="utilities_conversion.utilities.js.html#line28">line 28</a>
+        <a href="services_transform.service.js.html">services/transform.service.js</a>, <a href="services_transform.service.js.html#line116">line 116</a>
     </li></ul></dd>
     
 
@@ -846,16 +495,13 @@ return the data in an array</p>
 
         <tr>
             
-                <td class="name"><code>data</code></td>
+                <td class="name"><code>object</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type"><code>Object</code></span>
-|
-
-<span class="param-type"><code>Array</code></span>
 
 
             
@@ -866,7 +512,7 @@ return the data in an array</p>
             
 
             <td class="description last">
-                <p>An array or object containing query information. This can be an array or an object.</p>
+                <p>The response recieved from the FileMaker DAPI.</p>
                 
             </td>
         </tr>
@@ -907,7 +553,517 @@ return the data in an array</p>
 
 
 <div class="param-desc">
-    <p>An array containing the data passed to the method.</p>
+    <p>A json object containing the selected data from the Data API Response.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~transformObject"><span class="type-signature">(private, inner) </span>transformObject<span class="signature">(object, options)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>this method transforms portals by mapping keys found in the portalData object into the
+transformRelatedTables function. This method passes the parent portal key to properly transform
+portal data related to the main portal table occurance.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="services_transform.service.js.html">services/transform.service.js</a>, <a href="services_transform.service.js.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>object</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The response recieved from the FileMaker DAPI.</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The response recieved from the FileMaker DAPI.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Object</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>A json object containing the selected data from the Data API Response.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~transformPortals"><span class="type-signature">(private, inner) </span>transformPortals<span class="signature">(object)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>this method transforms portals by mapping keys found in the portalData object into the
+transformRelatedTables function. This method passes the parent portal key to properly transform
+portal data related to the main portal table occurance.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="services_transform.service.js.html">services/transform.service.js</a>, <a href="services_transform.service.js.html#line39">line 39</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>object</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The response recieved from the FileMaker DAPI.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Object</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>A json object containing the selected data from the Data API Response.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="~transformRelatedTables"><span class="type-signature">(inner) </span>transformRelatedTables<span class="signature">(object)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>This method tranforms an object given by turning related tables into objects</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="services_transform.service.js.html">services/transform.service.js</a>, <a href="services_transform.service.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>object</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The response recieved from the FileMaker DAPI.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Object</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>A json object containing the selected data from the Data API Response.</p>
 </div>
 
     

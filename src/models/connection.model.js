@@ -3,7 +3,6 @@
 const moment = require('moment');
 const { EmbeddedDocument } = require('marpat');
 const { Credentials } = require('./credentials.model');
-const { request } = require('./request.service.js');
 /**
  * @class Connection
  * @classdesc The class used to connection with the FileMaker server Data API
@@ -67,6 +66,7 @@ class Connection extends EmbeddedDocument {
       }
     });
   }
+
   /**
    * preInit is a hook
    * @schema
@@ -74,26 +74,14 @@ class Connection extends EmbeddedDocument {
    * @param {Object} data The data used to create the client.
    * @return {null} The preInit hook does not return anything.
    */
+
   preInit(data) {
     this.credentials = Credentials.create({
       user: data.user,
       password: data.password
     });
   }
-  /**
-   * @method _authURL
-   * @memberof Connection
-   * @private
-   * @description Generates a url for use when retrieving authentication tokens
-   * in exchange for Account credentials.
-   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
-   */
-  _authURL() {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/sessions`;
-    return url;
-  }
+
   /**
    * @method _basicAuth
    * @private
@@ -103,6 +91,7 @@ class Connection extends EmbeddedDocument {
    * @return {String} A string containing the user and password authentication
    * pair.
    */
+
   _basicAuth() {
     const auth = `Basic ${new Buffer(
       `${this.credentials.user}:${this.credentials.password}`
@@ -119,6 +108,7 @@ class Connection extends EmbeddedDocument {
    * @return {String} a token retrieved from the private generation method
    *
    */
+
   _saveToken(data) {
     this.expires = moment()
       .add(15, 'minutes')
@@ -127,6 +117,7 @@ class Connection extends EmbeddedDocument {
     this.token = data.response.token;
     return data;
   }
+
   /**
    * @method valid
    * @public
@@ -136,12 +127,14 @@ class Connection extends EmbeddedDocument {
    * @return {String} a token retrieved from the private generation method
    *
    */
+
   valid() {
     return (
       this.token !== undefined &&
       moment().isBetween(this.issued, this.expires, '()')
     );
   }
+
   /**
    * @method generate
    * @memberof Connection
@@ -152,23 +145,26 @@ class Connection extends EmbeddedDocument {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    * response.
    */
-  generate() {
+
+  generate(axios, url) {
     return new Promise((resolve, reject) =>
-      request({
-        url: this._authURL(),
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: this._basicAuth()
-        },
-        data: {}
-      })
+      axios
+        .request({
+          url: url,
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: this._basicAuth()
+          },
+          data: {}
+        })
         .then(response => response.data)
         .then(body => this._saveToken(body))
         .then(body => resolve(body))
         .catch(error => reject(error))
     );
   }
+
   /**
    * @method clears
    * @memberof Connection
@@ -179,6 +175,7 @@ class Connection extends EmbeddedDocument {
    * @return {Object} response The response recieved from the Data API.
    *
    */
+
   clear(response) {
     this.token = '';
     this.issued = '';
@@ -196,6 +193,7 @@ class Connection extends EmbeddedDocument {
    * @return {Object} response The response recieved from the Data API.
    *
    */
+
   extend(response) {
     this.expires = moment()
       .add(15, 'minutes')
