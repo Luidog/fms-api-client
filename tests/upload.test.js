@@ -76,7 +76,10 @@ describe('File Upload Capabilities', () => {
   });
 
   it('should allow you to upload a buffer to a new record', () => {
-    const buffer = fs.readFileSync('./assets/placeholder.md');
+    const buffer = {
+      buffer: fs.readFileSync('./assets/placeholder.md'),
+      name: 'placeholder.md'
+    };
     return expect(
       client
         .create(process.env.LAYOUT, { name: 'Han Solo' })
@@ -103,7 +106,10 @@ describe('File Upload Capabilities', () => {
   });
 
   it('should allow you to upload a buffer to a specific container repetition', () => {
-    const buffer = fs.readFileSync('./assets/placeholder.md');
+    const buffer = {
+      buffer: fs.readFileSync('./assets/placeholder.md'),
+      name: 'placeholder.md'
+    };
     return expect(
       client.upload(buffer, process.env.LAYOUT, 'image', undefined, {
         fieldRepetition: 2
@@ -143,7 +149,10 @@ describe('File Upload Capabilities', () => {
   });
 
   it('should allow you to upload a file to a specific record', () => {
-    const buffer = fs.readFileSync('./assets/placeholder.md');
+    const buffer = {
+      buffer: fs.readFileSync('./assets/placeholder.md'),
+      name: 'placeholder.md'
+    };
     return expect(
       client
         .create(process.env.LAYOUT, { name: 'Han Solo' })
@@ -176,7 +185,10 @@ describe('File Upload Capabilities', () => {
   });
 
   it('should allow you to upload a buffer to a specific record container repetition', () => {
-    const buffer = fs.readFileSync('./assets/placeholder.md');
+    const buffer = {
+      buffer: fs.readFileSync('./assets/placeholder.md'),
+      name: 'placeholder.md'
+    };
     return expect(
       client.create(process.env.LAYOUT, { name: 'Han Solo' }).then(record =>
         client.upload(buffer, process.env.LAYOUT, 'image', record.recordId, {

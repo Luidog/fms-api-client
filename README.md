@@ -654,7 +654,7 @@ The upload method will upload binary data to a container. The file parameter sho
 
 | Input      |   Type          | Description                                                                    |
 | ---------- | -------:        | ------------------------------------------------------------------------------ |
-| file       | Buffer | String | The file to upload, Either a buffer or a path to a file.                       |
+| file       | Object | String | The file to upload, Either an object with a buffer and name property or a path to a file.                       |
 | layout     | String          | The layout to use when uploading a file.                                       |
 | container  | String          | The container field name to upload into.                                       |
 | recordId   | String | Number | The recordId to upload to. If omitted or set to zero a record will be created. |

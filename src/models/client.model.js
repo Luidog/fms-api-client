@@ -786,14 +786,14 @@ class Client extends Document {
           ? this.create(layout, {}).then(response => response.recordId)
           : Promise.resolve(recordId);
 
-      if (!Buffer.isBuffer(file)) {
+      if (typeof file === 'string') {
         stream = fs.createReadStream(file);
         stream.on('error', error =>
           reject({ message: error.message, code: error.code })
         );
       } else {
-        stream = intoStream(file);
-        stream.name = 'upload-stream';
+        stream = intoStream(file.buffer);
+        stream.name = file.name;
       }
 
       form.append('upload', stream);
