@@ -791,6 +791,11 @@ class Client extends Document {
         stream.on('error', error =>
           reject({ message: error.message, code: error.code })
         );
+      } else if (!file || !file.name || !file.buffer) {
+        reject({
+          message: 'A file object must have a name and buffer property',
+          code: 117
+        });
       } else {
         stream = intoStream(file.buffer);
         stream.name = file.name;

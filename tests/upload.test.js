@@ -148,7 +148,7 @@ describe('File Upload Capabilities', () => {
       .and.property('modId', '1');
   });
 
-  it('should allow you to upload a file to a specific record', () => {
+  it('should allow you to upload a buffer object to a specific record', () => {
     const buffer = {
       buffer: fs.readFileSync('./assets/placeholder.md'),
       name: 'placeholder.md'
@@ -212,6 +212,76 @@ describe('File Upload Capabilities', () => {
             'image',
             record.recordId
           )
+        )
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should reject an empty buffer object', () => {
+    const buffer = {};
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(record =>
+          client.upload(buffer, 'No layout', 'image', record.recordId)
+        )
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should reject a null buffer object', () => {
+    const buffer = null;
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(record =>
+          client.upload(buffer, 'No layout', 'image', record.recordId)
+        )
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should reject a number instead of an object', () => {
+    const buffer = 5;
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(record =>
+          client.upload(buffer, 'No layout', 'image', record.recordId)
+        )
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should reject an object without a filename', () => {
+    const buffer = { buffer: fs.readFileSync('./assets/placeholder.md') };
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(record =>
+          client.upload(buffer, 'No layout', 'image', record.recordId)
+        )
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should reject an object without a buffer', () => {
+    const buffer = { name: 'placeholder.md' };
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(record =>
+          client.upload(buffer, 'No layout', 'image', record.recordId)
         )
         .catch(error => error)
     )
