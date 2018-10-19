@@ -62,6 +62,26 @@ describe('Script Capabilities', () => {
       .that.has.all.keys('result');
   });
 
+  it('should allow you to specify a timeout', () => {
+    return expect(
+      client
+        .script(
+          process.env.LAYOUT,
+          'FMS Triggered Script',
+          {
+            name: 'han',
+            number: 102,
+            object: { child: 'ben' },
+            array: ['leia', 'chewbacca']
+          },
+          {
+            request: { timeout: 10 }
+          }
+        )
+        .catch(error => error)
+    ).to.eventually.be.an('error');
+  });
+
   it('should allow you to trigger a script specifying a string as a parameter', () => {
     return expect(
       client.script(process.env.LAYOUT, 'FMS Triggered Script', 'string-here')

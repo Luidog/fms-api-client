@@ -56,6 +56,18 @@ describe('Create Capabilities', () => {
       .that.has.all.keys('recordId', 'modId');
   });
 
+  it('should allow you to specify a timeout', () => {
+    return expect(
+      client
+        .create(
+          process.env.LAYOUT,
+          { name: 'Han Solo' },
+          { request: { timeout: 10 } }
+        )
+        .catch(error => error)
+    ).to.eventually.be.an('error');
+  });
+
   it('should create FileMaker records using fieldData', () => {
     return expect(
       client.create(process.env.LAYOUT, { fieldData: { name: 'Han Solo' } })

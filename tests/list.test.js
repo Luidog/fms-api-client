@@ -55,6 +55,16 @@ describe('List Capabilities', () => {
       .and.property('data');
   });
 
+  it('should allow you to specify a timeout', () => {
+    return expect(
+      client
+        .list(process.env.LAYOUT, {
+          request: { timeout: 10 }
+        })
+        .catch(error => error)
+    ).to.eventually.be.an('error');
+  });
+
   it('should allow you use parameters to modify the list response', () => {
     return expect(client.list(process.env.LAYOUT, { _limit: '2' }))
       .to.eventually.be.a('object')
@@ -178,14 +188,12 @@ describe('List Capabilities', () => {
   it('should remove an expired token', () => {
     client.connection.token = `${client.connection.token}-error`;
     return expect(
-      client
-        .list(process.env.LAYOUT, { limit: 2, offset: 2 })
-        .catch(error => {
-          let errorWithToken = Object.assign(error, {
-            token: client.connection.token
-          });
-          return errorWithToken;
-        })
+      client.list(process.env.LAYOUT, { limit: 2, offset: 2 }).catch(error => {
+        let errorWithToken = Object.assign(error, {
+          token: client.connection.token
+        });
+        return errorWithToken;
+      })
     )
       .to.eventually.be.an('object')
       .that.has.all.keys('code', 'message', 'token')

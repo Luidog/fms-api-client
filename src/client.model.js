@@ -3,6 +3,7 @@
 const fs = require('fs');
 const { Document } = require('marpat');
 const FormData = require('form-data');
+const intoStream = require('into-stream');
 const { Connection } = require('./connection.model');
 const { Data } = require('./data.model');
 const { Agent } = require('./agent.model.js');
@@ -384,27 +385,30 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.agent.request({
-            url: this._createURL(layout),
-            method: 'post',
-            headers: {
-              authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
+          this.agent.request(
+            {
+              url: this._createURL(layout),
+              method: 'post',
+              headers: {
+                authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              data: Object.assign(
+                sanitizeParameters(parameters, [
+                  'portalData',
+                  'script',
+                  'script.param',
+                  'script.prerequest',
+                  'script.prerequest.param',
+                  'script.presort',
+                  'script.presort.param',
+                  'request'
+                ]),
+                this.data.incoming(setData(data))
+              )
             },
-            data: Object.assign(
-              sanitizeParameters(parameters, [
-                'portalData',
-                'script',
-                'script.param',
-                'script.prerequest',
-                'script.prerequest.param',
-                'script.presort',
-                'script.presort.param',
-                'request'
-              ]),
-              this.data.incoming(setData(data))
-            )
-          })
+            parameters
+          )
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
@@ -435,28 +439,31 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.agent.request({
-            url: this._updateURL(layout, recordId),
-            method: 'patch',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
+          this.agent.request(
+            {
+              url: this._updateURL(layout, recordId),
+              method: 'patch',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              data: Object.assign(
+                sanitizeParameters(parameters, [
+                  'portalData',
+                  'modId',
+                  'script',
+                  'script.param',
+                  'script.prerequest',
+                  'script.prerequest.param',
+                  'script.presort',
+                  'script.presort.param',
+                  'request'
+                ]),
+                this.data.incoming(setData(data))
+              )
             },
-            data: Object.assign(
-              sanitizeParameters(parameters, [
-                'portalData',
-                'modId',
-                'script',
-                'script.param',
-                'script.prerequest',
-                'script.prerequest.param',
-                'script.presort',
-                'script.presort.param',
-                'request'
-              ]),
-              this.data.incoming(setData(data))
-            )
-          })
+            parameters
+          )
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
@@ -487,22 +494,25 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.agent.request({
-            url: this._deleteURL(layout, recordId),
-            method: 'delete',
-            headers: {
-              Authorization: `Bearer ${token}`
+          this.agent.request(
+            {
+              url: this._deleteURL(layout, recordId),
+              method: 'delete',
+              headers: {
+                Authorization: `Bearer ${token}`
+              },
+              data: sanitizeParameters(parameters, [
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'request'
+              ])
             },
-            data: sanitizeParameters(parameters, [
-              'script',
-              'script.param',
-              'script.prerequest',
-              'script.prerequest.param',
-              'script.presort',
-              'script.presort.param',
-              'request'
-            ])
-          })
+            parameters
+          )
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
@@ -528,28 +538,31 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.agent.request({
-            url: this._getURL(layout, recordId),
-            method: 'get',
-            headers: {
-              Authorization: `Bearer ${token}`
+          this.agent.request(
+            {
+              url: this._getURL(layout, recordId),
+              method: 'get',
+              headers: {
+                Authorization: `Bearer ${token}`
+              },
+              params: stringify(
+                sanitizeParameters(namespace(parameters), [
+                  'script',
+                  'script.param',
+                  'script.prerequest',
+                  'script.prerequest.param',
+                  'script.presort',
+                  'script.presort.param',
+                  'layout.response',
+                  'portal',
+                  '_offset.*',
+                  '_limit.*',
+                  'request'
+                ])
+              )
             },
-            params: stringify(
-              sanitizeParameters(namespace(parameters), [
-                'script',
-                'script.param',
-                'script.prerequest',
-                'script.prerequest.param',
-                'script.presort',
-                'script.presort.param',
-                'layout.response',
-                'portal',
-                '_offset.*',
-                '_limit.*',
-                'request'
-              ])
-            )
-          })
+            parameters
+          )
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
@@ -574,32 +587,35 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.agent.request({
-            url: this._listURL(layout),
-            method: 'get',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
+          this.agent.request(
+            {
+              url: this._listURL(layout),
+              method: 'get',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              params: stringify(
+                sanitizeParameters(namespace(parameters), [
+                  '_limit',
+                  '_offset',
+                  '_sort',
+                  'portal',
+                  'script',
+                  'script.param',
+                  'script.prerequest',
+                  'script.prerequest.param',
+                  'script.presort',
+                  'script.presort.param',
+                  'layout.response',
+                  '_offset.*',
+                  '_limit.*',
+                  'request'
+                ])
+              )
             },
-            params: stringify(
-              sanitizeParameters(namespace(parameters), [
-                '_limit',
-                '_offset',
-                '_sort',
-                'portal',
-                'script',
-                'script.param',
-                'script.prerequest',
-                'script.prerequest.param',
-                'script.presort',
-                'script.presort.param',
-                'layout.response',
-                '_offset.*',
-                '_limit.*',
-                'request'
-              ])
-            )
-          })
+            parameters
+          )
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
@@ -625,33 +641,36 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.agent.request({
-            url: this._findURL(layout),
-            method: 'post',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
+          this.agent.request(
+            {
+              url: this._findURL(layout),
+              method: 'post',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              data: Object.assign(
+                { query: toArray(query) },
+                sanitizeParameters(parameters, [
+                  'limit',
+                  'sort',
+                  'offset',
+                  'portal',
+                  'script',
+                  'script.param',
+                  'script.prerequest',
+                  'script.prerequest.param',
+                  'script.presort',
+                  'script.presort.param',
+                  'layout.response',
+                  'offset.*',
+                  'limit.*',
+                  'request'
+                ])
+              )
             },
-            data: Object.assign(
-              { query: toArray(query) },
-              sanitizeParameters(parameters, [
-                'limit',
-                'sort',
-                'offset',
-                'portal',
-                'script',
-                'script.param',
-                'script.prerequest',
-                'script.prerequest.param',
-                'script.presort',
-                'script.presort.param',
-                'layout.response',
-                'offset.*',
-                'limit.*',
-                'request'
-              ])
-            )
-          })
+            parameters
+          )
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
@@ -678,19 +697,22 @@ class Client extends Document {
    * @param  {Object|Array} data a json object containing the name value pairs to set.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
-  globals(data) {
+  globals(data, parameters) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.agent.request({
-            url: this._globalsURL(),
-            method: 'patch',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
+          this.agent.request(
+            {
+              url: this._globalsURL(),
+              method: 'patch',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              data: { globalFields: JSON.stringify(data) }
             },
-            data: { globalFields: JSON.stringify(data) }
-          })
+            parameters
+          )
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
@@ -715,19 +737,24 @@ class Client extends Document {
    * by default this is 1.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
-  upload(file, layout, containerFieldName, recordId = 0, fieldRepetition) {
+  upload(file, layout, containerFieldName, recordId = 0, parameters = {}) {
     return new Promise((resolve, reject) => {
+      let stream;
       let form = new FormData();
       let resolveRecordId = () =>
         recordId === 0
           ? this.create(layout, {}).then(response => response.recordId)
           : Promise.resolve(recordId);
 
-      const stream = fs.createReadStream(file);
-
-      stream.on('error', error =>
-        reject({ message: error.message, code: error.code })
-      );
+      if (!Buffer.isBuffer(file)) {
+        stream = fs.createReadStream(file);
+        stream.on('error', error =>
+          reject({ message: error.message, code: error.code })
+        );
+      } else {
+        stream = intoStream(file);
+        stream.name = 'upload-stream';
+      }
 
       form.append('upload', stream);
 
@@ -735,20 +762,23 @@ class Client extends Document {
         .then(resolvedId =>
           this.authenticate()
             .then(token =>
-              this.agent.request({
-                url: this._uploadURL(
-                  layout,
-                  resolvedId,
-                  containerFieldName,
-                  fieldRepetition
-                ),
-                method: 'post',
-                data: form,
-                headers: {
-                  ...form.getHeaders(),
-                  Authorization: `Bearer ${token}`
-                }
-              })
+              this.agent.request(
+                {
+                  url: this._uploadURL(
+                    layout,
+                    resolvedId,
+                    containerFieldName,
+                    parameters.fieldRepetition
+                  ),
+                  method: 'post',
+                  data: form,
+                  headers: {
+                    ...form.getHeaders(),
+                    Authorization: `Bearer ${token}`
+                  }
+                },
+                parameters
+              )
             )
             .then(response => response.data)
             .then(body => this.data.outgoing(body))
@@ -773,29 +803,32 @@ class Client extends Document {
    * @param  {Object} parameters Parameters to pass to the script
    * @return {Promise}           returns a promise that will either resolve or reject based on the Data API.
    */
-  script(layout, name, parameters = {}) {
+  script(layout, script, param = {}, parameters) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
-          this.agent.request({
-            url: this._listURL(layout),
-            method: 'get',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-            params: sanitizeParameters(
-              Object.assign(
-                {
-                  script: name,
-                  'script.param': isJson(parameters)
-                    ? stringify(parameters)
-                    : parameters.toString()
-                },
-                namespace({ limit: 1 })
+          this.agent.request(
+            {
+              url: this._listURL(layout),
+              method: 'get',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              params: sanitizeParameters(
+                Object.assign(
+                  {
+                    script: script,
+                    'script.param': isJson(param)
+                      ? stringify(param)
+                      : param.toString()
+                  },
+                  namespace({ limit: 1 })
+                )
               )
-            )
-          })
+            },
+            parameters
+          )
         )
         .then(response => response.data)
         .then(body => this.data.outgoing(body))

@@ -94,39 +94,19 @@ describe('Agent Configuration Capabilities', () => {
       .and.property('agent').to.be.to.be.undefined;
   });
 
-  it('adjusts the agent protocol according to the server', () => {
+  it('should not create an agent unless one is defined', () => {
     let client = Filemaker.create({
       application: process.env.APPLICATION,
-      server: process.env.SERVER.replace('https://', 'http://'),
+      server: process.env.SERVER,
       user: process.env.USERNAME,
-      password: process.env.PASSWORD,
-      timeout: 5000
+      password: process.env.PASSWORD
     });
-    return expect(client.save())
-      .to.eventually.be.a('object')
-      .that.has.all.keys(
-        '_schema',
-        'connection',
-        '_id',
-        'data',
-        'agent',
-        'name',
-        'application',
-        'server',
-        'version'
-      )
-      .and.property('agent')
-      .to.be.a('object')
-      .to.have.all.keys(
-        '_schema',
-        'agent',
-        'global',
-        'protocol',
-        'proxy',
-        'timeout'
-      )
-      .and.property('protocol')
-      .to.equal('http');
+    return expect(
+      client
+        .save()
+        .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
+        .then(response => global.AGENTS)
+    ).to.eventually.be.undefined;
   });
 
   it('adjusts the request protocol according to the server', () => {
@@ -198,25 +178,6 @@ describe('Agent Configuration Capabilities', () => {
       .and.property('agent')
       .to.be.a('object')
       .to.have.any.keys('rejectUnauthorized');
-  });
-
-  it('should use a created request agent', () => {
-    let client = Filemaker.create({
-      application: process.env.APPLICATION,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: process.env.PASSWORD,
-      agent: { rejectUnauthorized: true }
-    });
-    return expect(
-      client
-        .save()
-        .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
-    )
-      .to.eventually.be.an('object')
-      .that.has.all.keys('data')
-      .and.property('data')
-      .to.be.a('array');
   });
 
   it('should use a created request agent', () => {

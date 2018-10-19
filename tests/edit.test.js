@@ -60,6 +60,26 @@ describe('Edit Capabilities', () => {
     );
   });
 
+  it('should allow you to specify a timeout', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Darth Vader' })
+        .then(response =>
+          client.edit(
+            process.env.LAYOUT,
+            response.recordId,
+            {
+              name: 'Luke Skywalker'
+            },
+            {
+              request: { timeout: 10 }
+            }
+          )
+        )
+        .catch(error => error)
+    ).to.eventually.be.an('error');
+  });
+
   it('should edit FileMaker records using fieldData', () => {
     client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
       expect(

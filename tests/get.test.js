@@ -60,6 +60,19 @@ describe('Get Capabilities', () => {
       .that.has.all.keys('data');
   });
 
+  it('should allow you to specify a timeout', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Darth Vader' })
+        .then(response =>
+          client.get(process.env.LAYOUT, response.recordId, {
+            request: { timeout: 10 }
+          })
+        )
+        .catch(error => error)
+    ).to.eventually.be.an('error');
+  });
+
   it('should reject get requests that do not specify a recordId', () => {
     return expect(
       client
