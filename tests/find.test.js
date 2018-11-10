@@ -78,6 +78,18 @@ describe('Find Capabilities', () => {
       .and.property('data');
   });
 
+  it('should safely parse omit true and false', () => {
+    return expect(
+      client.find(process.env.LAYOUT, [
+        { id: '*' },
+        { omit: true, name: 'Darth Vader' }
+      ])
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data')
+      .and.property('data');
+  });
+
   it('should allow additional parameters to manipulate the results', () => {
     return expect(client.find(process.env.LAYOUT, { id: '*' }, { limit: '2' }))
       .to.eventually.be.a('object')

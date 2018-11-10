@@ -11,7 +11,7 @@ const {
   toArray,
   namespace,
   isJson,
-  stringify,
+  toStrings,
   sanitizeParameters,
   parseScriptResult,
   setData
@@ -577,7 +577,7 @@ class Client extends Document {
               headers: {
                 Authorization: `Bearer ${token}`
               },
-              params: stringify(
+              params: toStrings(
                 sanitizeParameters(namespace(parameters), [
                   'script',
                   'script.param',
@@ -629,7 +629,7 @@ class Client extends Document {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
               },
-              params: stringify(
+              params: toStrings(
                 sanitizeParameters(namespace(parameters), [
                   '_limit',
                   '_offset',
@@ -686,7 +686,7 @@ class Client extends Document {
                 'Content-Type': 'application/json'
               },
               data: Object.assign(
-                { query: toArray(query) },
+                { query: toStrings(toArray(query)) },
                 sanitizeParameters(parameters, [
                   'limit',
                   'sort',
@@ -747,7 +747,7 @@ class Client extends Document {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
               },
-              data: { globalFields: JSON.stringify(data) }
+              data: { globalFields: toStrings(data) }
             },
             parameters
           )
@@ -867,7 +867,7 @@ class Client extends Document {
                   {
                     script: script,
                     'script.param': isJson(param)
-                      ? stringify(param)
+                      ? toStrings(param)
                       : param.toString()
                   },
                   namespace({ limit: 1 })
