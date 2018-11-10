@@ -1,26 +1,26 @@
 [
   {
-    "name": "Yoda",
-    "image(1)": "https://some-server.com/Streaming_SSL/MainDB/9947AD35A5CE2FF5BF085088D09F70AA9C9E8426C65C573872CA015DA76D863C?RCType=EmbeddedRCFileProcessor",
-    "object": "",
-    "array": "",
-    "height": "",
-    "id": "300AF47D-13DC-9146-97F6-71AD02DE425D",
-    "imageName": "placeholder.md",
-    "faceDescriptor": "",
-    "recordId": "733119",
-    "modId": "2"
-  },
-  {
     "name": "yoda",
     "image(1)": "",
     "object": "",
     "array": "",
     "height": "",
-    "id": "53A5A6BE-D8CB-E145-BF60-9FFBA763D59E",
+    "id": "9ABC4A20-4B02-3D49-95E4-0E0229814C7A",
     "imageName": "",
     "faceDescriptor": "",
-    "recordId": "733125",
+    "recordId": "733133",
+    "modId": "1"
+  },
+  {
+    "name": "Yoda",
+    "image(1)": "",
+    "object": "",
+    "array": "",
+    "height": "",
+    "id": "F6AE1E3E-4BF2-194E-8A04-6FB3E1309B31",
+    "imageName": "",
+    "faceDescriptor": "",
+    "recordId": "733440",
     "modId": "1"
   }
 ]

@@ -2,7 +2,7 @@
 # fms-api-client
 <!--/@-->
 
-[![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client) [![Known Vulnerabilities](https://snyk.io/test/github/Luidog/fms-api-client/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Luidog/fms-api-client?targetFile=package.json) [![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=master)](https://coveralls.io/github/Luidog/fms-api-client?branch=master) [![GitHub issues](https://img.shields.io/github/issues/Luidog/fms-api-client.svg?style=plastic)](https://github.com/Luidog/fms-api-client/issues) [![Github commits (since latest release)](https://img.shields.io/github/commits-since/luidog/fms-api-client/latest.svg)](https://img.shields.io/github/issues/Luidog/fms-api-client.svg) [![GitHub license](https://img.shields.io/github/license/Luidog/fms-api-client.svg)](https://github.com/Luidog/fms-api-client/blob/master/LICENSE.md)
+[![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client) [![Known Vulnerabilities](https://snyk.io/test/github/Luidog/fms-api-client/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Luidog/fms-api-client?targetFile=package.json) [![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=master)](https://coveralls.io/github/Luidog/fms-api-client?branch=master) [![GitHub issues](https://img.shields.io/github/issues/Luidog/fms-api-client.svg?style=plastic)](https://github.com/Luidog/fms-api-client/issues) [![Github commits (since latest release)](https://img.shields.io/github/commits-since/luidog/fms-api-client/latest.svg)](https://img.shields.io/github/issues/Luidog/fms-api-client.svg) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![GitHub license](https://img.shields.io/github/license/Luidog/fms-api-client.svg)](https://github.com/Luidog/fms-api-client/blob/master/LICENSE.md)
 
 A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. You can find detailed documentation on this project here:
 
@@ -185,17 +185,17 @@ Results:
 [
   {
     "name": "Anakin Skywalker",
-    "recordId": "746018",
+    "recordId": "747666",
     "modId": "0"
   },
   {
     "name": "Obi-Wan",
-    "recordId": "746019",
+    "recordId": "747662",
     "modId": "0"
   },
   {
     "name": "Yoda",
-    "recordId": "746022",
+    "recordId": "747664",
     "modId": "0"
   }
 ]
@@ -271,7 +271,7 @@ Result:
 <!--@snippet('./examples/results/create-record-example.json', { showSource: true })-->
 ```json
 {
-  "recordId": "746017",
+  "recordId": "747663",
   "modId": "0"
 }
 ```
@@ -304,7 +304,7 @@ Result:
 ```json
 {
   "name": "George Lucas",
-  "recordId": "746021",
+  "recordId": "747665",
   "modId": "0"
 }
 ```
@@ -341,7 +341,7 @@ Result:
 {
   "name": "Anakin Skywalker",
   "scriptError": "0",
-  "recordId": "746020",
+  "recordId": "747667",
   "modId": "0"
 }
 ```
@@ -355,11 +355,11 @@ The Get method will return a specific FileMaker record based on the recordId pas
 
 `client.get(layout, recordId, parameters)`
 
-| Input      |   Type           | Description                                          |
-| ---------- | -----:           | ---------------------------------------------------- |
-| layout     | String           | The layout to use as context for creating the record.|
-| recordId   | String | Number  | The RecordId to use to get the record.               |
-| parameters | Object           | The parameters to use when getting a record a record.|
+| Input      |   Type | Description                                           |                                        |
+| ---------- | -----: | ----------------------------------------------------- | -------------------------------------- |
+| layout     | String | The layout to use as context for creating the record. |                                        |
+| recordId   | String | Number                                                | The RecordId to use to get the record. |
+| parameters | Object | The parameters to use when getting a record a record. |                                        |
 
 <!--@snippet('./examples/get.examples.js#get-record-example', { showSource: true })-->
 ```js
@@ -379,12 +379,12 @@ Result:
   "data": [
     {
       "fieldData": {
-        "name": "yoda",
-        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/E8ADD6FFD6AE5AC1F43014030280FAE36E79E5AD03FF4C52BF31649D3798644A?RCType=EmbeddedRCFileProcessor",
+        "name": "Yoda",
+        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/A4ED023904470F2AA08DE8FF00D5FC11EA9664FCE203211B932AB0AB463F4022?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
-        "id": "3FFF23CF-EE1E-2C4D-8599-95F2744AFD3C",
+        "id": "CCB7C32E-D64B-194D-8480-C99F824FDA39",
         "imageName": "placeholder.md",
         "faceDescriptor": ""
       },
@@ -392,7 +392,7 @@ Result:
         "Planets": [],
         "Vehicles": []
       },
-      "recordId": "733117",
+      "recordId": "733129",
       "modId": "2"
     }
   ]
@@ -408,10 +408,10 @@ You can use the client to list filemaker records. The list method accepts a layo
 
 `client.list(layout, parameters)`
 
-| Input      |   Type | Description                                          |
-| ---------- | -----: | ---------------------------------------------------- |
-| layout     | String | The layout to use as context for listing records.    |
-| parameters | Object | The parameters to use when listing records.          |
+| Input      |   Type | Description                                       |
+| ---------- | -----: | ------------------------------------------------- |
+| layout     | String | The layout to use as context for listing records. |
+| parameters | Object | The parameters to use when listing records.       |
 
 <!--@snippet('./examples/list.examples.js#list-records-example', { showSource: true })-->
 ```js
@@ -433,7 +433,7 @@ Result:
     {
       "fieldData": {
         "name": "George Lucas",
-        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/D97A1B6810CB39522D4438F85CE8D6857425923B542F3F89B46E96FB387D0A73?RCType=EmbeddedRCFileProcessor",
+        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/FD3683181DA1B693816002EBB87AB3C067EC689B1467A115E6B5E246443F7237?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -486,11 +486,11 @@ The client's find method will accept either a single object as find parameters o
 
 `client.find(layout, query, parameters)`
 
-| Input      |   Type         | Description                                          |
-| ---------- | -------------: | ---------------------------------------------------- |
-| layout     | String         | The layout to use when performing a find.            |
-| query      | Object | Array | The query to use when performing a find.             |
-| parameters | Object         | The parameters to use when listing records.          |
+| Input      |   Type | Description                                 |                                          |
+| ---------- | -----: | ------------------------------------------- | ---------------------------------------- |
+| layout     | String | The layout to use when performing a find.   |                                          |
+| query      | Object | Array                                       | The query to use when performing a find. |
+| parameters | Object | The parameters to use when listing records. |                                          |
 
 <!--@snippet('./examples/find.examples.js#find-records-example', { showSource: true })-->
 ```js
@@ -516,7 +516,7 @@ Result:
         "object": "",
         "array": "",
         "height": "",
-        "id": "F3B3D737-FD2F-8945-BE95-B49CB617ED5B",
+        "id": "7362F557-D812-D244-B207-8B5A6F36F194",
         "imageName": "",
         "faceDescriptor": ""
       },
@@ -524,7 +524,7 @@ Result:
         "Planets": [],
         "Vehicles": []
       },
-      "recordId": "736984",
+      "recordId": "736994",
       "modId": "1"
     }
   ]
@@ -540,13 +540,12 @@ The client's edit method requires a layout, recordId, and object to use for upda
 
 `client.edit(layout, recordId, data, parameters)`
 
-| Input      |   Type          | Description                                          |
-| ---------- | -------------:  | ---------------------------------------------------- |
-| layout     | String          | The layout to use when editing the record.           |
-| recordId   | String | Number | The recordId to target for edits.                    |
-| data       | Object          | The data to use to edit the record.                  |
-| parameters | Object          | The parameters to use when editing a record.         |
-
+| Input      |   Type | Description                                  |                                   |
+| ---------- | -----: | -------------------------------------------- | --------------------------------- |
+| layout     | String | The layout to use when editing the record.   |                                   |
+| recordId   | String | Number                                       | The recordId to target for edits. |
+| data       | Object | The data to use to edit the record.          |                                   |
+| parameters | Object | The parameters to use when editing a record. |                                   |
 
 <!--@snippet('./examples/edit.examples.js#edit-record-example', { showSource: true })-->
 ```js
@@ -566,7 +565,7 @@ Result:
 <!--@snippet('./examples/results/edit-record-example.json', { showSource: true })-->
 ```json
 {
-  "modId": "2"
+  "modId": "3"
 }
 ```
 
@@ -579,11 +578,11 @@ The client's delete method requires a layout and a record id. The recordId can b
 
 `client.delete(layout, recordId, parameters)`
 
-| Input      |   Type          | Description                                          |
-| ---------- | -------------:  | ---------------------------------------------------- |
-| layout     | String          | The layout to use when deleting the record.          |
-| recordId   | String | Number | The recordId to target for deletion.                 |
-| parameters | Object          | The parameters to use when deleting a record.        |
+| Input      |   Type | Description                                   |                                      |
+| ---------- | -----: | --------------------------------------------- | ------------------------------------ |
+| layout     | String | The layout to use when deleting the record.   |                                      |
+| recordId   | String | Number                                        | The recordId to target for deletion. |
+| parameters | Object | The parameters to use when deleting a record. |                                      |
 
 <!--@snippet('./examples/delete.examples.js#delete-record-example', { showSource: true })-->
 ```js
@@ -614,12 +613,12 @@ The client's script method will trigger a script. You can also trigger scripts w
 
 `client.script(layout, script, param, parameters)`
 
-| Input      |   Type   | Description                                          |
-| ---------- | -------: | ---------------------------------------------------- |
-| layout     | String   | The layout to use when triggering the script.        |
-| script     | String   | The script to trigger.                               |
-| param      | Any      | The parameter to send to the script                  |
-| parameters | Object   | The parameters to use making the request.            |
+| Input      |   Type | Description                                   |
+| ---------- | -----: | --------------------------------------------- |
+| layout     | String | The layout to use when triggering the script. |
+| script     | String | The script to trigger.                        |
+| param      |    Any | The parameter to send to the script           |
+| parameters | Object | The parameters to use making the request.     |
 
 <!--@snippet('./examples/script.examples.js#script-trigger-example', { showSource: true })-->
 ```js
@@ -652,13 +651,13 @@ The upload method will upload binary data to a container. The file parameter sho
 
 `client.upload(file, layout, container, recordId, parameters)`
 
-| Input      |   Type          | Description                                                                    |
-| ---------- | -------:        | ------------------------------------------------------------------------------ |
-| file       | Object | String | The file to upload, Either an object with a buffer and name property or a path to a file.                       |
-| layout     | String          | The layout to use when uploading a file.                                       |
-| container  | String          | The container field name to upload into.                                       |
-| recordId   | String | Number | The recordId to upload to. If omitted or set to zero a record will be created. |
-| parameters | Object          | The parameters to use making the request.                                      |
+| Input      |   Type | Description                               |                                                                                           |
+| ---------- | -----: | ----------------------------------------- | ----------------------------------------------------------------------------------------- |
+| file       | Object | String                                    | The file to upload, Either an object with a buffer and name property or a path to a file. |
+| layout     | String | The layout to use when uploading a file.  |                                                                                           |
+| container  | String | The container field name to upload into.  |                                                                                           |
+| recordId   | String | Number                                    | The recordId to upload to. If omitted or set to zero a record will be created.            |
+| parameters | Object | The parameters to use making the request. |                                                                                           |
 
 <!--@snippet('./examples/upload.examples.js#upload-image-example', { showSource: true })-->
 ```js
@@ -677,7 +676,7 @@ Result:
 ```json
 {
   "modId": "1",
-  "recordId": "746024"
+  "recordId": "747669"
 }
 ```
 
@@ -703,7 +702,7 @@ Result:
 ```json
 {
   "modId": "2",
-  "recordId": "733119"
+  "recordId": "733129"
 }
 ```
 
@@ -716,9 +715,9 @@ The globals method will set global fields for the current session.
 
 `client.globals(data, parameters)`
 
-| Input      |   Type  | Description                                                        |
-| ---------- | ------: | ------------------------------------------------------------------ |
-| data       | Object  | The global fields to set for the session                           |
+| Input |   Type | Description                              |
+| ----- | -----: | ---------------------------------------- |
+| data  | Object | The global fields to set for the session |
 
 <!--@snippet('./examples/globals.examples.js#set-globals-example', { showSource: true })-->
 ```js
@@ -751,9 +750,9 @@ The recordId method retrieves the `recordId` properties for a response. This met
 
 `recordId(data)`
 
-| Input      |   Type          | Description                                                        |
-| ---------- | --------------: | ------------------------------------------------------------------ |
-| data       | Array | Object  | The FileMaker data to transform. This can be a object or an array. |
+| Input |  Type | Description |                                                                    |
+| ----- | ----: | ----------- | ------------------------------------------------------------------ |
+| data  | Array | Object      | The FileMaker data to transform. This can be a object or an array. |
 
 <!--@snippet('./examples/utility.examples.js#recordid-utility-example', { showSource: true })-->
 ```js
@@ -772,8 +771,8 @@ Result:
 <!--@snippet('./examples/results/recordid-utility-example.json', { showSource: true })-->
 ```json
 [
-  "733119",
-  "733125"
+  "733133",
+  "733440"
 ]
 ```
 
@@ -786,9 +785,9 @@ The fieldData method retrieves the `fieldData`, `recordId`, and `modId` properti
 
 `fieldData(data)`
 
-| Input      |   Type          | Description                                                        |
-| ---------- | --------------: | ------------------------------------------------------------------ |
-| data       | Array | Object  | The FileMaker data to transform. This can be a object or an array. |
+| Input |  Type | Description |                                                                    |
+| ----- | ----: | ----------- | ------------------------------------------------------------------ |
+| data  | Array | Object      | The FileMaker data to transform. This can be a object or an array. |
 
 <!--@snippet('./examples/utility.examples.js#fielddata-utility-example', { showSource: true })-->
 ```js
@@ -808,27 +807,27 @@ Result:
 ```json
 [
   {
-    "name": "Yoda",
-    "image(1)": "https://some-server.com/Streaming_SSL/MainDB/9947AD35A5CE2FF5BF085088D09F70AA9C9E8426C65C573872CA015DA76D863C?RCType=EmbeddedRCFileProcessor",
-    "object": "",
-    "array": "",
-    "height": "",
-    "id": "300AF47D-13DC-9146-97F6-71AD02DE425D",
-    "imageName": "placeholder.md",
-    "faceDescriptor": "",
-    "recordId": "733119",
-    "modId": "2"
-  },
-  {
     "name": "yoda",
     "image(1)": "",
     "object": "",
     "array": "",
     "height": "",
-    "id": "53A5A6BE-D8CB-E145-BF60-9FFBA763D59E",
+    "id": "9ABC4A20-4B02-3D49-95E4-0E0229814C7A",
     "imageName": "",
     "faceDescriptor": "",
-    "recordId": "733125",
+    "recordId": "733133",
+    "modId": "1"
+  },
+  {
+    "name": "Yoda",
+    "image(1)": "",
+    "object": "",
+    "array": "",
+    "height": "",
+    "id": "F6AE1E3E-4BF2-194E-8A04-6FB3E1309B31",
+    "imageName": "",
+    "faceDescriptor": "",
+    "recordId": "733440",
     "modId": "1"
   }
 ]
@@ -845,10 +844,10 @@ The transform method accepts three option properties. The three option propertie
 
 `transform(data, parameters)`
 
-| Input      |   Type          | Description                                                        |
-| ---------- | --------------: | ------------------------------------------------------------------ |
-| data       | Array | Object  | The FileMaker data to transform. This can be a object or an array. |
-| parameters | Object          | The parameters to use when converting the data.                    |
+| Input      |   Type | Description                                     |                                                                    |
+| ---------- | -----: | ----------------------------------------------- | ------------------------------------------------------------------ |
+| data       |  Array | Object                                          | The FileMaker data to transform. This can be a object or an array. |
+| parameters | Object | The parameters to use when converting the data. |                                                                    |
 
 <!--@snippet('./examples/utility.examples.js#transform-utility-example', { showSource: true })-->
 ```js
@@ -926,15 +925,14 @@ npm test
 
 <!--@execute('npm run test',[])-->
 ```default
-> fms-api-client@1.0.0 test /Users/luidelaparra/Documents/Development/fms-api-client
+> fms-api-client@1.7.3 test /Users/luidelaparra/Documents/Development/fms-api-client
 > nyc _mocha --recursive  ./tests --timeout=30000 --exit
 
 
 
   Agent Configuration Capabilities
-(node:17697) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
     ✓ should accept no agent configuration
-    ✓ should not create an agent unless one is defined (239ms)
+    ✓ should not create an agent unless one is defined (281ms)
     ✓ adjusts the request protocol according to the server
     ✓ should create a https agent
     ✓ should use a created request agent
@@ -942,140 +940,141 @@ npm test
     ✓ should create a http agent
     ✓ should accept a timeout property
     ✓ should use a timeout if one is set
-    ✓ should use a proxy if one is set (226ms)
-    ✓ should automatically recreate an agent if one is deleted (212ms)
+    ✓ should use a proxy if one is set (263ms)
+    ✓ should automatically recreate an agent if one is deleted (246ms)
 
   Authentication Capabilities
-    ✓ should authenticate into FileMaker. (101ms)
-    ✓ should automatically request an authentication token (175ms)
-    ✓ should reuse a saved authentication token (183ms)
-    ✓ should log out of the filemaker. (184ms)
+    ✓ should authenticate into FileMaker. (91ms)
+    ✓ should automatically request an authentication token (215ms)
+    ✓ should reuse a saved authentication token (179ms)
+    ✓ should log out of the filemaker. (223ms)
     ✓ should not attempt a logout if there is no valid token.
-    ✓ should reject if the logout request fails (177ms)
-    ✓ should reject if the authentication request fails (1429ms)
-    ✓ should attempt to log out before being removed (175ms)
+    ✓ should reject if the logout request fails (226ms)
+    ✓ should reject if the authentication request fails (1425ms)
+    ✓ should attempt to log out before being removed (185ms)
     ✓ should catch the log out error before being removed if the login is not valid
 
   Create Capabilities
-    ✓ should create FileMaker records without fieldData (170ms)
+    ✓ should create FileMaker records without fieldData (192ms)
     ✓ should allow you to specify a timeout
-    ✓ should create FileMaker records using fieldData (80ms)
-    ✓ should create FileMaker records with portalData (90ms)
-    ✓ should allow portalData to be an object or number (85ms)
-    ✓ should reject bad data with an error (84ms)
-    ✓ should create records with mixed types (84ms)
-    ✓ should substitute an empty object if data is not provided (84ms)
-    ✓ should return an object with merged data properties (84ms)
-    ✓ should allow you to run a script when creating a record with a merge response (90ms)
-    ✓ should allow you to specify scripts as an array (96ms)
-    ✓ should allow you to specify scripts as an array with a merge response (92ms)
-    ✓ should sanitize parameters when creating a new record (91ms)
-    ✓ should accept both the default script parameters and a scripts array (95ms)
-    ✓ should remove an expired token (85ms)
+    ✓ should create FileMaker records using fieldData (88ms)
+    ✓ should create FileMaker records with portalData (91ms)
+    ✓ should allow portalData to be an object or number (95ms)
+    ✓ should reject bad data with an error (86ms)
+    ✓ should create records with mixed types (83ms)
+    ✓ should substitute an empty object if data is not provided (93ms)
+    ✓ should return an object with merged data properties (91ms)
+    ✓ should allow you to run a script when creating a record with a merge response (92ms)
+    ✓ should allow you to specify scripts as an array (92ms)
+    ✓ should allow you to specify scripts as an array with a merge response (99ms)
+    ✓ should sanitize parameters when creating a new record (95ms)
+    ✓ should accept both the default script parameters and a scripts array (96ms)
+    ✓ should remove an expired token (80ms)
 
   Delete Capabilities
-    ✓ should delete FileMaker records. (268ms)
-    ✓ should allow you to specify a timeout (100ms)
-    ✓ should trigger scripts via an array when deleting records. (164ms)
-    ✓ should trigger scripts via parameters when deleting records. (165ms)
-    ✓ should allow you to mix script parameters and scripts array when deleting records. (166ms)
-    ✓ should stringify script parameters. (175ms)
-    ✓ should reject deletions that do not specify a recordId (81ms)
-    ✓ should reject deletions that do not specify an invalid recordId (75ms)
-    ✓ should remove an expired token (85ms)
+    ✓ should delete FileMaker records. (273ms)
+    ✓ should allow you to specify a timeout (102ms)
+    ✓ should trigger scripts via an array when deleting records. (172ms)
+    ✓ should trigger scripts via parameters when deleting records. (171ms)
+    ✓ should allow you to mix script parameters and scripts array when deleting records. (176ms)
+    ✓ should stringify script parameters. (179ms)
+    ✓ should reject deletions that do not specify a recordId (83ms)
+    ✓ should reject deletions that do not specify an invalid recordId (82ms)
+    ✓ should remove an expired token (84ms)
 
   Edit Capabilities
     ✓ should edit FileMaker records without fieldData
-    ✓ should allow you to specify a timeout (212ms)
+    ✓ should allow you to specify a timeout (219ms)
     ✓ should edit FileMaker records using fieldData
     ✓ should edit FileMaker records with portalData
     ✓ should edit FileMaker records with portalData and allow portalData to be an array.
-    ✓ should reject bad data with an error (165ms)
+    ✓ should reject bad data with an error (227ms)
     ✓ should return an object with merged filemaker and data properties
-    ✓ should allow you to run a script when editing a record (176ms)
-    ✓ should allow you to run a script via a scripts array when editing a record (174ms)
-    ✓ should allow you to specify scripts as an array (174ms)
-    ✓ should allow you to specify scripts as an array with a merge response (180ms)
-    ✓ should sanitize parameters when creating a editing record (182ms)
-    ✓ should accept both the default script parameters and a scripts array (180ms)
-    ✓ should remove an expired token (169ms)
+    ✓ should allow you to run a script when editing a record (184ms)
+    ✓ should allow you to run a script via a scripts array when editing a record (205ms)
+    ✓ should allow you to specify scripts as an array (190ms)
+    ✓ should allow you to specify scripts as an array with a merge response (190ms)
+    ✓ should sanitize parameters when creating a editing record (183ms)
+    ✓ should accept both the default script parameters and a scripts array (190ms)
+    ✓ should remove an expired token (174ms)
 
   FieldData Capabilities
-    ✓ it should extract field data while maintaining the array (273ms)
-    ✓ it should extract field data while maintaining the object (167ms)
+    ✓ it should extract field data while maintaining the array (271ms)
+    ✓ it should extract field data while maintaining the object (180ms)
 
   Find Capabilities
-    ✓ should perform a find request (309ms)
-    ✓ should allow you to use an object instead of an array for a find (208ms)
-    ✓ should specify omit Criterea (137ms)
+    ✓ should perform a find request (332ms)
+    ✓ should allow you to use an object instead of an array for a find (237ms)
+    ✓ should specify omit Criterea (128ms)
+    ✓ should safely parse omit true and false (142ms)
     ✓ should allow additional parameters to manipulate the results (81ms)
-    ✓ should allow you to limit the number of portal records to return (88ms)
+    ✓ should allow you to limit the number of portal records to return (92ms)
     ✓ should allow you to use numbers in the find query parameters (85ms)
-    ✓ should allow you to sort the results (627ms)
-    ✓ should return an empty array if the find does not return results (88ms)
-    ✓ should allow you run a pre request script (96ms)
+    ✓ should allow you to sort the results (722ms)
+    ✓ should return an empty array if the find does not return results (96ms)
+    ✓ should allow you run a pre request script (97ms)
     ✓ should return a response even if a script fails (99ms)
-    ✓ should allow you to send a parameter to the pre request script (92ms)
-    ✓ should allow you run script after the find and before the sort (294ms)
-    ✓ should allow you to pass a parameter to a script after the find and before the sort (291ms)
-    ✓ should reject of there is an issue with the find request (87ms)
-    ✓ should remove an expired token (81ms)
+    ✓ should allow you to send a parameter to the pre request script (96ms)
+    ✓ should allow you run script after the find and before the sort (530ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (319ms)
+    ✓ should reject of there is an issue with the find request (97ms)
+    ✓ should remove an expired token (97ms)
 
   Get Capabilities
-    ✓ should get specific FileMaker records. (280ms)
-    ✓ should allow you to specify a timeout (97ms)
-    ✓ should reject get requests that do not specify a recordId (171ms)
-    ✓ should allow you to limit the number of portal records to return (172ms)
-    ✓ should accept namespaced portal limit and offset parameters (167ms)
-    ✓ should remove an expired token (80ms)
+    ✓ should get specific FileMaker records. (275ms)
+    ✓ should allow you to specify a timeout (103ms)
+    ✓ should reject get requests that do not specify a recordId (160ms)
+    ✓ should allow you to limit the number of portal records to return (170ms)
+    ✓ should accept namespaced portal limit and offset parameters (279ms)
+    ✓ should remove an expired token (85ms)
 
   Global Capabilities
-    ✓ should allow you to set session globals (173ms)
+    ✓ should allow you to set session globals (181ms)
     ✓ should allow you to specify a timeout
-    ✓ should reject with a message and code if it fails to set a global (78ms)
-    ✓ should remove an expired token (79ms)
+    ✓ should reject with a message and code if it fails to set a global (100ms)
+    ✓ should remove an expired token (86ms)
 
   Request Interceptor Capabilities
-    ✓ should reject if the server errors (124ms)
-    ✓ should handle non JSON responses by rejecting with a json error (117ms)
+    ✓ should reject if the server errors (122ms)
+    ✓ should handle non JSON responses by rejecting with a json error (114ms)
     ✓ should reject non http requests to the server with a json error
-    ✓ should reject non https requests to the server with a json error (129ms)
+    ✓ should reject non https requests to the server with a json error (139ms)
 
   List Capabilities
-    ✓ should allow you to list records (300ms)
+    ✓ should allow you to list records (314ms)
     ✓ should allow you to specify a timeout
-    ✓ should allow you use parameters to modify the list response (82ms)
-    ✓ should should allow you to use numbers in parameters (87ms)
-    ✓ should should allow you to provide an array of portals in parameters (88ms)
-    ✓ should should remove non used properties from a portal object (81ms)
-    ✓ should modify requests to comply with DAPI name reservations (84ms)
-    ✓ should allow strings while complying with DAPI name reservations (79ms)
+    ✓ should allow you use parameters to modify the list response (79ms)
+    ✓ should should allow you to use numbers in parameters (88ms)
+    ✓ should should allow you to provide an array of portals in parameters (92ms)
+    ✓ should should remove non used properties from a portal object (91ms)
+    ✓ should modify requests to comply with DAPI name reservations (87ms)
+    ✓ should allow strings while complying with DAPI name reservations (85ms)
     ✓ should allow you to offset the list response (80ms)
-    ✓ should santize parameters that would cause unexpected parameters (83ms)
-    ✓ should allow you to limit the number of portal records to return (83ms)
-    ✓ should accept namespaced portal limit and offset parameters (82ms)
-    ✓ should reject invalid parameters (81ms)
-    ✓ should remove an expired token (81ms)
+    ✓ should santize parameters that would cause unexpected parameters (86ms)
+    ✓ should allow you to limit the number of portal records to return (84ms)
+    ✓ should accept namespaced portal limit and offset parameters (85ms)
+    ✓ should reject invalid parameters (88ms)
+    ✓ should remove an expired token (83ms)
 
   RecordId Capabilities
-    ✓ it should extract the recordId while maintaining the array (253ms)
-    ✓ it should extract recordId while maintaining the object (166ms)
+    ✓ it should extract the recordId while maintaining the array (269ms)
+    ✓ it should extract recordId while maintaining the object (182ms)
 
   Script Capabilities
     ✓ should allow you to trigger a script (189ms)
     ✓ should allow you to specify a timeout
-    ✓ should allow you to trigger a script specifying a string as a parameter (88ms)
-    ✓ should allow you to trigger a script specifying a number as a parameter (87ms)
-    ✓ should allow you to trigger a script specifying an object as a parameter (86ms)
-    ✓ should allow you to trigger a script in a find (222ms)
-    ✓ should allow you to trigger a script in a list (97ms)
-    ✓ should reject a script that does not exist (85ms)
-    ✓ should allow return a result even if a script returns an error (92ms)
-    ✓ should parse script results if the results are json (86ms)
-    ✓ should not parse script results if the results are not json (90ms)
-    ✓ should parse an array of scripts (88ms)
-    ✓ should trigger scripts on all three script phases (91ms)
-    ✓ should remove an expired token (80ms)
+    ✓ should allow you to trigger a script specifying a string as a parameter (95ms)
+    ✓ should allow you to trigger a script specifying a number as a parameter (92ms)
+    ✓ should allow you to trigger a script specifying an object as a parameter (87ms)
+    ✓ should allow you to trigger a script in a find (232ms)
+    ✓ should allow you to trigger a script in a list (89ms)
+    ✓ should reject a script that does not exist (112ms)
+    ✓ should allow return a result even if a script returns an error (86ms)
+    ✓ should parse script results if the results are json (91ms)
+    ✓ should not parse script results if the results are not json (87ms)
+    ✓ should parse an array of scripts (98ms)
+    ✓ should trigger scripts on all three script phases (110ms)
+    ✓ should remove an expired token (88ms)
 
   Storage
     ✓ should allow an instance to be created
@@ -1086,37 +1085,42 @@ npm test
     ✓ should allow you to remove an instance
 
   Transform Capabilities
-    ✓ should merge portal data and field data from an array (309ms)
-    ✓ should merge portal data and field data from an object (117ms)
-    ✓ should optionally not convert table::field keys from an array (116ms)
-    ✓ should optionally not convert table::field keys from an object (116ms)
-    ✓ should allow you to remove field data from an array (127ms)
-    ✓ should allow you to remove field data from an object (123ms)
-    ✓ should allow you to remove portal data from an array (170ms)
-    ✓ should allow you to remove portal data from an object (122ms)
-    ✓ should merge portal data and portal data from an array (128ms)
+    ✓ should merge portal data and field data from an array (337ms)
+    ✓ should merge portal data and field data from an object (138ms)
+    ✓ should optionally not convert table::field keys from an array (142ms)
+    ✓ should optionally not convert table::field keys from an object (131ms)
+    ✓ should allow you to remove field data from an array (135ms)
+    ✓ should allow you to remove field data from an object (145ms)
+    ✓ should allow you to remove portal data from an array (136ms)
+    ✓ should allow you to remove portal data from an object (134ms)
+    ✓ should merge portal data and portal data from an array (133ms)
 
   File Upload Capabilities
-    ✓ should allow you to specify a timeout (193ms)
-    ✓ should allow you to upload a file to a new record (1267ms)
-    ✓ should allow you to upload a buffer to a new record (1342ms)
-    ✓ should allow you to upload a file to a specific container repetition (1270ms)
-    ✓ should allow you to upload a buffer to a specific container repetition (1288ms)
+    ✓ should allow you to specify a timeout (204ms)
+    ✓ should allow you to upload a file to a new record (1399ms)
+    ✓ should allow you to upload a buffer to a new record (1433ms)
+    ✓ should allow you to upload a file to a specific container repetition (1331ms)
+    ✓ should allow you to upload a buffer to a specific container repetition (1537ms)
     ✓ should reject with a message if it can not find the file to upload
-    ✓ should allow you to upload a file to a specific record (1266ms)
-    ✓ should allow you to upload a file to a specific record (1265ms)
-    ✓ should allow you to upload a file to a specific record container repetition (1265ms)
-    ✓ should allow you to upload a buffer to a specific record container repetition (1296ms)
-    ✓ should reject of the request is invalid (232ms)
-    ✓ should remove an expired token (83ms)
+    ✓ should allow you to upload a file to a specific record (2146ms)
+    ✓ should allow you to upload a buffer object to a specific record (1533ms)
+    ✓ should allow you to upload a file to a specific record container repetition (1536ms)
+    ✓ should allow you to upload a buffer to a specific record container repetition (1536ms)
+    ✓ should reject of the request is invalid (246ms)
+    ✓ should reject an empty buffer object (85ms)
+    ✓ should reject a null buffer object (88ms)
+    ✓ should reject a number instead of an object (85ms)
+    ✓ should reject an object without a filename (85ms)
+    ✓ should reject an object without a buffer (83ms)
+    ✓ should remove an expired token (82ms)
 
   Data Usage 
     Tracks Data Usage
-      ✓ should track API usage data. (181ms)
-      ✓ should allow you to reset usage data. (83ms)
+      ✓ should track API usage data. (185ms)
+      ✓ should allow you to reset usage data. (88ms)
     Does Not Track Data Usage
-      ✓ should not track data usage in (177ms)
-      ✓ should not track data usage out (81ms)
+      ✓ should not track data usage in (174ms)
+      ✓ should not track data usage out (83ms)
 
   Utility Capabilities
     Omit Utility
@@ -1135,7 +1139,7 @@ npm test
       ✓ it should return false for null
 
 
-  161 passing (28s)
+  167 passing (33s)
 
 ------------------------------|----------|----------|----------|----------|-------------------|
 File                          |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
@@ -1186,7 +1190,6 @@ All files                     |      100 |      100 |      100 |      100 |     
 
 - [chai](https://github.com/chaijs/chai): BDD/TDD assertion library for node.js and the browser. Test framework agnostic.
 - [chai-as-promised](https://github.com/domenic/chai-as-promised): Extends Chai with assertions about promises.
-- [colors](https://github.com/Marak/colors.js): get colors in your node.js console
 - [coveralls](https://github.com/nickmerwin/node-coveralls): takes json-cov output into stdin and POSTs to coveralls.io
 - [deep-map](https://github.com/mcmath/deep-map): Transforms nested values of complex objects
 - [dotenv](https://github.com/motdotla/dotenv): Loads environment variables from .env file

@@ -7,7 +7,7 @@ const {
   setData
 } = require('./filemaker.utilities');
 
-const { omit, stringify, toArray, isJson } = require('./conversion.utilities');
+const { omit, toStrings, toArray, isJson } = require('./conversion.utilities');
 
 const {
   interceptRequest,
@@ -16,7 +16,7 @@ const {
 
 module.exports = {
   omit,
-  stringify,
+  toStrings,
   setData,
   toArray,
   isJson,

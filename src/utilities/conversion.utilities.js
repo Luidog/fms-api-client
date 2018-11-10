@@ -7,10 +7,23 @@ const _ = require('lodash');
  */
 
 /**
+ * @method toStrings
+ * @public
+ * @descript toStrings is a helper method that converts arrays of objects or a single object
+ * into stringified values
+ * @see stringify
+ * @param  {Object|Array} data The data to stringify.
+ * @return {Object|Array}      a json object containing stringified data.
+ */
+
+const toStrings = data =>
+  Array.isArray(data) ? data.map(datum => stringify(datum)) : stringify(data);
+
+/**
  * @method stringify
  * @public
- * @description stringify is a helper method that converts numbers, objects, and arrays to strings.
- * @param  {Object|Array} data The data being used to create or update a record.
+ * @description stringify is a helper method that converts numbers, objects, or booleans to strings.
+ * @param  {Object} data The object to stringify.
  * @return {Object}      a json object containing stringified data.
  */
 
@@ -65,10 +78,7 @@ const isJson = data => {
 /**
  * @method omit
  * @public
- * @description fieldData is a helper method that strips the filemaker structural layout and portal information
- * from a record. It returns only the data contained in the fieldData key and the recordId.
- * @deprecated since version 1.5.0. Use the exported module instead.
- * @param  {Object|Array} data The raw data to use when omitting. his can be an array or an object.
+ * @description omit will remove properties from the first object or array passed to it that are in the second parameter passed it.
  * @param  {Array} properties An array properties to remove.
  * @return {Object|Array} A json object or array of objects without the properties passed to it
  */
@@ -89,6 +99,7 @@ const omit = (data, properties) =>
 const parse = value => (isJson(value) ? JSON.parse(value) : value);
 
 module.exports = {
+  toStrings,
   stringify,
   toArray,
   isJson,
