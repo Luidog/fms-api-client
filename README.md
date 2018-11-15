@@ -20,13 +20,17 @@ npm install --save fms-api-client
 
 ### Introduction
 
-The fms-api-client is a wrapper around the [FileMaker Data API](https://fm.mutesymphony.com/fmi/data/apidoc/). Much :heart: to FileMaker for their work on the Data API. The client attempts to follow the terminology used by FileMaker wherever possible. the client uses a lightweight datastore to hold Data API connections. The client contains methods which are modeled after the Data API Endpoints.
+The fms-api-client is a wrapper around the [FileMaker Data API](https://fm.mutesymphony.com/fmi/data/apidoc/). Much :heart: to FileMaker for their work on the Data API. This client attempts to follow the terminology used by FileMaker wherever possible. The client uses a lightweight datastore to hold Data API connections. Each client has methods which are modeled after the Data API endpoints.
 
-The client requires that you first connect to a datastore before creating or querying the FileMaker class. You can use the datastore to save a multitude of clients. Each client committed to the datastore will automatically handle Data API Sessions. Once saved to the data store a client's methods can be used to interact with a FileMaker Database without the need for additional authentication.
+fms-api-client requires that you first connect to a datastore before creating or querying the FileMaker class. Once connected you can use the datastore to save a multitude of clients. 
 
-Each client will manage their own FileMaker Data API session, but the clients can manually open or close their FileMaker sessions by calling either the `client.login()` method or the `client.logout()` method. To remove a client from a datastore and log out a session call `client.destroy()`.
+Each client committed to the datastore will automatically handle Data API Sessions. If needed the clients can manually open or close their FileMaker sessions by calling either the `client.login()` method or the `client.logout()` method.
 
-The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters. Any method that accepts script or portals in a query or body parameters will also accept the following script and portal parameters:
+To remove a client from a datastore and log out a session call `client.destroy()`.
+
+The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters. 
+
+Any method that accepts script or portals in query or body parameters will also accept the following script and portal parameter syntax:
 
 #### Script Array Syntax
 
@@ -57,9 +61,9 @@ The custom script parameter follows the following syntax:
 > File [./examples/schema/scripts-array-schema.json](./examples/schema/scripts-array-schema.json)
 <!--/@-->
 
-#### Portal Array Syntax
+#### Portals Array Syntax
 
-The custom portal parameter follows the following syntax:
+The custom portals parameter follows the following syntax:
 
 <!--@snippet('./examples/schema/portals-array-schema.json', { showSource: true })-->
 ```json
@@ -74,19 +78,23 @@ The custom portal parameter follows the following syntax:
 > File [./examples/schema/portals-array-schema.json](./examples/schema/portals-array-schema.json)
 <!--/@-->
 
-**Note:** The FileMaker script and portal syntax will override the alternative script and portal parameter syntax.
+**Note:** The FileMaker script and portal syntax will override the alternative scripts and portals parameter syntax.
 
-In addition to allowing an exanded syntax for invoking script or selecting portals the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API. Arrays and objects are stringified before being inserted into field data. Also limits and offsets can be set as either a strings or a numbers.
+In addition to allowing an exanded syntax for invoking scripts or selecting portals the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API.
 
-The client will also automatically convert `limit`, `find`, and `offset` into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client.
+Arrays and objects are stringified before being inserted into field or portal data. `limit` and `offset` parameters can be either strings or a numbers.
 
-All methods on the client return promises and each each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API where possible.
+The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client.
 
-This project also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the utility section.
+All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable. 
+
+fms-api-client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the utility section.
 
 ### Datastore Connection
 
-Connect must be called before the FileMaker class is used. This connect uses Marpat. Marpat is a fork of Camo. Thanks and love to [Scott Robinson](https://github.com/scottwrobinson) for his creation and maintenance of Camo. My fork of Camo - Marpat is designed to allow the use of multiple datastores with the focus on encrypted file storage and project flexibility.
+The connect  method must be called before the FileMaker class is used. The connect method is not currently exposed by fms-api-client, but from the marpat dependency. marpat is a fork of camo. Thanks and love to [Scott Robinson](https://github.com/scottwrobinson) for his creation and maintenance of camo.
+
+marpat is designed to allow the use of multiple datastores with the focus on encrypted file storage and project flexibility.
 
 For more information on marpat and the different types of supported storage visit [marpat](https://github.com/Luidog/marpat)
 
@@ -163,7 +171,7 @@ A client can be removed using either the `client.destroy()` method, the `Filemak
 
 ### Client Use
 
-A client can be used after it is created and saved or recalled from the datastore. The `Filemaker.find(query)` or `Filemaker.findOne(query)` methods can be used to recall clients. The `filemaker.findOne(query)` method will return either an client or null. The `filemaker.find(query)` will return an array of clients. All public methods on the client are return promises.
+A client can be used after it is created and saved or recalled from the datastore. The `Filemaker.find(query)` or `Filemaker.findOne(query)` methods can be used to recall clients. The `Filemaker.findOne(query)` method will return either one client or null. The `Filemaker.find(query)` will return either an empty array or an array of clients. All public methods on the client return promises.
 
 <!--@snippet('./examples/create.examples.js#create-many-records', { showSource: true })-->
 ```js
@@ -206,9 +214,11 @@ Results:
 
 ### Data API Sessions
 
-The client will automatically handle creating and closing Data API sessions. If required the client will authenticate and generate a new session token with each method call. The Data API session is also monitored, updated, and saved as the client interacts with the Data API. A client will always attempt to reuse a valid token whenever possible.
+The client will automatically handle creating and closing Data API sessions. If required the client will authenticate and generate a new session token with each method call. 
 
-The client contains two methods related to Data API sessions.These methods are `client.login()` and `client.logout()`. The login method is used to start a Data API session and the logout method will end a Data API session.
+The Data API session is also monitored, updated, and saved as the client interacts with the Data API. A client will always attempt to reuse a valid token whenever possible.
+
+The client contains two methods related to Data API sessions. These methods are `client.login()` and `client.logout()`. The login method is used to start a Data API session and the logout method will end a Data API session.
 
 #### Login Method
 
@@ -230,8 +240,6 @@ The logout method is used to end a Data API session. This method will also remov
 
 `client.logout()`
 
-**Note** The logout method will change in an upcoming release. It will be modified to accept a session parameter.
-
 <!--@snippet('./examples/authentication.examples.js#client-logout-example', { showSource: true })-->
 ```js
 const logout = client =>
@@ -243,7 +251,7 @@ const logout = client =>
 
 ### Create Records
 
-Using the client you can create filemaker records. To create a record specify the layout to use and the data to insert on creation. The client will automatically convert numbers, arrays, and objects into strings so they can be inserted into a filemaker field. The create method will automatically create a fieldData and add data to that property if there is no fieldData property present.
+Using the client you can create filemaker records. To create a record specify the layout to use and the data to insert on creation. The client will automatically convert numbers, arrays, and objects into strings so they can be inserted into a filemaker field. The create method will automatically create a `fieldData` property and add all data to that property if there is no fieldData property present. The client will preserve the contents of the `portalData` property.
 
 `client.create(layout, data, parameters)`
 
@@ -279,7 +287,7 @@ Result:
 > File [./examples/results/create-record-example.json](./examples/results/create-record-example.json)
 <!--/@-->
 
-Both the create method and the edit method accept a merge boolean in their options. If merge is true the data used to create or edit the filemaker record will be merged with
+Both the create method and the edit method accept a merge boolean in their option parameters. If the `merge` property is true the data used to create or edit the filemaker record will be merged with the FileMaker Data API results.
 
 <!--@snippet('./examples/create.examples.js#create-record-merge', { showSource: true })-->
 ```js
@@ -312,7 +320,7 @@ Result:
 > File [./examples/results/create-record-merge-example.json](./examples/results/create-record-merge-example.json)
 <!--/@-->
 
-The create method also allows you to trigger scripts when creating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of scripts with a name, phase, and script parameter.
+The create method also allows you to trigger scripts when creating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional  `params` parameters. For more information see the scripts syntax example in the introduction.
 
 <!--@snippet('./examples/create.examples.js#trigger-scripts-on-create', { showSource: true })-->
 ```js
