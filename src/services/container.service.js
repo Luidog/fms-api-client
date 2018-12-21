@@ -30,6 +30,7 @@ const transport = (url, parameters = {}) =>
  * @param  {Object} parameters optional request configuration parameters.
  * @return {Promise}      a promise which will resolve to the file data.
  */
+
 const containerData = (data, parameters = {}) =>
   Array.isArray(data)
     ? data.map(datum => transport(data[parameters.field], parameters))
