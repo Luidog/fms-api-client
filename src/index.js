@@ -1,11 +1,12 @@
 'use strict';
 
 const { Client } = require('./models');
-const { fieldData, recordId, transform } = require('./services');
+const { fieldData, recordId, transform, containerData } = require('./services');
 
 module.exports = {
   Client,
   fieldData,
   recordId,
-  transform
+  transform,
+  containerData
 };
