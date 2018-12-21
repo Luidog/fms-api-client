@@ -1,0 +1,6 @@
+{
+  "sort": [
+    { "fieldName": "name", "sortOrder": "ascend" },
+    { "fieldName": "modificationTimestamp", "sortOrder": "descend" }
+  ]
+}

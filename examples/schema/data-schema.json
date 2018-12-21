@@ -1,0 +1,6 @@
+{
+  "portals": [
+    { "name": "planets", "limit": 1, "offset": 1 },
+    { "name": "vehicles", "limit": 2 }
+  ]
+}
