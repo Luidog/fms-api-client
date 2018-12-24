@@ -1,10 +1,16 @@
 'use strict';
 
-const { omit } = require('./conversion.utilities');
+const axios = require('axios');
+const axiosCookieJarSupport = require('axios-cookiejar-support').default;
+const { omit } = require('../utilities');
 
 /**
  * @module request
  */
+
+const instance = axios.create();
+
+axiosCookieJarSupport(instance);
 
 /**
  * @method interceptRequest
@@ -46,6 +52,14 @@ const handleResponseError = error => {
       message: 'The Data API is currently unavailable',
       code: '1630'
     });
+  } else if (
+    error.response.status === 401 &&
+    error.request.path.includes('RCType=EmbeddedRCFileProcessor')
+  ) {
+    return Promise.reject({
+      message: 'FileMaker WPE rejected the request',
+      code: '9'
+    });
   } else if (error.response.data.messages[0].code === '952') {
     return Promise.reject(
       Object.assign(error.response.data.messages[0], { expired: true })
@@ -55,4 +69,7 @@ const handleResponseError = error => {
   }
 };
 
-module.exports = { interceptRequest, handleResponseError };
+instance.interceptors.request.use(interceptRequest);
+instance.interceptors.response.use(response => response, handleResponseError);
+
+module.exports = { instance };
