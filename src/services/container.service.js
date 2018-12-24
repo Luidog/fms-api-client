@@ -2,11 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const util = require('util');
 const toArray = require('stream-to-array');
+const { CookieJar } = require('tough-cookie');
 const _ = require('lodash');
 const { instance } = require('./request.service');
-const { CookieJar } = require('tough-cookie');
 
 /**
  * @method transport
@@ -17,13 +16,21 @@ const { CookieJar } = require('tough-cookie');
  * @return {Promise}      a promise which will resolve to the file.
  */
 
-const transport = (url, name, destination) =>
+const transport = (url, name, destination, parameters = {}) =>
   instance
-    .get(url, {
-      jar: true,//new CookieJar(),
-      responseType: 'stream',
-      withCredentials: true
-    })
+    .get(
+      url,
+      Object.assign(
+        {
+          jar: new CookieJar()
+        },
+        parameters,
+        {
+          responseType: 'stream',
+          withCredentials: true
+        }
+      )
+    )
     .then(response =>
       destination && destination !== 'buffer'
         ? writeFile(response.data, name, destination)
@@ -34,49 +41,65 @@ const transport = (url, name, destination) =>
  * @method writeFile
  * @private
  * @description This method will write a file to the filesystem
- * @param  {Buffer} url The url to use for retrieval.
- * @param  {String} name the name and extension of the file.
+ * @param  {Buffer} stream the stream of data to write.
+ * @param  {String} name the file's name and extension.
  * @param  {String} path the path to write the file.
  * @return {Promise}      a promise which will resolve with file path and name.
  */
 
 const writeFile = (stream, name, destination) =>
   new Promise((resolve, reject) => {
+    let output = fs.createWriteStream(path.join(destination, name));
     stream.on('end', () =>
       resolve({ name, path: path.join(destination, name) })
     );
-    stream.on('finish', () =>
-      resolve({ name, path: path.join(destination, name) })
-    );
-    stream.on('error', error => reject(error));
-    fs.createWriteStream(path.join(destination, name));
+    output.on('error', error => reject({ message: error.message, code: 100 }));
+    stream.pipe(output);
   });
 
-const bufferFile = (data, name) =>
-  toArray(data).then(parts => {
-    const buffers = parts.map(part =>
-      util.isBuffer(part) ? part : Buffer.from(part)
-    );
-    return { name, buffer: Buffer.concat(buffers) };
-  });
+/**
+ * @method bufferFile
+ * @private
+ * @description This method will write a stream to a buffer object.
+ * @param  {Stream} stream The url to use for retrieval.
+ * @param  {String} name the name and extension of the file.
+ * @return {Promise}      a promise which will resolve with file path and name.
+ */
+
+const bufferFile = (stream, name) =>
+  toArray(stream).then(parts => ({ name, buffer: Buffer.concat(parts) }));
 
 /**
  * @method containerData
  * @public
  * @description This method retrieves container data from the FileMaker WPE.
- * @param  {Object} data The response recieved from the FileMaker DAPI.
+ * @param  {Object|Array} data The response recieved from the FileMaker DAPI.
+ * @param  {String} field optional request configuration parameters.
+ * @param  {String} name optional request configuration parameters.
+ * @param  {String} destination optional request configuration parameters.
  * @param  {Object} parameters optional request configuration parameters.
  * @return {Promise}      a promise which will resolve to the file data.
  */
 
-const containerData = (data, field, name, destination) =>
-  Array.isArray(data)
+const containerData = (data, field, name, destination, parameters) => {
+  return Array.isArray(data)
     ? Promise.all(
-        data.map(datum =>
-          transport(_.get(data, field), _.get(data, name, name), destination)
-        )
+        data.map(datum => {
+          return transport(
+            _.get(datum, field),
+            _.get(datum, name, name),
+            destination,
+            parameters
+          );
+        })
       )
-    : transport(_.get(data, field), _.get(data, name, name), destination);
+    : transport(
+        _.get(data, field),
+        _.get(data, name, name),
+        destination,
+        parameters
+      );
+};
 
 module.exports = {
   containerData
