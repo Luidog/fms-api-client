@@ -3,20 +3,24 @@
     {
       "fieldData": {
         "name": "Yoda",
-        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/A4ED023904470F2AA08DE8FF00D5FC11EA9664FCE203211B932AB0AB463F4022?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/4387E6CF5B9D6E081EB3668CED091F8FB17571D7939ECD4F654283CE313C56D5?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
-        "id": "CCB7C32E-D64B-194D-8480-C99F824FDA39",
+        "id": "r2d2-c3po-l3-37-bb-8",
         "imageName": "placeholder.md",
-        "faceDescriptor": ""
+        "creationAccountName": "obi-wan",
+        "creationTimestamp": "05/25/1977 6:00:00",
+        "modificationAccountName": "obi-wan",
+        "modificationTimestamp": "05/25/1977 6:00:00",
+        "Vehicles::name": ""
       },
       "portalData": {
         "Planets": [],
         "Vehicles": []
       },
-      "recordId": "733129",
-      "modId": "2"
+      "recordId": "1138",
+      "modId": "327"
     }
   ]
 }

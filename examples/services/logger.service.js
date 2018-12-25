@@ -17,7 +17,7 @@ const filter = values =>
     } else if (key === 'modificationTimestamp' || key === 'creationTimestamp') {
       return '05/25/1977 6:00:00';
     } else if (key === 'id' || key === 'creationTimestamp') {
-      return 'r2d2-c3po-L3-37-bb-8';
+      return 'r2d2-c3po-l3-37-bb-8';
     } else {
       return value;
     }

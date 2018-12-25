@@ -3,20 +3,24 @@
     {
       "fieldData": {
         "name": "Anakin Skywalker",
-        "image(1)": "",
+        "image": "",
         "object": "",
         "array": "",
         "height": "",
-        "id": "7362F557-D812-D244-B207-8B5A6F36F194",
+        "id": "r2d2-c3po-l3-37-bb-8",
         "imageName": "",
-        "faceDescriptor": ""
+        "creationAccountName": "obi-wan",
+        "creationTimestamp": "05/25/1977 6:00:00",
+        "modificationAccountName": "obi-wan",
+        "modificationTimestamp": "05/25/1977 6:00:00",
+        "Vehicles::name": ""
       },
       "portalData": {
         "Planets": [],
         "Vehicles": []
       },
-      "recordId": "736994",
-      "modId": "1"
+      "recordId": "1138",
+      "modId": "327"
     }
   ]
 }

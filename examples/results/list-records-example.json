@@ -3,45 +3,53 @@
     {
       "fieldData": {
         "name": "George Lucas",
-        "image(1)": "https://some-server.com/Streaming_SSL/MainDB/FD3683181DA1B693816002EBB87AB3C067EC689B1467A115E6B5E246443F7237?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/873CDA8A280F5B86B16181DC8243B229543233EC2861CF380BCE65CACE48C157.png?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
-        "id": "0E6DF26C-761E-7947-9A3C-C312C285EE55",
-        "imageName": "placeholder.md",
-        "faceDescriptor": ""
+        "id": "r2d2-c3po-l3-37-bb-8",
+        "imageName": "IMG_0001.PNG",
+        "creationAccountName": "obi-wan",
+        "creationTimestamp": "05/25/1977 6:00:00",
+        "modificationAccountName": "obi-wan",
+        "modificationTimestamp": "05/25/1977 6:00:00",
+        "Vehicles::name": "test"
       },
       "portalData": {
         "Planets": [],
         "Vehicles": [
           {
-            "recordId": "3",
+            "recordId": "1138",
             "Vehicles::name": "test",
             "Vehicles::type": "",
-            "modId": "0"
+            "modId": "327"
           }
         ]
       },
-      "recordId": "732765",
-      "modId": "7"
+      "recordId": "1138",
+      "modId": "327"
     },
     {
       "fieldData": {
         "name": "George Lucas",
-        "image(1)": "",
+        "image": "",
         "object": "",
         "array": "",
         "height": "",
-        "id": "0F628510-432C-0E47-8D03-BA90AAF2EA17",
+        "id": "r2d2-c3po-l3-37-bb-8",
         "imageName": "",
-        "faceDescriptor": ""
+        "creationAccountName": "obi-wan",
+        "creationTimestamp": "05/25/1977 6:00:00",
+        "modificationAccountName": "obi-wan",
+        "modificationTimestamp": "05/25/1977 6:00:00",
+        "Vehicles::name": ""
       },
       "portalData": {
         "Planets": [],
         "Vehicles": []
       },
-      "recordId": "732766",
-      "modId": "1"
+      "recordId": "1138",
+      "modId": "327"
     }
   ]
 }
