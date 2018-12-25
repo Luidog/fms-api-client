@@ -6,7 +6,8 @@
   "scripts": {
     "test": "nyc _mocha --recursive  ./tests --timeout=30000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "generate-docs": "RESULTS=true node examples/index.js  && mos && node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
+    "generate-docs": "jsdoc2md  --template examples/templates/readme.hbs --partial \"examples/templates/partials/*.hbs\" --files \"src/**/*.js\"  > README.md && RESULTS=true node examples/index.js  && mos && node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
+    "update-readme": "jsdoc2md  --template examples/templates/readme.hbs --partial \"examples/templates/partials/*.hbs\" --files \"src/**/*.js\"  > README.md",
     "examples": "node examples/index.js"
   },
   "repository": {
@@ -58,6 +59,7 @@
     "fs-extra": "^7.0.1",
     "http-proxy": "^1.17.0",
     "jsdoc": "^3.5.5",
+    "jsdoc-to-markdown": "^4.0.1",
     "minami": "^1.2.3",
     "mocha": "^5.0.4",
     "mocha-lcov-reporter": "^1.3.0",

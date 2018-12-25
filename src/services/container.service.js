@@ -74,10 +74,11 @@ const bufferFile = (stream, name) =>
  * @public
  * @description This method retrieves container data from the FileMaker WPE.
  * @param  {Object|Array} data The response recieved from the FileMaker DAPI.
- * @param  {String} field optional request configuration parameters.
- * @param  {String} name optional request configuration parameters.
- * @param  {String} destination optional request configuration parameters.
- * @param  {Object} parameters optional request configuration parameters.
+ * @param  {String} field - The container field name to target. This can be a nested property.
+ * @param  {String} name - The field to use for the file name or a static string.
+ * @param  {String} destination - "buffer" if a buffer object should be returned or the path to write the file.
+ * @param  {Object=} parameters - request parameters.
+ * @param  {Number=} parameters.timeout - a timeout for the request.
  * @return {Promise}      a promise which will resolve to the file data.
  */
 

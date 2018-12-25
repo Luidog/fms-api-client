@@ -999,16 +999,9 @@ The containerData utility will retrieve FileMaker container data by following th
 
 `container(data, field, name, destination, parameters)` 
 
-
-| Param | Type | Description |
-| --- | --- | --- |
-| data | <code>Object</code> \| <code>Array</code> | The response recieved from the FileMaker DAPI. |
-| field | <code>String</code> | The container field name to target. This can be a nested property. |
-| name | <code>String</code> | The field to use for the file name or a static string. |
-| destination | <code>String</code> | "buffer" if a buffer object should be returned or the path to write the file. |
-| [parameters] | <code>Object</code> | request parameters. |
-| [parameters.timeout] | <code>Number</code> | a timeout for the request. |
-
+{{#functions name="containerData"}}
+{{>parameters}}
+{{/functions}}
 
 <!--@snippet('./examples/utility.examples.js#transform-utility-example', { showSource: true })-->
 <!--/@-->
