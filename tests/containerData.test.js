@@ -53,7 +53,7 @@ describe('ContainerData Capabilities', () => {
         .then(response =>
           containerData(
             response.data[0],
-            'fieldData.image(1)',
+            'fieldData.image',
             'fieldData.imageName',
             './assets'
           )
@@ -70,7 +70,7 @@ describe('ContainerData Capabilities', () => {
         .then(response =>
           containerData(
             response.data,
-            'fieldData.image(1)',
+            'fieldData.image',
             'fieldData.imageName',
             './assets'
           )
@@ -88,7 +88,7 @@ describe('ContainerData Capabilities', () => {
         .then(response =>
           containerData(
             response.data,
-            'fieldData.image(1)',
+            'fieldData.image',
             'fieldData.imageName',
             'buffer'
           )
@@ -106,7 +106,7 @@ describe('ContainerData Capabilities', () => {
         .then(response =>
           containerData(
             response.data[0],
-            'fieldData.image(1)',
+            'fieldData.image',
             'fieldData.imageName',
             'buffer'
           )
@@ -122,7 +122,7 @@ describe('ContainerData Capabilities', () => {
         .then(response =>
           containerData(
             response.data[0],
-            'fieldData.image(1)',
+            'fieldData.image',
             'fieldData.imageName',
             './path/does/not/exist'
           )
@@ -139,7 +139,7 @@ describe('ContainerData Capabilities', () => {
         .then(response =>
           containerData(
             response.data[0],
-            'fieldData.image(1)',
+            'fieldData.image',
             'fieldData.imageName',
             'buffer',
             { jar: true }

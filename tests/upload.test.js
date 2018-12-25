@@ -94,8 +94,8 @@ describe('File Upload Capabilities', () => {
     return expect(
       client.upload(
         './assets/placeholder.md',
-        process.env.LAYOUT,
-        'image',
+        process.env.CONTAINER_LAYOUT,
+        'container',
         undefined,
         { fieldRepetition: 2 }
       )
@@ -111,9 +111,15 @@ describe('File Upload Capabilities', () => {
       name: 'placeholder.md'
     };
     return expect(
-      client.upload(buffer, process.env.LAYOUT, 'image', undefined, {
-        fieldRepetition: 2
-      })
+      client.upload(
+        buffer,
+        process.env.CONTAINER_LAYOUT,
+        'container',
+        undefined,
+        {
+          fieldRepetition: 2
+        }
+      )
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('modId', 'recordId')
@@ -168,12 +174,12 @@ describe('File Upload Capabilities', () => {
   it('should allow you to upload a file to a specific record container repetition', () => {
     return expect(
       client
-        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .create(process.env.CONTAINER_LAYOUT, {})
         .then(record =>
           client.upload(
             './assets/placeholder.md',
-            process.env.LAYOUT,
-            'image',
+            process.env.CONTAINER_LAYOUT,
+            'container',
             record.recordId,
             { fieldRepetition: 2 }
           )
@@ -190,10 +196,16 @@ describe('File Upload Capabilities', () => {
       name: 'placeholder.md'
     };
     return expect(
-      client.create(process.env.LAYOUT, { name: 'Han Solo' }).then(record =>
-        client.upload(buffer, process.env.LAYOUT, 'image', record.recordId, {
-          fieldRepetition: 2
-        })
+      client.create(process.env.CONTAINER_LAYOUT, {}).then(record =>
+        client.upload(
+          buffer,
+          process.env.CONTAINER_LAYOUT,
+          'container',
+          record.recordId,
+          {
+            fieldRepetition: 2
+          }
+        )
       )
     )
       .to.eventually.be.a('object')
