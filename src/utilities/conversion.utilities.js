@@ -28,14 +28,12 @@ const toStrings = data =>
  */
 
 const stringify = data =>
-  _.mapValues(
-    data,
-    value =>
-      typeof value === 'string'
-        ? value
-        : typeof value === 'object'
-          ? JSON.stringify(value)
-          : value.toString()
+  _.mapValues(data, value =>
+    typeof value === 'string'
+      ? value
+      : typeof value === 'object'
+      ? JSON.stringify(value)
+      : value.toString()
   );
 
 /**

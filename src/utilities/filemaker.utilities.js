@@ -22,16 +22,14 @@ const convertPortals = data => {
   let converted = Array.isArray(portals)
     ? _.chain(portals)
         .map(portal =>
-          _.mapKeys(
-            portal,
-            (value, key) =>
-              key === 'limit'
-                ? `limit.${portal.name}`
-                : key === 'offset'
-                  ? `offset.${portal.name}`
-                  : key === 'name'
-                    ? portalArray.push(value)
-                    : `remove`
+          _.mapKeys(portal, (value, key) =>
+            key === 'limit'
+              ? `limit.${portal.name}`
+              : key === 'offset'
+              ? `offset.${portal.name}`
+              : key === 'name'
+              ? portalArray.push(value)
+              : `remove`
           )
         )
         .map(portal => _.omitBy(portal, (value, key) => key.includes('remove')))
@@ -54,16 +52,14 @@ const convertScripts = data => {
   let converted = Array.isArray(scripts)
     ? _.chain(scripts)
         .map(script =>
-          _.mapKeys(
-            script,
-            (value, key) =>
-              !_.isEmpty(script.phase)
-                ? key === 'name'
-                  ? `script.${script.phase}`
-                  : `script.${script.phase}.${key}`
-                : key === 'name'
-                  ? `script`
-                  : `script.${key}`
+          _.mapKeys(script, (value, key) =>
+            !_.isEmpty(script.phase)
+              ? key === 'name'
+                ? `script.${script.phase}`
+                : `script.${script.phase}.${key}`
+              : key === 'name'
+              ? `script`
+              : `script.${key}`
           )
         )
         .map(script => _.omitBy(script, (value, key) => key.includes('.phase')))
@@ -114,9 +110,8 @@ const sanitizeParameters = (parameters, safeParameters) =>
         ),
         value => (_.isNumber(value) ? value.toString() : value)
       )
-    : _.mapValues(
-        convertParameters(parameters),
-        value => (_.isNumber(value) ? value.toString() : value)
+    : _.mapValues(convertParameters(parameters), value =>
+        _.isNumber(value) ? value.toString() : value
       );
 
 /**
@@ -130,12 +125,10 @@ const sanitizeParameters = (parameters, safeParameters) =>
  */
 
 const parseScriptResult = data =>
-  _.mapValues(
-    data.response,
-    (value, property, object) =>
-      property.includes('scriptResult')
-        ? (object[property] = parse(value))
-        : value
+  _.mapValues(data.response, (value, property, object) =>
+    property.includes('scriptResult')
+      ? (object[property] = parse(value))
+      : value
   );
 
 /**
@@ -148,10 +141,8 @@ const parseScriptResult = data =>
  */
 
 const namespace = data =>
-  _.mapKeys(
-    data,
-    (value, key) =>
-      _.includes(['limit', 'offset', 'sort'], key) ? `_${key}` : key
+  _.mapKeys(data, (value, key) =>
+    _.includes(['limit', 'offset', 'sort'], key) ? `_${key}` : key
   );
 
 /**

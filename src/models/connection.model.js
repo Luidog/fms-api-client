@@ -93,7 +93,7 @@ class Connection extends EmbeddedDocument {
    */
 
   _basicAuth() {
-    const auth = `Basic ${new Buffer(
+    const auth = `Basic ${Buffer.from(
       `${this.credentials.user}:${this.credentials.password}`
     ).toString('base64')}`;
     return auth;

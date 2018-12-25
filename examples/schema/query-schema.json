@@ -1,0 +1,15 @@
+{
+  "query": [
+    {
+      "name": "Han solo",
+      "Vehicles::name": "Millenium Falcon"
+    },
+    {
+      "name": "Luke Skywalker",
+      "Vehicles::name": "X-Wing Starfighter"
+    },
+    {
+      "age": ">10000"
+    }
+  ]
+}

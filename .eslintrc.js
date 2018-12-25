@@ -5,10 +5,7 @@ module.exports = {
 	},
 	parserOptions: {
 		sourceType: 'module',
-		ecmaFeatures: {
-			experimentalObjectRestSpread: true,
-			jsx: true
-		}
+		ecmaVersion: '2019'
 	},
 	plugins: ['prettier'],
 	extends: ['google', 'eslint:recommended'],

@@ -1,7 +1,12 @@
 'use strict';
 
 const { log } = require('./services');
-const { recordId, fieldData, transform } = require('../index.js');
+const {
+  recordId,
+  fieldData,
+  transform,
+  containerData
+} = require('../index.js');
 
 //#recordid-utility-example
 const extractRecordId = client =>
@@ -35,12 +40,28 @@ const transformDataNoConvert = client =>
     .then(result => log('transform-utility-no-convert-example', result));
 //#
 
+//#getContainerData-example
+const getContainerData = client =>
+  client
+    .find('Transform', { imageName: 'Han Solo' }, { limit: 1 })
+    .then(result =>
+      containerData(
+        result.data,
+        'fieldData.image',
+        'fieldData.imageName',
+        './assets'
+      )
+    )
+    .then(result => log('containerdata-example', result));
+//#
+
 const utilities = client =>
   Promise.all([
     extractFieldData(client),
     extractRecordId(client),
     transformData(client),
-    transformDataNoConvert(client)
+    transformDataNoConvert(client),
+    getContainerData(client)
   ]).then(responses => client);
 
 module.exports = { utilities };

@@ -80,11 +80,31 @@ The custom portals parameter follows the following syntax:
 
 **Note:** The FileMaker script and portal syntax will override the alternative scripts and portals parameter syntax.
 
+
 In addition to allowing an exanded syntax for invoking scripts or selecting portals the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API.
+
+#### Data Syntax
+
+<!--@snippet('./examples/schema/data-schema.json', { showSource: true })-->
+<!--/@-->
 
 Arrays and objects are stringified before being inserted into field or portal data. `limit` and `offset` parameters can be either strings or a numbers.
 
-The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client.
+The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client. 
+
+The client accepts the same sort parameters as the Data API. 
+
+#### Sort Syntax
+
+<!--@snippet('./examples/schema/sort-schema.json', { showSource: true })-->
+<!--/@-->
+
+When using the `find` method a query is required. The query can either be a single json object or an array of json objects.
+
+#### Query Syntax
+
+<!--@snippet('./examples/schema/query-schema.json', { showSource: true })-->
+<!--/@-->
 
 All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable. 
 

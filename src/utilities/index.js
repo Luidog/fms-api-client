@@ -9,11 +9,6 @@ const {
 
 const { omit, toStrings, toArray, isJson } = require('./conversion.utilities');
 
-const {
-  interceptRequest,
-  handleResponseError
-} = require('./request.utilities');
-
 module.exports = {
   omit,
   toStrings,
@@ -22,7 +17,5 @@ module.exports = {
   isJson,
   namespace,
   parseScriptResult,
-  sanitizeParameters,
-  interceptRequest,
-  handleResponseError
+  sanitizeParameters
 };

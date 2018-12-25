@@ -1,21 +1,15 @@
 'use strict';
 
-const axios = require('axios');
 const https = require('https');
 const http = require('http');
 const uuidv4 = require('uuid/v4');
 const { EmbeddedDocument } = require('marpat');
-const { interceptRequest, handleResponseError } = require('../utilities');
+const { instance } = require('../services');
 
 /**
  * @class Agent
  * @classdesc The class used to model the axios http instance and agent
  */
-
-const instance = axios.create();
-
-instance.interceptors.request.use(interceptRequest);
-instance.interceptors.response.use(response => response, handleResponseError);
 
 class Agent extends EmbeddedDocument {
   constructor() {
