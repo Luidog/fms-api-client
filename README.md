@@ -88,7 +88,7 @@ In addition to allowing an exanded syntax for invoking scripts or selecting port
 ```json
 {
   "data": {
-    "name": "Mace Windu",
+    "name": "Yoda",
     "Vehicles::name": "The Force"
   }
 }
@@ -450,7 +450,7 @@ Result:
     {
       "fieldData": {
         "name": "Yoda",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/4387E6CF5B9D6E081EB3668CED091F8FB17571D7939ECD4F654283CE313C56D5?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/05B3BB81ABE863A1E200BE2C066AD62F83C0F0B7AE243D7918598583B5FEE1E6?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -507,7 +507,7 @@ Result:
     {
       "fieldData": {
         "name": "George Lucas",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/873CDA8A280F5B86B16181DC8243B229543233EC2861CF380BCE65CACE48C157.png?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/DFCC4A48A9964069CB5C34A09FAA110E4A8CD1F87E48B5098B3493730D39BA0E.png?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -858,8 +858,8 @@ Result:
 <!--@snippet('./examples/results/recordid-utility-example.json', { showSource: true })-->
 ```json
 [
-  "736976",
-  "736980"
+  "736988",
+  "736993"
 ]
 ```
 
@@ -894,7 +894,7 @@ Result:
 ```json
 [
   {
-    "name": "yoda",
+    "name": "Yoda",
     "image": "",
     "object": "",
     "array": "",
@@ -931,11 +931,11 @@ Result:
 > File [./examples/results/fielddata-utility-example.json](./examples/results/fielddata-utility-example.json)
 <!--/@-->
 
-#### Transform Method
+#### Transform Utility
 
-The transform method converts Data API response data by converting `table::field` properties to objects. This method will transverse the response data and converting `{ table::field : value}` properties to `{ table:{ field : value } }`. The transform method will also convert `portalData` into arrays of objects. 
+The transform utility converts Data API response data by converting `table::field` properties to objects. This method will transverse the response data and converting `{ table::field : value}` properties to `{ table:{ field : value } }`. The transform utility will also convert `portalData` into arrays of objects. 
 
-The transform method accepts three option properties. The three option properties are all booleans and true by default. The three option properties are `convert`,`fieldData`,`portalData`. The `convert` property controls the transfomation of `table::field` properties. The `fieldData` property controls the merging of fieldData to the result. The `portalData` property controls the merging of portalData to the result. Setting any propery to false its transformation off. 
+The transform utility accepts three option properties. The three option properties are all booleans and true by default. The three option properties are `convert`,`fieldData`,`portalData`. The `convert` property controls the transfomation of `table::field` properties. The `fieldData` property controls the merging of fieldData to the result. The `portalData` property controls the merging of portalData to the result. Setting any propery to false its transformation off. 
 
 `transform(data, parameters)`
 
@@ -993,7 +993,24 @@ Result:
 > File [./examples/results/transform-utility-example.json](./examples/results/transform-utility-example.json)
 <!--/@-->
 
-## Custom Request Agents, Custom Request Parameters and Proxies
+#### ContainerData Utility
+
+The containerData utility will retrieve FileMaker container data by using the links provided 
+
+<!--@snippet('./examples/results/containerdata-example.json', { showSource: true })-->
+```json
+[
+  {
+    "name": "IMG_0001.PNG",
+    "path": "assets/IMG_0001.PNG"
+  }
+]
+```
+
+> File [./examples/results/containerdata-example.json](./examples/results/containerdata-example.json)
+<!--/@-->
+
+## Custom Request Agents, Custom Request Parameters, and Proxies
 
 The client has the ability to create custom agents and modify requests parameters or use a proxy. Agents, request parameters, and proxies can be configured either when the client is created or when a request is being made.
 
@@ -1020,14 +1037,14 @@ npm test
 
 <!--@execute('npm run test',[])-->
 ```default
-> fms-api-client@1.7.3 test /Users/luidelaparra/Documents/Development/fms-api-client
+> fms-api-client@1.8.0 test /fms-api-client
 > nyc _mocha --recursive  ./tests --timeout=30000 --exit
 
 
 
   Agent Configuration Capabilities
     ✓ should accept no agent configuration
-    ✓ should not create an agent unless one is defined (261ms)
+    ✓ should not create an agent unless one is defined (244ms)
     ✓ adjusts the request protocol according to the server
     ✓ should create a https agent
     ✓ should use a created request agent
@@ -1035,149 +1052,149 @@ npm test
     ✓ should create a http agent
     ✓ should accept a timeout property
     ✓ should use a timeout if one is set
-    ✓ should use a proxy if one is set (240ms)
-    ✓ should automatically recreate an agent if one is deleted (205ms)
+    ✓ should use a proxy if one is set (241ms)
+    ✓ should automatically recreate an agent if one is deleted (207ms)
 
   Authentication Capabilities
     ✓ should authenticate into FileMaker. (101ms)
-    ✓ should automatically request an authentication token (194ms)
-    ✓ should reuse a saved authentication token (177ms)
-    ✓ should log out of the filemaker. (182ms)
+    ✓ should automatically request an authentication token (186ms)
+    ✓ should reuse a saved authentication token (187ms)
+    ✓ should log out of the filemaker. (188ms)
     ✓ should not attempt a logout if there is no valid token.
-    ✓ should reject if the logout request fails (177ms)
-    ✓ should reject if the authentication request fails (1576ms)
-    ✓ should attempt to log out before being removed (182ms)
+    ✓ should reject if the logout request fails (183ms)
+    ✓ should reject if the authentication request fails (1438ms)
+    ✓ should attempt to log out before being removed (178ms)
     ✓ should catch the log out error before being removed if the login is not valid
 
   ContainerData Capabilities
-    ✓ should download container data from an object to a file (1516ms)
-    ✓ should download container data from an array to a file (1651ms)
-    ✓ should download container data from an array to a buffer (2556ms)
-    ✓ should download container data from an object to a buffer (602ms)
-    ✓ should reject with an error and a message (1493ms)
-    ✓ should reject with an error and a message (1264ms)
+    ✓ should download container data from an object to a file (1517ms)
+    ✓ should download container data from an array to a file (2681ms)
+    ✓ should download container data from an array to a buffer (1540ms)
+    ✓ should download container data from an object to a buffer (312ms)
+    ✓ should reject with an error and a message (1229ms)
+    ✓ should reject with an error and a message (2534ms)
 
   Create Capabilities
-    ✓ should create FileMaker records without fieldData (187ms)
+    ✓ should create FileMaker records without fieldData (171ms)
     ✓ should allow you to specify a timeout
-    ✓ should create FileMaker records using fieldData (82ms)
-    ✓ should create FileMaker records with portalData (87ms)
-    ✓ should allow portalData to be an object or number (310ms)
-    ✓ should reject bad data with an error (87ms)
+    ✓ should create FileMaker records using fieldData (78ms)
+    ✓ should create FileMaker records with portalData (86ms)
+    ✓ should allow portalData to be an object or number (79ms)
+    ✓ should reject bad data with an error (85ms)
     ✓ should create records with mixed types (85ms)
-    ✓ should substitute an empty object if data is not provided (84ms)
-    ✓ should return an object with merged data properties (121ms)
-    ✓ should allow you to run a script when creating a record with a merge response (98ms)
-    ✓ should allow you to specify scripts as an array (97ms)
-    ✓ should allow you to specify scripts as an array with a merge response (94ms)
-    ✓ should sanitize parameters when creating a new record (99ms)
-    ✓ should accept both the default script parameters and a scripts array (93ms)
-    ✓ should remove an expired token (84ms)
+    ✓ should substitute an empty object if data is not provided (80ms)
+    ✓ should return an object with merged data properties (83ms)
+    ✓ should allow you to run a script when creating a record with a merge response (94ms)
+    ✓ should allow you to specify scripts as an array (94ms)
+    ✓ should allow you to specify scripts as an array with a merge response (96ms)
+    ✓ should sanitize parameters when creating a new record (98ms)
+    ✓ should accept both the default script parameters and a scripts array (101ms)
+    ✓ should remove an expired token (86ms)
 
   Delete Capabilities
-    ✓ should delete FileMaker records. (260ms)
-    ✓ should allow you to specify a timeout (97ms)
-    ✓ should trigger scripts via an array when deleting records. (171ms)
-    ✓ should trigger scripts via parameters when deleting records. (181ms)
-    ✓ should allow you to mix script parameters and scripts array when deleting records. (170ms)
-    ✓ should stringify script parameters. (203ms)
-    ✓ should reject deletions that do not specify a recordId (101ms)
+    ✓ should delete FileMaker records. (256ms)
+    ✓ should allow you to specify a timeout (95ms)
+    ✓ should trigger scripts via an array when deleting records. (168ms)
+    ✓ should trigger scripts via parameters when deleting records. (186ms)
+    ✓ should allow you to mix script parameters and scripts array when deleting records. (160ms)
+    ✓ should stringify script parameters. (172ms)
+    ✓ should reject deletions that do not specify a recordId (79ms)
     ✓ should reject deletions that do not specify an invalid recordId (90ms)
-    ✓ should remove an expired token (86ms)
+    ✓ should remove an expired token (92ms)
 
   Edit Capabilities
     ✓ should edit FileMaker records without fieldData
-    ✓ should allow you to specify a timeout (200ms)
+    ✓ should allow you to specify a timeout (198ms)
     ✓ should edit FileMaker records using fieldData
     ✓ should edit FileMaker records with portalData
     ✓ should edit FileMaker records with portalData and allow portalData to be an array.
-    ✓ should reject bad data with an error (211ms)
+    ✓ should reject bad data with an error (205ms)
     ✓ should return an object with merged filemaker and data properties
-    ✓ should allow you to run a script when editing a record (194ms)
-    ✓ should allow you to run a script via a scripts array when editing a record (184ms)
-    ✓ should allow you to specify scripts as an array (190ms)
-    ✓ should allow you to specify scripts as an array with a merge response (177ms)
-    ✓ should sanitize parameters when creating a editing record (192ms)
-    ✓ should accept both the default script parameters and a scripts array (193ms)
-    ✓ should remove an expired token (167ms)
+    ✓ should allow you to run a script when editing a record (178ms)
+    ✓ should allow you to run a script via a scripts array when editing a record (178ms)
+    ✓ should allow you to specify scripts as an array (177ms)
+    ✓ should allow you to specify scripts as an array with a merge response (179ms)
+    ✓ should sanitize parameters when creating a editing record (181ms)
+    ✓ should accept both the default script parameters and a scripts array (179ms)
+    ✓ should remove an expired token (174ms)
 
   FieldData Capabilities
-    ✓ it should extract field data while maintaining the array (269ms)
-    ✓ it should extract field data while maintaining the object (169ms)
+    ✓ it should extract field data while maintaining the array (272ms)
+    ✓ it should extract field data while maintaining the object (160ms)
 
   Find Capabilities
-    ✓ should perform a find request (346ms)
-    ✓ should allow you to use an object instead of an array for a find (238ms)
-    ✓ should specify omit Criterea (163ms)
-    ✓ should safely parse omit true and false (158ms)
-    ✓ should allow additional parameters to manipulate the results (90ms)
-    ✓ should allow you to limit the number of portal records to return (82ms)
-    ✓ should allow you to use numbers in the find query parameters (90ms)
-    ✓ should allow you to sort the results (916ms)
-    ✓ should return an empty array if the find does not return results (93ms)
-    ✓ should allow you run a pre request script (88ms)
-    ✓ should return a response even if a script fails (100ms)
-    ✓ should allow you to send a parameter to the pre request script (88ms)
-    ✓ should allow you run script after the find and before the sort (661ms)
-    ✓ should allow you to pass a parameter to a script after the find and before the sort (614ms)
+    ✓ should perform a find request (470ms)
+    ✓ should allow you to use an object instead of an array for a find (271ms)
+    ✓ should specify omit Criterea (174ms)
+    ✓ should safely parse omit true and false (153ms)
+    ✓ should allow additional parameters to manipulate the results (94ms)
+    ✓ should allow you to limit the number of portal records to return (83ms)
+    ✓ should allow you to use numbers in the find query parameters (85ms)
+    ✓ should allow you to sort the results (983ms)
+    ✓ should return an empty array if the find does not return results (88ms)
+    ✓ should allow you run a pre request script (101ms)
+    ✓ should return a response even if a script fails (91ms)
+    ✓ should allow you to send a parameter to the pre request script (98ms)
+    ✓ should allow you run script after the find and before the sort (380ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (387ms)
     ✓ should reject of there is an issue with the find request (80ms)
-    ✓ should remove an expired token (80ms)
+    ✓ should remove an expired token (75ms)
 
   Get Capabilities
-    ✓ should get specific FileMaker records. (263ms)
-    ✓ should allow you to specify a timeout (94ms)
-    ✓ should reject get requests that do not specify a recordId (154ms)
-    ✓ should allow you to limit the number of portal records to return (174ms)
-    ✓ should accept namespaced portal limit and offset parameters (168ms)
+    ✓ should get specific FileMaker records. (261ms)
+    ✓ should allow you to specify a timeout (100ms)
+    ✓ should reject get requests that do not specify a recordId (161ms)
+    ✓ should allow you to limit the number of portal records to return (172ms)
+    ✓ should accept namespaced portal limit and offset parameters (167ms)
     ✓ should remove an expired token (85ms)
 
   Global Capabilities
-    ✓ should allow you to set session globals (177ms)
+    ✓ should allow you to set session globals (180ms)
     ✓ should allow you to specify a timeout
-    ✓ should reject with a message and code if it fails to set a global (82ms)
-    ✓ should remove an expired token (78ms)
+    ✓ should reject with a message and code if it fails to set a global (78ms)
+    ✓ should remove an expired token (83ms)
 
   Request Interceptor Capabilities
-    ✓ should reject if the server errors (128ms)
-    ✓ should handle non JSON responses by rejecting with a json error (120ms)
+    ✓ should reject if the server errors (126ms)
+    ✓ should handle non JSON responses by rejecting with a json error (122ms)
     ✓ should reject non http requests to the server with a json error
-    ✓ should reject non https requests to the server with a json error (132ms)
+    ✓ should reject non https requests to the server with a json error (134ms)
 
   List Capabilities
-    ✓ should allow you to list records (336ms)
+    ✓ should allow you to list records (332ms)
     ✓ should allow you to specify a timeout
-    ✓ should allow you use parameters to modify the list response (92ms)
-    ✓ should should allow you to use numbers in parameters (84ms)
-    ✓ should should allow you to provide an array of portals in parameters (86ms)
-    ✓ should should remove non used properties from a portal object (88ms)
+    ✓ should allow you use parameters to modify the list response (86ms)
+    ✓ should should allow you to use numbers in parameters (85ms)
+    ✓ should should allow you to provide an array of portals in parameters (84ms)
+    ✓ should should remove non used properties from a portal object (81ms)
     ✓ should modify requests to comply with DAPI name reservations (81ms)
-    ✓ should allow strings while complying with DAPI name reservations (93ms)
+    ✓ should allow strings while complying with DAPI name reservations (87ms)
     ✓ should allow you to offset the list response (84ms)
-    ✓ should santize parameters that would cause unexpected parameters (81ms)
-    ✓ should allow you to limit the number of portal records to return (83ms)
-    ✓ should accept namespaced portal limit and offset parameters (85ms)
-    ✓ should reject invalid parameters (80ms)
-    ✓ should remove an expired token (78ms)
+    ✓ should santize parameters that would cause unexpected parameters (88ms)
+    ✓ should allow you to limit the number of portal records to return (85ms)
+    ✓ should accept namespaced portal limit and offset parameters (88ms)
+    ✓ should reject invalid parameters (81ms)
+    ✓ should remove an expired token (91ms)
 
   RecordId Capabilities
-    ✓ it should extract the recordId while maintaining the array (282ms)
-    ✓ it should extract recordId while maintaining the object (168ms)
+    ✓ it should extract the recordId while maintaining the array (269ms)
+    ✓ it should extract recordId while maintaining the object (166ms)
 
   Script Capabilities
-    ✓ should allow you to trigger a script (187ms)
+    ✓ should allow you to trigger a script (196ms)
     ✓ should allow you to specify a timeout
-    ✓ should allow you to trigger a script specifying a string as a parameter (89ms)
-    ✓ should allow you to trigger a script specifying a number as a parameter (87ms)
-    ✓ should allow you to trigger a script specifying an object as a parameter (86ms)
-    ✓ should allow you to trigger a script in a find (256ms)
-    ✓ should allow you to trigger a script in a list (96ms)
-    ✓ should reject a script that does not exist (83ms)
-    ✓ should allow return a result even if a script returns an error (86ms)
-    ✓ should parse script results if the results are json (90ms)
-    ✓ should not parse script results if the results are not json (82ms)
-    ✓ should parse an array of scripts (86ms)
-    ✓ should trigger scripts on all three script phases (99ms)
-    ✓ should remove an expired token (78ms)
+    ✓ should allow you to trigger a script specifying a string as a parameter (97ms)
+    ✓ should allow you to trigger a script specifying a number as a parameter (85ms)
+    ✓ should allow you to trigger a script specifying an object as a parameter (88ms)
+    ✓ should allow you to trigger a script in a find (248ms)
+    ✓ should allow you to trigger a script in a list (98ms)
+    ✓ should reject a script that does not exist (79ms)
+    ✓ should allow return a result even if a script returns an error (94ms)
+    ✓ should parse script results if the results are json (89ms)
+    ✓ should not parse script results if the results are not json (89ms)
+    ✓ should parse an array of scripts (94ms)
+    ✓ should trigger scripts on all three script phases (94ms)
+    ✓ should remove an expired token (83ms)
 
   Storage
     ✓ should allow an instance to be created
@@ -1188,42 +1205,42 @@ npm test
     ✓ should allow you to remove an instance
 
   Transform Capabilities
-    ✓ should merge portal data and field data from an array (344ms)
-    ✓ should merge portal data and field data from an object (145ms)
-    ✓ should optionally not convert table::field keys from an array (152ms)
-    ✓ should optionally not convert table::field keys from an object (147ms)
-    ✓ should allow you to remove field data from an array (162ms)
-    ✓ should allow you to remove field data from an object (151ms)
-    ✓ should allow you to remove portal data from an array (160ms)
-    ✓ should allow you to remove portal data from an object (153ms)
-    ✓ should merge portal data and portal data from an array (168ms)
+    ✓ should merge portal data and field data from an array (348ms)
+    ✓ should merge portal data and field data from an object (153ms)
+    ✓ should optionally not convert table::field keys from an array (157ms)
+    ✓ should optionally not convert table::field keys from an object (156ms)
+    ✓ should allow you to remove field data from an array (155ms)
+    ✓ should allow you to remove field data from an object (146ms)
+    ✓ should allow you to remove portal data from an array (149ms)
+    ✓ should allow you to remove portal data from an object (144ms)
+    ✓ should merge portal data and portal data from an array (158ms)
 
   File Upload Capabilities
-    ✓ should allow you to specify a timeout (194ms)
-    ✓ should allow you to upload a file to a new record (1268ms)
-    ✓ should allow you to upload a buffer to a new record (1481ms)
-    ✓ should allow you to upload a file to a specific container repetition (1535ms)
+    ✓ should allow you to specify a timeout (201ms)
+    ✓ should allow you to upload a file to a new record (1239ms)
+    ✓ should allow you to upload a buffer to a new record (1535ms)
+    ✓ should allow you to upload a file to a specific container repetition (1536ms)
     ✓ should allow you to upload a buffer to a specific container repetition (1535ms)
     ✓ should reject with a message if it can not find the file to upload
-    ✓ should allow you to upload a file to a specific record (1533ms)
-    ✓ should allow you to upload a buffer object to a specific record (1267ms)
-    ✓ should allow you to upload a file to a specific record container repetition (1500ms)
-    ✓ should allow you to upload a buffer to a specific record container repetition (1534ms)
-    ✓ should reject of the request is invalid (193ms)
-    ✓ should reject an empty buffer object (86ms)
-    ✓ should reject a null buffer object (88ms)
-    ✓ should reject a number instead of an object (86ms)
-    ✓ should reject an object without a filename (89ms)
-    ✓ should reject an object without a buffer (85ms)
-    ✓ should remove an expired token (90ms)
+    ✓ should allow you to upload a file to a specific record (1531ms)
+    ✓ should allow you to upload a buffer object to a specific record (1535ms)
+    ✓ should allow you to upload a file to a specific record container repetition (1271ms)
+    ✓ should allow you to upload a buffer to a specific record container repetition
+    ✓ should reject of the request is invalid (236ms)
+    ✓ should reject an empty buffer object (77ms)
+    ✓ should reject a null buffer object (83ms)
+    ✓ should reject a number instead of an object (89ms)
+    ✓ should reject an object without a filename (80ms)
+    ✓ should reject an object without a buffer (94ms)
+    ✓ should remove an expired token (74ms)
 
   Data Usage 
     Tracks Data Usage
-      ✓ should track API usage data. (173ms)
+      ✓ should track API usage data. (170ms)
       ✓ should allow you to reset usage data. (82ms)
     Does Not Track Data Usage
-      ✓ should not track data usage in (173ms)
-      ✓ should not track data usage out (84ms)
+      ✓ should not track data usage in (176ms)
+      ✓ should not track data usage out (81ms)
 
   Utility Capabilities
     Omit Utility
@@ -1242,8 +1259,8 @@ npm test
       ✓ it should return false for null
 
 
-  173 passing (42s)
-
+  173 passing (40s)
+     
 ------------------------------|----------|----------|----------|----------|-------------------|
 File                          |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 ------------------------------|----------|----------|----------|----------|-------------------|
@@ -1305,6 +1322,7 @@ All files                     |      100 |      100 |      100 |      100 |     
 - [fs-extra](https://github.com/jprichardson/node-fs-extra): fs-extra contains methods that aren't included in the vanilla Node.js fs package. Such as mkdir -p, cp -r, and rm -rf.
 - [http-proxy](https://github.com/nodejitsu/node-http-proxy): HTTP proxying for the masses
 - [jsdoc](https://github.com/jsdoc3/jsdoc): An API documentation generator for JavaScript.
+- [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown): Generates markdown API documentation from jsdoc annotated source code
 - [minami](https://github.com/Nijikokun/minami): Clean and minimal JSDoc 3 Template / Theme
 - [mocha](https://github.com/mochajs/mocha): simple, flexible, fun test framework
 - [mocha-lcov-reporter](https://github.com/StevenLooman/mocha-lcov-reporter): LCOV reporter for Mocha
