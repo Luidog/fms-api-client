@@ -6,7 +6,7 @@
   "scripts": {
     "test": "nyc _mocha --recursive  ./tests --timeout=30000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "generate-docs": "jsdoc2md  --template examples/templates/readme.hbs --partial \"examples/templates/partials/*.hbs\" --files \"src/**/*.js\"  > api.md && RESULTS=true node examples/index.js  && mos && node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
+    "generate-docs": "jsdoc2md  --template examples/templates/readme.hbs --partial \"examples/templates/partials/*.hbs\" --files \"src/**/*.js\"  > README.md && RESULTS=true node examples/index.js  && mos && node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
     "examples": "node examples/index.js"
   },
   "repository": {
