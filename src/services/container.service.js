@@ -55,10 +55,10 @@ const transport = (url, destination, name, parameters = {}) =>
 const writeFile = (stream, name, destination) =>
   new Promise((resolve, reject) => {
     let output = fs.createWriteStream(path.join(destination, name));
-    stream.on('end', () =>
+    output.on('error', error => reject({ message: error.message, code: 100 }));
+    output.on('finish', () =>
       resolve({ name, path: path.join(destination, name) })
     );
-    output.on('error', error => reject({ message: error.message, code: 100 }));
     stream.pipe(output);
   });
 
