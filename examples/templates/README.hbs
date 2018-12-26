@@ -332,12 +332,12 @@ Result:
 
 The containerData utility will retrieve FileMaker container data by following the links returned by the Data API. This utility will accept either a single data object or an array of objects. The utility will use the `field` parameter to target container data urls in the data parameter. This utility also requires a `name` parameter which will be used to target a data property that should be used as the file's name. If a name parameter is provided that is not a property or nested property in the `data` parameter, the name parameter itself will be used. The `destination` parameter should be either 'buffer' to indicate that an object with a file's name and buffer should be returned or the path, relative to the current working directory, where the utility should write container data to a file. This utility will also accept optional request `parameters` to modify the http request.
 
-`container(data, field, name, destination, parameters)` 
+`container(data, field, destination, name, parameters)` 
 
 {{#functions name="containerData"}}
 {{>parameters}}
 {{/functions}}
-<!--@snippet('./examples/utility.examples.js#transform-utility-example', { showSource: true })-->
+<!--@snippet('./examples/utility.examples.js#containerdata-example', { showSource: true })-->
 <!--/@-->
 Result:
 <!--@snippet('./examples/results/containerdata-example.json', { showSource: true })-->

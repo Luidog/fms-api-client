@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const toArray = require('stream-to-array');
 const { CookieJar } = require('tough-cookie');
+const mime = require('mime-types');
+const uuidv4 = require('uuid/v4');
 const _ = require('lodash');
 const { instance } = require('./request.service');
 
@@ -16,7 +18,7 @@ const { instance } = require('./request.service');
  * @return {Promise}      a promise which will resolve to the file.
  */
 
-const transport = (url, name, destination, parameters = {}) =>
+const transport = (url, destination, name, parameters = {}) =>
   instance
     .get(
       url,
@@ -31,11 +33,14 @@ const transport = (url, name, destination, parameters = {}) =>
         }
       )
     )
-    .then(response =>
-      destination && destination !== 'buffer'
-        ? writeFile(response.data, name, destination)
-        : bufferFile(response.data, name)
-    );
+    .then(response => {
+      let filename = path.extname(name)
+        ? name
+        : `${name}.${mime.extension(response.headers['content-type'])}`;
+      return destination && destination !== 'buffer'
+        ? writeFile(response.data, filename, destination)
+        : bufferFile(response.data, filename);
+    });
 
 /**
  * @method writeFile
@@ -75,29 +80,29 @@ const bufferFile = (stream, name) =>
  * @description This method retrieves container data from the FileMaker WPE.
  * @param  {Object|Array} data The response recieved from the FileMaker DAPI.
  * @param  {String} field - The container field name to target. This can be a nested property.
- * @param  {String} name - The field to use for the file name or a static string.
  * @param  {String} destination - "buffer" if a buffer object should be returned or the path to write the file.
+ * @param  {String} name - The field to use for the file name or a static string.
  * @param  {Object=} parameters - request parameters.
  * @param  {Number=} parameters.timeout - a timeout for the request.
  * @return {Promise}      a promise which will resolve to the file data.
  */
 
-const containerData = (data, field, name, destination, parameters) => {
+const containerData = (data, field, destination, name, parameters) => {
   return Array.isArray(data)
     ? Promise.all(
-        data.map(datum => {
-          return transport(
+        data.map(datum =>
+          transport(
             _.get(datum, field),
-            _.get(datum, name, name),
             destination,
+            _.get(datum, name, datum.recordId || uuidv4()),
             parameters
-          );
-        })
+          )
+        )
       )
     : transport(
         _.get(data, field),
-        _.get(data, name, name),
         destination,
+        _.get(data, name, data.recordId || uuidv4()),
         parameters
       );
 };
