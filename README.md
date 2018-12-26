@@ -1,6 +1,4 @@
-
 # fms-api-client
-
 
 [![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client) [![Known Vulnerabilities](https://snyk.io/test/github/Luidog/fms-api-client/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Luidog/fms-api-client?targetFile=package.json) [![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=master)](https://coveralls.io/github/Luidog/fms-api-client?branch=master) [![GitHub issues](https://img.shields.io/github/issues/Luidog/fms-api-client.svg?style=plastic)](https://github.com/Luidog/fms-api-client/issues) [![Github commits (since latest release)](https://img.shields.io/github/commits-since/luidog/fms-api-client/latest.svg)](https://img.shields.io/github/issues/Luidog/fms-api-client.svg) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![GitHub license](https://img.shields.io/github/license/Luidog/fms-api-client.svg)](https://github.com/Luidog/fms-api-client/blob/master/LICENSE.md)
 
@@ -8,13 +6,11 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
 
 [fms-api-client documentation](https://luidog.github.io/fms-api-client/)
 
-
 ## Installation
 
 ```sh
 npm install --save fms-api-client
 ```
-
 
 ## Usage
 
@@ -35,7 +31,6 @@ Any method that accepts script or portals in query or body parameters will also 
 #### Script Array Syntax
 
 The custom script parameter follows the following syntax:
-
 
 ```json
 {
@@ -60,11 +55,9 @@ The custom script parameter follows the following syntax:
 
 > File [./examples/schema/scripts-array-schema.json](./examples/schema/scripts-array-schema.json)
 
-
 #### Portals Array Syntax
 
 The custom portals parameter follows the following syntax:
-
 
 ```json
 {
@@ -77,13 +70,11 @@ The custom portals parameter follows the following syntax:
 
 > File [./examples/schema/portals-array-schema.json](./examples/schema/portals-array-schema.json)
 
-
 **Note:** The FileMaker script and portal syntax will override the alternative scripts and portals parameter syntax.
 
 In addition to allowing an exanded syntax for invoking scripts or selecting portals the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API.
 
 #### Data Syntax
-
 
 ```json
 {
@@ -96,7 +87,6 @@ In addition to allowing an exanded syntax for invoking scripts or selecting port
 
 > File [./examples/schema/data-schema.json](./examples/schema/data-schema.json)
 
-
 Arrays and objects are stringified before being inserted into field or portal data. `limit` and `offset` parameters can be either strings or a numbers.
 
 The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client. 
@@ -104,7 +94,6 @@ The client will also automatically convert `limit`, `find`, and `offset` paramet
 The client accepts the same sort parameters as the Data API. 
 
 #### Sort Syntax
-
 
 ```json
 {
@@ -117,11 +106,9 @@ The client accepts the same sort parameters as the Data API.
 
 > File [./examples/schema/sort-schema.json](./examples/schema/sort-schema.json)
 
-
 When using the `find` method a query is required. The query can either be a single json object or an array of json objects.
 
 #### Query Syntax
-
 
 ```json
 {
@@ -143,7 +130,6 @@ When using the `find` method a query is required. The query can either be a sing
 
 > File [./examples/schema/query-schema.json](./examples/schema/query-schema.json)
 
-
 All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable. 
 
 fms-api-client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the utility section.
@@ -156,14 +142,12 @@ marpat is designed to allow the use of multiple datastores with the focus on enc
 
 For more information on marpat and the different types of supported storage visit [marpat](https://github.com/Luidog/marpat)
 
-
 ```js
 const { connect } = require('marpat');
 connect('nedb://memory')
 ```
 
 > Excerpt from [./examples/index.js](./examples/index.js#L24-L25)
-
 
 ### Client Creation
 
@@ -183,7 +167,6 @@ After connecting to a datastore you can import and create clients. A client is c
 
 :warning: You should only use the agent parameter when absolutely necessary. The Data API was designed to be used on https. Deviating from the intended use should be done with caution.
 
-
 ```js
     const client = Filemaker.create({
       name: process.env.CLIENT_NAME,
@@ -198,11 +181,9 @@ After connecting to a datastore you can import and create clients. A client is c
 
 > Excerpt from [./examples/index.js](./examples/index.js#L29-L37)
 
-
 **Note:** The server must be an http or https domain.
 
 A client can be used directly after saving it. The `client.save()` method takes no arguments and will either reject with an error or resolve with a useable client. The client will automatically handle Data API session creation and expiration. Once a client is saved it will be stored on the datastore for reuse later.
-
 
 ```js
     return client.save();
@@ -222,7 +203,6 @@ A client can be used directly after saving it. The `client.save()` method takes 
 
 > Excerpt from [./examples/index.js](./examples/index.js#L40-L52)
 
-
 A client can be removed using either the `client.destroy()` method, the `Filemaker.deleteOne(query)` method or the `Filemaker.deleteMany(query)` method.
 
 **Note** Only the `client.destroy()` method will close a FileMaker session. Any client removed using the the `Filemaker.deleteOne(query)` method or the `Filemaker.deleteMany(query)` method will not log out before being destroyed.
@@ -230,7 +210,6 @@ A client can be removed using either the `client.destroy()` method, the `Filemak
 ### Client Use
 
 A client can be used after it is created and saved or recalled from the datastore. The `Filemaker.find(query)` or `Filemaker.findOne(query)` methods can be used to recall clients. The `Filemaker.findOne(query)` method will return either one client or null. The `Filemaker.find(query)` will return either an empty array or an array of clients. All public methods on the client return promises.
-
 
 ```js
 const createManyRecords = client =>
@@ -243,9 +222,7 @@ const createManyRecords = client =>
 
 > Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L28-L33)
 
-
 Results:
-
 
 ```json
 [
@@ -269,7 +246,6 @@ Results:
 
 > File [./examples/results/create-many-records-example.json](./examples/results/create-many-records-example.json)
 
-
 ### Data API Sessions
 
 The client will automatically handle creating and closing Data API sessions. If required the client will authenticate and generate a new session token with each method call. 
@@ -284,20 +260,17 @@ The client will automatically call the login method if it does not have a valid 
 
 `client.login()`
 
-
 ```js
 const login = client => client.login();
 ```
 
 > Excerpt from [./examples/authentication.examples.js](./examples/authentication.examples.js#L15-L15)
 
-
 #### Logout Method
 
 The logout method is used to end a Data API session. This method will also remove the current client's authentication token.
 
 `client.logout()`
-
 
 ```js
 const logout = client =>
@@ -309,7 +282,6 @@ const logout = client =>
 ```
 
 > Excerpt from [./examples/authentication.examples.js](./examples/authentication.examples.js#L6-L11)
-
 
 ### Create Records
 
@@ -323,7 +295,6 @@ Using the client you can create filemaker records. To create a record specify th
 | data       | <code>Object</code> | The data to use when creating a record.                 |
 | parameters | <code>Object</code> | The request parameters to use when creating the record. |
 
-
 ```js
 const createRecord = client =>
   client
@@ -335,9 +306,7 @@ const createRecord = client =>
 
 > Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L6-L11)
 
-
 Result:
-
 
 ```json
 {
@@ -348,9 +317,7 @@ Result:
 
 > File [./examples/results/create-record-example.json](./examples/results/create-record-example.json)
 
-
 Both the create method and the edit method accept a merge boolean in their option parameters. If the `merge` property is true the data used to create or edit the filemaker record will be merged with the FileMaker Data API results.
-
 
 ```js
 const mergeDataOnCreate = client =>
@@ -367,9 +334,7 @@ const mergeDataOnCreate = client =>
 
 > Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L15-L24)
 
-
 Result:
-
 
 ```json
 {
@@ -381,9 +346,7 @@ Result:
 
 > File [./examples/results/create-record-merge-example.json](./examples/results/create-record-merge-example.json)
 
-
 The create method also allows you to trigger scripts when creating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional  `params` parameters. For more information see the scripts syntax example in the introduction.
-
 
 ```js
 const triggerScriptsOnCreate = client =>
@@ -403,9 +366,7 @@ const triggerScriptsOnCreate = client =>
 
 > Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L37-L49)
 
-
 Result:
-
 
 ```json
 {
@@ -417,7 +378,6 @@ Result:
 ```
 
 > File [./examples/results/trigger-scripts-on-create-example.json](./examples/results/trigger-scripts-on-create-example.json)
-
 
 ### Get Record Details
 
@@ -431,7 +391,6 @@ The Get method will return a specific FileMaker record based on the recordId pas
 | recordId   | <code>String</code> | The FileMaker internal record ID to use when retrieving the record. |
 | parameters | <code>Object</code> | Parameters to add for the get query.                                |
 
-
 ```js
       client
         .get('Heroes', response.data[0].recordId)
@@ -440,9 +399,7 @@ The Get method will return a specific FileMaker record based on the recordId pas
 
 > Excerpt from [./examples/get.examples.js](./examples/get.examples.js#L9-L11)
 
-
 Result:
-
 
 ```json
 {
@@ -475,7 +432,6 @@ Result:
 
 > File [./examples/results/get-record-example.json](./examples/results/get-record-example.json)
 
-
 ### List Records
 
 You can use the client to list filemaker records. The list method accepts a layout and parameter variable. The client will automatically santize the limit, offset, and sort keys to correspond with the DAPI's requirements.
@@ -487,7 +443,6 @@ You can use the client to list filemaker records. The list method accepts a layo
 | layout     | <code>String</code> | The layout to use when retrieving the record. |
 | parameters | <code>Object</code> | the parameters to use to modify the query.    |
 
-
 ```js
 const listHeroes = client =>
   client
@@ -497,9 +452,7 @@ const listHeroes = client =>
 
 > Excerpt from [./examples/list.examples.js](./examples/list.examples.js#L6-L9)
 
-
 Result:
-
 
 ```json
 {
@@ -561,7 +514,6 @@ Result:
 
 > File [./examples/results/list-records-example.json](./examples/results/list-records-example.json)
 
-
 ### Find Records
 
 The client's find method will accept either a single object as find parameters or an array. The find method will also santize the limit, sort, and offset parameters to conform with the Data API's requirements.
@@ -574,7 +526,6 @@ The client's find method will accept either a single object as find parameters o
 | query      | <code>Object</code> | to use in the find request.                 |
 | parameters | <code>Object</code> | the parameters to use to modify the query.  |
 
-
 ```js
 const findRecords = client =>
   client
@@ -584,9 +535,7 @@ const findRecords = client =>
 
 > Excerpt from [./examples/find.examples.js](./examples/find.examples.js#L6-L9)
 
-
 Result:
-
 
 ```json
 {
@@ -619,7 +568,6 @@ Result:
 
 > File [./examples/results/find-records-example.json](./examples/results/find-records-example.json)
 
-
 ### Edit Records
 
 The client's edit method requires a layout, recordId, and object to use for updating the record.
@@ -633,7 +581,6 @@ The client's edit method requires a layout, recordId, and object to use for upda
 | data       | <code>Object</code> | The data to use when editing a record.                           |
 | parameters | <code>Object</code> | parameters to use when performing the query.                     |
 
-
 ```js
 const editRecord = client =>
   client
@@ -645,9 +592,7 @@ const editRecord = client =>
 
 > Excerpt from [./examples/edit.examples.js](./examples/edit.examples.js#L6-L11)
 
-
 Result:
-
 
 ```json
 {
@@ -656,7 +601,6 @@ Result:
 ```
 
 > File [./examples/results/edit-record-example.json](./examples/results/edit-record-example.json)
-
 
 ### Delete Records
 
@@ -669,7 +613,6 @@ The client's delete method requires a layout and a record id. The recordId can b
 | layout   | <code>String</code> | The layout to use when deleting the record.                      |
 | recordId | <code>String</code> | The FileMaker internal record ID to use when editing the record. |
 
-
 ```js
 const deleteRecords = client =>
   client
@@ -681,16 +624,13 @@ const deleteRecords = client =>
 
 > Excerpt from [./examples/delete.examples.js](./examples/delete.examples.js#L6-L11)
 
-
 Result:
-
 
 ```json
 {}
 ```
 
 > File [./examples/results/delete-record-example.json](./examples/results/delete-record-example.json)
-
 
 ### Trigger Script
 
@@ -704,7 +644,6 @@ The client's script method will trigger a script. You can also trigger scripts w
 | name       | <code>String</code> | The name of the script                 |
 | parameters | <code>Object</code> | Parameters to pass to the script       |
 
-
 ```js
 const triggerScript = client =>
   client
@@ -714,9 +653,7 @@ const triggerScript = client =>
 
 > Excerpt from [./examples/script.examples.js](./examples/script.examples.js#L6-L9)
 
-
 Result:
-
 
 ```json
 {
@@ -727,7 +664,6 @@ Result:
 ```
 
 > File [./examples/results/script-trigger-example.json](./examples/results/script-trigger-example.json)
-
 
 ### Upload Files
 
@@ -743,7 +679,6 @@ The upload method will upload binary data to a container. The file parameter sho
 | recordId           | <code>Number</code> \| <code>String</code> | the recordId to use when uploading the file.                                             |
 | fieldRepetition    | <code>Number</code>                        | The field repetition to use when inserting into a container field. by default this is 1. |
 
-
 ```js
 const uploadImage = client =>
   client
@@ -753,9 +688,7 @@ const uploadImage = client =>
 
 > Excerpt from [./examples/upload.examples.js](./examples/upload.examples.js#L6-L9)
 
-
 Result:
-
 
 ```json
 {
@@ -766,10 +699,8 @@ Result:
 
 > File [./examples/results/upload-image-example.json](./examples/results/upload-image-example.json)
 
-
 You can also provide a record Id to the upload method and the file will be uploaded to that
 record.
-
 
 ```js
           client
@@ -780,9 +711,7 @@ record.
 
 > Excerpt from [./examples/upload.examples.js](./examples/upload.examples.js#L20-L23)
 
-
 Result:
-
 
 ```json
 {
@@ -792,7 +721,6 @@ Result:
 ```
 
 > File [./examples/results/upload-specific-record-example.json](./examples/results/upload-specific-record-example.json)
-
 
 ### Set Session Globals
 
@@ -804,7 +732,6 @@ The globals method will set global fields for the current session.
 | ----- | ----------------------------------------- | ----------------------------------------------------- |
 | data  | <code>Object</code> \| <code>Array</code> | a json object containing the name value pairs to set. |
 
-
 ```js
 const setGlobals = client =>
   client
@@ -814,16 +741,13 @@ const setGlobals = client =>
 
 > Excerpt from [./examples/globals.examples.js](./examples/globals.examples.js#L6-L9)
 
-
 Result:
-
 
 ```json
 {}
 ```
 
 > File [./examples/results/set-globals-example.json](./examples/results/set-globals-example.json)
-
 
 ### Utility Methods
 
@@ -839,7 +763,6 @@ The recordId method retrieves the `recordId` properties for a response. This met
 | ----- | ----------------------------------------- | -------------------------------------------------------------------------- |
 | data  | <code>Object</code> \| <code>Array</code> | the raw data returned from a filemaker. This can be an array or an object. |
 
-
 ```js
 const extractRecordId = client =>
   client
@@ -850,9 +773,7 @@ const extractRecordId = client =>
 
 > Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L12-L16)
 
-
 Result:
-
 
 ```json
 [
@@ -862,7 +783,6 @@ Result:
 ```
 
 > File [./examples/results/recordid-utility-example.json](./examples/results/recordid-utility-example.json)
-
 
 #### fieldData Method
 
@@ -874,7 +794,6 @@ The fieldData method retrieves the `fieldData`, `recordId`, and `modId` properti
 | ----- | ----------------------------------------- | -------------------------------------------------------------------------- |
 | data  | <code>Object</code> \| <code>Array</code> | The raw data returned from a filemaker. This can be an array or an object. |
 
-
 ```js
 const extractFieldData = client =>
   client
@@ -885,9 +804,7 @@ const extractFieldData = client =>
 
 > Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L20-L24)
 
-
 Result:
-
 
 ```json
 [
@@ -928,7 +845,6 @@ Result:
 
 > File [./examples/results/fielddata-utility-example.json](./examples/results/fielddata-utility-example.json)
 
-
 #### Transform Utility
 
 The transform utility converts Data API response data by converting `table::field` properties to objects. This method will transverse the response data and converting `{ table::field : value}` properties to `{ table:{ field : value } }`. The transform utility will also convert `portalData` into arrays of objects. 
@@ -952,9 +868,7 @@ const transformData = client =>
 
 > Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L28-L32)
 
-
 Result:
-
 
 ```json
 [
@@ -989,7 +903,6 @@ Result:
 
 > File [./examples/results/transform-utility-example.json](./examples/results/transform-utility-example.json)
 
-
 #### ContainerData Utility
 
 The containerData utility will retrieve FileMaker container data by following the links returned by the Data API. This utility will accept either a single data object or an array of objects. The utility will use the `field` parameter to target container data urls in the data parameter. This utility also requires a `name` parameter which will be used to target a data property that should be used as the file's name. If a name parameter is provided that is not a property or nested property in the `data` parameter, the name parameter itself will be used. The `destination` parameter should be either 'buffer' to indicate that an object with a file's name and buffer should be returned or the path, relative to the current working directory, where the utility should write container data to a file. This utility will also accept optional request `parameters` to modify the http request.
@@ -1005,7 +918,6 @@ The containerData utility will retrieve FileMaker container data by following th
 | [parameters]         | <code>Object</code>                       | request parameters.                                                           |
 | [parameters.timeout] | <code>Number</code>                       | a timeout for the request.                                                    |
 
-
 ```js
 const transformData = client =>
   client
@@ -1016,9 +928,7 @@ const transformData = client =>
 
 > Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L28-L32)
 
-
 Result:
-
 
 ```json
 [
@@ -1030,7 +940,6 @@ Result:
 ```
 
 > File [./examples/results/containerdata-example.json](./examples/results/containerdata-example.json)
-
 
 ## Custom Request Agents, Custom Request Parameters, and Proxies
 
@@ -1057,9 +966,8 @@ npm install
 npm test
 ```
 
-
 ```default
-> fms-api-client@1.7.3 test /Users/luidelaparra/Documents/Development/fms-api-client
+> fms-api-client@1.8.0 test /fms-api-client
 > nyc _mocha --recursive  ./tests --timeout=30000 --exit
 
 
@@ -1314,8 +1222,6 @@ All files                     |      100 |      100 |      100 |      100 |     
 ------------------------------|----------|----------|----------|----------|-------------------|
 ```
 
-
-
 ## <a name="dependencies">Dependencies</a>
 
 - [axios](https://github.com/axios/axios): Promise based HTTP client for the browser and node.js
@@ -1331,9 +1237,6 @@ All files                     |      100 |      100 |      100 |      100 |     
 - [stream-to-array](https://github.com/stream-utils/stream-to-array): Concatenate a readable stream's data into a single array
 - [tough-cookie](https://github.com/salesforce/tough-cookie): RFC6265 Cookies and Cookie Jar for node.js
 - [uuid](https://github.com/kelektiv/node-uuid): RFC4122 (v1, v4, and v5) UUIDs
-
-
-
 
 ## <a name="dev-dependencies">Dev Dependencies</a>
 
@@ -1363,10 +1266,6 @@ All files                     |      100 |      100 |      100 |      100 |     
 - [prettier](https://github.com/prettier/prettier): Prettier is an opinionated code formatter
 - [varium](https://npmjs.org/package/varium): A strict parser and validator of environment config variables
 
-
-
-
 ## License
 
 MIT © Lui de la Parra
-
