@@ -48,8 +48,8 @@ const getContainerData = client =>
       containerData(
         result.data,
         'fieldData.image',
-        'fieldData.imageName',
-        './assets'
+        './assets',
+        'fieldData.imageName'
       )
     )
     .then(result => log('containerdata-example', result));

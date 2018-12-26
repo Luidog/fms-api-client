@@ -54,8 +54,8 @@ describe('ContainerData Capabilities', () => {
           containerData(
             response.data[0],
             'fieldData.image',
-            'fieldData.imageName',
-            './assets'
+            './assets',
+            'fieldData.imageName'
           )
         )
     )
@@ -71,8 +71,8 @@ describe('ContainerData Capabilities', () => {
           containerData(
             response.data,
             'fieldData.image',
-            'fieldData.imageName',
-            './assets'
+            './assets',
+            'fieldData.imageName'
           )
         )
     )
@@ -81,6 +81,32 @@ describe('ContainerData Capabilities', () => {
       .to.be.a('object')
       .and.to.all.include.keys('name', 'path');
   });
+
+  it('should substitute the record id if a name is not specified', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { imageName: '*' }, { limit: 2 })
+        .then(response =>
+          containerData(response.data, 'fieldData.image', './assets')
+        )
+    )
+      .to.eventually.be.a('array')
+      .and.property('0')
+      .to.be.a('object')
+      .and.to.all.include.keys('name', 'path');
+  });
+  it('should substitute the record id if a name is not specified', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { imageName: '*' }, { limit: 1 })
+        .then(response =>
+          containerData(response.data[0], 'fieldData.image', './assets')
+        )
+    )
+      .to.eventually.be.a('object')
+      .and.to.all.include.keys('name', 'path');
+  });
+
   it('should download container data from an array to a buffer', () => {
     return expect(
       client
@@ -89,8 +115,8 @@ describe('ContainerData Capabilities', () => {
           containerData(
             response.data,
             'fieldData.image',
-            'fieldData.imageName',
-            'buffer'
+            'buffer',
+            'fieldData.imageName'
           )
         )
     )
@@ -99,6 +125,7 @@ describe('ContainerData Capabilities', () => {
       .to.be.a('object')
       .and.to.all.include.keys('name', 'buffer');
   });
+
   it('should download container data from an object to a buffer', () => {
     return expect(
       client
@@ -107,31 +134,47 @@ describe('ContainerData Capabilities', () => {
           containerData(
             response.data[0],
             'fieldData.image',
-            'fieldData.imageName',
-            'buffer'
+            'buffer',
+            'fieldData.imageName'
           )
         )
     )
       .to.be.eventually.be.a('object')
       .and.to.all.include.keys('name', 'buffer');
   });
-  it('should reject with an error and a message', () => {
+
+  it('should substitute a uuid if the record id can not be found in an object', () => {
     return expect(
       client
         .find(process.env.LAYOUT, { imageName: '*' }, { limit: 1 })
-        .then(response =>
-          containerData(
-            response.data[0],
-            'fieldData.image',
-            'fieldData.imageName',
-            './path/does/not/exist'
-          )
-        )
-        .catch(error => error)
+        .then(response => {
+          let data = response.data[0];
+          delete data.recordId;
+          return data;
+        })
+        .then(data => containerData(data, 'fieldData.image'))
     )
-      .to.eventually.be.a('object')
-      .that.has.all.keys('code', 'message');
+      .to.be.eventually.be.a('object')
+      .and.to.all.include.keys('name', 'buffer');
   });
+
+  it('should substitute a uuid if the record id can not be found in an array', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { imageName: '*' }, { limit: 2 })
+        .then(response => {
+          delete response.data[0].recordId;
+          delete response.data[1].recordId;
+          return response.data;
+        })
+        .then(data => containerData(data, 'fieldData.image'))
+    )
+      .to.eventually.be.a('array')
+      .and.property('0')
+      .to.be.a('object')
+      .and.to.all.include.keys('name', 'buffer');
+  });
+
   it('should reject with an error and a message', () => {
     return expect(
       client
@@ -140,9 +183,8 @@ describe('ContainerData Capabilities', () => {
           containerData(
             response.data[0],
             'fieldData.image',
-            'fieldData.imageName',
-            'buffer',
-            { jar: true }
+            './path/does/not/exist',
+            'fieldData.imageName'
           )
         )
         .catch(error => error)
