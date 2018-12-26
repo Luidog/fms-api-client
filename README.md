@@ -181,6 +181,7 @@ After connecting to a datastore you can import and create clients. A client is c
 | proxy       |  Object |                             **optional** settings for a proxy server                             |
 | agent       |  Object |                         **optional** settings for a custom request agent                         |
 
+
 :warning: You should only use the agent parameter when absolutely necessary. The Data API was designed to be used on https. Deviating from the intended use should be done with caution.
 
 <!--@snippet('./examples/index.js#client-create-example', { showSource: true })-->
@@ -1059,7 +1060,7 @@ npm test
 
 <!--@execute('npm run test',[])-->
 ```default
-> fms-api-client@1.7.3 test /Users/luidelaparra/Documents/Development/fms-api-client
+> fms-api-client@1.8.0 test /fms-api-client
 > nyc _mocha --recursive  ./tests --timeout=30000 --exit
 
 
@@ -1242,11 +1243,11 @@ npm test
     ✓ should allow you to upload a file to a new record (1266ms)
     ✓ should allow you to upload a buffer to a new record (1357ms)
     ✓ should allow you to upload a file to a specific container repetition (1336ms)
-    1) should allow you to upload a buffer to a specific container repetition
+    ✓ should allow you to upload a buffer to a specific container repetition
     ✓ should reject with a message if it can not find the file to upload
     ✓ should allow you to upload a file to a specific record (1291ms)
     ✓ should allow you to upload a buffer object to a specific record (1265ms)
-    2) should allow you to upload a file to a specific record container repetition
+    ✓ should allow you to upload a file to a specific record container repetition
     ✓ should allow you to upload a buffer to a specific record container repetition (1262ms)
     ✓ should reject of the request is invalid (231ms)
     ✓ should reject an empty buffer object (79ms)
@@ -1281,20 +1282,7 @@ npm test
       ✓ it should return false for null
 
 
-  171 passing (40s)
-  2 failing
-
-  1) File Upload Capabilities
-       should allow you to upload a buffer to a specific container repetition:
-     
-  
-
-  2) File Upload Capabilities
-       should allow you to upload a file to a specific record container repetition:
-     
-  
-
-
+  173 passing (40s)
 
 ------------------------------|----------|----------|----------|----------|-------------------|
 File                          |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
@@ -1321,16 +1309,6 @@ All files                     |      100 |      100 |      100 |      100 |     
   filemaker.utilities.js      |      100 |      100 |      100 |      100 |                   |
   index.js                    |      100 |      100 |      100 |      100 |                   |
 ------------------------------|----------|----------|----------|----------|-------------------|
-npm ERR! code ELIFECYCLE
-npm ERR! errno 2
-npm ERR! fms-api-client@1.7.3 test: `nyc _mocha --recursive  ./tests --timeout=30000 --exit`
-npm ERR! Exit status 2
-npm ERR! 
-npm ERR! Failed at the fms-api-client@1.7.3 test script.
-npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
-
-npm ERR! A complete log of this run can be found in:
-npm ERR!     /Users/luidelaparra/.npm/_logs/2018-12-26T00_23_38_828Z-debug.log
 ```
 <!--/@-->
 
