@@ -40,7 +40,7 @@ const transformDataNoConvert = client =>
     .then(result => log('transform-utility-no-convert-example', result));
 //#
 
-//#ContainerData-example
+//#containerdata-example
 const getContainerData = client =>
   client
     .find('Heroes', { imageName: '*' }, { limit: 1 })

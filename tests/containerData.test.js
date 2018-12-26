@@ -192,4 +192,22 @@ describe('ContainerData Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('code', 'message');
   });
+  it('should reject if the WPE rejects the request', () => {
+    return expect(
+      client
+        .find(process.env.LAYOUT, { imageName: '*' }, { limit: 1 })
+        .then(response =>
+          containerData(
+            response.data[0],
+            'fieldData.image',
+            'buffer',
+            'fieldData.imageName',
+            { jar: true }
+          )
+        )
+        .catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
 });
