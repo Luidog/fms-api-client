@@ -134,7 +134,9 @@ The logout method is used to end a Data API session. This method will also remov
 `client.logout()`
 <!--@snippet('./examples/authentication.examples.js#client-logout-example', { showSource: true })-->
 <!--/@-->
-### Create Records
+### Client Methods
+
+#### Create Records
 
 Using the client you can create filemaker records. To create a record specify the layout to use and the data to insert on creation. The client will automatically convert numbers, arrays, and objects into strings so they can be inserted into a filemaker field. The create method will automatically create a `fieldData` property and add all data to that property if there is no fieldData property present. The client will preserve the contents of the `portalData` property.
 
@@ -160,7 +162,7 @@ The create method also allows you to trigger scripts when creating a record. Not
 Result:
 <!--@snippet('./examples/results/trigger-scripts-on-create-example.json', { showSource: true })-->
 <!--/@-->
-### Get Record Details
+#### Get Record Details
 
 The Get method will return a specific FileMaker record based on the recordId passed to it. The recordId can be a string or a number.
 
@@ -175,7 +177,7 @@ Result:
 <!--@snippet('./examples/results/get-record-example.json', { showSource: true })-->
 <!--/@-->
 
-### List Records
+#### List Records
 
 You can use the client to list filemaker records. The list method accepts a layout and parameter variable. The client will automatically santize the limit, offset, and sort keys to correspond with the DAPI's requirements.
 
@@ -190,7 +192,7 @@ Result:
 <!--@snippet('./examples/results/list-records-example.json', { showSource: true })-->
 <!--/@-->
 
-### Find Records
+#### Find Records
 
 The client's find method will accept either a single object as find parameters or an array. The find method will also santize the limit, sort, and offset parameters to conform with the Data API's requirements.
 
@@ -204,7 +206,7 @@ The client's find method will accept either a single object as find parameters o
 Result:
 <!--@snippet('./examples/results/find-records-example.json', { showSource: true })-->
 <!--/@-->
-### Edit Records
+#### Edit Records
 
 The client's edit method requires a layout, recordId, and object to use for updating the record.
 
@@ -218,7 +220,7 @@ The client's edit method requires a layout, recordId, and object to use for upda
 Result:
 <!--@snippet('./examples/results/edit-record-example.json', { showSource: true })-->
 <!--/@-->
-### Delete Records
+#### Delete Records
 
 The client's delete method requires a layout and a record id. The recordId can be a number or a string.
 
@@ -232,7 +234,7 @@ The client's delete method requires a layout and a record id. The recordId can b
 Result:
 <!--@snippet('./examples/results/delete-record-example.json', { showSource: true })-->
 <!--/@-->
-### Trigger Script
+#### Trigger Script
 
 The client's script method will trigger a script. You can also trigger scripts with the create, edit, list, find, and delete methods. This method performs a list with a limit of one on the specified layout before triggering the script. this is the most lightweight request possible while still being able to trigger a script.
 
@@ -246,7 +248,7 @@ The client's script method will trigger a script. You can also trigger scripts w
 Result:
 <!--@snippet('./examples/results/script-trigger-example.json', { showSource: true })-->
 <!--/@-->
-### Upload Files
+#### Upload Files
 
 The upload method will upload binary data to a container. The file parameter should be either a path to a file or a buffer. If you need to set a field repetition, you can set that in parameters. If recordId is 0 or undefined a new record will be created.
 
@@ -268,7 +270,7 @@ record.
 Result:
 <!--@snippet('./examples/results/upload-specific-record-example.json', { showSource: true })-->
 <!--/@-->
-### Set Session Globals
+#### Set Session Globals
 
 The globals method will set global fields for the current session.
 
@@ -282,11 +284,11 @@ The globals method will set global fields for the current session.
 Result:
 <!--@snippet('./examples/results/set-globals-example.json', { showSource: true })-->
 <!--/@-->
-### Utility Methods
+### Utilities
 
 The client also provides utility methods to aid in parsing and manipulating FileMaker Data. The client exports the `recordId(data)`, `fieldData(data)`, and `transform(data, options)` to aid in transforming Data API response data into other formats. Each utility method is capable of recieving either an object or a array.
 
-#### recordId Method
+#### recordId Utility
 
 The recordId method retrieves the `recordId` properties for a response. This method will return either a single string or an array of strings.
 
@@ -295,12 +297,17 @@ The recordId method retrieves the `recordId` properties for a response. This met
 {{#functions name="recordId"}}
 {{>parameters}}
 {{/functions}}
+
 <!--@snippet('./examples/utility.examples.js#recordid-utility-example', { showSource: true })-->
 <!--/@-->
-Result:
-<!--@snippet('./examples/results/recordid-utility-example.json', { showSource: true })-->
+##### recordId Utility Results
+original:
+<!--@snippet('./examples/results/record-id-utility-original-example.json', { showSource: true })-->
 <!--/@-->
-#### fieldData Method
+Transformed:
+<!--@snippet('./examples/results/record-id-utility-example.json', { showSource: true })-->
+<!--/@-->
+#### FieldData Utility
 
 The fieldData method retrieves the `fieldData`, `recordId`, and `modId` properties from a Data API response. The fieldData method will merge the `recordId` and `modId` properties into fielData properties. This method will not convert `table::field` properties.
 
@@ -309,10 +316,14 @@ The fieldData method retrieves the `fieldData`, `recordId`, and `modId` properti
 {{#functions name="fieldData"}}
 {{>parameters}}
 {{/functions}}
-<!--@snippet('./examples/utility.examples.js#fielddata-utility-example', { showSource: true })-->
+<!--@snippet('./examples/utility.examples.js#field-data-utility-example', { showSource: true })-->
 <!--/@-->
-Result:
-<!--@snippet('./examples/results/fielddata-utility-example.json', { showSource: true })-->
+##### FieldData Utility Results
+Original:
+<!--@snippet('./examples/utility.examples.js#field-data-utility-original-example', { showSource: true })-->
+<!--/@-->
+Transformed:
+<!--@snippet('./examples/results/field-data-utility-example.json', { showSource: true })-->
 <!--/@-->
 #### Transform Utility
 
@@ -327,7 +338,7 @@ The transform utility accepts three option properties. The three option properti
 {{/functions}}
 <!--@snippet('./examples/utility.examples.js#transform-utility-example', { showSource: true })-->
 <!--/@-->
-##### Transform Utility Example
+##### Transform Utility Results
 Original:
 <!--@snippet('./examples/results/transform-utility-original-example.json', { showSource: true })-->
 <!--/@-->
@@ -349,7 +360,7 @@ The containerData utility will retrieve FileMaker container data by following th
 Result:
 <!--@snippet('./examples/results/container-data-example.json', { showSource: true })-->
 <!--/@-->
-## Custom Request Agents, Custom Request Parameters, and Proxies
+### Custom Request Agents, Custom Request Parameters, and Proxies
 
 The client has the ability to create custom agents and modify requests parameters or use a proxy. Agents, request parameters, and proxies can be configured either when the client is created or when a request is being made.
 
