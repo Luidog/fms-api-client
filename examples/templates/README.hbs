@@ -27,7 +27,17 @@ To remove a client from a datastore and log out a session call `client.destroy()
 
 The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters. 
 
-Any method that accepts script or portals in query or body parameters will also accept the following script and portal parameter syntax:
+Any method that accepts script or portals in query or body parameters will also accept the following script and portal parameter syntax.
+
+In addition to allowing an exanded syntax for invoking scripts or selecting portals the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API. `limit` and `offset` parameters can be either strings or a numbers.
+
+The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client. 
+
+All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable. 
+
+fms-api-client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the utility section.
+
+### Parameter Syntax
 
 #### Script Array Syntax
 
@@ -41,14 +51,10 @@ The custom portals parameter follows the following syntax:
 <!--/@-->
 **Note:** The FileMaker script and portal syntax will override the alternative scripts and portals parameter syntax.
 
-In addition to allowing an exanded syntax for invoking scripts or selecting portals the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API.
-
 #### Data Syntax
 <!--@snippet('./examples/schema/data-schema.json', { showSource: true })-->
 <!--/@-->
-Arrays and objects are stringified before being inserted into field or portal data. `limit` and `offset` parameters can be either strings or a numbers.
-
-The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client. 
+Arrays and objects are stringified before being inserted into field or portal data. 
 
 The client accepts the same sort parameters as the Data API. 
 
@@ -60,9 +66,6 @@ When using the `find` method a query is required. The query can either be a sing
 #### Query Syntax
 <!--@snippet('./examples/schema/query-schema.json', { showSource: true })-->
 <!--/@-->
-All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable. 
-
-fms-api-client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the utility section.
 
 ### Datastore Connection
 
@@ -79,15 +82,15 @@ After connecting to a datastore you can import and create clients. A client is c
 
 | Property    |   Type  |                                            Description                                           |
 | ----------- | :-----: | :----------------------------------------------------------------------------------------------: |
-| application |  String |                  **required** The FileMaker application / database to connect to                 |
-| server      |  String | **required** The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
-| user        |  String |     **required** The FileMaker user account to be used when authenticating into the Data API     |
-| password    |  String |                        **required** The FileMaker user account's password.                       |
-| name        |  String |                                **optional** A name for the client.                               |
-| usage       | Boolean |          **optional** Track Data API usage for this client. **Note:** Default is `true`          |
-| timeout     |  Number |      **optional** The default timeout time for requests **Note:** Default is 0, (no timeout)     |
-| proxy       |  Object |                             **optional** settings for a proxy server                             |
-| agent       |  Object |                         **optional** settings for a custom request agent                         |
+| application |  String |                   The FileMaker application / database to connect to                 |
+| server      |  String |  The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
+| user        |  String |      The FileMaker user account to be used when authenticating into the Data API     |
+| password    |  String |                         The FileMaker user account's password.                       |
+| [name]        |  String |                                 A name for the client.                               |
+| [usage]       | Boolean |           Track Data API usage for this client. **Note:** Default is `true`          |
+| [timeout]     |  Number |       The default timeout time for requests **Note:** Default is 0, (no timeout)     |
+| [proxy]       |  Object |                              settings for a proxy server                             |
+| [agent]       |  Object |                          settings for a custom request agent                         |
 
 :warning: You should only use the agent parameter when absolutely necessary. The Data API was designed to be used on https. Deviating from the intended use should be done with caution.
 <!--@snippet('./examples/index.js#client-create-example', { showSource: true })-->
@@ -324,7 +327,11 @@ The transform utility accepts three option properties. The three option properti
 {{/functions}}
 <!--@snippet('./examples/utility.examples.js#transform-utility-example', { showSource: true })-->
 <!--/@-->
-Result:
+##### Transform Utility Example
+Original:
+<!--@snippet('./examples/results/transform-utility-original-example.json', { showSource: true })-->
+<!--/@-->
+Transformed:
 <!--@snippet('./examples/results/transform-utility-example.json', { showSource: true })-->
 <!--/@-->
 
@@ -332,15 +339,15 @@ Result:
 
 The containerData utility will retrieve FileMaker container data by following the links returned by the Data API. This utility will accept either a single data object or an array of objects. The utility will use the `field` parameter to target container data urls in the data parameter. This utility also requires a `name` parameter which will be used to target a data property that should be used as the file's name. If a name parameter is provided that is not a property or nested property in the `data` parameter, the name parameter itself will be used. The `destination` parameter should be either 'buffer' to indicate that an object with a file's name and buffer should be returned or the path, relative to the current working directory, where the utility should write container data to a file. This utility will also accept optional request `parameters` to modify the http request.
 
-`container(data, field, destination, name, parameters)` 
+`containerData(data, field, destination, name, parameters)` 
 
 {{#functions name="containerData"}}
 {{>parameters}}
 {{/functions}}
-<!--@snippet('./examples/utility.examples.js#containerdata-example', { showSource: true })-->
+<!--@snippet('./examples/utility.examples.js#container-data-example', { showSource: true })-->
 <!--/@-->
 Result:
-<!--@snippet('./examples/results/containerdata-example.json', { showSource: true })-->
+<!--@snippet('./examples/results/container-data-example.json', { showSource: true })-->
 <!--/@-->
 ## Custom Request Agents, Custom Request Parameters, and Proxies
 

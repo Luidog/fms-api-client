@@ -1,0 +1,32 @@
+[
+  {
+    "fieldData": {
+      "starships": "",
+      "vehicles": "",
+      "species": "",
+      "biography": "",
+      "birthYear": "",
+      "id": "r2d2-c3po-l3-37-bb-8",
+      "name": "Han Solo"
+    },
+    "portalData": {
+      "Planets": [
+        {
+          "recordId": "1138",
+          "Planets::name": "Coriella",
+          "modId": "327"
+        }
+      ],
+      "Vehicles": [
+        {
+          "recordId": "1138",
+          "Vehicles::name": "Millenium Falcon",
+          "Vehicles::type": "Starship",
+          "modId": "327"
+        }
+      ]
+    },
+    "recordId": "1138",
+    "modId": "327"
+  }
+]

@@ -31,6 +31,15 @@ const transformData = client =>
     .then(result => transform(result.data))
     .then(result => log('transform-utility-example', result));
 //#
+//
+
+//#transform-utility-original-example
+const transformDataOriginal = client =>
+  client
+    .find('Transform', { name: 'Han Solo' }, { limit: 1 })
+    .then(result => result.data)
+    .then(result => log('transform-utility-original-example', result));
+//#
 
 //#transform-utility-no-convert-example
 const transformDataNoConvert = client =>
@@ -40,7 +49,7 @@ const transformDataNoConvert = client =>
     .then(result => log('transform-utility-no-convert-example', result));
 //#
 
-//#containerdata-example
+//#container-data-example
 const getContainerData = client =>
   client
     .find('Heroes', { imageName: '*' }, { limit: 1 })
@@ -52,13 +61,14 @@ const getContainerData = client =>
         'fieldData.imageName'
       )
     )
-    .then(result => log('containerdata-example', result));
+    .then(result => log('container-data-example', result));
 //#
 
 const utilities = client =>
   Promise.all([
     extractFieldData(client),
     extractRecordId(client),
+    transformDataOriginal(client),
     transformData(client),
     transformDataNoConvert(client),
     getContainerData(client)
