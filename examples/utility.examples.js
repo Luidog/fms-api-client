@@ -8,7 +8,7 @@ const {
   containerData
 } = require('../index.js');
 
-//#recordid-utility--original-example
+//#record-id-utility--original-example
 const extractRecordId = client =>
   client
     .find('Heroes', { name: 'yoda' }, { limit: 2 })
@@ -16,7 +16,7 @@ const extractRecordId = client =>
     .then(result => log('record-id-utility-original-example', result));
 //#
 
-//#recordid-utility-example
+//#record-id-utility-example
 const extractRecordIdOriginal = client =>
   client
     .find('Heroes', { name: 'yoda' }, { limit: 2 })
@@ -24,7 +24,7 @@ const extractRecordIdOriginal = client =>
     .then(result => log('record-id-utility-example', result));
 //#
 
-//#fielddata-utility-original-example
+//#field-data-utility-original-example
 const extractFieldDataOriginal = client =>
   client
     .find('Heroes', { name: 'yoda' }, { limit: 2 })
@@ -32,7 +32,7 @@ const extractFieldDataOriginal = client =>
     .then(result => log('field-data-utility-original-example', result));
 //#
 
-//#fielddata-utility-example
+//#field-data-utility-example
 const extractFieldData = client =>
   client
     .find('Heroes', { name: 'yoda' }, { limit: 2 })

@@ -3,9 +3,58 @@
 <!--/@-->
 [![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client) [![Known Vulnerabilities](https://snyk.io/test/github/Luidog/fms-api-client/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Luidog/fms-api-client?targetFile=package.json) [![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=master)](https://coveralls.io/github/Luidog/fms-api-client?branch=master) [![GitHub issues](https://img.shields.io/github/issues/Luidog/fms-api-client.svg?style=plastic)](https://github.com/Luidog/fms-api-client/issues) [![Github commits (since latest release)](https://img.shields.io/github/commits-since/luidog/fms-api-client/latest.svg)](https://img.shields.io/github/issues/Luidog/fms-api-client.svg) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![GitHub license](https://img.shields.io/github/license/Luidog/fms-api-client.svg)](https://github.com/Luidog/fms-api-client/blob/master/LICENSE.md)
 
-A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. You can find detailed documentation on this project here:
+A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. 
 
-[fms-api-client documentation](https://luidog.github.io/fms-api-client/)
+<!--@license()-->
+<!--/@-->
+
+## Table of Contents
+
+- [fms-api-client](#fms-api-client)
+  * [License](#license)
+  * [Table of Contents](#table-of-contents)
+  * [Installation](#installation)
+  * [Usage](#usage)
+    + [Introduction](#introduction)
+    + [Parameter Syntax](#parameter-syntax)
+      - [Script Array Syntax](#script-array-syntax)
+      - [Portals Array Syntax](#portals-array-syntax)
+      - [Data Syntax](#data-syntax)
+      - [Sort Syntax](#sort-syntax)
+      - [Query Syntax](#query-syntax)
+    + [Datastore Connection](#datastore-connection)
+    + [Client Creation](#client-creation)
+    + [Client Use](#client-use)
+    + [Data API Sessions](#data-api-sessions)
+      - [Login Method](#login-method)
+      - [Logout Method](#logout-method)
+    + [Client Methods](#client-methods)
+      - [Create Records](#create-records)
+      - [Get Record Details](#get-record-details)
+      - [List Records](#list-records)
+      - [Find Records](#find-records)
+      - [Edit Records](#edit-records)
+      - [Delete Records](#delete-records)
+      - [Trigger Script](#trigger-script)
+      - [Upload Files](#upload-files)
+      - [Set Session Globals](#set-session-globals)
+    + [Utilities](#utilities)
+      - [recordId Utility](#recordid-utility)
+        * [recordId Utility Results](#recordid-utility-results)
+      - [FieldData Utility](#fielddata-utility)
+        * [FieldData Utility Results](#fielddata-utility-results)
+      - [Transform Utility](#transform-utility)
+        * [Transform Utility Results](#transform-utility-results)
+      - [ContainerData Utility](#containerdata-utility)
+    + [Custom Request Agents, Custom Request Parameters, and Proxies](#custom-request-agents--custom-request-parameters--and-proxies)
+    + [Custom Request Agents](#custom-request-agents)
+    + [Custom Request Parameters](#custom-request-parameters)
+    + [Proxies](#proxies)
+  * [Tests](#tests)
+  * [Dependencies](#-a-name--dependencies--dependencies--a-)
+  * [Development Dependencies](#-a-name--dev-dependencies--dev-dependencies)
+  * [Developer Documentation](#developer-documentation)
+
 <!--@installation()-->
 ## Installation
 
@@ -44,6 +93,9 @@ fms-api-client also provides utility modules to aid in working with FileMaker Da
 The custom script parameter follows the following syntax:
 <!--@snippet('./examples/schema/scripts-array-schema.json', { showSource: true })-->
 <!--/@-->
+
+Following the Data API, the `prerequest` phase occurs before executing request and sorting of records, the `presort` phase after executing request and before sorting records. Not specifying a phase will run the script after the request and sorting are executed.
+
 #### Portals Array Syntax
 
 The custom portals parameter follows the following syntax:
@@ -80,17 +132,17 @@ For more information on marpat and the different types of supported storage visi
 
 After connecting to a datastore you can import and create clients. A client is created using the create method on the Filemaker class. The FileMaker class accepts an object with the following properties:
 
-| Property    |   Type  |                                            Description                                           |
-| ----------- | :-----: | :----------------------------------------------------------------------------------------------: |
-| application |  String |                   The FileMaker application / database to connect to                 |
-| server      |  String |  The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
-| user        |  String |      The FileMaker user account to be used when authenticating into the Data API     |
-| password    |  String |                         The FileMaker user account's password.                       |
-| [name]        |  String |                                 A name for the client.                               |
-| [usage]       | Boolean |           Track Data API usage for this client. **Note:** Default is `true`          |
-| [timeout]     |  Number |       The default timeout time for requests **Note:** Default is 0, (no timeout)     |
-| [proxy]       |  Object |                              settings for a proxy server                             |
-| [agent]       |  Object |                          settings for a custom request agent                         |
+| Property    |   Type  |                                     Description                                     |
+| ----------- | :-----: | :---------------------------------------------------------------------------------: |
+| application |  <code>String</code> |                  The FileMaker application / database to connect to                 |
+| server      |  <code>String</code> | The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
+| user        |  <code>String</code> |     The FileMaker user account to be used when authenticating into the Data API     |
+| password    |  <code>String</code> |                        The FileMaker user account's password.                       |
+| [name]      |  <code>String</code> |                                A name for the client.                               |
+| [usage]     | <code>Boolean</code> |          Track Data API usage for this client. **Note:** Default is `true`          |
+| [timeout]   |  <code>Number</code> |      The default timeout time for requests **Note:** Default is 0, (no timeout)     |
+| [proxy]     |  <code>Object</code> |                             settings for a proxy server                             |
+| [agent]     |  <code>Object</code> |                         settings for a custom request agent                         |
 
 :warning: You should only use the agent parameter when absolutely necessary. The Data API was designed to be used on https. Deviating from the intended use should be done with caution.
 <!--@snippet('./examples/index.js#client-create-example', { showSource: true })-->
@@ -298,7 +350,7 @@ The recordId method retrieves the `recordId` properties for a response. This met
 {{>parameters}}
 {{/functions}}
 
-<!--@snippet('./examples/utility.examples.js#recordid-utility-example', { showSource: true })-->
+<!--@snippet('./examples/utility.examples.js#record-id-utility-example', { showSource: true })-->
 <!--/@-->
 ##### recordId Utility Results
 original:
@@ -390,5 +442,9 @@ npm test
 <!--/@-->
 <!--@devDependencies()-->
 <!--/@-->
-<!--@license()-->
-<!--/@-->
+
+## Developer Documentation
+
+You can find detailed developer documentation on this project here:
+
+[fms-api-client documentation](https://luidog.github.io/fms-api-client/)
