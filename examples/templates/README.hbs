@@ -3,9 +3,58 @@
 <!--/@-->
 [![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client) [![Known Vulnerabilities](https://snyk.io/test/github/Luidog/fms-api-client/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Luidog/fms-api-client?targetFile=package.json) [![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=master)](https://coveralls.io/github/Luidog/fms-api-client?branch=master) [![GitHub issues](https://img.shields.io/github/issues/Luidog/fms-api-client.svg?style=plastic)](https://github.com/Luidog/fms-api-client/issues) [![Github commits (since latest release)](https://img.shields.io/github/commits-since/luidog/fms-api-client/latest.svg)](https://img.shields.io/github/issues/Luidog/fms-api-client.svg) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![GitHub license](https://img.shields.io/github/license/Luidog/fms-api-client.svg)](https://github.com/Luidog/fms-api-client/blob/master/LICENSE.md)
 
-A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. You can find detailed documentation on this project here:
+A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. 
 
-[fms-api-client documentation](https://luidog.github.io/fms-api-client/)
+<!--@license()-->
+<!--/@-->
+
+## Table of Contents
+
+- [fms-api-client](#fms-api-client)
+  * [License](#license)
+  * [Table of Contents](#table-of-contents)
+  * [Installation](#installation)
+  * [Usage](#usage)
+    + [Introduction](#introduction)
+    + [Parameter Syntax](#parameter-syntax)
+      - [Script Array Syntax](#script-array-syntax)
+      - [Portals Array Syntax](#portals-array-syntax)
+      - [Data Syntax](#data-syntax)
+      - [Sort Syntax](#sort-syntax)
+      - [Query Syntax](#query-syntax)
+    + [Datastore Connection](#datastore-connection)
+    + [Client Creation](#client-creation)
+    + [Client Use](#client-use)
+    + [Data API Sessions](#data-api-sessions)
+      - [Login Method](#login-method)
+      - [Logout Method](#logout-method)
+    + [Client Methods](#client-methods)
+      - [Create Records](#create-records)
+      - [Get Record Details](#get-record-details)
+      - [List Records](#list-records)
+      - [Find Records](#find-records)
+      - [Edit Records](#edit-records)
+      - [Delete Records](#delete-records)
+      - [Trigger Script](#trigger-script)
+      - [Upload Files](#upload-files)
+      - [Set Session Globals](#set-session-globals)
+    + [Utilities](#utilities)
+      - [recordId Utility](#recordid-utility)
+        * [recordId Utility Results](#recordid-utility-results)
+      - [FieldData Utility](#fielddata-utility)
+        * [FieldData Utility Results](#fielddata-utility-results)
+      - [Transform Utility](#transform-utility)
+        * [Transform Utility Results](#transform-utility-results)
+      - [ContainerData Utility](#containerdata-utility)
+    + [Custom Request Agents, Custom Request Parameters, and Proxies](#custom-request-agents--custom-request-parameters--and-proxies)
+    + [Custom Request Agents](#custom-request-agents)
+    + [Custom Request Parameters](#custom-request-parameters)
+    + [Proxies](#proxies)
+  * [Tests](#tests)
+  * [Dependencies](#-a-name--dependencies--dependencies--a-)
+  * [Development Dependencies](#-a-name--dev-dependencies--dev-dependencies)
+  * [Developer Documentation](#developer-documentation)
+
 <!--@installation()-->
 ## Installation
 
@@ -27,13 +76,26 @@ To remove a client from a datastore and log out a session call `client.destroy()
 
 The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters. 
 
-Any method that accepts script or portals in query or body parameters will also accept the following script and portal parameter syntax:
+Any method that accepts script or portals in query or body parameters will also accept the following script and portal parameter syntax.
+
+In addition to allowing an exanded syntax for invoking scripts or selecting portals the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API. `limit` and `offset` parameters can be either strings or a numbers.
+
+The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client. 
+
+All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable. 
+
+fms-api-client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the utility section.
+
+### Parameter Syntax
 
 #### Script Array Syntax
 
 The custom script parameter follows the following syntax:
 <!--@snippet('./examples/schema/scripts-array-schema.json', { showSource: true })-->
 <!--/@-->
+
+Following the Data API, the `prerequest` phase occurs before executing request and sorting of records, the `presort` phase after executing request and before sorting records. Not specifying a phase will run the script after the request and sorting are executed.
+
 #### Portals Array Syntax
 
 The custom portals parameter follows the following syntax:
@@ -41,14 +103,10 @@ The custom portals parameter follows the following syntax:
 <!--/@-->
 **Note:** The FileMaker script and portal syntax will override the alternative scripts and portals parameter syntax.
 
-In addition to allowing an exanded syntax for invoking scripts or selecting portals the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API.
-
 #### Data Syntax
 <!--@snippet('./examples/schema/data-schema.json', { showSource: true })-->
 <!--/@-->
-Arrays and objects are stringified before being inserted into field or portal data. `limit` and `offset` parameters can be either strings or a numbers.
-
-The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client. 
+Arrays and objects are stringified before being inserted into field or portal data. 
 
 The client accepts the same sort parameters as the Data API. 
 
@@ -60,9 +118,6 @@ When using the `find` method a query is required. The query can either be a sing
 #### Query Syntax
 <!--@snippet('./examples/schema/query-schema.json', { showSource: true })-->
 <!--/@-->
-All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable. 
-
-fms-api-client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the utility section.
 
 ### Datastore Connection
 
@@ -77,17 +132,17 @@ For more information on marpat and the different types of supported storage visi
 
 After connecting to a datastore you can import and create clients. A client is created using the create method on the Filemaker class. The FileMaker class accepts an object with the following properties:
 
-| Property    |   Type  |                                            Description                                           |
-| ----------- | :-----: | :----------------------------------------------------------------------------------------------: |
-| application |  String |                  **required** The FileMaker application / database to connect to                 |
-| server      |  String | **required** The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
-| user        |  String |     **required** The FileMaker user account to be used when authenticating into the Data API     |
-| password    |  String |                        **required** The FileMaker user account's password.                       |
-| name        |  String |                                **optional** A name for the client.                               |
-| usage       | Boolean |          **optional** Track Data API usage for this client. **Note:** Default is `true`          |
-| timeout     |  Number |      **optional** The default timeout time for requests **Note:** Default is 0, (no timeout)     |
-| proxy       |  Object |                             **optional** settings for a proxy server                             |
-| agent       |  Object |                         **optional** settings for a custom request agent                         |
+| Property    |   Type  |                                     Description                                     |
+| ----------- | :-----: | :---------------------------------------------------------------------------------: |
+| application |  <code>String</code> |                  The FileMaker application / database to connect to                 |
+| server      |  <code>String</code> | The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
+| user        |  <code>String</code> |     The FileMaker user account to be used when authenticating into the Data API     |
+| password    |  <code>String</code> |                        The FileMaker user account's password.                       |
+| [name]      |  <code>String</code> |                                A name for the client.                               |
+| [usage]     | <code>Boolean</code> |          Track Data API usage for this client. **Note:** Default is `true`          |
+| [timeout]   |  <code>Number</code> |      The default timeout time for requests **Note:** Default is 0, (no timeout)     |
+| [proxy]     |  <code>Object</code> |                             settings for a proxy server                             |
+| [agent]     |  <code>Object</code> |                         settings for a custom request agent                         |
 
 :warning: You should only use the agent parameter when absolutely necessary. The Data API was designed to be used on https. Deviating from the intended use should be done with caution.
 <!--@snippet('./examples/index.js#client-create-example', { showSource: true })-->
@@ -131,7 +186,9 @@ The logout method is used to end a Data API session. This method will also remov
 `client.logout()`
 <!--@snippet('./examples/authentication.examples.js#client-logout-example', { showSource: true })-->
 <!--/@-->
-### Create Records
+### Client Methods
+
+#### Create Records
 
 Using the client you can create filemaker records. To create a record specify the layout to use and the data to insert on creation. The client will automatically convert numbers, arrays, and objects into strings so they can be inserted into a filemaker field. The create method will automatically create a `fieldData` property and add all data to that property if there is no fieldData property present. The client will preserve the contents of the `portalData` property.
 
@@ -157,7 +214,7 @@ The create method also allows you to trigger scripts when creating a record. Not
 Result:
 <!--@snippet('./examples/results/trigger-scripts-on-create-example.json', { showSource: true })-->
 <!--/@-->
-### Get Record Details
+#### Get Record Details
 
 The Get method will return a specific FileMaker record based on the recordId passed to it. The recordId can be a string or a number.
 
@@ -172,7 +229,7 @@ Result:
 <!--@snippet('./examples/results/get-record-example.json', { showSource: true })-->
 <!--/@-->
 
-### List Records
+#### List Records
 
 You can use the client to list filemaker records. The list method accepts a layout and parameter variable. The client will automatically santize the limit, offset, and sort keys to correspond with the DAPI's requirements.
 
@@ -187,7 +244,7 @@ Result:
 <!--@snippet('./examples/results/list-records-example.json', { showSource: true })-->
 <!--/@-->
 
-### Find Records
+#### Find Records
 
 The client's find method will accept either a single object as find parameters or an array. The find method will also santize the limit, sort, and offset parameters to conform with the Data API's requirements.
 
@@ -201,7 +258,7 @@ The client's find method will accept either a single object as find parameters o
 Result:
 <!--@snippet('./examples/results/find-records-example.json', { showSource: true })-->
 <!--/@-->
-### Edit Records
+#### Edit Records
 
 The client's edit method requires a layout, recordId, and object to use for updating the record.
 
@@ -215,7 +272,7 @@ The client's edit method requires a layout, recordId, and object to use for upda
 Result:
 <!--@snippet('./examples/results/edit-record-example.json', { showSource: true })-->
 <!--/@-->
-### Delete Records
+#### Delete Records
 
 The client's delete method requires a layout and a record id. The recordId can be a number or a string.
 
@@ -229,7 +286,7 @@ The client's delete method requires a layout and a record id. The recordId can b
 Result:
 <!--@snippet('./examples/results/delete-record-example.json', { showSource: true })-->
 <!--/@-->
-### Trigger Script
+#### Trigger Script
 
 The client's script method will trigger a script. You can also trigger scripts with the create, edit, list, find, and delete methods. This method performs a list with a limit of one on the specified layout before triggering the script. this is the most lightweight request possible while still being able to trigger a script.
 
@@ -243,7 +300,7 @@ The client's script method will trigger a script. You can also trigger scripts w
 Result:
 <!--@snippet('./examples/results/script-trigger-example.json', { showSource: true })-->
 <!--/@-->
-### Upload Files
+#### Upload Files
 
 The upload method will upload binary data to a container. The file parameter should be either a path to a file or a buffer. If you need to set a field repetition, you can set that in parameters. If recordId is 0 or undefined a new record will be created.
 
@@ -265,7 +322,7 @@ record.
 Result:
 <!--@snippet('./examples/results/upload-specific-record-example.json', { showSource: true })-->
 <!--/@-->
-### Set Session Globals
+#### Set Session Globals
 
 The globals method will set global fields for the current session.
 
@@ -279,11 +336,11 @@ The globals method will set global fields for the current session.
 Result:
 <!--@snippet('./examples/results/set-globals-example.json', { showSource: true })-->
 <!--/@-->
-### Utility Methods
+### Utilities
 
 The client also provides utility methods to aid in parsing and manipulating FileMaker Data. The client exports the `recordId(data)`, `fieldData(data)`, and `transform(data, options)` to aid in transforming Data API response data into other formats. Each utility method is capable of recieving either an object or a array.
 
-#### recordId Method
+#### recordId Utility
 
 The recordId method retrieves the `recordId` properties for a response. This method will return either a single string or an array of strings.
 
@@ -292,12 +349,17 @@ The recordId method retrieves the `recordId` properties for a response. This met
 {{#functions name="recordId"}}
 {{>parameters}}
 {{/functions}}
-<!--@snippet('./examples/utility.examples.js#recordid-utility-example', { showSource: true })-->
+
+<!--@snippet('./examples/utility.examples.js#record-id-utility-example', { showSource: true })-->
 <!--/@-->
-Result:
-<!--@snippet('./examples/results/recordid-utility-example.json', { showSource: true })-->
+##### recordId Utility Results
+original:
+<!--@snippet('./examples/results/record-id-utility-original-example.json', { showSource: true })-->
 <!--/@-->
-#### fieldData Method
+Transformed:
+<!--@snippet('./examples/results/record-id-utility-example.json', { showSource: true })-->
+<!--/@-->
+#### FieldData Utility
 
 The fieldData method retrieves the `fieldData`, `recordId`, and `modId` properties from a Data API response. The fieldData method will merge the `recordId` and `modId` properties into fielData properties. This method will not convert `table::field` properties.
 
@@ -306,10 +368,14 @@ The fieldData method retrieves the `fieldData`, `recordId`, and `modId` properti
 {{#functions name="fieldData"}}
 {{>parameters}}
 {{/functions}}
-<!--@snippet('./examples/utility.examples.js#fielddata-utility-example', { showSource: true })-->
+<!--@snippet('./examples/utility.examples.js#field-data-utility-example', { showSource: true })-->
 <!--/@-->
-Result:
-<!--@snippet('./examples/results/fielddata-utility-example.json', { showSource: true })-->
+##### FieldData Utility Results
+Original:
+<!--@snippet('./examples/utility.examples.js#field-data-utility-original-example', { showSource: true })-->
+<!--/@-->
+Transformed:
+<!--@snippet('./examples/results/field-data-utility-example.json', { showSource: true })-->
 <!--/@-->
 #### Transform Utility
 
@@ -324,7 +390,11 @@ The transform utility accepts three option properties. The three option properti
 {{/functions}}
 <!--@snippet('./examples/utility.examples.js#transform-utility-example', { showSource: true })-->
 <!--/@-->
-Result:
+##### Transform Utility Results
+Original:
+<!--@snippet('./examples/results/transform-utility-original-example.json', { showSource: true })-->
+<!--/@-->
+Transformed:
 <!--@snippet('./examples/results/transform-utility-example.json', { showSource: true })-->
 <!--/@-->
 
@@ -332,17 +402,17 @@ Result:
 
 The containerData utility will retrieve FileMaker container data by following the links returned by the Data API. This utility will accept either a single data object or an array of objects. The utility will use the `field` parameter to target container data urls in the data parameter. This utility also requires a `name` parameter which will be used to target a data property that should be used as the file's name. If a name parameter is provided that is not a property or nested property in the `data` parameter, the name parameter itself will be used. The `destination` parameter should be either 'buffer' to indicate that an object with a file's name and buffer should be returned or the path, relative to the current working directory, where the utility should write container data to a file. This utility will also accept optional request `parameters` to modify the http request.
 
-`container(data, field, destination, name, parameters)` 
+`containerData(data, field, destination, name, parameters)` 
 
 {{#functions name="containerData"}}
 {{>parameters}}
 {{/functions}}
-<!--@snippet('./examples/utility.examples.js#containerdata-example', { showSource: true })-->
+<!--@snippet('./examples/utility.examples.js#container-data-example', { showSource: true })-->
 <!--/@-->
 Result:
-<!--@snippet('./examples/results/containerdata-example.json', { showSource: true })-->
+<!--@snippet('./examples/results/container-data-example.json', { showSource: true })-->
 <!--/@-->
-## Custom Request Agents, Custom Request Parameters, and Proxies
+### Custom Request Agents, Custom Request Parameters, and Proxies
 
 The client has the ability to create custom agents and modify requests parameters or use a proxy. Agents, request parameters, and proxies can be configured either when the client is created or when a request is being made.
 
@@ -372,5 +442,9 @@ npm test
 <!--/@-->
 <!--@devDependencies()-->
 <!--/@-->
-<!--@license()-->
-<!--/@-->
+
+## Developer Documentation
+
+You can find detailed developer documentation on this project here:
+
+[fms-api-client documentation](https://luidog.github.io/fms-api-client/)
