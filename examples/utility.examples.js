@@ -8,12 +8,28 @@ const {
   containerData
 } = require('../index.js');
 
-//#recordid-utility-example
+//#recordid-utility--original-example
 const extractRecordId = client =>
   client
     .find('Heroes', { name: 'yoda' }, { limit: 2 })
+    .then(response => response.data)
+    .then(result => log('record-id-utility-original-example', result));
+//#
+
+//#recordid-utility-example
+const extractRecordIdOriginal = client =>
+  client
+    .find('Heroes', { name: 'yoda' }, { limit: 2 })
     .then(response => recordId(response.data))
-    .then(result => log('recordid-utility-example', result));
+    .then(result => log('record-id-utility-example', result));
+//#
+
+//#fielddata-utility-original-example
+const extractFieldDataOriginal = client =>
+  client
+    .find('Heroes', { name: 'yoda' }, { limit: 2 })
+    .then(response => response.data)
+    .then(result => log('field-data-utility-original-example', result));
 //#
 
 //#fielddata-utility-example
@@ -21,7 +37,7 @@ const extractFieldData = client =>
   client
     .find('Heroes', { name: 'yoda' }, { limit: 2 })
     .then(response => fieldData(response.data))
-    .then(result => log('fielddata-utility-example', result));
+    .then(result => log('field-data-utility-example', result));
 //#
 
 //#transform-utility-example
@@ -66,7 +82,9 @@ const getContainerData = client =>
 
 const utilities = client =>
   Promise.all([
+    extractFieldDataOriginal(client),
     extractFieldData(client),
+    extractRecordIdOriginal(client),
     extractRecordId(client),
     transformDataOriginal(client),
     transformData(client),
