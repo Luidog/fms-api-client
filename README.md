@@ -981,9 +981,9 @@ Transformed:
 
 #### Transform Utility
 
-The transform utility converts Data API response data by converting `table::field` properties to objects. This method will transverse the response data and converting `{ table::field : value}` properties to `{ table:{ field : value } }`. The transform utility will also convert `portalData` into arrays of objects. 
+The transform utility converts Data API response data by converting `table::field` properties into objects. This method will traverse the response data converting `{ table::field : value}` properties to `{ table:{ field : value } }`. This utility will also convert `portalData` into arrays of objects. 
 
-The transform utility accepts three option properties. The three option properties are all booleans and true by default. The three option properties are `convert`,`fieldData`,`portalData`. The `convert` property controls the transfomation of `table::field` properties. The `fieldData` property controls the merging of fieldData to the result. The `portalData` property controls the merging of portalData to the result. Setting any propery to false its transformation off. 
+The transform utility accepts three option properties. The three option properties are all booleans and true by default. The properties are `convert`,`fieldData`,`portalData`. The `convert` property toggles the transformation of `table::field` properties. The `fieldData` property toggles merging of fieldData to the result. The `portalData` property toggles merging portalData to the result. Setting any property to false  will turn that transformation off. 
 
 `transform(data, parameters)`
 
@@ -1131,7 +1131,6 @@ Result:
 
 Both the create method and the edit method accept a merge boolean in their option parameters. If the `merge` property is true the data used to create or edit the filemaker record will be merged with the FileMaker Data API results.
 
-
 ```js
 const mergeDataOnCreate = client =>
   client
@@ -1184,7 +1183,6 @@ The client can be configured to use a proxy. The proxy can be configured either 
 npm install
 npm test
 ```
-
 
 ```default
 > fms-api-client@1.8.1 test /fms-api-client
@@ -1482,5 +1480,3 @@ All files                     |      100 |      100 |      100 |      100 |     
 - [nyc](https://github.com/istanbuljs/nyc): the Istanbul command line interface
 - [prettier](https://github.com/prettier/prettier): Prettier is an opinionated code formatter
 - [varium](https://npmjs.org/package/varium): A strict parser and validator of environment config variables
-
-
