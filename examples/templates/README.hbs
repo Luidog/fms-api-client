@@ -5,14 +5,13 @@
 
 A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. 
 
-<!--@license()-->
-<!--/@-->
+[fms-api-client documentation](https://luidog.github.io/fms-api-client/)
 
 ## Table of Contents
 
 - [fms-api-client](#fms-api-client)
-  * [License](#license)
   * [Table of Contents](#table-of-contents)
+  * [License](#license)
   * [Installation](#installation)
   * [Usage](#usage)
     + [Introduction](#introduction)
@@ -46,14 +45,17 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
       - [Transform Utility](#transform-utility)
         * [Transform Utility Results](#transform-utility-results)
       - [ContainerData Utility](#containerdata-utility)
-    + [Custom Request Agents, Custom Request Parameters, and Proxies](#custom-request-agents--custom-request-parameters--and-proxies)
-    + [Custom Request Agents](#custom-request-agents)
-    + [Custom Request Parameters](#custom-request-parameters)
-    + [Proxies](#proxies)
+    + [Additional Client Capabilities](#additional-client-capabilities)
+      - [Custom Request Agents](#custom-request-agents)
+      - [Custom Request Parameters](#custom-request-parameters)
+      - [Proxies](#proxies)
   * [Tests](#tests)
-  * [Dependencies](#-a-name--dependencies--dependencies--a-)
-  * [Development Dependencies](#-a-name--dev-dependencies--dev-dependencies)
-  * [Developer Documentation](#developer-documentation)
+  * [Dependencies](#dependencies)
+  * [Dev Dependencies](#dev-dependencies)
+
+## License
+
+MIT © Lui de la Parra
 
 <!--@installation()-->
 ## Installation
@@ -62,31 +64,26 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
 npm install --save fms-api-client
 ```
 <!--/@-->
+
 ## Usage
 
 ### Introduction
+The fms-api-client is a wrapper around the [FileMaker Data API](https://fm.mutesymphony.com/fmi/data/apidoc/). Much :heart: to FileMaker for their work on the Data API. This client attempts to follow the terminology and conventions used by FileMaker wherever possible. The client uses a lightweight datastore to hold Data API connections. For more information about datastore configuration see the [datastore connection section](#datastore-connection) and the [marpat project](https://github.com/Luidog/marpat).
 
-The fms-api-client is a wrapper around the [FileMaker Data API](https://fm.mutesymphony.com/fmi/data/apidoc/). Much :heart: to FileMaker for their work on the Data API. This client attempts to follow the terminology used by FileMaker wherever possible. The client uses a lightweight datastore to hold Data API connections. Each client has methods which are modeled after the Data API endpoints.
 
-fms-api-client requires that you first connect to a datastore before creating or querying the FileMaker class. Once connected you can use the datastore to save a multitude of clients. 
+Each client committed to the datastore will automatically handle Data API Sessions. If required, clients can also manually open or close their FileMaker sessions by calling either the `client.login()` method or the `client.logout()` method. To remove a client from a datastore and log out a session call `client.destroy()`. For more information on Data API Session handling see the [Data API sessions section](#data-api-sessions).
 
-Each client committed to the datastore will automatically handle Data API Sessions. If needed the clients can manually open or close their FileMaker sessions by calling either the `client.login()` method or the `client.logout()` method.
+All client methods accept parameters as defined by FileMaker. The client also allows for an expanded parameter syntax designed to make interacting with the client easier. Scripts and portals can be defined as arrays. Find queries can be defined as either an object or an array. For more information on the syntax supported by the client see [the parameter syntax section](#parameter-syntax).
 
-To remove a client from a datastore and log out a session call `client.destroy()`.
-
-The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters. 
-
-Any method that accepts script or portals in query or body parameters will also accept the following script and portal parameter syntax.
-
-In addition to allowing an exanded syntax for invoking scripts or selecting portals the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API. `limit` and `offset` parameters can be either strings or a numbers.
-
-The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client. 
+In addition to the expanded syntax the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API. The `limit` and `offset` parameters can be either strings or a numbers. The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result is valid JSON it will be automatically parsed for you by the client. 
 
 All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable. 
 
-fms-api-client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the utility section.
+The client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, `containerData`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the [utilities section](#utilities).
 
 ### Parameter Syntax
+
+The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters. 
 
 #### Script Array Syntax
 
@@ -104,18 +101,20 @@ The custom portals parameter follows the following syntax:
 **Note:** The FileMaker script and portal syntax will override the alternative scripts and portals parameter syntax.
 
 #### Data Syntax
+
+Arrays and objects are stringified before being inserted into field or portal data.
 <!--@snippet('./examples/schema/data-schema.json', { showSource: true })-->
 <!--/@-->
-Arrays and objects are stringified before being inserted into field or portal data. 
+ 
+#### Sort Syntax
 
 The client accepts the same sort parameters as the Data API. 
-
-#### Sort Syntax
 <!--@snippet('./examples/schema/sort-schema.json', { showSource: true })-->
 <!--/@-->
-When using the `find` method a query is required. The query can either be a single json object or an array of json objects.
 
 #### Query Syntax
+
+When using the `find` method a query is required. The query can either be a single json object or an array of json objects.
 <!--@snippet('./examples/schema/query-schema.json', { showSource: true })-->
 <!--/@-->
 
@@ -372,7 +371,7 @@ The fieldData method retrieves the `fieldData`, `recordId`, and `modId` properti
 <!--/@-->
 ##### FieldData Utility Results
 Original:
-<!--@snippet('./examples/utility.examples.js#field-data-utility-original-example', { showSource: true })-->
+<!--@snippet('./examples/results/field-data-utility-original-example.json', { showSource: true })-->
 <!--/@-->
 Transformed:
 <!--@snippet('./examples/results/field-data-utility-example.json', { showSource: true })-->
@@ -412,21 +411,21 @@ The containerData utility will retrieve FileMaker container data by following th
 Result:
 <!--@snippet('./examples/results/container-data-example.json', { showSource: true })-->
 <!--/@-->
-### Custom Request Agents, Custom Request Parameters, and Proxies
+### Additional Client Capabilities
 
 The client has the ability to create custom agents and modify requests parameters or use a proxy. Agents, request parameters, and proxies can be configured either when the client is created or when a request is being made.
 
-### Custom Request Agents
+#### Custom Request Agents
 
 A client can have a custom [Agent](https://nodejs.org/api/http.html#http_class_http_agent). Using a custom request agent will allow you to configure an agent designed for your specific needs. A request agent can be configured to not reject unauthorized request such as those with invalid SSLs, keep the connection alive, or limit the number of sockets to a host. There is no need to create an agent unless theses options are needed.
 
 **Note** If you are using a custom agent you are responsible for destroying that agent with `client.destroy` once the agent is no longer used.
 
-### Custom Request Parameters
+#### Custom Request Parameters
 
 All client methods except `client.login()` and `client.logout()` accept request parameters. These parameters are `request.proxy` and `request.timeout`, `request.agent`. These properties will apply only to the current request. 
 
-### Proxies
+#### Proxies
 
 The client can be configured to use a proxy. The proxy can be configured either for every request by specifying the proxy during the creation of the client, or just for a particular request by specifying the proxy in the request parameters.
 
@@ -442,9 +441,3 @@ npm test
 <!--/@-->
 <!--@devDependencies()-->
 <!--/@-->
-
-## Developer Documentation
-
-You can find detailed developer documentation on this project here:
-
-[fms-api-client documentation](https://luidog.github.io/fms-api-client/)
