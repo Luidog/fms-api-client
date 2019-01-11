@@ -4,16 +4,13 @@
 
 A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. 
 
-## License
-
-MIT © Lui de la Parra
+[fms-api-client documentation](https://luidog.github.io/fms-api-client/)
 
 ## Table of Contents
 
 - [fms-api-client](#fms-api-client)
-  * [Developer Documentation](#developer-documentation)
-  * [License](#license)
   * [Table of Contents](#table-of-contents)
+  * [License](#license)
   * [Installation](#installation)
   * [Usage](#usage)
     + [Introduction](#introduction)
@@ -47,14 +44,17 @@ MIT © Lui de la Parra
       - [Transform Utility](#transform-utility)
         * [Transform Utility Results](#transform-utility-results)
       - [ContainerData Utility](#containerdata-utility)
-    + [Custom Request Agents, Custom Request Parameters, and Proxies](#custom-request-agents--custom-request-parameters--and-proxies)
-    + [Custom Request Agents](#custom-request-agents)
-    + [Custom Request Parameters](#custom-request-parameters)
-    + [Proxies](#proxies)
+    + [Additional Client Capabilities](#additional-client-capabilities)
+      - [Custom Request Agents](#custom-request-agents)
+      - [Custom Request Parameters](#custom-request-parameters)
+      - [Proxies](#proxies)
   * [Tests](#tests)
-  * [Dependencies](#-a-name--dependencies--dependencies--a-)
-  * [Development Dependencies](#-a-name--dev-dependencies--dev-dependencies)
-  
+  * [Dependencies](#dependencies)
+  * [Dev Dependencies](#dev-dependencies)
+
+## License
+
+MIT © Lui de la Parra
 
 ## Installation
 
@@ -66,27 +66,21 @@ npm install --save fms-api-client
 
 ### Introduction
 
-The fms-api-client is a wrapper around the [FileMaker Data API](https://fm.mutesymphony.com/fmi/data/apidoc/). Much :heart: to FileMaker for their work on the Data API. This client attempts to follow the terminology used by FileMaker wherever possible. The client uses a lightweight datastore to hold Data API connections. Each client has methods which are modeled after the Data API endpoints.
+The fms-api-client is a wrapper around the [FileMaker Data API](https://fm.mutesymphony.com/fmi/data/apidoc/). Much :heart: to FileMaker for their work on the Data API. This client attempts to follow the terminology and conventions used by FileMaker wherever possible. The client uses a lightweight datastore to hold Data API connections. For more information about datastore configuration see the [datastore connection section](#datastore-connection) and the [marpat project](https://github.com/Luidog/marpat).
 
-fms-api-client requires that you first connect to a datastore before creating or querying the FileMaker class. Once connected you can use the datastore to save a multitude of clients. 
+Each client committed to the datastore will automatically handle Data API Sessions. If required, clients can also manually open or close their FileMaker sessions by calling either the `client.login()` method or the `client.logout()` method. To remove a client from a datastore and log out a session call `client.destroy()`. For more information on Data API Session handling see the [Data API sessions section](#data-api-sessions).
 
-Each client committed to the datastore will automatically handle Data API Sessions. If needed the clients can manually open or close their FileMaker sessions by calling either the `client.login()` method or the `client.logout()` method.
+All client methods accept parameters as defined by FileMaker. The client also allows for an expanded parameter syntax designed to make interacting with the client easier. Scripts and portals can be defined as arrays. Find queries can be defined as either an object or an array. For more information on the syntax supported by the client see [the parameter syntax section](#parameter-syntax).
 
-To remove a client from a datastore and log out a session call `client.destroy()`.
-
-The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters. 
-
-Any method that accepts script or portals in query or body parameters will also accept the following script and portal parameter syntax.
-
-In addition to allowing an exanded syntax for invoking scripts or selecting portals the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API. `limit` and `offset` parameters can be either strings or a numbers.
-
-The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result can be parsed as JSON it will be automatically parsed for you by the client. 
+In addition to the expanded syntax the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API. The `limit` and `offset` parameters can be either strings or a numbers. The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result is valid JSON it will be automatically parsed for you by the client. 
 
 All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable. 
 
-fms-api-client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the utility section.
+The client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, `containerData`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the [utilities section](#utilities).
 
 ### Parameter Syntax
+
+The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters. 
 
 #### Script Array Syntax
 
@@ -136,6 +130,8 @@ The custom portals parameter follows the following syntax:
 
 #### Data Syntax
 
+Arrays and objects are stringified before being inserted into field or portal data. 
+
 ```json
 {
   "data": {
@@ -147,11 +143,11 @@ The custom portals parameter follows the following syntax:
 
 > File [./examples/schema/data-schema.json](./examples/schema/data-schema.json)
 
-Arrays and objects are stringified before being inserted into field or portal data. 
-
-The client accepts the same sort parameters as the Data API. 
+Any property not nested in a `portalData` property will be moved into the `fieldData` property.
 
 #### Sort Syntax
+
+The client accepts the same sort parameters as the Data API. 
 
 ```json
 {
@@ -164,9 +160,9 @@ The client accepts the same sort parameters as the Data API.
 
 > File [./examples/schema/sort-schema.json](./examples/schema/sort-schema.json)
 
-When using the `find` method a query is required. The query can either be a single json object or an array of json objects.
-
 #### Query Syntax
+
+When using the `find` method a query is required. The query can either be a single json object or an array of json objects.
 
 ```json
 {
@@ -190,7 +186,7 @@ When using the `find` method a query is required. The query can either be a sing
 
 ### Datastore Connection
 
-The connect  method must be called before the FileMaker class is used. The connect method is not currently exposed by fms-api-client, but from the marpat dependency. marpat is a fork of camo. Thanks and love to [Scott Robinson](https://github.com/scottwrobinson) for his creation and maintenance of camo.
+The connect  method must be called before a client is used. The connect method is not currently exposed by fms-api-client, but from the marpat dependency. marpat is a fork of camo. Thanks and love to [Scott Robinson](https://github.com/scottwrobinson) for his creation and maintenance of camo.
 
 marpat is designed to allow the use of multiple datastores with the focus on encrypted file storage and project flexibility.
 
@@ -924,28 +920,69 @@ const extractFieldData = client =>
 
 Original:
 
-```js
-const extractFieldDataOriginal = client =>
-  client
-    .find('Heroes', { name: 'yoda' }, { limit: 2 })
-    .then(response => response.data)
-    .then(result => log('field-data-utility-original-example', result));
+```json
+[
+  {
+    "fieldData": {
+      "name": "Yoda",
+      "image": "https://some-server.com/Streaming_SSL/MainDB/ACFA0ADBE69F55BE557B6FAD33DF385D34E9C5B4440C100CCEEB27C27C4946C2?RCType=EmbeddedRCFileProcessor",
+      "object": "",
+      "array": "",
+      "height": "",
+      "id": "r2d2-c3po-l3-37-bb-8",
+      "imageName": "placeholder.md",
+      "creationAccountName": "obi-wan",
+      "creationTimestamp": "05/25/1977 6:00:00",
+      "modificationAccountName": "obi-wan",
+      "modificationTimestamp": "05/25/1977 6:00:00",
+      "Vehicles::name": ""
+    },
+    "portalData": {
+      "Planets": [],
+      "Vehicles": []
+    },
+    "recordId": "1138",
+    "modId": "327"
+  },
+  {
+    "fieldData": {
+      "name": "yoda",
+      "image": "",
+      "object": "",
+      "array": "",
+      "height": "",
+      "id": "r2d2-c3po-l3-37-bb-8",
+      "imageName": "",
+      "creationAccountName": "obi-wan",
+      "creationTimestamp": "05/25/1977 6:00:00",
+      "modificationAccountName": "obi-wan",
+      "modificationTimestamp": "05/25/1977 6:00:00",
+      "Vehicles::name": ""
+    },
+    "portalData": {
+      "Planets": [],
+      "Vehicles": []
+    },
+    "recordId": "1138",
+    "modId": "327"
+  }
+]
 ```
 
-> Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L28-L32)
+> File [./examples/results/field-data-utility-original-example.json](./examples/results/field-data-utility-original-example.json)
+
 
 Transformed:
-
 ```json
 [
   {
     "name": "Yoda",
-    "image": "",
+    "image": "https://some-server.com/Streaming_SSL/MainDB/8DBFEFF953E257F0A90C37DD00A50BC98785D7CF03A6AA7B7EEB44CEE1729D3B?RCType=EmbeddedRCFileProcessor",
     "object": "",
     "array": "",
     "height": "",
     "id": "r2d2-c3po-l3-37-bb-8",
-    "imageName": "",
+    "imageName": "placeholder.md",
     "creationAccountName": "obi-wan",
     "creationTimestamp": "05/25/1977 6:00:00",
     "modificationAccountName": "obi-wan",
@@ -1120,21 +1157,22 @@ Result:
 
 > File [./examples/results/container-data-example.json](./examples/results/container-data-example.json)
 
-### Custom Request Agents, Custom Request Parameters, and Proxies
+
+### Additional Client Capabilities
 
 The client has the ability to create custom agents and modify requests parameters or use a proxy. Agents, request parameters, and proxies can be configured either when the client is created or when a request is being made.
 
-### Custom Request Agents
+#### Custom Request Agents
 
 A client can have a custom [Agent](https://nodejs.org/api/http.html#http_class_http_agent). Using a custom request agent will allow you to configure an agent designed for your specific needs. A request agent can be configured to not reject unauthorized request such as those with invalid SSLs, keep the connection alive, or limit the number of sockets to a host. There is no need to create an agent unless theses options are needed.
 
 **Note** If you are using a custom agent you are responsible for destroying that agent with `client.destroy` once the agent is no longer used.
 
-### Custom Request Parameters
+#### Custom Request Parameters
 
 All client methods except `client.login()` and `client.logout()` accept request parameters. These parameters are `request.proxy` and `request.timeout`, `request.agent`. These properties will apply only to the current request. 
 
-### Proxies
+#### Proxies
 
 The client can be configured to use a proxy. The proxy can be configured either for every request by specifying the proxy during the creation of the client, or just for a particular request by specifying the proxy in the request parameters.
 
@@ -1145,15 +1183,13 @@ npm install
 npm test
 ```
 
+
 ```default
 > fms-api-client@1.8.1 test /fms-api-client
 > nyc _mocha --recursive  ./tests --timeout=30000 --exit
-
-
-
   Agent Configuration Capabilities
     ✓ should accept no agent configuration
-    ✓ should not create an agent unless one is defined (247ms)
+    ✓ should not create an agent unless one is defined (243ms)
     ✓ adjusts the request protocol according to the server
     ✓ should create a https agent
     ✓ should use a created request agent
@@ -1161,153 +1197,153 @@ npm test
     ✓ should create a http agent
     ✓ should accept a timeout property
     ✓ should use a timeout if one is set
-    ✓ should use a proxy if one is set (236ms)
-    ✓ should automatically recreate an agent if one is deleted (208ms)
+    ✓ should use a proxy if one is set (226ms)
+    ✓ should automatically recreate an agent if one is deleted (199ms)
 
   Authentication Capabilities
-    ✓ should authenticate into FileMaker. (98ms)
-    ✓ should automatically request an authentication token (175ms)
-    ✓ should reuse a saved authentication token (177ms)
-    ✓ should log out of the filemaker. (181ms)
+    ✓ should authenticate into FileMaker. (86ms)
+    ✓ should automatically request an authentication token (171ms)
+    ✓ should reuse a saved authentication token (171ms)
+    ✓ should log out of the filemaker. (168ms)
     ✓ should not attempt a logout if there is no valid token.
-    ✓ should reject if the logout request fails (175ms)
-    ✓ should reject if the authentication request fails (1671ms)
-    ✓ should attempt to log out before being removed (181ms)
+    ✓ should reject if the logout request fails (166ms)
+    ✓ should reject if the authentication request fails (1515ms)
+    ✓ should attempt to log out before being removed (168ms)
     ✓ should catch the log out error before being removed if the login is not valid
 
   ContainerData Capabilities
-    ✓ should download container data from an object to a file (1495ms)
-    ✓ should download container data from an array to a file (1482ms)
-    ✓ should substitute the record id if a name is not specified (1621ms)
-    ✓ should substitute the record id if a name is not specified (1346ms)
-    ✓ should download container data from an array to a buffer (1400ms)
-    ✓ should download container data from an object to a buffer (1368ms)
-    ✓ should substitute a uuid if the record id can not be found in an object (1428ms)
-    ✓ should substitute a uuid if the record id can not be found in an array (2577ms)
-    ✓ should reject with an error and a message (256ms)
-    ✓ should reject if the WPE rejects the request (1267ms)
+    ✓ should download container data from an object to a file (3228ms)
+    ✓ should download container data from an array to a file (1333ms)
+    ✓ should substitute the record id if a name is not specified (1347ms)
+    ✓ should substitute the record id if a name is not specified (1437ms)
+    ✓ should download container data from an array to a buffer (1472ms)
+    ✓ should download container data from an object to a buffer (1533ms)
+    ✓ should substitute a uuid if the record id can not be found in an object (1317ms)
+    ✓ should substitute a uuid if the record id can not be found in an array (2277ms)
+    ✓ should reject with an error and a message (245ms)
+    ✓ should reject if the WPE rejects the request (1253ms)
 
   Create Capabilities
-    ✓ should create FileMaker records without fieldData (169ms)
+    ✓ should create FileMaker records without fieldData (171ms)
     ✓ should allow you to specify a timeout
-    ✓ should create FileMaker records using fieldData (83ms)
-    ✓ should create FileMaker records with portalData (86ms)
-    ✓ should allow portalData to be an object or number (89ms)
-    ✓ should reject bad data with an error (89ms)
-    ✓ should create records with mixed types (86ms)
-    ✓ should substitute an empty object if data is not provided (90ms)
-    ✓ should return an object with merged data properties (89ms)
-    ✓ should allow you to run a script when creating a record with a merge response (92ms)
-    ✓ should allow you to specify scripts as an array (102ms)
-    ✓ should allow you to specify scripts as an array with a merge response (100ms)
+    ✓ should create FileMaker records using fieldData (86ms)
+    ✓ should create FileMaker records with portalData (82ms)
+    ✓ should allow portalData to be an object or number (83ms)
+    ✓ should reject bad data with an error (81ms)
+    ✓ should create records with mixed types (82ms)
+    ✓ should substitute an empty object if data is not provided (76ms)
+    ✓ should return an object with merged data properties (82ms)
+    ✓ should allow you to run a script when creating a record with a merge response (91ms)
+    ✓ should allow you to specify scripts as an array (95ms)
+    ✓ should allow you to specify scripts as an array with a merge response (91ms)
     ✓ should sanitize parameters when creating a new record (99ms)
-    ✓ should accept both the default script parameters and a scripts array (92ms)
+    ✓ should accept both the default script parameters and a scripts array (91ms)
     ✓ should remove an expired token (80ms)
 
   Delete Capabilities
-    ✓ should delete FileMaker records. (257ms)
-    ✓ should allow you to specify a timeout (91ms)
-    ✓ should trigger scripts via an array when deleting records. (169ms)
-    ✓ should trigger scripts via parameters when deleting records. (164ms)
-    ✓ should allow you to mix script parameters and scripts array when deleting records. (156ms)
-    ✓ should stringify script parameters. (160ms)
-    ✓ should reject deletions that do not specify a recordId (84ms)
-    ✓ should reject deletions that do not specify an invalid recordId (82ms)
-    ✓ should remove an expired token (84ms)
+    ✓ should delete FileMaker records. (253ms)
+    ✓ should allow you to specify a timeout (92ms)
+    ✓ should trigger scripts via an array when deleting records. (167ms)
+    ✓ should trigger scripts via parameters when deleting records. (162ms)
+    ✓ should allow you to mix script parameters and scripts array when deleting records. (165ms)
+    ✓ should stringify script parameters. (161ms)
+    ✓ should reject deletions that do not specify a recordId (80ms)
+    ✓ should reject deletions that do not specify an invalid recordId (79ms)
+    ✓ should remove an expired token (82ms)
 
   Edit Capabilities
     ✓ should edit FileMaker records without fieldData
-    ✓ should allow you to specify a timeout (209ms)
+    ✓ should allow you to specify a timeout (192ms)
     ✓ should edit FileMaker records using fieldData
     ✓ should edit FileMaker records with portalData
     ✓ should edit FileMaker records with portalData and allow portalData to be an array.
-    ✓ should reject bad data with an error (170ms)
+    ✓ should reject bad data with an error (177ms)
     ✓ should return an object with merged filemaker and data properties
-    ✓ should allow you to run a script when editing a record (193ms)
-    ✓ should allow you to run a script via a scripts array when editing a record (168ms)
+    ✓ should allow you to run a script when editing a record (180ms)
+    ✓ should allow you to run a script via a scripts array when editing a record (170ms)
     ✓ should allow you to specify scripts as an array (177ms)
-    ✓ should allow you to specify scripts as an array with a merge response (175ms)
-    ✓ should sanitize parameters when creating a editing record (176ms)
-    ✓ should accept both the default script parameters and a scripts array (176ms)
-    ✓ should remove an expired token (168ms)
+    ✓ should allow you to specify scripts as an array with a merge response (169ms)
+    ✓ should sanitize parameters when creating a editing record (170ms)
+    ✓ should accept both the default script parameters and a scripts array (169ms)
+    ✓ should remove an expired token (156ms)
 
   FieldData Capabilities
-    ✓ it should extract field data while maintaining the array (272ms)
-    ✓ it should extract field data while maintaining the object (174ms)
+    ✓ it should extract field data while maintaining the array (250ms)
+    ✓ it should extract field data while maintaining the object (165ms)
 
   Find Capabilities
-    ✓ should perform a find request (339ms)
-    ✓ should allow you to use an object instead of an array for a find (239ms)
-    ✓ should specify omit Criterea (159ms)
-    ✓ should safely parse omit true and false (147ms)
-    ✓ should allow additional parameters to manipulate the results (81ms)
-    ✓ should allow you to limit the number of portal records to return (84ms)
-    ✓ should allow you to use numbers in the find query parameters (78ms)
-    ✓ should allow you to sort the results (1080ms)
-    ✓ should return an empty array if the find does not return results (90ms)
-    ✓ should allow you run a pre request script (93ms)
-    ✓ should return a response even if a script fails (102ms)
-    ✓ should allow you to send a parameter to the pre request script (90ms)
-    ✓ should allow you run script after the find and before the sort (423ms)
-    ✓ should allow you to pass a parameter to a script after the find and before the sort (430ms)
-    ✓ should reject of there is an issue with the find request (78ms)
-    ✓ should remove an expired token (96ms)
+    ✓ should perform a find request (336ms)
+    ✓ should allow you to use an object instead of an array for a find (243ms)
+    ✓ should specify omit Criterea (163ms)
+    ✓ should safely parse omit true and false (155ms)
+    ✓ should allow additional parameters to manipulate the results (80ms)
+    ✓ should allow you to limit the number of portal records to return (75ms)
+    ✓ should allow you to use numbers in the find query parameters (80ms)
+    ✓ should allow you to sort the results (1070ms)
+    ✓ should return an empty array if the find does not return results (87ms)
+    ✓ should allow you run a pre request script (86ms)
+    ✓ should return a response even if a script fails (87ms)
+    ✓ should allow you to send a parameter to the pre request script (87ms)
+    ✓ should allow you run script after the find and before the sort (443ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (456ms)
+    ✓ should reject of there is an issue with the find request (82ms)
+    ✓ should remove an expired token (78ms)
 
   Get Capabilities
-    ✓ should get specific FileMaker records. (258ms)
-    ✓ should allow you to specify a timeout (101ms)
-    ✓ should reject get requests that do not specify a recordId (155ms)
-    ✓ should allow you to limit the number of portal records to return (164ms)
-    ✓ should accept namespaced portal limit and offset parameters (171ms)
-    ✓ should remove an expired token (82ms)
+    ✓ should get specific FileMaker records. (253ms)
+    ✓ should allow you to specify a timeout (88ms)
+    ✓ should reject get requests that do not specify a recordId (157ms)
+    ✓ should allow you to limit the number of portal records to return (160ms)
+    ✓ should accept namespaced portal limit and offset parameters (155ms)
+    ✓ should remove an expired token (77ms)
 
   Global Capabilities
-    ✓ should allow you to set session globals (170ms)
+    ✓ should allow you to set session globals (166ms)
     ✓ should allow you to specify a timeout
     ✓ should reject with a message and code if it fails to set a global (82ms)
-    ✓ should remove an expired token (82ms)
+    ✓ should remove an expired token (77ms)
 
   Request Interceptor Capabilities
     ✓ should reject if the server errors (146ms)
-    ✓ should handle non JSON responses by rejecting with a json error (127ms)
+    ✓ should handle non JSON responses by rejecting with a json error (118ms)
     ✓ should reject non http requests to the server with a json error
-    ✓ should reject non https requests to the server with a json error (136ms)
+    ✓ should reject non https requests to the server with a json error (126ms)
 
   List Capabilities
-    ✓ should allow you to list records (322ms)
+    ✓ should allow you to list records (326ms)
     ✓ should allow you to specify a timeout
-    ✓ should allow you use parameters to modify the list response (82ms)
-    ✓ should should allow you to use numbers in parameters (87ms)
-    ✓ should should allow you to provide an array of portals in parameters (86ms)
+    ✓ should allow you use parameters to modify the list response (76ms)
+    ✓ should should allow you to use numbers in parameters (76ms)
+    ✓ should should allow you to provide an array of portals in parameters (80ms)
     ✓ should should remove non used properties from a portal object (80ms)
-    ✓ should modify requests to comply with DAPI name reservations (83ms)
-    ✓ should allow strings while complying with DAPI name reservations (91ms)
-    ✓ should allow you to offset the list response (85ms)
-    ✓ should santize parameters that would cause unexpected parameters (81ms)
-    ✓ should allow you to limit the number of portal records to return (86ms)
-    ✓ should accept namespaced portal limit and offset parameters (81ms)
-    ✓ should reject invalid parameters (77ms)
-    ✓ should remove an expired token (84ms)
+    ✓ should modify requests to comply with DAPI name reservations (82ms)
+    ✓ should allow strings while complying with DAPI name reservations (74ms)
+    ✓ should allow you to offset the list response (81ms)
+    ✓ should santize parameters that would cause unexpected parameters (79ms)
+    ✓ should allow you to limit the number of portal records to return (81ms)
+    ✓ should accept namespaced portal limit and offset parameters (83ms)
+    ✓ should reject invalid parameters (81ms)
+    ✓ should remove an expired token (77ms)
 
   RecordId Capabilities
-    ✓ it should extract the recordId while maintaining the array (253ms)
-    ✓ it should extract recordId while maintaining the object (164ms)
+    ✓ it should extract the recordId while maintaining the array (249ms)
+    ✓ it should extract recordId while maintaining the object (159ms)
 
   Script Capabilities
-    ✓ should allow you to trigger a script (191ms)
+    ✓ should allow you to trigger a script (181ms)
     ✓ should allow you to specify a timeout
-    ✓ should allow you to trigger a script specifying a string as a parameter (83ms)
-    ✓ should allow you to trigger a script specifying a number as a parameter (96ms)
-    ✓ should allow you to trigger a script specifying an object as a parameter (91ms)
-    ✓ should allow you to trigger a script in a find (249ms)
-    ✓ should allow you to trigger a script in a list (82ms)
-    ✓ should reject a script that does not exist (79ms)
-    ✓ should allow return a result even if a script returns an error (90ms)
-    ✓ should parse script results if the results are json (90ms)
-    ✓ should not parse script results if the results are not json (86ms)
-    ✓ should parse an array of scripts (90ms)
-    ✓ should trigger scripts on all three script phases (97ms)
-    ✓ should remove an expired token (86ms)
+    ✓ should allow you to trigger a script specifying a string as a parameter (80ms)
+    ✓ should allow you to trigger a script specifying a number as a parameter (81ms)
+    ✓ should allow you to trigger a script specifying an object as a parameter (84ms)
+    ✓ should allow you to trigger a script in a find (242ms)
+    ✓ should allow you to trigger a script in a list (85ms)
+    ✓ should reject a script that does not exist (76ms)
+    ✓ should allow return a result even if a script returns an error (88ms)
+    ✓ should parse script results if the results are json (82ms)
+    ✓ should not parse script results if the results are not json (82ms)
+    ✓ should parse an array of scripts (93ms)
+    ✓ should trigger scripts on all three script phases (96ms)
+    ✓ should remove an expired token (77ms)
 
   Storage
     ✓ should allow an instance to be created
@@ -1320,40 +1356,40 @@ npm test
   Transform Capabilities
     ✓ should merge portal data and field data from an array (343ms)
     ✓ should merge portal data and field data from an object (147ms)
-    ✓ should optionally not convert table::field keys from an array (150ms)
-    ✓ should optionally not convert table::field keys from an object (142ms)
-    ✓ should allow you to remove field data from an array (149ms)
-    ✓ should allow you to remove field data from an object (152ms)
-    ✓ should allow you to remove portal data from an array (153ms)
-    ✓ should allow you to remove portal data from an object (164ms)
-    ✓ should merge portal data and portal data from an array (145ms)
+    ✓ should optionally not convert table::field keys from an array (140ms)
+    ✓ should optionally not convert table::field keys from an object (150ms)
+    ✓ should allow you to remove field data from an array (188ms)
+    ✓ should allow you to remove field data from an object (147ms)
+    ✓ should allow you to remove portal data from an array (150ms)
+    ✓ should allow you to remove portal data from an object (143ms)
+    ✓ should merge portal data and portal data from an array (151ms)
 
   File Upload Capabilities
-    ✓ should allow you to specify a timeout (187ms)
-    ✓ should allow you to upload a file to a new record (1278ms)
-    ✓ should allow you to upload a buffer to a new record (1535ms)
-    ✓ should allow you to upload a file to a specific container repetition (1278ms)
-    ✓ should allow you to upload a buffer to a specific container repetition (1488ms)
+    ✓ should allow you to specify a timeout (181ms)
+    ✓ should allow you to upload a file to a new record (1356ms)
+    ✓ should allow you to upload a buffer to a new record (1536ms)
+    ✓ should allow you to upload a file to a specific container repetition (1270ms)
+    ✓ should allow you to upload a buffer to a specific container repetition (1495ms)
     ✓ should reject with a message if it can not find the file to upload
-    ✓ should allow you to upload a file to a specific record (1840ms)
-    ✓ should allow you to upload a buffer object to a specific record (1249ms)
-    ✓ should allow you to upload a file to a specific record container repetition (1263ms)
-    ✓ should allow you to upload a buffer to a specific record container repetition (1266ms)
-    ✓ should reject of the request is invalid (232ms)
-    ✓ should reject an empty buffer object (83ms)
-    ✓ should reject a null buffer object (83ms)
-    ✓ should reject a number instead of an object (90ms)
-    ✓ should reject an object without a filename (80ms)
-    ✓ should reject an object without a buffer (87ms)
-    ✓ should remove an expired token (90ms)
+    ✓ should allow you to upload a file to a specific record (1256ms)
+    ✓ should allow you to upload a buffer object to a specific record (1262ms)
+    ✓ should allow you to upload a file to a specific record container repetition (1249ms)
+    ✓ should allow you to upload a buffer to a specific record container repetition (1452ms)
+    ✓ should reject of the request is invalid (230ms)
+    ✓ should reject an empty buffer object (80ms)
+    ✓ should reject a null buffer object (79ms)
+    ✓ should reject a number instead of an object (79ms)
+    ✓ should reject an object without a filename (82ms)
+    ✓ should reject an object without a buffer (91ms)
+    ✓ should remove an expired token (85ms)
 
   Data Usage 
     Tracks Data Usage
-      ✓ should track API usage data. (180ms)
-      ✓ should allow you to reset usage data. (87ms)
+      ✓ should track API usage data. (166ms)
+      ✓ should allow you to reset usage data. (81ms)
     Does Not Track Data Usage
-      ✓ should not track data usage in (172ms)
-      ✓ should not track data usage out (82ms)
+      ✓ should not track data usage in (168ms)
+      ✓ should not track data usage out (83ms)
 
   Utility Capabilities
     Omit Utility
@@ -1445,6 +1481,4 @@ All files                     |      100 |      100 |      100 |      100 |     
 - [prettier](https://github.com/prettier/prettier): Prettier is an opinionated code formatter
 - [varium](https://npmjs.org/package/varium): A strict parser and validator of environment config variables
 
-## Developer Documentation
 
-[fms-api-client developer documentation](https://luidog.github.io/fms-api-client/)
