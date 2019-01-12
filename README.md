@@ -45,6 +45,7 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
         * [Transform Utility Results](#transform-utility-results)
       - [ContainerData Utility](#containerdata-utility)
     + [Additional Client Capabilities](#additional-client-capabilities)
+      - [Data Merge](#data-merge)
       - [Custom Request Agents](#custom-request-agents)
       - [Custom Request Parameters](#custom-request-parameters)
       - [Proxies](#proxies)
