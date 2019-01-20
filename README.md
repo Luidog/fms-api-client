@@ -45,6 +45,7 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
         * [Transform Utility Results](#transform-utility-results)
       - [ContainerData Utility](#containerdata-utility)
     + [Additional Client Capabilities](#additional-client-capabilities)
+      - [Data Merge](#data-merge)
       - [Custom Request Agents](#custom-request-agents)
       - [Custom Request Parameters](#custom-request-parameters)
       - [Proxies](#proxies)
@@ -106,13 +107,9 @@ The custom script parameter follows the following syntax:
   ]
 }
 ```
-
 > File [./examples/schema/scripts-array-schema.json](./examples/schema/scripts-array-schema.json)
-
 Following the Data API, the `prerequest` phase occurs before executing request and sorting of records, the `presort` phase after executing request and before sorting records. Not specifying a phase will run the script after the request and sorting are executed.
-
 #### Portals Array Syntax
-
 The custom portals parameter follows the following syntax:
 
 ```json
@@ -130,7 +127,8 @@ The custom portals parameter follows the following syntax:
 
 #### Data Syntax
 
-Arrays and objects are stringified before being inserted into field or portal data. 
+Arrays and objects are stringified before being inserted into field or portal data.
+
 
 ```json
 {
@@ -186,7 +184,7 @@ When using the `find` method a query is required. The query can either be a sing
 
 ### Datastore Connection
 
-The connect  method must be called before a client is used. The connect method is not currently exposed by fms-api-client, but from the marpat dependency. marpat is a fork of camo. Thanks and love to [Scott Robinson](https://github.com/scottwrobinson) for his creation and maintenance of camo.
+The connect method must be called before the FileMaker class is used. The connect method is not currently exposed by fms-api-client, but from the marpat dependency. marpat is a fork of camo. Thanks and love to [Scott Robinson](https://github.com/scottwrobinson) for his creation and maintenance of camo.
 
 marpat is designed to allow the use of multiple datastores with the focus on encrypted file storage and project flexibility.
 
@@ -368,36 +366,6 @@ Result:
 ```
 
 > File [./examples/results/create-record-example.json](./examples/results/create-record-example.json)
-
-Both the create method and the edit method accept a merge boolean in their option parameters. If the `merge` property is true the data used to create or edit the filemaker record will be merged with the FileMaker Data API results.
-
-```js
-const mergeDataOnCreate = client =>
-  client
-    .create(
-      'Heroes',
-      {
-        name: 'George Lucas'
-      },
-      { merge: true }
-    )
-    .then(result => log('create-record-merge-example', result));
-```
-
-> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L15-L24)
-
-Result:
-
-
-```json
-{
-  "name": "George Lucas",
-  "recordId": "1138",
-  "modId": "327"
-}
-```
-
-> File [./examples/results/create-record-merge-example.json](./examples/results/create-record-merge-example.json)
 
 The create method also allows you to trigger scripts when creating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional  `params` parameters. For more information see the scripts syntax example in the introduction.
 
@@ -1014,9 +982,9 @@ Transformed:
 
 #### Transform Utility
 
-The transform utility converts Data API response data by converting `table::field` properties to objects. This method will transverse the response data and converting `{ table::field : value}` properties to `{ table:{ field : value } }`. The transform utility will also convert `portalData` into arrays of objects. 
+The transform utility converts Data API response data by converting `table::field` properties into objects. This method will traverse the response data converting `{ table::field : value}` properties to `{ table:{ field : value } }`. This utility will also convert `portalData` into arrays of objects. 
 
-The transform utility accepts three option properties. The three option properties are all booleans and true by default. The three option properties are `convert`,`fieldData`,`portalData`. The `convert` property controls the transfomation of `table::field` properties. The `fieldData` property controls the merging of fieldData to the result. The `portalData` property controls the merging of portalData to the result. Setting any propery to false its transformation off. 
+The transform utility accepts three option properties. The three option properties are all booleans and true by default. The properties are `convert`,`fieldData`,`portalData`. The `convert` property toggles the transformation of `table::field` properties. The `fieldData` property toggles merging of fieldData to the result. The `portalData` property toggles merging portalData to the result. Setting any property to false  will turn that transformation off. 
 
 `transform(data, parameters)`
 
@@ -1160,9 +1128,43 @@ Result:
 
 ### Additional Client Capabilities
 
-The client has the ability to create custom agents and modify requests parameters or use a proxy. Agents, request parameters, and proxies can be configured either when the client is created or when a request is being made.
+#### Data Merge
+
+Both the create method and the edit method accept a merge boolean in their option parameters. If the `merge` property is true the data used to create or edit the filemaker record will be merged with the FileMaker Data API results.
+
+```js
+const mergeDataOnCreate = client =>
+  client
+    .create(
+      'Heroes',
+      {
+        name: 'George Lucas'
+      },
+      { merge: true }
+    )
+    .then(result => log('create-record-merge-example', result));
+```
+
+> Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L15-L24)
+
+
+Result:
+
+
+```json
+{
+  "name": "George Lucas",
+  "recordId": "1138",
+  "modId": "327"
+}
+```
+
+> File [./examples/results/create-record-merge-example.json](./examples/results/create-record-merge-example.json)
+
 
 #### Custom Request Agents
+
+The client has the ability to create custom agents and modify requests parameters or use a proxy. Agents, request parameters, and proxies can be configured either when the client is created or when a request is being made.
 
 A client can have a custom [Agent](https://nodejs.org/api/http.html#http_class_http_agent). Using a custom request agent will allow you to configure an agent designed for your specific needs. A request agent can be configured to not reject unauthorized request such as those with invalid SSLs, keep the connection alive, or limit the number of sockets to a host. There is no need to create an agent unless theses options are needed.
 
@@ -1182,7 +1184,6 @@ The client can be configured to use a proxy. The proxy can be configured either 
 npm install
 npm test
 ```
-
 
 ```default
 > fms-api-client@1.8.1 test /fms-api-client
@@ -1480,5 +1481,3 @@ All files                     |      100 |      100 |      100 |      100 |     
 - [nyc](https://github.com/istanbuljs/nyc): the Istanbul command line interface
 - [prettier](https://github.com/prettier/prettier): Prettier is an opinionated code formatter
 - [varium](https://npmjs.org/package/varium): A strict parser and validator of environment config variables
-
-
