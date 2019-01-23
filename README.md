@@ -37,13 +37,13 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
       - [Upload Files](#upload-files)
       - [Set Session Globals](#set-session-globals)
     + [Utilities](#utilities)
-      - [recordId Utility](#recordid-utility)
-        * [recordId Utility Results](#recordid-utility-results)
-      - [FieldData Utility](#fielddata-utility)
-        * [FieldData Utility Results](#fielddata-utility-results)
+      - [Record Id Utility](#record-id-utility)
+        * [Record Id Utility Results](#record-id-utility-results)
+      - [Field Data Utility](#field-data-utility)
+        * [Field Data Utility Results](#field-data-utility-results)
       - [Transform Utility](#transform-utility)
         * [Transform Utility Results](#transform-utility-results)
-      - [ContainerData Utility](#containerdata-utility)
+      - [Container Data Utility](#container-data-utility)
     + [Additional Client Capabilities](#additional-client-capabilities)
       - [Data Merge](#data-merge)
       - [Custom Request Agents](#custom-request-agents)
@@ -60,7 +60,7 @@ MIT © Lui de la Parra
 ## Installation
 
 ```sh
-npm install --save fms-api-client
+npm install --save marpat fms-api-client
 ```
 
 ## Usage
@@ -108,8 +108,13 @@ The custom script parameter follows the following syntax:
 }
 ```
 > File [./examples/schema/scripts-array-schema.json](./examples/schema/scripts-array-schema.json)
+
 Following the Data API, the `prerequest` phase occurs before executing request and sorting of records, the `presort` phase after executing request and before sorting records. Not specifying a phase will run the script after the request and sorting are executed.
+
+**Note:** The FileMaker script and portal syntax will override the alternative scripts and portals syntax.
+
 #### Portals Array Syntax
+
 The custom portals parameter follows the following syntax:
 
 ```json
@@ -123,7 +128,9 @@ The custom portals parameter follows the following syntax:
 
 > File [./examples/schema/portals-array-schema.json](./examples/schema/portals-array-schema.json)
 
-**Note:** The FileMaker script and portal syntax will override the alternative scripts and portals parameter syntax.
+If a portals array is not used all portals on a queried layout will be returned.
+
+**Note:** The FileMaker script and portal syntax will override the alternative scripts and portals syntax.
 
 #### Data Syntax
 
@@ -777,9 +784,9 @@ Result:
 
 The client also provides utility methods to aid in parsing and manipulating FileMaker Data. The client exports the `recordId(data)`, `fieldData(data)`, and `transform(data, options)` to aid in transforming Data API response data into other formats. Each utility method is capable of recieving either an object or a array.
 
-#### recordId Utility
+#### Record Id Utility
 
-The recordId method retrieves the `recordId` properties for a response. This method will return either a single string or an array of strings.
+The record id utility retrieves the `recordId` properties for a response. This method will return either a single string or an array of strings.
 
 `recordId(data)`
 
@@ -797,7 +804,7 @@ const extractRecordIdOriginal = client =>
 
 > Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L20-L24)
 
-##### recordId Utility Results
+##### Record Id Utility Results
 
 original:
 
@@ -863,9 +870,9 @@ Transformed:
 
 > File [./examples/results/record-id-utility-example.json](./examples/results/record-id-utility-example.json)
 
-#### FieldData Utility
+#### Field Data Utility
 
-The fieldData method retrieves the `fieldData`, `recordId`, and `modId` properties from a Data API response. The fieldData method will merge the `recordId` and `modId` properties into fielData properties. This method will not convert `table::field` properties.
+The field Data utility retrieves the `fieldData`, `recordId`, and `modId` properties from a Data API response. The field data utility will merge the `recordId` and `modId` properties into fielData properties. This utility will not convert `table::field` properties.
 
 `fieldData(data)`
 
@@ -884,7 +891,7 @@ const extractFieldData = client =>
 
 > Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L36-L40)
 
-##### FieldData Utility Results
+##### Field Data Utility Results
 
 Original:
 
@@ -982,7 +989,7 @@ Transformed:
 
 #### Transform Utility
 
-The transform utility converts Data API response data by converting `table::field` properties into objects. This method will traverse the response data converting `{ table::field : value}` properties to `{ table:{ field : value } }`. This utility will also convert `portalData` into arrays of objects. 
+The transform utility converts Data API response data by converting `table::field` properties into objects. This utility will traverse the response data converting `{ table::field : value}` properties to `{ table:{ field : value } }`. This utility will also convert `portalData` into arrays of objects. 
 
 The transform utility accepts three option properties. The three option properties are all booleans and true by default. The properties are `convert`,`fieldData`,`portalData`. The `convert` property toggles the transformation of `table::field` properties. The `fieldData` property toggles merging of fieldData to the result. The `portalData` property toggles merging portalData to the result. Setting any property to false  will turn that transformation off. 
 
@@ -1078,9 +1085,9 @@ Transformed:
 
 > File [./examples/results/transform-utility-example.json](./examples/results/transform-utility-example.json)
 
-#### ContainerData Utility
+#### Container Data Utility
 
-The containerData utility will retrieve FileMaker container data by following the links returned by the Data API. This utility will accept either a single data object or an array of objects. The utility will use the `field` parameter to target container data urls in the data parameter. This utility also requires a `name` parameter which will be used to target a data property that should be used as the file's name. If a name parameter is provided that is not a property or nested property in the `data` parameter, the name parameter itself will be used. The `destination` parameter should be either 'buffer' to indicate that an object with a file's name and buffer should be returned or the path, relative to the current working directory, where the utility should write container data to a file. This utility will also accept optional request `parameters` to modify the http request.
+The container data utility will retrieve FileMaker container data by following the links returned by the Data API. This utility will accept either a single data object or an array of objects. The utility will use the `field` parameter to target container data urls in the data parameter. This utility also requires a `name` parameter which will be used to target a data property that should be used as the file's name. If a name parameter is provided that is not a property or nested property in the `data` parameter, the name parameter itself will be used. The `destination` parameter should be either 'buffer' to indicate that an object with a file's name and buffer should be returned or the path, relative to the current working directory, where the utility should write container data to a file. This utility will also accept optional request `parameters` to modify the http request.
 
 `containerData(data, field, destination, name, parameters)` 
 
