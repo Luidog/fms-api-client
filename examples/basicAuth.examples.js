@@ -15,10 +15,10 @@ const logout = client =>
 const login = client => client.login();
 //#
 
-const authentication = client =>
+const basicAuth = client =>
   Promise.all([login(client), logout(client)]).then(responses => {
     store(responses);
     return client;
   });
 
-module.exports = { authentication };
+module.exports = { basicAuth };

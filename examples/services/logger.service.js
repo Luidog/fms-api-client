@@ -14,6 +14,8 @@ const filter = values =>
       return '1138';
     } else if (key === 'modId') {
       return '327';
+    } else if (key === 'ClientID') {
+      return '1138-327-r2d2-c3po-l3-37-bb-8.apps.googleusercontent.com';
     } else if (key === 'modificationTimestamp' || key === 'creationTimestamp') {
       return '05/25/1977 6:00:00';
     } else if (key === 'id' || key === 'creationTimestamp') {

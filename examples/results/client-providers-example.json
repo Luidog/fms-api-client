@@ -1,0 +1,19 @@
+{
+  "data": {
+    "Provider": [
+      {
+        "AuthCodeEndpoint": "accounts.google.com/o/oauth2/auth",
+        "AuthType": 2,
+        "ClientID": "1138-327-r2d2-c3po-l3-37-bb-8.apps.googleusercontent.com",
+        "Icon": "",
+        "Name": "Google",
+        "OIDCEnabled": true,
+        "ProviderEnabled": true,
+        "ProviderID": 3,
+        "Response Type": "code",
+        "Scope": "profile openid email"
+      }
+    ]
+  },
+  "result": 0
+}

@@ -4,11 +4,10 @@ const examples = [];
 
 const store = responses =>
   Array.isArray(responses)
-    ? responses.map(
-        response =>
-          typeof response === 'object' && response.recordId
-            ? examples.push({ recordId: response.recordId })
-            : null
+    ? responses.map(response =>
+        typeof response === 'object' && response.recordId
+          ? examples.push({ recordId: response.recordId })
+          : null
       )
     : null;
 

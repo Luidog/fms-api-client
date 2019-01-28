@@ -35,14 +35,17 @@ class Connection extends EmbeddedDocument {
         type: String,
         required: true
       },
-      /** The FileMaker application (database).
+      /** The FileMaker database.
        * @public
-       * @member Connection#application
+       * @member Connection#database
        * @type String
        */
-      application: {
+      database: {
         type: String,
         required: true
+      },
+      providers: {
+        type: Object
       },
       /** The client credentials.
        * @public
@@ -50,10 +53,24 @@ class Connection extends EmbeddedDocument {
        * @type Object
        */
       credentials: Credentials,
+      /* The URL query value for "identifier" in FileMaker Server OAuth workflow.
+       * @member Connection#oAuthRequestId
+       * @type String
+       */
+      oAuthRequestId: {
+        type: String
+      },
+      /* The X-FMS-Request-ID header value returned from '/oauth/getoauthurl' in FileMaker Server OAuth workflow.
+       * @member Connection#oAuthIdentifier
+       * @type String
+       */
+      oAuthIdentifier: {
+        type: String
+      },
       /* A string containing the time the token will expire.
        * @member Connection#expires
        * @type String
-      */
+       */
       expires: {
         type: String
       },
@@ -76,10 +93,56 @@ class Connection extends EmbeddedDocument {
    */
 
   preInit(data) {
+    let {
+      application,
+      database,
+      user,
+      password,
+      oAuthRequestId,
+      oAuthIdentifier
+    } = data;
     this.credentials = Credentials.create({
-      user: data.user,
-      password: data.password
+      user,
+      password,
+      oAuthRequestId,
+      oAuthIdentifier
     });
+    // This was added to ease the transition to renaming the application property in 2.0.
+    this.database = application || database;
+  }
+
+  /**
+   * @method oAuthProviders
+   * @public
+   * @memberof Connection
+   * @description This method will get the currently configured Open Authentication providers.
+   * @return {Any} The request response data
+   */
+
+  oAuthProviders(axios, url) {
+    return axios
+      .request({
+        url: url,
+        method: 'get'
+      })
+      .then(response => {
+        this._saveProviders(response.data);
+        return response.data;
+      });
+  }
+
+  /**
+   * @method _saveProviders
+   * @private
+   * @memberof Connection
+   * @description The method checks the incoming result for a non null data property. If
+   * a property is found it will be save to the connection providers.
+   * @return {Any} The request result unmodified
+   */
+
+  _saveProviders(result) {
+    if (result.data.Providers) this.providers = result.data.Providers;
+    return result;
   }
 
   /**
@@ -101,7 +164,7 @@ class Connection extends EmbeddedDocument {
 
   /**
    * @method _saveToken
-   * @public
+   * @private
    * @memberof Connection
    * @description Saves a token retrieved from the Data API.
    * @params {Object} data an object. The FileMaker authentication response.
@@ -148,20 +211,42 @@ class Connection extends EmbeddedDocument {
 
   generate(axios, url) {
     return new Promise((resolve, reject) =>
-      axios
-        .request({
-          url: url,
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json',
-            authorization: this._basicAuth()
-          },
-          data: {}
-        })
-        .then(response => response.data)
-        .then(body => this._saveToken(body))
-        .then(body => resolve(body))
-        .catch(error => reject(error))
+      this.credentials.oAuthRequestId && this.credentials.oAuthIdentifier
+        ? axios
+            .request({
+              url: url,
+              method: 'post',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              data: {
+                fmDataSource: [
+                  {
+                    database: this.database,
+                    oAuthRequestId: this.oAuthRequestId,
+                    oAuthIdentifier: this.oAuthIdentifier
+                  }
+                ]
+              }
+            })
+            .then(response => response.data)
+            .then(body => this._saveToken(body))
+            .then(body => resolve(body))
+            .catch(error => reject(error))
+        : axios
+            .request({
+              url: url,
+              method: 'post',
+              headers: {
+                'Content-Type': 'application/json',
+                authorization: this._basicAuth()
+              },
+              data: {}
+            })
+            .then(response => response.data)
+            .then(body => this._saveToken(body))
+            .then(body => resolve(body))
+            .catch(error => reject(error))
     );
   }
 

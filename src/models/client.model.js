@@ -98,10 +98,23 @@ class Client extends Document {
    * @return {null} The preInit hook does not return anything.
    */
   preInit(data) {
-    let { agent, timeout, usage, proxy, ...connection } = data;
+    let {
+      application,
+      database,
+      agent,
+      timeout,
+      usage,
+      proxy,
+      ...connection
+    } = data;
     let protocol = data.server.startsWith('https') ? 'https' : 'http';
+    this.application = application || database;
     this.data = Data.create({ track: usage === undefined });
-    this.connection = Connection.create(connection);
+    this.connection = Connection.create({
+      ...connection,
+      application,
+      database
+    });
     this.agent = Agent.create({ agent, proxy, timeout, protocol });
   }
 
@@ -240,6 +253,20 @@ class Client extends Document {
     return url;
   }
   /**
+   * @method _oAuthURL
+   * @private
+   * @memberOf Client
+   * @description Generates a url for use when setting globals. Like FileMaker
+   * globals, these values will only be set for the current session.
+   * @param {String} layout The layout to use when setting globals.
+   * @return {String} A URL to use when setting globals
+   */
+  _oAuthURL() {
+    let url = `${this.server}/fmws/oauthproviderinfo`;
+    return url;
+  }
+
+  /**
    * @method _logoutURL
    * @memberof Client
    * @private
@@ -314,6 +341,24 @@ class Client extends Document {
   }
 
   /**
+   * @method providers
+   * @memberof Client
+   * @public
+   * @description Gets the eligible oAuth providers for a client
+   * @see {@method Client#authenticate}
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   *
+   */
+  providers() {
+    return new Promise((resolve, reject) => {
+      this.connection
+        .oAuthProviders(this.agent, this._oAuthURL())
+        .then(response => resolve(response))
+        .catch(error => reject(error));
+    });
+  }
+
+  /**
    * @method login
    * @memberof Client
    * @public
@@ -340,22 +385,21 @@ class Client extends Document {
    */
 
   logout() {
-    return new Promise(
-      (resolve, reject) =>
-        this.connection.valid()
-          ? this.agent
-              .request({
-                url: this._logoutURL(this.connection.token),
-                method: 'delete',
-                data: {}
-              })
-              .then(response => response.data)
-              .then(body => this.data.outgoing(body))
-              .then(body => this.connection.clear(body))
-              .then(body => this._saveState(body))
-              .then(body => resolve(body.messages[0]))
-              .catch(error => reject(this._checkToken(error)))
-          : reject({ message: 'No session to log out.' })
+    return new Promise((resolve, reject) =>
+      this.connection.valid()
+        ? this.agent
+            .request({
+              url: this._logoutURL(this.connection.token),
+              method: 'delete',
+              data: {}
+            })
+            .then(response => response.data)
+            .then(body => this.data.outgoing(body))
+            .then(body => this.connection.clear(body))
+            .then(body => this._saveState(body))
+            .then(body => resolve(body.messages[0]))
+            .catch(error => reject(this._checkToken(error)))
+        : reject({ message: 'No session to log out.' })
     );
   }
 
@@ -441,9 +485,8 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => parseScriptResult(body))
-        .then(
-          response =>
-            parameters.merge ? Object.assign(data, response) : response
+        .then(response =>
+          parameters.merge ? Object.assign(data, response) : response
         )
         .then(response => resolve(response))
         .catch(error => reject(this._checkToken(error)))
@@ -498,11 +541,10 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => parseScriptResult(body))
-        .then(
-          body =>
-            parameters.merge
-              ? Object.assign(data, { recordId: recordId }, body)
-              : body
+        .then(body =>
+          parameters.merge
+            ? Object.assign(data, { recordId: recordId }, body)
+            : body
         )
         .then(response => resolve(response))
         .catch(error => reject(this._checkToken(error)))
@@ -714,14 +756,13 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => parseScriptResult(body))
         .then(response => resolve(response))
-        .catch(
-          error =>
-            error.code === '401'
-              ? resolve({
-                  data: [],
-                  message: 'No records match the request'
-                })
-              : reject(this._checkToken(error))
+        .catch(error =>
+          error.code === '401'
+            ? resolve({
+                data: [],
+                message: 'No records match the request'
+              })
+            : reject(this._checkToken(error))
         )
     );
   }

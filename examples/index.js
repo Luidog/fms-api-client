@@ -3,7 +3,8 @@
 const environment = require('dotenv');
 const varium = require('varium');
 const { Filemaker } = require('../index.js');
-const { authentication } = require('./authentication.examples');
+const { basicAuth } = require('./basicAuth.examples');
+const { openAuth } = require('./oAuth.examples');
 const { creates } = require('./create.examples');
 const { gets } = require('./get.examples');
 const { lists } = require('./list.examples');
@@ -39,7 +40,8 @@ connect('nedb://memory')
     //#client-save-example
     return client.save();
   })
-  .then(client => authentication(client))
+  .then(client => openAuth(client))
+  .then(client => basicAuth(client))
   .then(client => creates(client))
   .then(client => gets(client))
   .then(client => lists(client))
