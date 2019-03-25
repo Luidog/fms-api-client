@@ -27,6 +27,8 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
     + [Data API Sessions](#data-api-sessions)
       - [Login Method](#login-method)
       - [Logout Method](#logout-method)
+      - [Providers Method](#providers-method)
+      - [Connection Credentials Update Method](#connection-credentials-update-method)
     + [Client Methods](#client-methods)
       - [Create Records](#create-records)
       - [Get Record Details](#get-record-details)
@@ -70,7 +72,6 @@ npm install --save marpat fms-api-client
 
 ### Introduction
 The fms-api-client is a wrapper around the [FileMaker Data API](https://fm.mutesymphony.com/fmi/data/apidoc/). Much :heart: to FileMaker for their work on the Data API. This client attempts to follow the terminology and conventions used by FileMaker wherever possible. The client uses a lightweight datastore to hold Data API connections. For more information about datastore configuration see the [datastore connection section](#datastore-connection) and the [marpat project](https://github.com/Luidog/marpat).
-
 
 Each client committed to the datastore will automatically handle Data API Sessions. If required, clients can also manually open or close their FileMaker sessions by calling either the `client.login()` method or the `client.logout()` method. To remove a client from a datastore and log out a session call `client.destroy()`. For more information on Data API Session handling see the [Data API sessions section](#data-api-sessions).
 
@@ -137,17 +138,20 @@ For more information on marpat and the different types of supported storage visi
 
 After connecting to a datastore you can import and create clients. A client is created using the create method on the Filemaker class. The FileMaker class accepts an object with the following properties:
 
-| Property    |   Type  |                                     Description                                     |
-| ----------- | :-----: | :---------------------------------------------------------------------------------: |
-| application |  <code>String</code> |                  The FileMaker application / database to connect to                 |
-| server      |  <code>String</code> | The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
-| user        |  <code>String</code> |     The FileMaker user account to be used when authenticating into the Data API     |
-| password    |  <code>String</code> |                        The FileMaker user account's password.                       |
-| [name]      |  <code>String</code> |                                A name for the client.                               |
-| [usage]     | <code>Boolean</code> |          Track Data API usage for this client. **Note:** Default is `true`          |
-| [timeout]   |  <code>Number</code> |      The default timeout time for requests **Note:** Default is 0, (no timeout)     |
-| [proxy]     |  <code>Object</code> |                             settings for a proxy server                             |
-| [agent]     |  <code>Object</code> |                         settings for a custom request agent                         |
+| Property          | Type                 | Description                                                                          |
+|-------------------|--:-:-----------------|--:-:---------------------------------------------------------------------------------|
+| application       | <code>String</code>  | The FileMaker application / database to connect to.                                  |
+| server            | <code>String</code>  | The FileMaker server to use as the host. **Note:** Must be an http or https Domain.  |
+| user              | <code>String</code>  | The FileMaker user account to be used when authenticating into the Data AP.          |
+| password          | <code>String</code>  | The FileMaker user account's password.                                               |
+| [name]            | <code>String</code>  | A name for the client.                                                               |
+| [oAuthRequestId]  | <code>String</code>  | The open authentication request id.                                                  |
+| [oAuthIdentifier] | <code>String</code>  | The open authentication identifier.                                                  |
+| [usage]           | <code>Boolean</code> | Track Data API usage for this client. **Note:** Default is `true`.                   |
+| [timeout]         | <code>Number</code>  | The default timeout time for requests **Note:** Default is 0, (no timeout).          |
+| [proxy]           | <code>Object</code>  | Settings for a proxy server.                                                         |
+| [agent]           | <code>Object</code>  | Settings for a custom request agent.                                                 |
+
 
 :warning: You should only use the agent parameter when absolutely necessary. The Data API was designed to be used on https. Deviating from the intended use should be done with caution.
 <!--@snippet('./examples/index.js#client-create-example', { showSource: true })-->
@@ -191,6 +195,28 @@ The logout method is used to end a Data API session. This method will also remov
 `client.logout()`
 <!--@snippet('./examples/authentication.examples.js#client-logout-example', { showSource: true })-->
 <!--/@-->
+
+#### Providers Method
+
+The providers method will return an array of configured and enabled Open Authorization providers. The response will also be saved for later use by the Client's connection.
+
+`client.providers()`
+<!--@snippet('./examples/authentication.examples.js#client-providers-example', { showSource: true })-->
+<!--/@-->
+
+Result:
+<!--@snippet('./examples/results/client-providers-example.json', { showSource: true })-->
+<!--/@-->
+
+#### Connection Credentials Update Method
+
+The connection credentials update method can be used to update the user account and password or Open Authentication properties when creating a database session.
+
+`client.connection.credentials.update(data)`
+<!--@snippet('./examples/authentication.examples.js#client-credentials-update-example', { showSource: true })-->
+<!--/@-->
+
+
 ### Client Methods
 
 #### Create Records

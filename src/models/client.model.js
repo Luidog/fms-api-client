@@ -253,19 +253,26 @@ class Client extends Document {
     return url;
   }
   /**
-   * @method _oAuthURL
+   * @method _oAuthProviderURL
    * @private
    * @memberOf Client
-   * @description Generates a url for use when setting globals. Like FileMaker
-   * globals, these values will only be set for the current session.
-   * @param {String} layout The layout to use when setting globals.
+   * @description Generates a url for getting configured and enabled Open Authentication providers.
    * @return {String} A URL to use when setting globals
    */
-  _oAuthURL() {
+  _oAuthProviderURL() {
     let url = `${this.server}/fmws/oauthproviderinfo`;
     return url;
   }
-
+  /* @method _oAuthURL
+   * @private
+   * @memberOf Client
+   * @description Generates a url to use for using an Open Authentication provider.
+   * @return {String} A URL to use when setting globals
+   */
+  _oAuthURL() {
+    let url = `${this.server}/oauth/getoauthurl`;
+    return url;
+  }
   /**
    * @method _logoutURL
    * @memberof Client
@@ -297,7 +304,6 @@ class Client extends Document {
     }/layouts/${layout}/records/${recordId}/containers/${fieldName}/${fieldRepetition}`;
     return url;
   }
-
   /**
    * @method _authURL
    * @memberof Client
@@ -352,12 +358,29 @@ class Client extends Document {
   providers() {
     return new Promise((resolve, reject) => {
       this.connection
-        .oAuthProviders(this.agent, this._oAuthURL())
+        .oAuthProviders(this.agent, this._oAuthProviderURL())
         .then(response => resolve(response))
         .catch(error => reject(error));
     });
   }
 
+  /**
+   * @method openAuthentication
+   * @memberof Client
+   * @public
+   * @description Gets the eligible oAuth providers for a client
+   * @see {@method Client#authenticate}
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   *
+   */
+  openAuthentication(provider, redirect) {
+    return new Promise((resolve, reject) => {
+      this.connection
+        .oAuthProviders(this.agent, this._oAuthURL())
+        .then(response => resolve(response))
+        .catch(error => reject(error));
+    });
+  }
   /**
    * @method login
    * @memberof Client
@@ -368,10 +391,14 @@ class Client extends Document {
    *
    */
 
-  login() {
-    return this.authenticate().then(token => ({
-      token
-    }));
+  login(provider) {
+    return provider
+      ? this.connection
+          .oAuthURL(this.agent, this._oAuthURL(), provider)
+          .then(url => url)
+      : this.authenticate().then(token => ({
+          token
+        }));
   }
 
   /**

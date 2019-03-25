@@ -2,6 +2,7 @@
 
 const moment = require('moment');
 const { EmbeddedDocument } = require('marpat');
+const uuidv4 = require('uuid/v4');
 const { Credentials } = require('./credentials.model');
 /**
  * @class Connection
@@ -127,6 +128,26 @@ class Connection extends EmbeddedDocument {
       })
       .then(response => {
         this._saveProviders(response.data);
+        return response.data.data.Provider;
+      });
+  }
+
+  oAuthURL(axios, url, provider, address, redirect) {
+    let trackingID = uuidv4();
+    return axios
+      .request({
+        url: url,
+        method: 'get',
+        headers: {
+          'X-FMS-Return-URL': redirect,
+          'X-FMS-Application-Type': '15',
+          'X-FMS-Application-Version': '9'
+        },
+        params: { 'X-FMS-OAuth-AuthType': '2', provider, address, trackingID }
+      })
+      .then(response => {
+        console.log(response);
+        // this._saveProviders(response.data);
         return response.data;
       });
   }
