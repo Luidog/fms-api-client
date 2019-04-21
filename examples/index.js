@@ -4,6 +4,7 @@ const environment = require('dotenv');
 const varium = require('varium');
 const { Filemaker } = require('../index.js');
 const { authentication } = require('./authentication.examples');
+const { metadata } = require('./metadata.examples');
 const { creates } = require('./create.examples');
 const { gets } = require('./get.examples');
 const { lists } = require('./list.examples');
@@ -40,6 +41,7 @@ connect('nedb://memory')
     return client.save();
   })
   .then(client => authentication(client))
+  .then(client => metadata(client))
   .then(client => creates(client))
   .then(client => gets(client))
   .then(client => lists(client))

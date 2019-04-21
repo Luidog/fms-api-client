@@ -167,6 +167,18 @@ class Client extends Document {
     return url;
   }
   /**
+   * @method _productInfoURL
+   * @memberof Client
+   * @private
+   * @description Generates a url for retrieving FileMaker Server host metadata.
+   * @return {String} The URL to use to retrieve FileMaker server host information.
+   */
+
+  _productInfoURL() {
+    let url = `${this.server}/fmi/data/v1/productInfo`;
+    return url;
+  }
+  /**
    * @method _deleteURL
    * @memberof Client
    * @private
@@ -328,7 +340,35 @@ class Client extends Document {
       token
     }));
   }
-
+  /**
+   * @method productInfo
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server or FileMaker Cloud host.
+   * @see {@method Connnection#clear}
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   *
+   */
+  productInfo() {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request({
+            url: this._productInfoURL(),
+            method: 'get',
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          })
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => resolve(body.response))
+        .catch(error => reject(this._checkToken(error)))
+    );
+  }
   /**
    * @method logout
    * @memberof Client
@@ -340,22 +380,21 @@ class Client extends Document {
    */
 
   logout() {
-    return new Promise(
-      (resolve, reject) =>
-        this.connection.valid()
-          ? this.agent
-              .request({
-                url: this._logoutURL(this.connection.token),
-                method: 'delete',
-                data: {}
-              })
-              .then(response => response.data)
-              .then(body => this.data.outgoing(body))
-              .then(body => this.connection.clear(body))
-              .then(body => this._saveState(body))
-              .then(body => resolve(body.messages[0]))
-              .catch(error => reject(this._checkToken(error)))
-          : reject({ message: 'No session to log out.' })
+    return new Promise((resolve, reject) =>
+      this.connection.valid()
+        ? this.agent
+            .request({
+              url: this._logoutURL(this.connection.token),
+              method: 'delete',
+              data: {}
+            })
+            .then(response => response.data)
+            .then(body => this.data.outgoing(body))
+            .then(body => this.connection.clear(body))
+            .then(body => this._saveState(body))
+            .then(body => resolve(body.messages[0]))
+            .catch(error => reject(this._checkToken(error)))
+        : reject({ message: 'No session to log out.' })
     );
   }
 
@@ -441,9 +480,8 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => parseScriptResult(body))
-        .then(
-          response =>
-            parameters.merge ? Object.assign(data, response) : response
+        .then(response =>
+          parameters.merge ? Object.assign(data, response) : response
         )
         .then(response => resolve(response))
         .catch(error => reject(this._checkToken(error)))
@@ -498,11 +536,10 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => parseScriptResult(body))
-        .then(
-          body =>
-            parameters.merge
-              ? Object.assign(data, { recordId: recordId }, body)
-              : body
+        .then(body =>
+          parameters.merge
+            ? Object.assign(data, { recordId: recordId }, body)
+            : body
         )
         .then(response => resolve(response))
         .catch(error => reject(this._checkToken(error)))
@@ -714,14 +751,13 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => parseScriptResult(body))
         .then(response => resolve(response))
-        .catch(
-          error =>
-            error.code === '401'
-              ? resolve({
-                  data: [],
-                  message: 'No records match the request'
-                })
-              : reject(this._checkToken(error))
+        .catch(error =>
+          error.code === '401'
+            ? resolve({
+                data: [],
+                message: 'No records match the request'
+              })
+            : reject(this._checkToken(error))
         )
     );
   }

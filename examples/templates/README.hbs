@@ -28,6 +28,7 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
       - [Login Method](#login-method)
       - [Logout Method](#logout-method)
     + [Client Methods](#client-methods)
+      - [Product Info](#product-info)
       - [Create Records](#create-records)
       - [Get Record Details](#get-record-details)
       - [List Records](#list-records)
@@ -193,6 +194,20 @@ The logout method is used to end a Data API session. This method will also remov
 <!--/@-->
 ### Client Methods
 
+#### Product Info
+
+A client can get server product info. The productInfo method will return metadata about the FileMaker server the client is configured to use. 
+
+`client.productInfo()`
+
+{{#functions name="productInfo"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/metadata.examples.js#product-info-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/product-info-example.json', { showSource: true })-->
+<!--/@-->
 #### Create Records
 
 Using the client you can create filemaker records. To create a record specify the layout to use and the data to insert on creation. The client will automatically convert numbers, arrays, and objects into strings so they can be inserted into a filemaker field. The create method will automatically create a `fieldData` property and add all data to that property if there is no fieldData property present. The client will preserve the contents of the `portalData` property.
