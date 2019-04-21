@@ -103,6 +103,6 @@ describe('Request Interceptor Capabilities', () => {
         .catch(error => error)
     )
       .to.eventually.be.an('object')
-      .that.has.all.keys('message');
+      .that.has.all.keys('message','code');
   });
 });

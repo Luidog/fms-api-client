@@ -115,7 +115,13 @@ describe('Script Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('scriptResult', 'scriptError', 'data');
+      .that.has.all.keys(
+        'scriptResult',
+        'scriptError',
+        'data',
+        'dataSource',
+        'resultSet'
+      );
   });
 
   it('should allow you to trigger a script in a list', () => {
@@ -126,7 +132,13 @@ describe('Script Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('scriptResult', 'scriptError', 'data');
+      .that.has.all.keys(
+        'scriptResult',
+        'scriptError',
+        'data',
+        'dataSource',
+        'resultSet'
+      );
   });
 
   it('should reject a script that does not exist', () => {
@@ -152,7 +164,13 @@ describe('Script Capabilities', () => {
         .catch(error => error)
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('scriptResult', 'scriptError', 'data');
+      .that.has.all.keys(
+        'scriptResult',
+        'scriptError',
+        'data',
+        'dataSource',
+        'resultSet'
+      );
   });
 
   it('should parse script results if the results are json', () => {
@@ -163,7 +181,13 @@ describe('Script Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('scriptResult', 'scriptError', 'data')
+      .that.has.all.keys(
+        'scriptResult',
+        'scriptError',
+        'data',
+        'dataSource',
+        'resultSet'
+      )
       .and.property('scriptResult')
       .to.be.a('object');
   });
@@ -184,7 +208,13 @@ describe('Script Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('scriptResult', 'scriptError', 'data')
+      .that.has.all.keys(
+        'scriptResult',
+        'scriptError',
+        'data',
+        'dataSource',
+        'resultSet'
+      )
       .and.property('scriptResult')
       .to.be.a('object');
   });
@@ -215,6 +245,8 @@ describe('Script Capabilities', () => {
         'scriptResult.presort',
         'scriptError.presort',
         'scriptError',
+        'dataSource',
+        'resultSet',
         'scriptResult',
         'data'
       )
