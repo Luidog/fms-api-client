@@ -3,17 +3,17 @@
     "database": "fms-api-app",
     "layout": "Heroes",
     "table": "Heroes",
-    "totalRecordCount": 22336
+    "totalRecordCount": 22338
   },
   "resultSet": {
-    "foundCount": 22336,
+    "foundCount": 22338,
     "returnedCount": 2
   },
   "data": [
     {
       "fieldData": {
         "name": "George Lucas",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/28734A1A6F6734E76E716D34C492BC21B563C21A075FEB8C7EE4CEA0965F0669.png?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/155FA1A5737F2FE2C89442B013BD9A4D0C0224C68F76534FAC89268E01824784.png?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",

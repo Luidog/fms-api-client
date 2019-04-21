@@ -3,7 +3,7 @@
     "database": "fms-api-app",
     "layout": "Heroes",
     "table": "Heroes",
-    "totalRecordCount": 22336
+    "totalRecordCount": 22338
   },
   "resultSet": {
     "foundCount": 1,
@@ -12,8 +12,8 @@
   "data": [
     {
       "fieldData": {
-        "name": "yoda",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/2D681FC7AD51E3258EFAEEFD8C4862BCDFB8B73BE41DDCBB2986211D703AFCA9?RCType=EmbeddedRCFileProcessor",
+        "name": "Yoda",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/EE877D689A51EFF3F1E63397E3F99565848289BC485E21A23A4BDFBEC50BD557?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
