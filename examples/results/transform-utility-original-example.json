@@ -27,6 +27,20 @@
       ]
     },
     "recordId": "1138",
-    "modId": "327"
+    "modId": "327",
+    "relatedSet": [
+      {
+        "database": "fms-api-app",
+        "table": "Planets",
+        "foundCount": 1,
+        "returnedCount": 1
+      },
+      {
+        "database": "fms-api-app",
+        "table": "Vehicles",
+        "foundCount": 1,
+        "returnedCount": 1
+      }
+    ]
   }
 ]

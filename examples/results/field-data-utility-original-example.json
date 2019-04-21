@@ -19,7 +19,21 @@
       "Vehicles": []
     },
     "recordId": "1138",
-    "modId": "327"
+    "modId": "327",
+    "relatedSet": [
+      {
+        "database": "fms-api-app",
+        "table": "Planets",
+        "foundCount": 0,
+        "returnedCount": 0
+      },
+      {
+        "database": "fms-api-app",
+        "table": "Vehicles",
+        "foundCount": 0,
+        "returnedCount": 0
+      }
+    ]
   },
   {
     "fieldData": {
@@ -41,6 +55,20 @@
       "Vehicles": []
     },
     "recordId": "1138",
-    "modId": "327"
+    "modId": "327",
+    "relatedSet": [
+      {
+        "database": "fms-api-app",
+        "table": "Planets",
+        "foundCount": 0,
+        "returnedCount": 0
+      },
+      {
+        "database": "fms-api-app",
+        "table": "Vehicles",
+        "foundCount": 0,
+        "returnedCount": 0
+      }
+    ]
   }
 ]
