@@ -35,12 +35,12 @@ class Connection extends EmbeddedDocument {
         type: String,
         required: true
       },
-      /** The FileMaker application (database).
+      /** The FileMaker Database (database).
        * @public
-       * @member Connection#application
+       * @member Connection#database
        * @type String
        */
-      application: {
+      database: {
         type: String,
         required: true
       },

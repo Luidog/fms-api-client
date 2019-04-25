@@ -36,7 +36,7 @@ describe('Authentication Capabilities', () => {
 
   beforeEach(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -117,7 +117,7 @@ describe('Authentication Capabilities', () => {
 
   it('should attempt to log out before being removed', () => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -133,7 +133,7 @@ describe('Authentication Capabilities', () => {
 
   it('should catch the log out error before being removed if the login is not valid', () => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: 'wrong-password'

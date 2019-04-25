@@ -29,7 +29,7 @@ connect('nedb://memory')
     //#client-create-example
     const client = Filemaker.create({
       name: process.env.CLIENT_NAME,
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,

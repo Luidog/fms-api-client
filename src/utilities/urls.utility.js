@@ -10,8 +10,8 @@ const urls = {
    * @return {String} A URL to use when creating records.
    */
 
-  create: (host, application, layout, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/layouts/${layout}/records`,
+  create: (host, database, layout, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records`,
 
   /**
    * @method update
@@ -23,8 +23,8 @@ const urls = {
    * @return {String} A URL to use when updating records.
    */
 
-  update: (host, application, layout, recordId, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/layouts/${layout}/records/${recordId}`,
+  update: (host, database, layout, recordId, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
 
   /**
    * @method delete
@@ -36,8 +36,8 @@ const urls = {
    * @return {String} A URL to use when deleting records.
    */
 
-  delete: (host, application, layout, recordId, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/layouts/${layout}/records/${recordId}`,
+  delete: (host, database, layout, recordId, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
 
   /**
    * @method get
@@ -49,8 +49,8 @@ const urls = {
    * @return {String} A URL to used when getting one record.
    */
 
-  get: (host, application, layout, recordId, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/layouts/${layout}/records/${recordId}`,
+  get: (host, database, layout, recordId, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
 
   /**
    * @method list
@@ -61,8 +61,8 @@ const urls = {
    * @return {String} A URL to use when listing records.
    */
 
-  list: (host, application, layout, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/layouts/${layout}/records`,
+  list: (host, database, layout, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records`,
 
   /**
    * @method find
@@ -73,8 +73,8 @@ const urls = {
    * @return {String} A URL to use when performing a find.
    */
 
-  find: (host, application, layout, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/layouts/${layout}/_find`,
+  find: (host, database, layout, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/_find`,
 
   /**
    * @method globals
@@ -85,8 +85,8 @@ const urls = {
    * @param {String} layout The layout to use when setting globals.
    * @return {String} A URL to use when setting globals
    */
-  globals: (host, application, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/globals`,
+  globals: (host, database, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/globals`,
 
   /**
    * @method logout
@@ -95,8 +95,8 @@ const urls = {
    * @description Generates a url for use when logging out of a FileMaker Session.
    * @return {String} A URL to use when logging out of a FileMaker DAPI session.
    */
-  logout: (host, application, token, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/sessions/${token}`,
+  logout: (host, database, token, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/sessions/${token}`,
 
   /**
    * @method upload
@@ -112,14 +112,14 @@ const urls = {
    */
   upload: (
     host,
-    application,
+    database,
     layout,
     recordId,
     fieldName,
     fieldRepetition = 1,
     version = 'vLatest'
   ) =>
-    `${host}/fmi/data/${version}/databases/${application}/layouts/${layout}/records/${recordId}/containers/${fieldName}/${fieldRepetition}`,
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}/containers/${fieldName}/${fieldRepetition}`,
 
   /**
    * @method authentication
@@ -129,8 +129,8 @@ const urls = {
    * in exchange for Account credentials.
    * @return {String} A URL to use when authenticating a FileMaker DAPI session.
    */
-  authentication: (host, application, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/sessions`,
+  authentication: (host, database, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/sessions`,
 
   /**
    * @method layoutsURL
@@ -141,8 +141,8 @@ const urls = {
    * @return {String} A URL to use when authenticating a FileMaker DAPI session.
    */
 
-  layouts: (host, application, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/layouts`,
+  layouts: (host, database, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts`,
 
   /**
    * @method layout
@@ -153,8 +153,8 @@ const urls = {
    * @param {String} layout The layout to use when getting metadata.
    * @return {String} A URL to use when authenticating a FileMaker DAPI session.
    */
-  layout: (host, application, layout, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/layouts/${layout}`,
+  layout: (host, database, layout, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}`,
 
   /**
    * @method scripts
@@ -165,8 +165,8 @@ const urls = {
    * @return {String} A URL to use when authenticating a FileMaker DAPI session.
    */
 
-  scripts: (host, application, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/scripts`,
+  scripts: (host, database, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/scripts`,
 
   /**
    * @method duplicate
@@ -178,8 +178,8 @@ const urls = {
    * @param {String} recordId the record id to duplicate.
    * @return {String} A URL to use when authenticating a FileMaker DAPI session.
    */
-  duplicate: (host, application, layout, recordId, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${application}/layouts/${layout}/records/${recordId}`,
+  duplicate: (host, database, layout, recordId, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
   /**
    * @method productInfo
    * @memberof Client

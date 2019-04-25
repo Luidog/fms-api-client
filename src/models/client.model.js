@@ -39,11 +39,11 @@ class Client extends Document {
         default: 'v1'
       },
       /**
-       * The client application name.
-       * @member Client#application
+       * The client database name.
+       * @member Client#database
        * @type String
        */
-      application: {
+      database: {
         type: String,
         required: true
       },
@@ -56,7 +56,7 @@ class Client extends Document {
         type: String
       },
       /**
-       * The client application server.
+       * The client FileMaker Server.
        * @member Client#server
        * @type String
        */
@@ -157,7 +157,7 @@ class Client extends Document {
         this.connection
           .generate(
             this.agent,
-            urls.authentication(this.server, this.application, this.version)
+            urls.authentication(this.server, this.database, this.version)
           )
           .then(body => this._saveState(body))
           .then(body => this.data.outgoing(body))
@@ -191,9 +191,7 @@ class Client extends Document {
    *
    */
   productInfo() {
-    return productInfo(this.server, this.version)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._saveState(body));
+    return productInfo(this.server, this.version);
   }
 
   /**
@@ -204,9 +202,7 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   databases() {
-    return databases(this.server, this.credentials, this.version)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._saveState(body));
+    return databases(this.server, this.credentials, this.version);
   }
 
   /**
@@ -216,12 +212,60 @@ class Client extends Document {
    * @description Retrieves information about the FileMaker Server's hosted databases.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
-  layouts() {
-    return databases(this.server, this.credentials, this.version)
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._saveState(body))
-      .then(body => body.response);
+  layouts(parameters = {}) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request(
+            {
+              url: urls.layouts(this.server, this.database, this.version),
+              method: 'get',
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            },
+            parameters
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => parseScriptResult(body))
+        .then(response => resolve(response))
+        .catch(error => reject(this._checkToken(error)))
+    );
+  }
+
+  /**
+   * @method scripts
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  scripts(parameters = {}) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request(
+            {
+              url: urls.scripts(this.server, this.database, this.version),
+              method: 'get',
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            },
+            parameters
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(response => resolve(response))
+        .catch(error => reject(this._checkToken(error)))
+    );
   }
 
   /**
@@ -232,11 +276,33 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   layout(layout, parameters = {}) {
-    return databases(this.server, this.credentials)
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._saveState(body))
-      .then(body => body.response);
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request(
+            {
+              url: urls.layout(
+                this.server,
+                this.database,
+                layout,
+                this.version
+              ),
+              method: 'get',
+              params: toStrings(sanitizeParameters(parameters, ['recordId'])),
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            },
+            parameters
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(response => resolve(response))
+        .catch(error => reject(this._checkToken(error)))
+    );
   }
 
   /**
@@ -271,7 +337,7 @@ class Client extends Document {
             .request({
               url: urls.logout(
                 this.server,
-                this.application,
+                this.database,
                 this.connection.token,
                 this.version
               ),
@@ -344,7 +410,7 @@ class Client extends Document {
             {
               url: urls.create(
                 this.server,
-                this.application,
+                this.database,
                 layout,
                 this.version
               ),
@@ -404,7 +470,7 @@ class Client extends Document {
             {
               url: urls.update(
                 this.server,
-                this.application,
+                this.database,
                 layout,
                 recordId,
                 this.version
@@ -466,7 +532,7 @@ class Client extends Document {
             {
               url: urls.delete(
                 this.server,
-                this.application,
+                this.database,
                 layout,
                 recordId,
                 this.version
@@ -518,7 +584,7 @@ class Client extends Document {
             {
               url: urls.get(
                 this.server,
-                this.application,
+                this.database,
                 layout,
                 recordId,
                 this.version
@@ -573,12 +639,7 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: urls.list(
-                this.server,
-                this.application,
-                layout,
-                this.version
-              ),
+              url: urls.list(this.server, this.database, layout, this.version),
               method: 'get',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -634,12 +695,7 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: urls.find(
-                this.server,
-                this.application,
-                layout,
-                this.version
-              ),
+              url: urls.find(this.server, this.database, layout, this.version),
               method: 'post',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -700,7 +756,7 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: urls.globals(this.server, this.application, this.version),
+              url: urls.globals(this.server, this.database, this.version),
               method: 'patch',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -770,7 +826,7 @@ class Client extends Document {
                 {
                   url: urls.upload(
                     this.server,
-                    this.application,
+                    this.database,
                     layout,
                     resolvedId,
                     containerFieldName,
@@ -818,12 +874,7 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: urls.list(
-                this.server,
-                this.application,
-                layout,
-                this.version
-              ),
+              url: urls.list(this.server, this.database, layout, this.version),
               method: 'get',
               headers: {
                 Authorization: `Bearer ${token}`,

@@ -21,7 +21,7 @@ describe('ContainerData Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -82,7 +82,7 @@ describe('ContainerData Capabilities', () => {
       .and.to.all.include.keys('name', 'path');
   });
 
-  it('should substitute the record id if a name is not specified', () => {
+  it('should return an array of records if it is passed an array', () => {
     return expect(
       client
         .find(process.env.LAYOUT, { imageName: '*' }, { limit: 2 })
@@ -95,7 +95,7 @@ describe('ContainerData Capabilities', () => {
       .to.be.a('object')
       .and.to.all.include.keys('name', 'path');
   });
-  it('should substitute the record id if a name is not specified', () => {
+  it('should return a single record object if passed an object', () => {
     return expect(
       client
         .find(process.env.LAYOUT, { imageName: '*' }, { limit: 1 })

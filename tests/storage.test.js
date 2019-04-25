@@ -34,7 +34,7 @@ describe('Storage', () => {
 
   beforeEach(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -52,7 +52,7 @@ describe('Storage', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       );
@@ -68,7 +68,7 @@ describe('Storage', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       );
@@ -76,7 +76,7 @@ describe('Storage', () => {
 
   it('should reject if a client can not be validated', () => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: 'mutesymphony.com',
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -96,7 +96,7 @@ describe('Storage', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       );

@@ -46,7 +46,7 @@ describe('Agent Configuration Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -63,7 +63,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should accept no agent configuration', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -77,7 +77,7 @@ describe('Agent Configuration Capabilities', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       )
@@ -96,7 +96,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should not create an agent unless one is defined', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -111,7 +111,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('adjusts the request protocol according to the server', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER.replace('https://', 'http://'),
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -126,7 +126,7 @@ describe('Agent Configuration Capabilities', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       )
@@ -146,7 +146,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should create a https agent', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -161,7 +161,7 @@ describe('Agent Configuration Capabilities', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       )
@@ -182,7 +182,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should use a created request agent', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -196,7 +196,7 @@ describe('Agent Configuration Capabilities', () => {
   it('should destory the agent when the client is deleted', () => {
     let globalId = '';
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -215,7 +215,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should create a http agent', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER.replace('https://', 'http://'),
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -230,7 +230,7 @@ describe('Agent Configuration Capabilities', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       )
@@ -251,7 +251,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should accept a timeout property', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -267,7 +267,7 @@ describe('Agent Configuration Capabilities', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       )
@@ -285,7 +285,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should use a timeout if one is set', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -302,7 +302,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should use a proxy if one is set', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER.replace('https://', 'http://'),
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -325,7 +325,7 @@ describe('Agent Configuration Capabilities', () => {
   it('should automatically recreate an agent if one is deleted', () => {
     let globalId;
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,

@@ -1,6 +1,6 @@
 'use strict';
 
-/* global describe before after it */
+/* global describe before after afterEach it */
 
 /* eslint-disable */
 
@@ -15,14 +15,14 @@ const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
-const { Filemaker } = require('../index.js');
+const { Filemaker, productInfo } = require('../index.js');
 const { urls } = require('../src/utilities');
 
 const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
 
-describe('Product Info Capabilities', () => {
+describe('Client Product Info Capabilities', () => {
   let database, client;
   before(done => {
     environment.config({ path: './tests/.env' });
@@ -39,7 +39,7 @@ describe('Product Info Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -52,6 +52,11 @@ describe('Product Info Capabilities', () => {
       .logout()
       .then(response => done())
       .catch(error => done());
+  });
+
+  afterEach(done => {
+    sandbox.restore();
+    return done();
   });
 
   it('should get FileMaker Server Information', () => {
@@ -71,6 +76,37 @@ describe('Product Info Capabilities', () => {
       .stub(urls, 'productInfo')
       .callsFake(() => 'https://httpstat.us/502');
     return expect(client.productInfo().catch(error => error))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('message', 'code');
+  });
+});
+
+describe('Product Info Utility Capabilities', () => {
+  before(done => {
+    environment.config({ path: './tests/.env' });
+    varium(process.env, './tests/env.manifest');
+    return done();
+  });
+
+  it('should get FileMaker Server Information', () => {
+    return expect(productInfo(process.env.SERVER))
+      .to.eventually.be.a('object')
+      .that.has.all.keys(
+        'name',
+        'buildDate',
+        'version',
+        'dateFormat',
+        'timeFormat',
+        'timeStampFormat'
+      );
+  });
+  it('should fail with a code and a message', () => {
+    return expect(productInfo('http://not-a-server.com').catch(error => error))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('message', 'code');
+  });
+  it('should require a server parameter', () => {
+    return expect(productInfo().catch(error => error))
       .to.eventually.be.a('object')
       .that.has.all.keys('message', 'code');
   });
