@@ -53,7 +53,7 @@ class Connection extends EmbeddedDocument {
       /* A string containing the time the token will expire.
        * @member Connection#expires
        * @type String
-      */
+       */
       expires: {
         type: String
       },

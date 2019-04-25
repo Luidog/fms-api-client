@@ -14,9 +14,11 @@ const {
   toStrings,
   sanitizeParameters,
   parseScriptResult,
-  setData
+  setData,
+  urls
 } = require('../utilities');
 
+const { productInfo, databases } = require('../services');
 /**
  * @class Client
  * @classdesc The class used to integrate with the FileMaker server Data API
@@ -34,7 +36,7 @@ class Client extends Document {
       version: {
         type: String,
         required: true,
-        default: '1'
+        default: 'v1'
       },
       /**
        * The client application name.
@@ -135,170 +137,6 @@ class Client extends Document {
   }
 
   /**
-   * @method _createURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for use when creating a record.
-   * @param {String} layout The layout to use when creating a record.
-   * @return {String} A URL to use when creating records.
-   */
-
-  _createURL(layout) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records`;
-    return url;
-  }
-
-  /**
-   * @method _updateURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for use when updating a record.
-   * @param {String} layout The layout to use when updating a record.
-   * @param {String} recordId The FileMaker internal record id to use.
-   * @return {String} A URL to use when updating records.
-   */
-
-  _updateURL(layout, recordId) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records/${recordId}`;
-    return url;
-  }
-  /**
-   * @method _productInfoURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for retrieving FileMaker Server host metadata.
-   * @return {String} The URL to use to retrieve FileMaker server host information.
-   */
-
-  _productInfoURL() {
-    let url = `${this.server}/fmi/data/v1/productInfo`;
-    return url;
-  }
-  /**
-   * @method _deleteURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for use when deleting a record.
-   * @param {String} layout The layout to use when creating a record.
-   * @param {String} recordId The FileMaker internal record id to use.
-   * @return {String} A URL to use when deleting records.
-   */
-  _deleteURL(layout, recordId) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records/${recordId}`;
-    return url;
-  }
-  /**
-   * @method _getURL
-   * @private
-   * @memberOf Client
-   * @description Generates a url to access a record.
-   * @param {String} layout The layout to use when acessing a record.
-   * @param {String} recordId The FileMaker internal record id to use.
-   * @return {String} A URL to used when getting one record.
-   */
-  _getURL(layout, recordId) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records/${recordId}`;
-    return url;
-  }
-  /**
-   * @method _listURL
-   * @private
-   * @memberOf Client
-   * @descriptionGenerates a url for use when listing records.
-   * @param {String} layout The layout to use when listing records.
-   * @return {String} A URL to use when listing records.
-   */
-  _listURL(layout) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records`;
-    return url;
-  }
-  /**
-   * @method _findURL
-   * @private
-   * @memberOf Client
-   * @description Generates a url for use when performing a find request.
-   * @param {String} layout The layout to use when listing records.
-   * @return {String} A URL to use when performing a find.
-   */
-  _findURL(layout) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/_find`;
-    return url;
-  }
-  /**
-   * @method _globalsURL
-   * @private
-   * @memberOf Client
-   * @description Generates a url for use when setting globals. Like FileMaker
-   * globals, these values will only be set for the current session.
-   * @param {String} layout The layout to use when setting globals.
-   * @return {String} A URL to use when setting globals
-   */
-  _globalsURL() {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/globals`;
-    return url;
-  }
-  /**
-   * @method _logoutURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for use when logging out of a FileMaker Session.
-   * @return {String} A URL to use when logging out of a FileMaker DAPI session.
-   */
-  _logoutURL(token) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/sessions/${token}`;
-    return url;
-  }
-  /**
-   * @method _uploadURL
-   * @memberOf Client
-   * @description Generates a url for use when uploading files to FileMaker containers.
-   * @private
-   * @param {String} layout The layout to use when setting globals.
-   * @param {String} recordId the record id to use when inserting the file.
-   * @param {String} fieldName the field to use when inserting a file.
-   * @param {String} fieldRepetition The repetition to use when inserting the file.
-   * default is 1.
-   * @return {String} A URL to use when uploading files to FileMaker.
-   */
-  _uploadURL(layout, recordId, fieldName, fieldRepetition = 1) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records/${recordId}/containers/${fieldName}/${fieldRepetition}`;
-    return url;
-  }
-
-  /**
-   * @method _authURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for use when retrieving authentication tokens
-   * in exchange for Account credentials.
-   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
-   */
-  _authURL() {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/sessions`;
-    return url;
-  }
-
-  /**
    * @method authenticate
    * @memberof Client
    * @private
@@ -310,13 +148,17 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
+
   authenticate() {
     return new Promise((resolve, reject) => {
       if (this.connection.valid()) {
         resolve(this.connection.token);
       } else {
         this.connection
-          .generate(this.agent, this._authURL())
+          .generate(
+            this.agent,
+            urls.authentication(this.server, this.application, this.version)
+          )
           .then(body => this._saveState(body))
           .then(body => this.data.outgoing(body))
           .then(body => resolve(body.response.token))
@@ -345,30 +187,73 @@ class Client extends Document {
    * @memberof Client
    * @public
    * @description Retrieves information about the FileMaker Server or FileMaker Cloud host.
-   * @see {@method Connnection#clear}
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
   productInfo() {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request({
-            url: this._productInfoURL(),
-            method: 'get',
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          })
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => resolve(body.response))
-        .catch(error => reject(this._checkToken(error)))
-    );
+    return productInfo(this.server, this.version)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._saveState(body));
   }
+
+  /**
+   * @method databases
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  databases() {
+    return databases(this.server, this.credentials, this.version)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._saveState(body));
+  }
+
+  /**
+   * @method layouts
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  layouts() {
+    return databases(this.server, this.credentials, this.version)
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._saveState(body))
+      .then(body => body.response);
+  }
+
+  /**
+   * @method layout
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  layout(layout, parameters = {}) {
+    return databases(this.server, this.credentials)
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._saveState(body))
+      .then(body => body.response);
+  }
+
+  /**
+   * @method duplicate
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  duplicate(layout, recordId, parameters = {}) {
+    return databases(this.server, this.credentials, this.version)
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._saveState(body))
+      .then(body => body.response);
+  }
+
   /**
    * @method logout
    * @memberof Client
@@ -384,7 +269,12 @@ class Client extends Document {
       this.connection.valid()
         ? this.agent
             .request({
-              url: this._logoutURL(this.connection.token),
+              url: urls.logout(
+                this.server,
+                this.application,
+                this.connection.token,
+                this.version
+              ),
               method: 'delete',
               data: {}
             })
@@ -452,7 +342,12 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._createURL(layout),
+              url: urls.create(
+                this.server,
+                this.application,
+                layout,
+                this.version
+              ),
               method: 'post',
               headers: {
                 authorization: `Bearer ${token}`,
@@ -507,7 +402,13 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._updateURL(layout, recordId),
+              url: urls.update(
+                this.server,
+                this.application,
+                layout,
+                recordId,
+                this.version
+              ),
               method: 'patch',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -563,7 +464,13 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._deleteURL(layout, recordId),
+              url: urls.delete(
+                this.server,
+                this.application,
+                layout,
+                recordId,
+                this.version
+              ),
               method: 'delete',
               headers: {
                 Authorization: `Bearer ${token}`
@@ -609,7 +516,13 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._getURL(layout, recordId),
+              url: urls.get(
+                this.server,
+                this.application,
+                layout,
+                recordId,
+                this.version
+              ),
               method: 'get',
               headers: {
                 Authorization: `Bearer ${token}`
@@ -660,7 +573,12 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._listURL(layout),
+              url: urls.list(
+                this.server,
+                this.application,
+                layout,
+                this.version
+              ),
               method: 'get',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -716,7 +634,12 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._findURL(layout),
+              url: urls.find(
+                this.server,
+                this.application,
+                layout,
+                this.version
+              ),
               method: 'post',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -777,7 +700,7 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._globalsURL(),
+              url: urls.globals(this.server, this.application, this.version),
               method: 'patch',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -845,11 +768,14 @@ class Client extends Document {
             .then(token =>
               this.agent.request(
                 {
-                  url: this._uploadURL(
+                  url: urls.upload(
+                    this.server,
+                    this.application,
                     layout,
                     resolvedId,
                     containerFieldName,
-                    parameters.fieldRepetition
+                    parameters.fieldRepetition,
+                    this.version
                   ),
                   method: 'post',
                   data: form,
@@ -892,7 +818,12 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._listURL(layout),
+              url: urls.list(
+                this.server,
+                this.application,
+                layout,
+                this.version
+              ),
               method: 'get',
               headers: {
                 Authorization: `Bearer ${token}`,

@@ -29,6 +29,7 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
       - [Logout Method](#logout-method)
     + [Client Methods](#client-methods)
       - [Product Info](#product-info)
+      - [Databases](#databases)
       - [Create Records](#create-records)
       - [Get Record Details](#get-record-details)
       - [List Records](#list-records)
@@ -207,6 +208,20 @@ A client can get server product info. The productInfo method will return metadat
 <!--/@-->
 Result:
 <!--@snippet('./examples/results/product-info-example.json', { showSource: true })-->
+<!--/@-->
+#### databases
+
+A client can get the databases accessible using the configured credentials the databases method will return all databases hosted by the currently configured server that the client can connect to. 
+
+`client.databases()`
+
+{{#functions name="databases"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/metadata.examples.js#databases-info-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/databases-info-example.json', { showSource: true })-->
 <!--/@-->
 #### Create Records
 

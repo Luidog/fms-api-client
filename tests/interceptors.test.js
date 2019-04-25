@@ -1,6 +1,6 @@
 'use strict';
 
-/* global describe before after it */
+/* global describe before after afterEach it */
 
 /* eslint-disable */
 
@@ -10,11 +10,15 @@ const { expect, should } = require('chai');
 /* eslint-enable */
 
 const chai = require('chai');
+const sinon = require('sinon');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
 const varium = require('varium');
+
 const { connect } = require('marpat');
 const { Filemaker } = require('../index.js');
+const { urls } = require('../src/utilities');
+const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
 
@@ -51,8 +55,15 @@ describe('Request Interceptor Capabilities', () => {
       .catch(error => done());
   });
 
+  afterEach(done => {
+    sandbox.restore();
+    return done();
+  });
+
   it('should reject if the server errors', () => {
-    client._authURL = () => 'https://httpstat.us/502';
+    sandbox
+      .stub(urls, 'authentication')
+      .callsFake(() => 'https://httpstat.us/502');
     return expect(
       client
         .save()
@@ -64,7 +75,9 @@ describe('Request Interceptor Capabilities', () => {
   });
 
   it('should handle non JSON responses by rejecting with a json error', () => {
-    client._authURL = () => 'https://httpstat.us/404';
+    sandbox
+      .stub(urls, 'authentication')
+      .callsFake(() => 'https://httpstat.us/404');
     return expect(
       client
         .save()
@@ -76,10 +89,15 @@ describe('Request Interceptor Capabilities', () => {
   });
 
   it('should reject non http requests to the server with a json error', () => {
-    client._authURL = () =>
-      `${process.env.SERVER.replace('https://', '')}/fmi/data/v1/databases/${
-        process.env.application
-      }/sessions`;
+    sandbox
+      .stub(urls, 'authentication')
+      .callsFake(
+        () =>
+          `${process.env.SERVER.replace(
+            'https://',
+            ''
+          )}/fmi/data/v1/databases/${process.env.application}/sessions`
+      );
     return expect(
       client
         .save()
@@ -91,11 +109,15 @@ describe('Request Interceptor Capabilities', () => {
   });
 
   it('should reject non https requests to the server with a json error', () => {
-    client._authURL = () =>
-      `${process.env.SERVER.replace(
-        'https://',
-        'http://'
-      )}/fmi/data/v1/databases/${process.env.application}/sessions`;
+    sandbox
+      .stub(urls, 'authentication')
+      .callsFake(
+        () =>
+          `${process.env.SERVER.replace(
+            'https://',
+            'http://'
+          )}/fmi/data/v1/databases/${process.env.application}/sessions`
+      );
     return expect(
       client
         .save()
@@ -103,6 +125,6 @@ describe('Request Interceptor Capabilities', () => {
         .catch(error => error)
     )
       .to.eventually.be.an('object')
-      .that.has.all.keys('message','code');
+      .that.has.all.keys('message', 'code');
   });
 });

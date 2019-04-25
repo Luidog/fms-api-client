@@ -5,7 +5,9 @@ const {
   recordId,
   fieldData,
   transform,
-  containerData
+  containerData,
+  productInfo,
+  databases
 } = require('../index.js');
 
 //#record-id-utility--original-example
@@ -80,6 +82,20 @@ const getContainerData = client =>
     .then(result => log('container-data-example', result));
 //#
 
+//#product-info-utility-example
+const getProductInfo = client =>
+  productInfo(client.server).then(result =>
+    log('product-info-utility-example', result)
+  );
+//#
+
+//#databases-utility-example
+const getDatabases = client =>
+  databases(client.server, client.credentials).then(result =>
+    log('databases-utility-example', result)
+  );
+//#
+
 const utilities = client =>
   Promise.all([
     extractFieldDataOriginal(client),
@@ -89,7 +105,9 @@ const utilities = client =>
     transformDataOriginal(client),
     transformData(client),
     transformDataNoConvert(client),
-    getContainerData(client)
+    getContainerData(client),
+    getProductInfo(client),
+    getDatabases(client)
   ]).then(responses => client);
 
 module.exports = { utilities };

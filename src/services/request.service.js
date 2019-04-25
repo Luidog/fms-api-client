@@ -31,7 +31,7 @@ const interceptRequest = config =>
       });
 
 /**
- * @method handleResponseError
+ * @method interceptError
  * @private
  * @description This method evaluates the error response. This method will substitute
  * a non json error or a bad gateway status with a json code and message error. This
@@ -41,7 +41,7 @@ const interceptRequest = config =>
  * @return {Promise}      A promise rejection containing a code and a message
  */
 
-const handleResponseError = error => {
+const interceptError = error => {
   if (!error.response) {
     return Promise.reject(error);
   } else if (
@@ -69,7 +69,27 @@ const handleResponseError = error => {
   }
 };
 
+/**
+ * @method interceptError
+ * @private
+ * @description handles request data before it is sent to the resource. This method
+ * will eventually be used to cancel the request and return the configuration body.
+ * This method will test the url for an http proticol and reject if none exist.
+ * @param  {Object} config The axios request configuration
+ * @return {Promise}      the request configuration object
+ */
+
+const interceptResponse = response => {
+  if (typeof response.data !== 'object') {
+    return Promise.reject({
+      message: 'The Data API is currently unavailable',
+      code: '1630'
+    });
+  } else {
+    return response;
+  }
+};
 instance.interceptors.request.use(interceptRequest);
-instance.interceptors.response.use(response => response, handleResponseError);
+instance.interceptors.response.use(interceptResponse, interceptError);
 
 module.exports = { instance };
