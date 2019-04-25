@@ -22,7 +22,7 @@ const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
 
-describe('Database Layout List Capabilities', () => {
+describe('Layout Metadata Capabilities', () => {
   let database, client;
   before(done => {
     environment.config({ path: './tests/.env' });
@@ -59,14 +59,18 @@ describe('Database Layout List Capabilities', () => {
     return done();
   });
 
-  it('should get a list of Layouts and folders for the currently configured database', () => {
-    return expect(client.layouts())
+  it('should get field and portal metaData for a layout', () => {
+    return expect(client.layout(process.env.LAYOUT))
       .to.eventually.be.a('object')
-      .that.has.all.keys('layouts');
+      .that.has.all.keys('fieldMetaData', 'portalMetaData');
+  });
+  it('should require a layout', () => {
+    return expect(client.layout().catch(error => error))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('message', 'code');
   });
   it('should fail with a code and a message', () => {
-    sandbox.stub(urls, 'layouts').callsFake(() => 'https://httpstat.us/502');
-    return expect(client.layouts().catch(error => error))
+    return expect(client.layout('not a layout').catch(error => error))
       .to.eventually.be.a('object')
       .that.has.all.keys('message', 'code');
   });

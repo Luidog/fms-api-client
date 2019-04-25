@@ -22,7 +22,7 @@ const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
 
-describe('Database Layout List Capabilities', () => {
+describe('Database Script List Capabilities', () => {
   let database, client;
   before(done => {
     environment.config({ path: './tests/.env' });
@@ -59,14 +59,14 @@ describe('Database Layout List Capabilities', () => {
     return done();
   });
 
-  it('should get a list of Layouts and folders for the currently configured database', () => {
-    return expect(client.layouts())
+  it('should get a list of scripts and folders for the currently configured database', () => {
+    return expect(client.scripts())
       .to.eventually.be.a('object')
-      .that.has.all.keys('layouts');
+      .that.has.all.keys('scripts');
   });
   it('should fail with a code and a message', () => {
-    sandbox.stub(urls, 'layouts').callsFake(() => 'https://httpstat.us/502');
-    return expect(client.layouts().catch(error => error))
+    sandbox.stub(urls, 'scripts').callsFake(() => 'https://httpstat.us/502');
+    return expect(client.scripts().catch(error => error))
       .to.eventually.be.a('object')
       .that.has.all.keys('message', 'code');
   });

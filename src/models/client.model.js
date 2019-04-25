@@ -263,7 +263,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(response => resolve(response))
+        .then(body => resolve(body.response))
         .catch(error => reject(this._checkToken(error)))
     );
   }
@@ -300,7 +300,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
-        .then(response => resolve(response))
+        .then(body => resolve(body.response))
         .catch(error => reject(this._checkToken(error)))
     );
   }
@@ -313,11 +313,35 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   duplicate(layout, recordId, parameters = {}) {
-    return databases(this.server, this.credentials, this.version)
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._saveState(body))
-      .then(body => body.response);
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request(
+            {
+              url: urls.duplicate(
+                this.server,
+                this.database,
+                layout,
+                recordId,
+                this.version
+              ),
+              method: 'post',
+              headers: {
+                Authorization: `Bearer ${token}`
+              },
+              data: {}
+            },
+            parameters
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => parseScriptResult(body))
+        .then(response => resolve(response))
+        .catch(error => reject(this._checkToken(error)))
+    );
   }
 
   /**
