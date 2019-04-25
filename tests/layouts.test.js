@@ -1,0 +1,73 @@
+'use strict';
+
+/* global describe before after afterEach it */
+
+/* eslint-disable */
+
+const assert = require('assert');
+const { expect, should } = require('chai');
+
+/* eslint-enable */
+
+const chai = require('chai');
+const sinon = require('sinon');
+const chaiAsPromised = require('chai-as-promised');
+const environment = require('dotenv');
+const varium = require('varium');
+const { connect } = require('marpat');
+const { Filemaker, productInfo } = require('../index.js');
+const { urls } = require('../src/utilities');
+
+const sandbox = sinon.createSandbox();
+
+chai.use(chaiAsPromised);
+
+describe('Client Product Info Capabilities', () => {
+  let database, client;
+  before(done => {
+    environment.config({ path: './tests/.env' });
+    varium(process.env, './tests/env.manifest');
+    connect('nedb://memory')
+      .then(db => {
+        database = db;
+        return database.dropDatabase();
+      })
+      .then(() => {
+        return done();
+      });
+  });
+
+  before(done => {
+    client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+    client.save().then(client => done());
+  });
+
+  after(done => {
+    client
+      .logout()
+      .then(response => done())
+      .catch(error => done());
+  });
+
+  afterEach(done => {
+    sandbox.restore();
+    return done();
+  });
+
+  it('should get FileMaker Server Information', () => {
+    return expect(client.layouts())
+      .to.eventually.be.a('object')
+      .that.has.all.keys('layouts');
+  });
+  it('should fail with a code and a message', () => {
+    sandbox.stub(urls, 'layouts').callsFake(() => 'https://httpstat.us/502');
+    return expect(client.layouts().catch(error => error))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('message', 'code');
+  });
+});
