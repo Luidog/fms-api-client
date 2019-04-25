@@ -89,7 +89,7 @@ const interceptResponse = response => {
     return response;
   }
 };
-instance.interceptors.request.use(interceptRequest);
+instance.interceptors.request.use(interceptRequest, interceptError);
 instance.interceptors.response.use(interceptResponse, interceptError);
 
 module.exports = { instance };
