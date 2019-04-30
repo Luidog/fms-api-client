@@ -7,7 +7,7 @@ const productInfo = (host, version = 'vLatest', parameters = {}) =>
   instance
     .get(urls.productInfo(host, version), parameters)
     .then(response => response.data)
-    .then(data => data.response);
+    .then(data => data.response.productInfo);
 
 const databases = (
   host,

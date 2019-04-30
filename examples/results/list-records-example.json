@@ -1,19 +1,17 @@
 {
-  "dataSource": {
+  "dataInfo": {
     "database": "fms-api-app",
     "layout": "Heroes",
     "table": "Heroes",
-    "totalRecordCount": 22338
-  },
-  "resultSet": {
-    "foundCount": 22338,
+    "totalRecordCount": "1977",
+    "foundCount": 22222,
     "returnedCount": 2
   },
   "data": [
     {
       "fieldData": {
         "name": "George Lucas",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/155FA1A5737F2FE2C89442B013BD9A4D0C0224C68F76534FAC89268E01824784.png?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/E71D75AE89A9DB940DE4869905296F3030AA6BEB80E11B53100341ECBBB06E30.png?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -23,7 +21,8 @@
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": "test"
+        "Vehicles::name": "test",
+        "hash": ""
       },
       "portalData": {
         "Planets": [],
@@ -38,7 +37,7 @@
       },
       "recordId": "1138",
       "modId": "327",
-      "relatedSet": [
+      "portalDataInfo": [
         {
           "database": "fms-api-app",
           "table": "Planets",
@@ -66,7 +65,8 @@
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": ""
+        "Vehicles::name": "",
+        "hash": "?"
       },
       "portalData": {
         "Planets": [],
@@ -74,7 +74,7 @@
       },
       "recordId": "1138",
       "modId": "327",
-      "relatedSet": [
+      "portalDataInfo": [
         {
           "database": "fms-api-app",
           "table": "Planets",

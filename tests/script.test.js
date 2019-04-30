@@ -115,13 +115,7 @@ describe('Script Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        'scriptResult',
-        'scriptError',
-        'data',
-        'dataSource',
-        'resultSet'
-      );
+      .that.has.all.keys('scriptResult', 'scriptError', 'data', 'dataInfo');
   });
 
   it('should allow you to trigger a script in a list', () => {
@@ -132,13 +126,7 @@ describe('Script Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        'scriptResult',
-        'scriptError',
-        'data',
-        'dataSource',
-        'resultSet'
-      );
+      .that.has.all.keys('scriptResult', 'scriptError', 'data', 'dataInfo');
   });
 
   it('should reject a script that does not exist', () => {
@@ -164,13 +152,7 @@ describe('Script Capabilities', () => {
         .catch(error => error)
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        'scriptResult',
-        'scriptError',
-        'data',
-        'dataSource',
-        'resultSet'
-      );
+      .that.has.all.keys('scriptResult', 'scriptError', 'data', 'dataInfo');
   });
 
   it('should parse script results if the results are json', () => {
@@ -181,13 +163,7 @@ describe('Script Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        'scriptResult',
-        'scriptError',
-        'data',
-        'dataSource',
-        'resultSet'
-      )
+      .that.has.all.keys('scriptResult', 'scriptError', 'data', 'dataInfo')
       .and.property('scriptResult')
       .to.be.a('object');
   });
@@ -208,13 +184,7 @@ describe('Script Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        'scriptResult',
-        'scriptError',
-        'data',
-        'dataSource',
-        'resultSet'
-      )
+      .that.has.all.keys('scriptResult', 'scriptError', 'data', 'dataInfo')
       .and.property('scriptResult')
       .to.be.a('object');
   });
@@ -245,8 +215,7 @@ describe('Script Capabilities', () => {
         'scriptResult.presort',
         'scriptError.presort',
         'scriptError',
-        'dataSource',
-        'resultSet',
+        'dataInfo',
         'scriptResult',
         'data'
       )

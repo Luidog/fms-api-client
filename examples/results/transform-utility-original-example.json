@@ -28,7 +28,7 @@
     },
     "recordId": "1138",
     "modId": "327",
-    "relatedSet": [
+    "portalDataInfo": [
       {
         "database": "fms-api-app",
         "table": "Planets",

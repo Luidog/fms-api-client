@@ -31,6 +31,7 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
       - [Product Info](#product-info)
       - [Databases](#databases)
       - [Create Records](#create-records)
+      - [Duplicate Record](#duplicate-record)
       - [Get Record Details](#get-record-details)
       - [List Records](#list-records)
       - [Find Records](#find-records)
@@ -238,6 +239,26 @@ Result:
 <!--@snippet('./examples/results/create-record-example.json', { showSource: true })-->
 <!--/@-->
 The create method also allows you to trigger scripts when creating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional  `params` parameters. For more information see the scripts syntax example in the introduction.
+<!--@snippet('./examples/create.examples.js#trigger-scripts-on-create', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/trigger-scripts-on-create-example.json', { showSource: true })-->
+<!--/@-->
+#### Duplicate Record
+
+Using the client you can duplicate a FileMaker record.
+
+`client.duplicate(layout, recordId, parameters)`
+
+{{#functions name="duplicate"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/duplicate.examples.js#duplicate-record-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/duplicate-record-example.json', { showSource: true })-->
+<!--/@-->
+The duplicate method also allows you to trigger scripts when duplicating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional  `params` parameters. For more information see the scripts syntax example in the introduction.
 <!--@snippet('./examples/create.examples.js#trigger-scripts-on-create', { showSource: true })-->
 <!--/@-->
 Result:

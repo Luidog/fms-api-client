@@ -51,7 +51,7 @@ describe('Find Capabilities', () => {
   it('should perform a find request', () => {
     return expect(client.find(process.env.LAYOUT, [{ id: '*' }, { name: '*' }]))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should allow you to use an object instead of an array for a find', () => {
@@ -61,7 +61,7 @@ describe('Find Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should specify omit Criterea', () => {
@@ -72,7 +72,7 @@ describe('Find Capabilities', () => {
       ])
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should safely parse omit true and false', () => {
@@ -83,13 +83,13 @@ describe('Find Capabilities', () => {
       ])
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should allow additional parameters to manipulate the results', () => {
     return expect(client.find(process.env.LAYOUT, { id: '*' }, { limit: '2' }))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -103,7 +103,7 @@ describe('Find Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -111,7 +111,7 @@ describe('Find Capabilities', () => {
   it('should allow you to use numbers in the find query parameters', () => {
     return expect(client.find(process.env.LAYOUT, { id: '*' }, { limit: 2 }))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -125,7 +125,7 @@ describe('Find Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -151,8 +151,7 @@ describe('Find Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         'data',
-        'dataSource',
-        'resultSet',
+        'dataInfo',
         'scriptResult.prerequest',
         'scriptError.prerequest'
       )
@@ -169,13 +168,7 @@ describe('Find Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        'data',
-        'dataSource',
-        'resultSet',
-        'scriptResult',
-        'scriptError'
-      )
+      .that.has.all.keys('data', 'dataInfo', 'scriptResult', 'scriptError')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -195,8 +188,7 @@ describe('Find Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         'data',
-        'dataSource',
-        'resultSet',
+        'dataInfo',
         'scriptResult.prerequest',
         'scriptError.prerequest'
       )
@@ -220,8 +212,7 @@ describe('Find Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         'data',
-        'dataSource',
-        'resultSet',
+        'dataInfo',
         'scriptResult.presort',
         'scriptError.presort'
       )
@@ -244,8 +235,7 @@ describe('Find Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         'data',
-        'dataSource',
-        'resultSet',
+        'dataInfo',
         'scriptResult.presort',
         'scriptError.presort'
       )

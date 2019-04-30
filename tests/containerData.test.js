@@ -20,20 +20,6 @@ describe('ContainerData Capabilities', () => {
   let database, client;
 
   before(done => {
-    client = Filemaker.create({
-      database: process.env.DATABASE,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: process.env.PASSWORD
-    });
-    client.save().then(client => done());
-  });
-
-  after(done => {
-    client.logout().then(response => done());
-  });
-
-  before(done => {
     environment.config({ path: './tests/.env' });
     varium(process.env, './tests/env.manifest');
     connect('nedb://memory')
@@ -42,8 +28,18 @@ describe('ContainerData Capabilities', () => {
         return database.dropDatabase();
       })
       .then(() => {
-        return done();
+        client = Filemaker.create({
+          database: process.env.DATABASE,
+          server: process.env.SERVER,
+          user: process.env.USERNAME,
+          password: process.env.PASSWORD
+        });
+        client.save().then(client => done());
       });
+  });
+
+  after(done => {
+    client.logout().then(response => done());
   });
 
   it('should download container data from an object to a file', () => {
@@ -196,16 +192,23 @@ describe('ContainerData Capabilities', () => {
     return expect(
       client
         .find(process.env.LAYOUT, { imageName: '*' }, { limit: 1 })
-        .then(response =>
-          containerData(
+        .then(response => {
+          response.data[0].fieldData.image = response.data[0].fieldData.image.replace(
+            'MainDB',
+            'FailDB'
+          );
+          return containerData(
             response.data[0],
             'fieldData.image',
             'buffer',
-            'fieldData.imageName',
-            { jar: true }
-          )
-        )
-        .catch(error => error)
+            'fieldData.imageName'
+          );
+        })
+
+        .catch(error => {
+          console.log(error);
+          return error;
+        })
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('code', 'message');

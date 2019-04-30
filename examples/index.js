@@ -6,6 +6,7 @@ const { Filemaker } = require('../index.js');
 const { authentication } = require('./authentication.examples');
 const { metadata } = require('./metadata.examples');
 const { creates } = require('./create.examples');
+const { duplicate } = require('./duplicate.examples');
 const { gets } = require('./get.examples');
 const { lists } = require('./list.examples');
 const { finds } = require('./find.examples');
@@ -40,18 +41,19 @@ connect('nedb://memory')
     //#client-save-example
     return client.save();
   })
-  .then(client => authentication(client))
-  .then(client => metadata(client))
-  .then(client => creates(client))
-  .then(client => gets(client))
-  .then(client => lists(client))
-  .then(client => finds(client))
-  .then(client => edits(client))
-  .then(client => scripts(client))
-  .then(client => globals(client))
-  .then(client => deletes(client))
-  .then(client => uploads(client))
-  .then(client => utilities(client))
-  // #
-  .then(client => datastore(client))
+  // .then(client => authentication(client))
+  // .then(client => metadata(client))
+  // .then(client => creates(client))
+  .then(client => duplicate(client))
+  // .then(client => gets(client))
+  // .then(client => lists(client))
+  // .then(client => finds(client))
+  // .then(client => edits(client))
+  // .then(client => scripts(client))
+  // .then(client => globals(client))
+  // .then(client => deletes(client))
+  // .then(client => uploads(client))
+  // .then(client => utilities(client))
+  // // #
+  // .then(client => datastore(client))
   .catch(error => console.log('error', error));

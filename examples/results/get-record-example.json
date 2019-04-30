@@ -1,19 +1,17 @@
 {
-  "dataSource": {
+  "dataInfo": {
     "database": "fms-api-app",
     "layout": "Heroes",
     "table": "Heroes",
-    "totalRecordCount": 22338
-  },
-  "resultSet": {
+    "totalRecordCount": "1977",
     "foundCount": 1,
     "returnedCount": 1
   },
   "data": [
     {
       "fieldData": {
-        "name": "Yoda",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/EE877D689A51EFF3F1E63397E3F99565848289BC485E21A23A4BDFBEC50BD557?RCType=EmbeddedRCFileProcessor",
+        "name": "yoda",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/21C24425EA07129FADC684A909D4DDB397B33509F456ADEBCBA7CBF113A6664B?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -23,7 +21,8 @@
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": ""
+        "Vehicles::name": "",
+        "hash": "?"
       },
       "portalData": {
         "Planets": [],
@@ -31,7 +30,7 @@
       },
       "recordId": "1138",
       "modId": "327",
-      "relatedSet": [
+      "portalDataInfo": [
         {
           "database": "fms-api-app",
           "table": "Planets",

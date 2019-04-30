@@ -1,0 +1,79 @@
+{
+  "layouts": [
+    {
+      "name": "Parameter Storage Demo"
+    },
+    {
+      "name": "Chalmuns"
+    },
+    {
+      "name": "Card Windows",
+      "isFolder": true,
+      "folderLayoutNames": [
+        {
+          "name": "Authorization Window"
+        }
+      ]
+    },
+    {
+      "name": "API Integration Layouts",
+      "isFolder": true,
+      "folderLayoutNames": [
+        {
+          "name": "authentication"
+        }
+      ]
+    },
+    {
+      "name": "Base Tables",
+      "isFolder": true,
+      "folderLayoutNames": [
+        {
+          "name": "RequestLog"
+        },
+        {
+          "name": "SyncLog"
+        },
+        {
+          "name": "AuthenticationStore"
+        }
+      ]
+    },
+    {
+      "name": "Heroes"
+    },
+    {
+      "name": "Transform"
+    },
+    {
+      "name": "Hero Search"
+    },
+    {
+      "name": "Hero"
+    },
+    {
+      "name": "Globals"
+    },
+    {
+      "name": "Scripts"
+    },
+    {
+      "name": "Logs"
+    },
+    {
+      "name": "Planets"
+    },
+    {
+      "name": "Driods"
+    },
+    {
+      "name": "Vehicles"
+    },
+    {
+      "name": "Species"
+    },
+    {
+      "name": "Images"
+    }
+  ]
+}

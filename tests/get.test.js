@@ -57,7 +57,7 @@ describe('Get Capabilities', () => {
         .then(response => client.get(process.env.LAYOUT, response.recordId))
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data','dataSource','resultSet');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should allow you to specify a timeout', () => {
@@ -94,7 +94,7 @@ describe('Get Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data','dataSource','resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data');
   });
 
@@ -108,10 +108,10 @@ describe('Get Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data','dataSource','resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data');
   });
-  
+
   it('should remove an expired token', () => {
     client.connection.token = `${client.connection.token}-error`;
     return expect(

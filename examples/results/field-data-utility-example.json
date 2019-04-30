@@ -1,7 +1,7 @@
 [
   {
-    "name": "yoda",
-    "image": "https://some-server.com/Streaming_SSL/MainDB/AE3DFE7B8A689747D1DAF7297398B34EB5471F5A49964C79738EA44A82B5668E?RCType=EmbeddedRCFileProcessor",
+    "name": "Yoda",
+    "image": "https://some-server.com/Streaming_SSL/MainDB/D080B1F946C8CC14C262E086E0A7D0E2D9C201169B717ECE1F701963889782F9?RCType=EmbeddedRCFileProcessor",
     "object": "",
     "array": "",
     "height": "",
@@ -12,6 +12,7 @@
     "modificationAccountName": "obi-wan",
     "modificationTimestamp": "05/25/1977 6:00:00",
     "Vehicles::name": "",
+    "hash": "?",
     "recordId": "1138",
     "modId": "327"
   },
@@ -28,6 +29,7 @@
     "modificationAccountName": "obi-wan",
     "modificationTimestamp": "05/25/1977 6:00:00",
     "Vehicles::name": "",
+    "hash": "?",
     "recordId": "1138",
     "modId": "327"
   }

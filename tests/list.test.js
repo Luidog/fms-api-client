@@ -51,7 +51,7 @@ describe('List Capabilities', () => {
   it('should allow you to list records', () => {
     return expect(client.list(process.env.LAYOUT))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data');
   });
 
@@ -68,7 +68,7 @@ describe('List Capabilities', () => {
   it('should allow you use parameters to modify the list response', () => {
     return expect(client.list(process.env.LAYOUT, { _limit: '2' }))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -76,7 +76,7 @@ describe('List Capabilities', () => {
   it('should should allow you to use numbers in parameters', () => {
     return expect(client.list(process.env.LAYOUT, { _limit: 2 }))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -89,7 +89,7 @@ describe('List Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.be.a('array')
       .and.property(0)
@@ -98,7 +98,7 @@ describe('List Capabilities', () => {
         'modId',
         'portalData',
         'recordId',
-        'relatedSet'
+        'portalDataInfo'
       )
       .and.property('portalData')
       .to.be.a('object');
@@ -112,7 +112,7 @@ describe('List Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.be.a('array')
       .and.property(0)
@@ -121,7 +121,7 @@ describe('List Capabilities', () => {
         'modId',
         'portalData',
         'recordId',
-        'relatedSet'
+        'portalDataInfo'
       )
       .and.property('portalData')
       .to.be.a('object');
@@ -130,7 +130,7 @@ describe('List Capabilities', () => {
   it('should modify requests to comply with DAPI name reservations', () => {
     return expect(client.list(process.env.LAYOUT, { limit: 2 }))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -138,7 +138,7 @@ describe('List Capabilities', () => {
   it('should allow strings while complying with DAPI name reservations', () => {
     return expect(client.list(process.env.LAYOUT, { limit: '2' }))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -146,7 +146,7 @@ describe('List Capabilities', () => {
   it('should allow you to offset the list response', () => {
     return expect(client.list(process.env.LAYOUT, { limit: 2, offset: 2 }))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -156,7 +156,7 @@ describe('List Capabilities', () => {
       client.list(process.env.LAYOUT, { error: 'fail', limit: 2, offset: 2 })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should allow you to limit the number of portal records to return', () => {
@@ -168,7 +168,7 @@ describe('List Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -182,7 +182,7 @@ describe('List Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'dataSource', 'resultSet')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });

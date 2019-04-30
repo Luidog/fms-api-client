@@ -327,9 +327,18 @@ class Client extends Document {
               ),
               method: 'post',
               headers: {
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
               },
-              data: {}
+              data: sanitizeParameters(parameters, [
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'request'
+              ])
             },
             parameters
           )

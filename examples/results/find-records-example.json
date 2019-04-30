@@ -1,11 +1,9 @@
 {
-  "dataSource": {
+  "dataInfo": {
     "database": "fms-api-app",
     "layout": "Heroes",
     "table": "Heroes",
-    "totalRecordCount": 22338
-  },
-  "resultSet": {
+    "totalRecordCount": "1977",
     "foundCount": 46,
     "returnedCount": 1
   },
@@ -23,7 +21,8 @@
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": ""
+        "Vehicles::name": "",
+        "hash": "?"
       },
       "portalData": {
         "Planets": [],
@@ -31,7 +30,7 @@
       },
       "recordId": "1138",
       "modId": "327",
-      "relatedSet": [
+      "portalDataInfo": [
         {
           "database": "fms-api-app",
           "table": "Planets",

@@ -53,7 +53,7 @@ const interceptError = error => {
       code: '1630'
     });
   } else if (
-    error.response.status === 401 &&
+    error.response.status === 400 &&
     error.request.path.includes('RCType=EmbeddedRCFileProcessor')
   ) {
     return Promise.reject({
