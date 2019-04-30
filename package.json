@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc _mocha --recursive  ./tests --timeout=30000 --exit",
-    "coverage": "nyc report --reporter=html",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "examples": "node examples/index.js",
     "update-results": "RESULTS=true npm run examples",
     "update-docs": "node_modules/.bin/jsdoc --configure .jsdoc.js --verbose",
