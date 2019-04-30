@@ -62,7 +62,9 @@ describe('List Capabilities', () => {
           request: { timeout: 10 }
         })
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
   });
 
   it('should allow you use parameters to modify the list response', () => {

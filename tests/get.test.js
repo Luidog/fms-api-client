@@ -70,7 +70,9 @@ describe('Get Capabilities', () => {
           })
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should reject get requests that do not specify a recordId', () => {

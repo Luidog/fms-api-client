@@ -64,7 +64,9 @@ describe('Global Capabilities', () => {
           }
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should reject with a message and code if it fails to set a global', () => {

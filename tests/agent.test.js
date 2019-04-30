@@ -297,7 +297,9 @@ describe('Agent Configuration Capabilities', () => {
         .save()
         .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should use a proxy if one is set', () => {

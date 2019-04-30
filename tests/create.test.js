@@ -65,7 +65,9 @@ describe('Create Capabilities', () => {
           { request: { timeout: 10 } }
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should create FileMaker records using fieldData', () => {

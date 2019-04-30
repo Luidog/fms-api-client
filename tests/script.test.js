@@ -79,7 +79,9 @@ describe('Script Capabilities', () => {
           }
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should allow you to trigger a script specifying a string as a parameter', () => {

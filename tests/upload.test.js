@@ -63,7 +63,9 @@ describe('File Upload Capabilities', () => {
           }
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should allow you to upload a file to a new record', () => {

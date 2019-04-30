@@ -26,8 +26,7 @@ const interceptRequest = config =>
   config.url.startsWith('http')
     ? omit(config, ['params.request', 'data.request'])
     : Promise.reject({
-        message: 'The Data API Requires https or http',
-        code: '1630'
+        message: 'The Data API Requires https or http'
       });
 
 /**
@@ -43,7 +42,7 @@ const interceptRequest = config =>
 
 const interceptError = error => {
   if (!error.response) {
-    return Promise.reject(error);
+    return Promise.reject({ message: error.message, code: '1630' });
   } else if (
     error.response.status === 502 ||
     typeof error.response.data !== 'object'

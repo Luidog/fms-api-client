@@ -77,7 +77,9 @@ describe('Edit Capabilities', () => {
           )
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
   });
 
   it('should edit FileMaker records using fieldData', () => {
