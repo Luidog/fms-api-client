@@ -7,7 +7,7 @@ const {
   setData
 } = require('./filemaker.utilities');
 const { omit, toStrings, toArray, isJson } = require('./conversion.utilities');
-const { urls } = require('./urls.utility');
+const { urls } = require('./urls.utilities');
 
 module.exports = {
   omit,
