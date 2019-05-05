@@ -7,6 +7,7 @@ const urls = {
    * @public
    * @description Generates a url for use when creating a record.
    * @param {String} layout The layout to use when creating a record.
+   * @param {String} layout The layout to use when creating a record.
    * @return {String} A URL to use when creating records.
    */
 

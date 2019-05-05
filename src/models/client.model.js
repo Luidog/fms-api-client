@@ -29,25 +29,6 @@ class Client extends Document {
     super();
     this.schema({
       /**
-       * The version of Data API to use.
-       * @member Client#version
-       * @type String
-       */
-      version: {
-        type: String,
-        required: true,
-        default: 'v1'
-      },
-      /**
-       * The client database name.
-       * @member Client#database
-       * @type String
-       */
-      database: {
-        type: String,
-        required: true
-      },
-      /**
        * A name for the client.
        * @member Client#name
        * @type String
@@ -60,12 +41,30 @@ class Client extends Document {
        * @member Client#server
        * @type String
        */
-
       server: {
         type: String,
         validate: data =>
           data.startsWith('http://') || data.startsWith('https://'),
         required: true
+      },
+      /**
+       * The client database name.
+       * @member Client#database
+       * @type String
+       */
+      database: {
+        type: String,
+        required: true
+      },
+      /**
+       * The version of Data API to use.
+       * @member Client#version
+       * @type String
+       */
+      version: {
+        type: String,
+        required: true,
+        default: 'vLatest'
       },
       /** The client data logger.
        * @public

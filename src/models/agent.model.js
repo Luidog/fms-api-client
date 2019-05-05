@@ -4,7 +4,12 @@ const https = require('https');
 const http = require('http');
 const uuidv4 = require('uuid/v4');
 const { EmbeddedDocument } = require('marpat');
-const { instance } = require('../services');
+const {
+  instance,
+  interceptRequest,
+  interceptResponse,
+  interceptError
+} = require('../services');
 
 /**
  * @class Agent
@@ -40,6 +45,14 @@ class Agent extends EmbeddedDocument {
        */
       agent: {
         type: Object
+      },
+      concurrency: {
+        type: Number,
+        default: () => 1
+      },
+      queue: {
+        type: Array,
+        default: () => []
       },
       /**
        * A timeout for requests.
@@ -147,6 +160,11 @@ class Agent extends EmbeddedDocument {
    */
 
   request(data, parameters = {}) {
+    instance.interceptors.request.use(request => {
+      console.log(request);
+      return interceptRequest(request);
+    });
+    instance.interceptors.response.use(interceptResponse, interceptError);
     return instance(
       Object.assign(
         data,
@@ -156,6 +174,27 @@ class Agent extends EmbeddedDocument {
         parameters.request || {}
       )
     );
+  }
+
+  push(handler) {
+    this.queue.push(handler);
+    this.shiftInitial();
+  }
+
+  shift() {
+    if (this.queue.length) {
+      const queued = this.queue.shift();
+      queued.resolver(queued.request);
+      this.running.push(queued);
+    }
+  }
+
+  shiftInitial() {
+    setTimeout(() => {
+      if (this.running.length < this.concurrency) {
+        instance.shift();
+      }
+    }, 0);
   }
 }
 

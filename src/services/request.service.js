@@ -88,7 +88,10 @@ const interceptResponse = response => {
     return response;
   }
 };
-instance.interceptors.request.use(interceptRequest, interceptError);
-instance.interceptors.response.use(interceptResponse, interceptError);
 
-module.exports = { instance };
+module.exports = {
+  instance,
+  interceptRequest,
+  interceptResponse,
+  interceptError
+};
