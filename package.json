@@ -1,6 +1,6 @@
 {
   "name": "fms-api-client",
-  "version": "1.8.1",
+  "version": "1.8.3",
   "description": "A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,9 @@
     "update-readme": "jsdoc2md  --template examples/templates/readme.hbs --partial \"examples/templates/partials/*.hbs\" --files \"src/**/*.js\"  > README.md",
     "mos-inject": "npm run update-results && mos && npm run update-docs",
     "remove-mos": "node ./examples/services/regex.service.js",
-    "generate-docs": "npm run update-readme && npm run mos-inject && npm run remove-mos"
+    "generate-docs": "npm run update-readme && npm run mos-inject && npm run remove-mos",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -49,7 +51,8 @@
     "prettysize": "^2.0.0",
     "stream-to-array": "^2.3.0",
     "tough-cookie": "^2.5.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "snyk": "^1.161.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -63,8 +66,8 @@
     "eslint-plugin-prettier": "^3.0.0",
     "fs-extra": "^7.0.1",
     "http-proxy": "^1.17.0",
-    "jsdoc": "^3.5.5",
-    "jsdoc-to-markdown": "^4.0.1",
+    "jsdoc": "^3.6.2",
+    "jsdoc-to-markdown": "^5.0.0",
     "minami": "^1.2.3",
     "mocha": "^5.0.4",
     "mocha-lcov-reporter": "^1.3.0",
@@ -78,5 +81,6 @@
     "prettier": "^1.15.3",
     "sinon": "^7.3.2",
     "varium": "^1.0.1"
-  }
+  },
+  "snyk": true
 }
