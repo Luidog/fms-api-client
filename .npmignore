@@ -32,3 +32,4 @@ tests/
 .jsdoc.js
 .prettierrc.js
 CODE_OF_CONDUCT.md
+.DS_Store
