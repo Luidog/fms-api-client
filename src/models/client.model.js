@@ -19,6 +19,14 @@ const {
 } = require('../utilities');
 
 const { productInfo, databases } = require('../services');
+
+/**
+ * @global FMS_API_CLIENT
+ */
+
+global.FMS_API_CLIENT =
+  typeof global.FMS_API_CLIENT === 'undefined' ? {} : global.FMS_API_CLIENT;
+
 /**
  * @class Client
  * @classdesc The class used to integrate with the FileMaker server Data API
@@ -84,6 +92,11 @@ class Client extends Document {
         type: Connection,
         required: true
       },
+      /** The client agent object.
+       * @public
+       * @member Client#agent
+       * @type Object
+       */
       agent: {
         type: Agent,
         required: true
@@ -190,7 +203,11 @@ class Client extends Document {
    *
    */
   productInfo() {
-    return productInfo(this.server, this.version);
+    return new Promise((resolve, reject) =>
+      productInfo(this.server, this.version)
+        .then(response => resolve(response))
+        .catch(error => reject(error))
+    );
   }
 
   /**
@@ -399,7 +416,10 @@ class Client extends Document {
    */
 
   _checkToken(error) {
-    if (error.expired) {
+    if (
+      error.expired ||
+      error.message === 'Invalid FileMaker Data API token (*)'
+    ) {
       delete error.expired;
       this.connection.clear();
       this.save();
@@ -763,7 +783,7 @@ class Client extends Document {
         .then(body => parseScriptResult(body))
         .then(response => resolve(response))
         .catch(error =>
-          error.code === '401'
+          error.code === '1630'
             ? resolve({
                 data: [],
                 message: 'No records match the request'
