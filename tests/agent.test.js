@@ -85,6 +85,10 @@ describe('Agent Configuration Capabilities', () => {
       .to.be.a('object')
       .to.have.all.keys(
         '_schema',
+        'concurrency',
+        'queue',
+        'delay',
+        'pending',
         'agent',
         'global',
         'protocol',
@@ -105,8 +109,8 @@ describe('Agent Configuration Capabilities', () => {
       client
         .save()
         .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
-        .then(response => global.AGENTS)
-    ).to.eventually.be.undefined;
+        .then(response => global.FMS_API_CLIENT.AGENTS)
+    ).to.eventually.be.an('array').that.is.empty;
   });
 
   it('adjusts the request protocol according to the server', () => {
@@ -135,6 +139,10 @@ describe('Agent Configuration Capabilities', () => {
       .to.have.all.keys(
         '_schema',
         'agent',
+        'concurrency',
+        'delay',
+        'pending',
+        'queue',
         'global',
         'protocol',
         'proxy',
@@ -170,9 +178,13 @@ describe('Agent Configuration Capabilities', () => {
       .to.have.all.keys(
         '_schema',
         'agent',
+        'concurrency',
+        'delay',
         'global',
+        'pending',
         'protocol',
         'proxy',
+        'queue',
         'timeout'
       )
       .and.property('agent')
@@ -189,7 +201,9 @@ describe('Agent Configuration Capabilities', () => {
       agent: { rejectUnauthorized: true }
     });
     return expect(
-      client.save().then(client => global.AGENTS[client.agent.global])
+      client
+        .save()
+        .then(client => global.FMS_API_CLIENT.AGENTS[client.agent.global])
     ).to.eventually.be.an('object');
   });
 
@@ -209,7 +223,7 @@ describe('Agent Configuration Capabilities', () => {
           globalId = client.agent.global;
           return client.destroy();
         })
-        .then(() => global.AGENTS[globalId])
+        .then(() => global.FMS_API_CLIENT.AGENTS[globalId])
     ).to.eventually.be.undefined;
   });
 
@@ -239,9 +253,13 @@ describe('Agent Configuration Capabilities', () => {
       .to.have.all.keys(
         '_schema',
         'agent',
+        'concurrency',
+        'delay',
         'global',
+        'pending',
         'protocol',
         'proxy',
+        'queue',
         'timeout'
       )
       .and.property('agent')
@@ -279,7 +297,11 @@ describe('Agent Configuration Capabilities', () => {
         'global',
         'proxy',
         'timeout',
-        'agent'
+        'agent',
+        'concurrency',
+        'delay',
+        'pending',
+        'queue'
       );
   });
 
@@ -339,11 +361,11 @@ describe('Agent Configuration Capabilities', () => {
         .save()
         .then(client => {
           globalId = client.agent.global;
-          delete global.AGENTS[globalId];
+          delete global.FMS_API_CLIENT.AGENTS[globalId];
           return client.list(process.env.LAYOUT, { limit: 1 });
         })
         .then(response => {
-          response.agent = global.AGENTS[globalId];
+          response.agent = global.FMS_API_CLIENT.AGENTS[globalId];
           return response;
         })
     )
