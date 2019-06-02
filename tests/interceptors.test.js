@@ -77,7 +77,7 @@ describe('Request Interceptor Capabilities', () => {
   it('should handle non JSON responses by rejecting with a json error', () => {
     sandbox
       .stub(urls, 'authentication')
-      .callsFake(() => 'https://httpstat.us/404');
+      .callsFake(() => 'https://httpstat.us/200');
     return expect(
       client
         .save()
