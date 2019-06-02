@@ -24,8 +24,7 @@ const { productInfo, databases } = require('../services');
  * @global FMS_API_CLIENT
  */
 
-global.FMS_API_CLIENT =
-  typeof global.FMS_API_CLIENT === 'undefined' ? {} : global.FMS_API_CLIENT;
+global.FMS_API_CLIENT = {};
 
 /**
  * @class Client
