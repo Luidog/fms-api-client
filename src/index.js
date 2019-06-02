@@ -12,6 +12,7 @@ const {
 
 module.exports = {
   Client,
+  Filemaker: Client,
   fieldData,
   recordId,
   transform,
