@@ -22,6 +22,10 @@ const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
 
+process.on('unhandledRejection', () => {});
+
+process.on('rejectionHandled', () => {});
+
 describe('Databases Capabilities', () => {
   let database, client;
   before(done => {
