@@ -72,7 +72,7 @@ const interceptError = error => {
 };
 
 /**
- * @method interceptError
+ * @method interceptResponse
  * @private
  * @description handles request data before it is sent to the resource. This method
  * will eventually be used to cancel the request and return the configuration body.
