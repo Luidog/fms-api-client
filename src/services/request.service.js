@@ -41,7 +41,10 @@ const interceptRequest = config =>
  */
 
 const interceptError = error => {
-  if (!error.response) {
+  if (error.code) {
+    return Promise.reject({ code: error.code, message: error.message });
+  }
+  if (!error.response && !error.code) {
     return Promise.reject({ message: error.message, code: '1630' });
   } else if (
     error.response.status === 502 ||

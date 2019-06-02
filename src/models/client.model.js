@@ -781,14 +781,14 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => parseScriptResult(body))
         .then(response => resolve(response))
-        .catch(error =>
-          error.code === '1630'
+        .catch(error => {
+          return error.code === '401'
             ? resolve({
                 data: [],
                 message: 'No records match the request'
               })
-            : reject(this._checkToken(error))
-        )
+            : reject(this._checkToken(error));
+        })
     );
   }
 
@@ -868,7 +868,6 @@ class Client extends Document {
       }
 
       form.append('upload', stream);
-
       resolveRecordId()
         .then(resolvedId =>
           this.authenticate()

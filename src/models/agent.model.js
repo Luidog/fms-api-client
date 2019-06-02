@@ -10,6 +10,7 @@ const {
   interceptResponse,
   interceptError
 } = require('../services');
+const { deepMapKeys } = require('../utilities');
 
 /**
  * @class Agent
@@ -196,8 +197,7 @@ class Agent extends EmbeddedDocument {
             request: interceptRequest(request),
             resolve
           })
-        ),
-      error => interceptError(error)
+        )
     );
 
     instance.interceptors.response.use(
@@ -216,8 +216,8 @@ class Agent extends EmbeddedDocument {
     );
   }
 
-  push(handler) {
-    this.queue.push(handler);
+  push({ request, resolve }) {
+    this.queue.push({ request: this.sanitize(request), resolve });
     if (this.pending.length < this.concurrency) {
       this.shift();
       this.watch();
@@ -226,9 +226,58 @@ class Agent extends EmbeddedDocument {
 
   shift() {
     if (this.pending.length < this.concurrency) {
-      let queued = this.queue.shift();
-      this.pending.push(queued);
+      this.pending.push(this.queue.shift());
     }
+  }
+
+  sanitize(request) {
+    let {
+      transformRequest,
+      transformResponse,
+      adapter,
+      validateStatus,
+      ...value
+    } = request;
+
+    if (request.url.includes('/containers/')) {
+      return request;
+    }
+
+    let sanitized = deepMapKeys(value, (value, key) =>
+      key.replace(/\./g, '{{dot}}')
+    );
+
+    return {
+      ...sanitized,
+      transformRequest,
+      transformResponse,
+      adapter,
+      validateStatus
+    };
+  }
+
+  unsanitize(request) {
+    let {
+      transformRequest,
+      transformResponse,
+      adapter,
+      validateStatus,
+      ...value
+    } = request;
+
+    if (request.url.includes('/containers/')) {
+      return request;
+    }
+    let unsanitized = deepMapKeys(value, (value, key) =>
+      key.replace(/{{dot}}/g, '.')
+    );
+    return {
+      ...unsanitized,
+      transformRequest,
+      transformResponse,
+      adapter,
+      validateStatus
+    };
   }
 
   watch() {
@@ -244,7 +293,9 @@ class Agent extends EmbeddedDocument {
       if (this.pending.length > 0) {
         let resolved = this.pending.shift();
 
-        resolved.resolve(Object.assign(resolved.request, this._localize()));
+        resolved.resolve(
+          Object.assign(this.unsanitize(resolved.request), this._localize())
+        );
       }
     }, this.delay);
   }

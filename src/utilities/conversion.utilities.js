@@ -96,11 +96,30 @@ const omit = (data, properties) =>
 
 const parse = value => (isJson(value) ? JSON.parse(value) : value);
 
+/**
+ * @method deepMapKeys
+ * @public
+ * @description deepMapKeys provides deep mapping of objects using a recursive lodash function. This function expects an iteratee that matches the iteratee of _.mapKeys.
+ * @param  {Object|Array} object The object or array to deep map
+ * @param {Function} iteratee The function to use to map the object's keys.
+ * @return {Object} An object whose keys are modified by the iteratee.
+ */
+
+const deepMapKeys = (data, iteratee) =>
+  Array.isArray(data)
+    ? data.map((value, key) =>
+        _.isObject(value) ? deepMapKeys(value, iteratee) : value
+      )
+    : _.mapValues(_.mapKeys(data, iteratee), value =>
+        _.isObject(value) ? deepMapKeys(value, iteratee) : value
+      );
+
 module.exports = {
   toStrings,
   stringify,
   toArray,
   isJson,
   omit,
-  parse
+  parse,
+  deepMapKeys
 };
