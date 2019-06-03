@@ -33,7 +33,7 @@ describe('Global Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -64,7 +64,9 @@ describe('Global Capabilities', () => {
           }
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should reject with a message and code if it fails to set a global', () => {

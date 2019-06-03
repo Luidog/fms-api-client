@@ -4,7 +4,9 @@ const environment = require('dotenv');
 const varium = require('varium');
 const { Filemaker } = require('../index.js');
 const { authentication } = require('./authentication.examples');
+const { metadata } = require('./metadata.examples');
 const { creates } = require('./create.examples');
+const { duplicate } = require('./duplicate.examples');
 const { gets } = require('./get.examples');
 const { lists } = require('./list.examples');
 const { finds } = require('./find.examples');
@@ -28,7 +30,7 @@ connect('nedb://memory')
     //#client-create-example
     const client = Filemaker.create({
       name: process.env.CLIENT_NAME,
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -40,7 +42,9 @@ connect('nedb://memory')
     return client.save();
   })
   .then(client => authentication(client))
+  .then(client => metadata(client))
   .then(client => creates(client))
+  .then(client => duplicate(client))
   .then(client => gets(client))
   .then(client => lists(client))
   .then(client => finds(client))

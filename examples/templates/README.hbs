@@ -3,7 +3,7 @@
 <!--/@-->
 [![Build Status](https://travis-ci.org/Luidog/fms-api-client.png?branch=master)](https://travis-ci.org/Luidog/fms-api-client) [![Known Vulnerabilities](https://snyk.io/test/github/Luidog/fms-api-client/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Luidog/fms-api-client?targetFile=package.json) [![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=master)](https://coveralls.io/github/Luidog/fms-api-client?branch=master) [![GitHub issues](https://img.shields.io/github/issues/Luidog/fms-api-client.svg?style=plastic)](https://github.com/Luidog/fms-api-client/issues) [![Github commits (since latest release)](https://img.shields.io/github/commits-since/luidog/fms-api-client/latest.svg)](https://img.shields.io/github/issues/Luidog/fms-api-client.svg) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![GitHub license](https://img.shields.io/github/license/Luidog/fms-api-client.svg)](https://github.com/Luidog/fms-api-client/blob/master/LICENSE.md)
 
-A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. 
+A FileMaker Data API client designed to allow easier interaction with a FileMaker database from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. 
 
 [fms-api-client documentation](https://luidog.github.io/fms-api-client/)
 
@@ -28,7 +28,10 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
       - [Login Method](#login-method)
       - [Logout Method](#logout-method)
     + [Client Methods](#client-methods)
+      - [Product Info](#product-info)
+      - [Databases](#databases)
       - [Create Records](#create-records)
+      - [Duplicate Record](#duplicate-record)
       - [Get Record Details](#get-record-details)
       - [List Records](#list-records)
       - [Find Records](#find-records)
@@ -139,7 +142,7 @@ After connecting to a datastore you can import and create clients. A client is c
 
 | Property    |   Type  |                                     Description                                     |
 | ----------- | :-----: | :---------------------------------------------------------------------------------: |
-| application |  <code>String</code> |                  The FileMaker application / database to connect to                 |
+| database |  <code>String</code> |                  The FileMaker database to connect to                 |
 | server      |  <code>String</code> | The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
 | user        |  <code>String</code> |     The FileMaker user account to be used when authenticating into the Data API     |
 | password    |  <code>String</code> |                        The FileMaker user account's password.                       |
@@ -193,6 +196,34 @@ The logout method is used to end a Data API session. This method will also remov
 <!--/@-->
 ### Client Methods
 
+#### Product Info
+
+A client can get server product info. The productInfo method will return metadata about the FileMaker server the client is configured to use. 
+
+`client.productInfo()`
+
+{{#functions name="productInfo"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/metadata.examples.js#product-info-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/product-info-example.json', { showSource: true })-->
+<!--/@-->
+#### databases
+
+A client can get the databases accessible using the configured credentials the databases method will return all databases hosted by the currently configured server that the client can connect to. 
+
+`client.databases()`
+
+{{#functions name="databases"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/metadata.examples.js#databases-info-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/databases-info-example.json', { showSource: true })-->
+<!--/@-->
 #### Create Records
 
 Using the client you can create filemaker records. To create a record specify the layout to use and the data to insert on creation. The client will automatically convert numbers, arrays, and objects into strings so they can be inserted into a filemaker field. The create method will automatically create a `fieldData` property and add all data to that property if there is no fieldData property present. The client will preserve the contents of the `portalData` property.
@@ -208,6 +239,26 @@ Result:
 <!--@snippet('./examples/results/create-record-example.json', { showSource: true })-->
 <!--/@-->
 The create method also allows you to trigger scripts when creating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional  `params` parameters. For more information see the scripts syntax example in the introduction.
+<!--@snippet('./examples/create.examples.js#trigger-scripts-on-create', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/trigger-scripts-on-create-example.json', { showSource: true })-->
+<!--/@-->
+#### Duplicate Record
+
+Using the client you can duplicate a FileMaker record.
+
+`client.duplicate(layout, recordId, parameters)`
+
+{{#functions name="duplicate"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/duplicate.examples.js#duplicate-record-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/duplicate-record-example.json', { showSource: true })-->
+<!--/@-->
+The duplicate method also allows you to trigger scripts when duplicating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional  `params` parameters. For more information see the scripts syntax example in the introduction.
 <!--@snippet('./examples/create.examples.js#trigger-scripts-on-create', { showSource: true })-->
 <!--/@-->
 Result:

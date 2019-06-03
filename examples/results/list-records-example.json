@@ -1,9 +1,17 @@
 {
+  "dataInfo": {
+    "database": "fms-api-app",
+    "layout": "Heroes",
+    "table": "Heroes",
+    "totalRecordCount": "1977",
+    "foundCount": 22222,
+    "returnedCount": 2
+  },
   "data": [
     {
       "fieldData": {
         "name": "George Lucas",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/28734A1A6F6734E76E716D34C492BC21B563C21A075FEB8C7EE4CEA0965F0669.png?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/E71D75AE89A9DB940DE4869905296F3030AA6BEB80E11B53100341ECBBB06E30.png?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -13,7 +21,8 @@
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": "test"
+        "Vehicles::name": "test",
+        "hash": ""
       },
       "portalData": {
         "Planets": [],
@@ -27,7 +36,21 @@
         ]
       },
       "recordId": "1138",
-      "modId": "327"
+      "modId": "327",
+      "portalDataInfo": [
+        {
+          "database": "fms-api-app",
+          "table": "Planets",
+          "foundCount": 0,
+          "returnedCount": 0
+        },
+        {
+          "database": "fms-api-app",
+          "table": "Vehicles",
+          "foundCount": 1,
+          "returnedCount": 1
+        }
+      ]
     },
     {
       "fieldData": {
@@ -42,14 +65,29 @@
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": ""
+        "Vehicles::name": "",
+        "hash": "?"
       },
       "portalData": {
         "Planets": [],
         "Vehicles": []
       },
       "recordId": "1138",
-      "modId": "327"
+      "modId": "327",
+      "portalDataInfo": [
+        {
+          "database": "fms-api-app",
+          "table": "Planets",
+          "foundCount": 0,
+          "returnedCount": 0
+        },
+        {
+          "database": "fms-api-app",
+          "table": "Vehicles",
+          "foundCount": 0,
+          "returnedCount": 0
+        }
+      ]
     }
   ]
 }

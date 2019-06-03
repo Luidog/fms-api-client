@@ -33,7 +33,7 @@ describe('Find Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -51,8 +51,7 @@ describe('Find Capabilities', () => {
   it('should perform a find request', () => {
     return expect(client.find(process.env.LAYOUT, [{ id: '*' }, { name: '*' }]))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data')
-      .and.property('data');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should allow you to use an object instead of an array for a find', () => {
@@ -62,8 +61,7 @@ describe('Find Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data')
-      .and.property('data');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should specify omit Criterea', () => {
@@ -74,8 +72,7 @@ describe('Find Capabilities', () => {
       ])
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data')
-      .and.property('data');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should safely parse omit true and false', () => {
@@ -86,14 +83,13 @@ describe('Find Capabilities', () => {
       ])
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data')
-      .and.property('data');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should allow additional parameters to manipulate the results', () => {
     return expect(client.find(process.env.LAYOUT, { id: '*' }, { limit: '2' }))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -107,7 +103,7 @@ describe('Find Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -115,7 +111,7 @@ describe('Find Capabilities', () => {
   it('should allow you to use numbers in the find query parameters', () => {
     return expect(client.find(process.env.LAYOUT, { id: '*' }, { limit: 2 }))
       .to.eventually.be.a('object')
-      .that.has.all.keys('data')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -129,7 +125,7 @@ describe('Find Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -155,6 +151,7 @@ describe('Find Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         'data',
+        'dataInfo',
         'scriptResult.prerequest',
         'scriptError.prerequest'
       )
@@ -171,7 +168,7 @@ describe('Find Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'scriptResult', 'scriptError')
+      .that.has.all.keys('data', 'dataInfo', 'scriptResult', 'scriptError')
       .and.property('data')
       .to.have.a.lengthOf(2);
   });
@@ -191,6 +188,7 @@ describe('Find Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         'data',
+        'dataInfo',
         'scriptResult.prerequest',
         'scriptError.prerequest'
       )
@@ -212,7 +210,12 @@ describe('Find Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'scriptResult.presort', 'scriptError.presort')
+      .that.has.all.keys(
+        'data',
+        'dataInfo',
+        'scriptResult.presort',
+        'scriptError.presort'
+      )
       .and.property('scriptError.presort')
       .to.equal('0');
   });
@@ -230,7 +233,12 @@ describe('Find Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'scriptResult.presort', 'scriptError.presort')
+      .that.has.all.keys(
+        'data',
+        'dataInfo',
+        'scriptResult.presort',
+        'scriptError.presort'
+      )
       .and.property('scriptError.presort')
       .to.equal('0');
   });

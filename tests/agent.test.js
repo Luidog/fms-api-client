@@ -46,7 +46,7 @@ describe('Agent Configuration Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -63,7 +63,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should accept no agent configuration', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -77,7 +77,7 @@ describe('Agent Configuration Capabilities', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       )
@@ -85,6 +85,10 @@ describe('Agent Configuration Capabilities', () => {
       .to.be.a('object')
       .to.have.all.keys(
         '_schema',
+        'concurrency',
+        'queue',
+        'delay',
+        'pending',
         'agent',
         'global',
         'protocol',
@@ -96,7 +100,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should not create an agent unless one is defined', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -105,13 +109,13 @@ describe('Agent Configuration Capabilities', () => {
       client
         .save()
         .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
-        .then(response => global.AGENTS)
-    ).to.eventually.be.undefined;
+        .then(response => global.FMS_API_CLIENT.AGENTS)
+    ).to.eventually.be.an('array').that.is.empty;
   });
 
   it('adjusts the request protocol according to the server', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER.replace('https://', 'http://'),
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -126,7 +130,7 @@ describe('Agent Configuration Capabilities', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       )
@@ -135,6 +139,10 @@ describe('Agent Configuration Capabilities', () => {
       .to.have.all.keys(
         '_schema',
         'agent',
+        'concurrency',
+        'delay',
+        'pending',
+        'queue',
         'global',
         'protocol',
         'proxy',
@@ -146,7 +154,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should create a https agent', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -161,7 +169,7 @@ describe('Agent Configuration Capabilities', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       )
@@ -170,9 +178,13 @@ describe('Agent Configuration Capabilities', () => {
       .to.have.all.keys(
         '_schema',
         'agent',
+        'concurrency',
+        'delay',
         'global',
+        'pending',
         'protocol',
         'proxy',
+        'queue',
         'timeout'
       )
       .and.property('agent')
@@ -182,21 +194,23 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should use a created request agent', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
       agent: { rejectUnauthorized: true }
     });
     return expect(
-      client.save().then(client => global.AGENTS[client.agent.global])
+      client
+        .save()
+        .then(client => global.FMS_API_CLIENT.AGENTS[client.agent.global])
     ).to.eventually.be.an('object');
   });
 
   it('should destory the agent when the client is deleted', () => {
     let globalId = '';
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -209,13 +223,13 @@ describe('Agent Configuration Capabilities', () => {
           globalId = client.agent.global;
           return client.destroy();
         })
-        .then(() => global.AGENTS[globalId])
+        .then(() => global.FMS_API_CLIENT.AGENTS[globalId])
     ).to.eventually.be.undefined;
   });
 
   it('should create a http agent', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER.replace('https://', 'http://'),
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -230,7 +244,7 @@ describe('Agent Configuration Capabilities', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       )
@@ -239,9 +253,13 @@ describe('Agent Configuration Capabilities', () => {
       .to.have.all.keys(
         '_schema',
         'agent',
+        'concurrency',
+        'delay',
         'global',
+        'pending',
         'protocol',
         'proxy',
+        'queue',
         'timeout'
       )
       .and.property('agent')
@@ -251,7 +269,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should accept a timeout property', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -267,7 +285,7 @@ describe('Agent Configuration Capabilities', () => {
         'data',
         'agent',
         'name',
-        'application',
+        'database',
         'server',
         'version'
       )
@@ -279,13 +297,17 @@ describe('Agent Configuration Capabilities', () => {
         'global',
         'proxy',
         'timeout',
-        'agent'
+        'agent',
+        'concurrency',
+        'delay',
+        'pending',
+        'queue'
       );
   });
 
   it('should use a timeout if one is set', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -297,12 +319,14 @@ describe('Agent Configuration Capabilities', () => {
         .save()
         .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should use a proxy if one is set', () => {
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER.replace('https://', 'http://'),
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -325,7 +349,7 @@ describe('Agent Configuration Capabilities', () => {
   it('should automatically recreate an agent if one is deleted', () => {
     let globalId;
     let client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
@@ -337,11 +361,11 @@ describe('Agent Configuration Capabilities', () => {
         .save()
         .then(client => {
           globalId = client.agent.global;
-          delete global.AGENTS[globalId];
+          delete global.FMS_API_CLIENT.AGENTS[globalId];
           return client.list(process.env.LAYOUT, { limit: 1 });
         })
         .then(response => {
-          response.agent = global.AGENTS[globalId];
+          response.agent = global.FMS_API_CLIENT.AGENTS[globalId];
           return response;
         })
     )

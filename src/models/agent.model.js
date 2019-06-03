@@ -4,7 +4,13 @@ const https = require('https');
 const http = require('http');
 const uuidv4 = require('uuid/v4');
 const { EmbeddedDocument } = require('marpat');
-const { instance } = require('../services');
+const {
+  instance,
+  interceptRequest,
+  interceptResponse,
+  interceptError
+} = require('../services');
+const { deepMapKeys } = require('../utilities');
 
 /**
  * @class Agent
@@ -16,7 +22,7 @@ class Agent extends EmbeddedDocument {
     super();
     this.schema({
       /**
-       * The global id for an http or https.agent.
+       * The global id for an http or https.agent
        * @member Agent#global
        * @type String
        */
@@ -34,12 +40,39 @@ class Agent extends EmbeddedDocument {
         choices: ['http', 'https']
       },
       /**
-       * The client's http or https agent.
+       * The client's custom http or https agent.
        * @member Agent#agent
        * @type String
        */
       agent: {
         type: Object
+      },
+      /**
+       * maximum amount of concurrent requests to send.
+       * @member Agent#concurrency
+       * @type Number
+       */
+      concurrency: {
+        type: Number,
+        default: () => 1
+      },
+      /**
+       * requests queued for sending.
+       * @member Agent#queue
+       * @type Array
+       */
+      queue: {
+        type: Array,
+        default: () => []
+      },
+      /**
+       * requests awaiting responses.
+       * @member Agent#pending
+       * @type Array
+       */
+      pending: {
+        type: Array,
+        default: () => []
       },
       /**
        * A timeout for requests.
@@ -50,9 +83,18 @@ class Agent extends EmbeddedDocument {
         type: Number
       },
       /**
+       * A delay between checking for request responses.
+       * @member Agent#delay
+       * @type String
+       */
+      delay: {
+        type: Number,
+        default: () => 1
+      },
+      /**
        * A proxy to use for requests.
        * @member Agent#proxy
-       * @type String
+       * @type Object
        */
       proxy: {
         type: Object
@@ -72,7 +114,7 @@ class Agent extends EmbeddedDocument {
 
   preInit(data) {
     let { agent, protocol } = data;
-    agent ? this._globalize(protocol, agent) : null;
+    if (agent) this._globalize(protocol, agent);
   }
 
   /**
@@ -85,9 +127,9 @@ class Agent extends EmbeddedDocument {
    */
 
   preDelete() {
-    if (global.AGENTS[this.global]) {
+    if (global.FMS_API_CLIENT.AGENTS[this.global]) {
       this._localize()[`${this.protocol}Agent`].destroy();
-      delete global.AGENTS[this.global];
+      delete global.FMS_API_CLIENT.AGENTS[this.global];
     }
   }
 
@@ -104,9 +146,8 @@ class Agent extends EmbeddedDocument {
    */
 
   _globalize(protocol, agent) {
-    !global.AGENTS ? (global.AGENTS = {}) : null;
-    !this.global ? (this.global = uuidv4()) : null;
-    global.AGENTS[this.global] =
+    if (!this.global) this.global = uuidv4();
+    global.FMS_API_CLIENT.AGENTS[this.global] =
       protocol === 'https'
         ? {
             httpsAgent: new https.Agent(this.agent)
@@ -114,7 +155,7 @@ class Agent extends EmbeddedDocument {
         : {
             httpAgent: new http.Agent(this.Agent)
           };
-    return global.AGENTS[this.global];
+    return global.FMS_API_CLIENT.AGENTS[this.global];
   }
 
   /**
@@ -129,8 +170,10 @@ class Agent extends EmbeddedDocument {
    */
 
   _localize() {
-    if (global.AGENTS[this.global]) {
-      return global.AGENTS[this.global];
+    if (typeof global.FMS_API_CLIENT.AGENTS === 'undefined')
+      global.FMS_API_CLIENT.AGENTS = [];
+    if (global.FMS_API_CLIENT.AGENTS[this.global]) {
+      return global.FMS_API_CLIENT.AGENTS[this.global];
     } else {
       return this._globalize(this.protocol, this.agent);
     }
@@ -141,12 +184,27 @@ class Agent extends EmbeddedDocument {
    * @public
    * @memberof Agent
    * @description request will merge agent properties with request properties
-   * in order to make the request.
+   * in order to make the request. This method removes httpAgent and httpsAgents through destructoring.
    * @see _localize
    * @return {Object} returns the request instance used to make the request.
    */
 
   request(data, parameters = {}) {
+    instance.interceptors.request.use(
+      ({ httpAgent, httpsAgent, ...request }) =>
+        new Promise(resolve =>
+          this.push({
+            request: interceptRequest(request),
+            resolve
+          })
+        )
+    );
+
+    instance.interceptors.response.use(
+      response => interceptResponse(response),
+      error => interceptError(error)
+    );
+
     return instance(
       Object.assign(
         data,
@@ -156,6 +214,90 @@ class Agent extends EmbeddedDocument {
         parameters.request || {}
       )
     );
+  }
+
+  push({ request, resolve }) {
+    this.queue.push({ request: this.sanitize(request), resolve });
+    if (this.pending.length < this.concurrency) {
+      this.shift();
+      this.watch();
+    }
+  }
+
+  shift() {
+    if (this.pending.length < this.concurrency) {
+      this.pending.push(this.queue.shift());
+    }
+  }
+
+  sanitize(request) {
+    let {
+      transformRequest,
+      transformResponse,
+      adapter,
+      validateStatus,
+      ...value
+    } = request;
+
+    if (request.url.includes('/containers/')) {
+      return request;
+    }
+
+    let sanitized = deepMapKeys(value, (value, key) =>
+      key.replace(/\./g, '{{dot}}')
+    );
+
+    return {
+      ...sanitized,
+      transformRequest,
+      transformResponse,
+      adapter,
+      validateStatus
+    };
+  }
+
+  unsanitize(request) {
+    let {
+      transformRequest,
+      transformResponse,
+      adapter,
+      validateStatus,
+      ...value
+    } = request;
+
+    if (request.url.includes('/containers/')) {
+      return request;
+    }
+    let unsanitized = deepMapKeys(value, (value, key) =>
+      key.replace(/{{dot}}/g, '.')
+    );
+    return {
+      ...unsanitized,
+      transformRequest,
+      transformResponse,
+      adapter,
+      validateStatus
+    };
+  }
+
+  watch() {
+    const WATCHER = setInterval(() => {
+      if (this.queue.length > 0) {
+        this.shift();
+      }
+
+      if (this.queue.length === 0 && this.pending.length === 0) {
+        clearInterval(WATCHER);
+      }
+
+      if (this.pending.length > 0) {
+        let resolved = this.pending.shift();
+
+        resolved.resolve(
+          Object.assign(this.unsanitize(resolved.request), this._localize())
+        );
+      }
+    }, this.delay);
   }
 }
 

@@ -26,12 +26,11 @@ const interceptRequest = config =>
   config.url.startsWith('http')
     ? omit(config, ['params.request', 'data.request'])
     : Promise.reject({
-        message: 'The Data API Requires https or http',
-        code: '1630'
+        message: 'The Data API Requires https or http'
       });
 
 /**
- * @method handleResponseError
+ * @method interceptError
  * @private
  * @description This method evaluates the error response. This method will substitute
  * a non json error or a bad gateway status with a json code and message error. This
@@ -41,9 +40,12 @@ const interceptRequest = config =>
  * @return {Promise}      A promise rejection containing a code and a message
  */
 
-const handleResponseError = error => {
-  if (!error.response) {
-    return Promise.reject(error);
+const interceptError = error => {
+  if (error.code) {
+    return Promise.reject({ code: error.code, message: error.message });
+  }
+  if (!error.response && !error.code) {
+    return Promise.reject({ message: error.message, code: '1630' });
   } else if (
     error.response.status === 502 ||
     typeof error.response.data !== 'object'
@@ -53,7 +55,7 @@ const handleResponseError = error => {
       code: '1630'
     });
   } else if (
-    error.response.status === 401 &&
+    error.response.status === 400 &&
     error.request.path.includes('RCType=EmbeddedRCFileProcessor')
   ) {
     return Promise.reject({
@@ -69,7 +71,30 @@ const handleResponseError = error => {
   }
 };
 
-instance.interceptors.request.use(interceptRequest);
-instance.interceptors.response.use(response => response, handleResponseError);
+/**
+ * @method interceptResponse
+ * @private
+ * @description handles request data before it is sent to the resource. This method
+ * will eventually be used to cancel the request and return the configuration body.
+ * This method will test the url for an http proticol and reject if none exist.
+ * @param  {Object} config The axios request configuration
+ * @return {Promise}      the request configuration object
+ */
 
-module.exports = { instance };
+const interceptResponse = response => {
+  if (typeof response.data !== 'object') {
+    return Promise.reject({
+      message: 'The Data API is currently unavailable',
+      code: '1630'
+    });
+  } else {
+    return response;
+  }
+};
+
+module.exports = {
+  instance,
+  interceptRequest,
+  interceptResponse,
+  interceptError
+};

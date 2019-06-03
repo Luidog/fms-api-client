@@ -35,7 +35,7 @@ describe('File Upload Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -63,7 +63,9 @@ describe('File Upload Capabilities', () => {
           }
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should allow you to upload a file to a new record', () => {

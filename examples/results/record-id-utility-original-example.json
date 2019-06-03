@@ -2,7 +2,7 @@
   {
     "fieldData": {
       "name": "Yoda",
-      "image": "https://some-server.com/Streaming_SSL/MainDB/814F26A93D72F8B747C1CEDAAF570846293EB7CB4410F46161D6C75619DD8BA5?RCType=EmbeddedRCFileProcessor",
+      "image": "https://some-server.com/Streaming_SSL/MainDB/C18798FA5D1CD3FCA613768AE8627FFC874F58C97A2D64FEA4085810AF6C7D43?RCType=EmbeddedRCFileProcessor",
       "object": "",
       "array": "",
       "height": "",
@@ -12,18 +12,33 @@
       "creationTimestamp": "05/25/1977 6:00:00",
       "modificationAccountName": "obi-wan",
       "modificationTimestamp": "05/25/1977 6:00:00",
-      "Vehicles::name": ""
+      "Vehicles::name": "",
+      "hash": "?"
     },
     "portalData": {
       "Planets": [],
       "Vehicles": []
     },
     "recordId": "1138",
-    "modId": "327"
+    "modId": "327",
+    "portalDataInfo": [
+      {
+        "database": "fms-api-app",
+        "table": "Planets",
+        "foundCount": 0,
+        "returnedCount": 0
+      },
+      {
+        "database": "fms-api-app",
+        "table": "Vehicles",
+        "foundCount": 0,
+        "returnedCount": 0
+      }
+    ]
   },
   {
     "fieldData": {
-      "name": "yoda",
+      "name": "Yoda",
       "image": "",
       "object": "",
       "array": "",
@@ -34,13 +49,28 @@
       "creationTimestamp": "05/25/1977 6:00:00",
       "modificationAccountName": "obi-wan",
       "modificationTimestamp": "05/25/1977 6:00:00",
-      "Vehicles::name": ""
+      "Vehicles::name": "",
+      "hash": "?"
     },
     "portalData": {
       "Planets": [],
       "Vehicles": []
     },
     "recordId": "1138",
-    "modId": "327"
+    "modId": "327",
+    "portalDataInfo": [
+      {
+        "database": "fms-api-app",
+        "table": "Planets",
+        "foundCount": 0,
+        "returnedCount": 0
+      },
+      {
+        "database": "fms-api-app",
+        "table": "Vehicles",
+        "foundCount": 0,
+        "returnedCount": 0
+      }
+    ]
   }
 ]

@@ -35,7 +35,7 @@ describe('Delete Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -67,7 +67,9 @@ describe('Delete Capabilities', () => {
           })
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should trigger scripts via an array when deleting records.', () =>

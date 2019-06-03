@@ -35,7 +35,7 @@ describe('Create Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -65,7 +65,9 @@ describe('Create Capabilities', () => {
           { request: { timeout: 10 } }
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should create FileMaker records using fieldData', () => {

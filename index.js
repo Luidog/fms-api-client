@@ -5,7 +5,9 @@ const {
   fieldData,
   recordId,
   transform,
-  containerData
+  containerData,
+  productInfo,
+  databases
 } = require('./src');
 
 /**
@@ -16,5 +18,7 @@ module.exports = {
   fieldData,
   recordId,
   transform,
-  containerData
+  containerData,
+  productInfo,
+  databases
 };

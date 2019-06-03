@@ -74,6 +74,17 @@ const isJson = data => {
 };
 
 /**
+ * @method isEmptyObject
+ * @public
+ * @description The isEmptyObject method uses the a try / catch to parse incoming data safely as json.
+ * This method will return true if it is able to cast the incoming data as json.
+ * @param  {Any} data The data to be evaluated as json.
+ * @return {Boolean}      A boolean result depending on if the data passed to it is valid JSON
+ */
+
+const isEmpty = data => (isJson(data) ? _.isEmpty(data) : false);
+
+/**
  * @method omit
  * @public
  * @description omit will remove properties from the first object or array passed to it that are in the second parameter passed it.
@@ -96,11 +107,31 @@ const omit = (data, properties) =>
 
 const parse = value => (isJson(value) ? JSON.parse(value) : value);
 
+/**
+ * @method deepMapKeys
+ * @public
+ * @description deepMapKeys provides deep mapping of objects using a recursive lodash function. This function expects an iteratee that matches the iteratee of _.mapKeys.
+ * @param  {Object|Array} object The object or array to deep map
+ * @param {Function} iteratee The function to use to map the object's keys.
+ * @return {Object} An object whose keys are modified by the iteratee.
+ */
+
+const deepMapKeys = (data, iteratee) =>
+  Array.isArray(data)
+    ? data.map((value, key) =>
+        _.isObject(value) ? deepMapKeys(value, iteratee) : value
+      )
+    : _.mapValues(_.mapKeys(data, iteratee), value =>
+        _.isObject(value) ? deepMapKeys(value, iteratee) : value
+      );
+
 module.exports = {
   toStrings,
   stringify,
   toArray,
   isJson,
+  isEmpty,
   omit,
-  parse
+  parse,
+  deepMapKeys
 };

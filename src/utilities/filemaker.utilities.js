@@ -93,26 +93,21 @@ const convertParameters = data =>
  */
 
 const sanitizeParameters = (parameters, safeParameters) =>
-  safeParameters
-    ? _.mapValues(
-        _.pickBy(
-          convertParameters(parameters),
-          (value, key) =>
-            _.includes(safeParameters, key) ||
-            (_.includes(safeParameters, '_offset.*') &&
-              _.startsWith(key, '_offset.')) ||
-            (_.includes(safeParameters, '_limit.*') &&
-              _.startsWith(key, '_limit.')) ||
-            (_.includes(safeParameters, 'offset.*') &&
-              _.startsWith(key, 'offset.')) ||
-            (_.includes(safeParameters, 'limit.*') &&
-              _.startsWith(key, 'limit.'))
-        ),
-        value => (_.isNumber(value) ? value.toString() : value)
-      )
-    : _.mapValues(convertParameters(parameters), value =>
-        _.isNumber(value) ? value.toString() : value
-      );
+  _.mapValues(
+    _.pickBy(
+      convertParameters(parameters),
+      (value, key) =>
+        _.includes(safeParameters, key) ||
+        (_.includes(safeParameters, '_offset.*') &&
+          _.startsWith(key, '_offset.')) ||
+        (_.includes(safeParameters, '_limit.*') &&
+          _.startsWith(key, '_limit.')) ||
+        (_.includes(safeParameters, 'offset.*') &&
+          _.startsWith(key, 'offset.')) ||
+        (_.includes(safeParameters, 'limit.*') && _.startsWith(key, 'limit.'))
+    ),
+    value => (_.isNumber(value) ? value.toString() : value)
+  );
 
 /**
  * @method parseScriptResults

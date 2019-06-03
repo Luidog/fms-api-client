@@ -35,7 +35,7 @@ describe('Get Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -57,7 +57,7 @@ describe('Get Capabilities', () => {
         .then(response => client.get(process.env.LAYOUT, response.recordId))
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data');
+      .that.has.all.keys('data', 'dataInfo');
   });
 
   it('should allow you to specify a timeout', () => {
@@ -70,7 +70,9 @@ describe('Get Capabilities', () => {
           })
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message', 'code');
   });
 
   it('should reject get requests that do not specify a recordId', () => {
@@ -94,7 +96,7 @@ describe('Get Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data');
   });
 
@@ -108,9 +110,10 @@ describe('Get Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('data')
+      .that.has.all.keys('data', 'dataInfo')
       .and.property('data');
   });
+
   it('should remove an expired token', () => {
     client.connection.token = `${client.connection.token}-error`;
     return expect(

@@ -24,13 +24,11 @@ const transport = (url, destination, name, parameters = {}) =>
       url,
       Object.assign(
         {
-          jar: new CookieJar()
-        },
-        parameters,
-        {
+          jar: new CookieJar(),
           responseType: 'stream',
           withCredentials: true
-        }
+        },
+        parameters
       )
     )
     .then(response => {

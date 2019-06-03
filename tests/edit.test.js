@@ -33,7 +33,7 @@ describe('Edit Capabilities', () => {
 
   before(done => {
     client = Filemaker.create({
-      application: process.env.APPLICATION,
+      database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -49,15 +49,15 @@ describe('Edit Capabilities', () => {
   });
 
   it('should edit FileMaker records without fieldData', () => {
-    client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
-      expect(
+    return expect(
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
         client.edit(process.env.LAYOUT, response.recordId, {
           name: 'Luke Skywalker'
         })
       )
-        .to.eventually.be.a('object')
-        .that.has.all.keys('modId')
-    );
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId');
   });
 
   it('should allow you to specify a timeout', () => {
@@ -77,37 +77,39 @@ describe('Edit Capabilities', () => {
           )
         )
         .catch(error => error)
-    ).to.eventually.be.an('error');
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
   });
 
   it('should edit FileMaker records using fieldData', () => {
-    client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
-      expect(
+    return expect(
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
         client.edit(process.env.LAYOUT, response.recordId, {
           fieldData: { name: 'Luke Skywalker' }
         })
       )
-        .to.eventually.be.a('object')
-        .that.has.all.keys('modId')
-    );
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId');
   });
 
   it('should edit FileMaker records with portalData', () => {
-    client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
-      expect(
+    return expect(
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
         client.edit(process.env.LAYOUT, response.recordId, {
           fieldData: { name: 'Han Solo' },
           portalData: { Vehicles: [{ 'Vehicles::name': 'Millenium Falcon' }] }
         })
       )
-        .to.eventually.be.a('object')
-        .that.has.all.keys('modId')
-    );
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId', 'newPortalRecordInfo');
   });
 
   it('should edit FileMaker records with portalData and allow portalData to be an array.', () => {
-    client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
-      expect(
+    return expect(
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
         client.edit(process.env.LAYOUT, response.recordId, {
           fieldData: { name: 'Han Solo' },
           portalData: {
@@ -118,13 +120,13 @@ describe('Edit Capabilities', () => {
           }
         })
       )
-        .to.eventually.be.a('object')
-        .that.has.all.keys('modId')
-    );
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId', 'newPortalRecordInfo');
   });
 
-  it('should reject bad data with an error', () =>
-    expect(
+  it('should reject bad data with an error', () => {
+    return expect(
       client
         .create(process.env.LAYOUT, { name: 'Obi-Wan' })
         .then(response =>
@@ -133,11 +135,12 @@ describe('Edit Capabilities', () => {
         .catch(error => error)
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('code', 'message'));
+      .that.has.all.keys('code', 'message');
+  });
 
   it('should return an object with merged filemaker and data properties', () => {
-    client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
-      expect(
+    return expect(
+      client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
         client.edit(
           process.env.LAYOUT,
           response.recordId,
@@ -147,13 +150,13 @@ describe('Edit Capabilities', () => {
           { merge: true }
         )
       )
-        .to.eventually.be.a('object')
-        .that.has.all.keys('modId', 'recordId', 'name')
-    );
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('modId', 'recordId', 'name');
   });
 
-  it('should allow you to run a script when editing a record', () =>
-    expect(
+  it('should allow you to run a script when editing a record', () => {
+    return expect(
       client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
         client.edit(
           process.env.LAYOUT,
@@ -166,10 +169,11 @@ describe('Edit Capabilities', () => {
       )
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('modId', 'scriptResult', 'scriptError'));
+      .that.has.all.keys('modId', 'scriptResult', 'scriptError');
+  });
 
-  it('should allow you to run a script via a scripts array when editing a record', () =>
-    expect(
+  it('should allow you to run a script via a scripts array when editing a record', () => {
+    return expect(
       client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
         client.edit(
           process.env.LAYOUT,
@@ -197,10 +201,11 @@ describe('Edit Capabilities', () => {
         'scriptError.prerequest',
         'scriptResult.prerequest',
         'scriptError'
-      ));
+      );
+  });
 
-  it('should allow you to specify scripts as an array', () =>
-    expect(
+  it('should allow you to specify scripts as an array', () => {
+    return expect(
       client.create(process.env.LAYOUT, { name: 'Obi-Wan' }).then(response =>
         client.edit(
           process.env.LAYOUT,
@@ -231,7 +236,8 @@ describe('Edit Capabilities', () => {
         'scriptError.prerequest',
         'scriptResult.prerequest',
         'scriptError'
-      ));
+      );
+  });
 
   it('should allow you to specify scripts as an array with a merge response', () => {
     return expect(

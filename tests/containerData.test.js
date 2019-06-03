@@ -20,20 +20,6 @@ describe('ContainerData Capabilities', () => {
   let database, client;
 
   before(done => {
-    client = Filemaker.create({
-      application: process.env.APPLICATION,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: process.env.PASSWORD
-    });
-    client.save().then(client => done());
-  });
-
-  after(done => {
-    client.logout().then(response => done());
-  });
-
-  before(done => {
     environment.config({ path: './tests/.env' });
     varium(process.env, './tests/env.manifest');
     connect('nedb://memory')
@@ -42,8 +28,18 @@ describe('ContainerData Capabilities', () => {
         return database.dropDatabase();
       })
       .then(() => {
-        return done();
+        client = Filemaker.create({
+          database: process.env.DATABASE,
+          server: process.env.SERVER,
+          user: process.env.USERNAME,
+          password: process.env.PASSWORD
+        });
+        client.save().then(client => done());
       });
+  });
+
+  after(done => {
+    client.logout().then(response => done());
   });
 
   it('should download container data from an object to a file', () => {
@@ -82,7 +78,7 @@ describe('ContainerData Capabilities', () => {
       .and.to.all.include.keys('name', 'path');
   });
 
-  it('should substitute the record id if a name is not specified', () => {
+  it('should return an array of records if it is passed an array', () => {
     return expect(
       client
         .find(process.env.LAYOUT, { imageName: '*' }, { limit: 2 })
@@ -95,7 +91,7 @@ describe('ContainerData Capabilities', () => {
       .to.be.a('object')
       .and.to.all.include.keys('name', 'path');
   });
-  it('should substitute the record id if a name is not specified', () => {
+  it('should return a single record object if passed an object', () => {
     return expect(
       client
         .find(process.env.LAYOUT, { imageName: '*' }, { limit: 1 })
@@ -196,15 +192,19 @@ describe('ContainerData Capabilities', () => {
     return expect(
       client
         .find(process.env.LAYOUT, { imageName: '*' }, { limit: 1 })
-        .then(response =>
-          containerData(
+        .then(response => {
+          response.data[0].fieldData.image = response.data[0].fieldData.image.replace(
+            'MainDB',
+            'FailDB'
+          );
+          return containerData(
             response.data[0],
             'fieldData.image',
             'buffer',
-            'fieldData.imageName',
-            { jar: true }
-          )
-        )
+            'fieldData.imageName'
+          );
+        })
+
         .catch(error => error)
     )
       .to.eventually.be.a('object')

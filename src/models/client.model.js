@@ -11,11 +11,21 @@ const {
   toArray,
   namespace,
   isJson,
+  isEmpty,
   toStrings,
   sanitizeParameters,
   parseScriptResult,
-  setData
+  setData,
+  urls
 } = require('../utilities');
+
+const { productInfo, databases } = require('../services');
+
+/**
+ * @global FMS_API_CLIENT
+ */
+
+global.FMS_API_CLIENT = {};
 
 /**
  * @class Client
@@ -27,25 +37,6 @@ class Client extends Document {
     super();
     this.schema({
       /**
-       * The version of Data API to use.
-       * @member Client#version
-       * @type String
-       */
-      version: {
-        type: String,
-        required: true,
-        default: '1'
-      },
-      /**
-       * The client application name.
-       * @member Client#application
-       * @type String
-       */
-      application: {
-        type: String,
-        required: true
-      },
-      /**
        * A name for the client.
        * @member Client#name
        * @type String
@@ -54,16 +45,34 @@ class Client extends Document {
         type: String
       },
       /**
-       * The client application server.
+       * The client FileMaker Server.
        * @member Client#server
        * @type String
        */
-
       server: {
         type: String,
         validate: data =>
           data.startsWith('http://') || data.startsWith('https://'),
         required: true
+      },
+      /**
+       * The client database name.
+       * @member Client#database
+       * @type String
+       */
+      database: {
+        type: String,
+        required: true
+      },
+      /**
+       * The version of Data API to use.
+       * @member Client#version
+       * @type String
+       */
+      version: {
+        type: String,
+        required: true,
+        default: 'vLatest'
       },
       /** The client data logger.
        * @public
@@ -83,6 +92,11 @@ class Client extends Document {
         type: Connection,
         required: true
       },
+      /** The client agent object.
+       * @public
+       * @member Client#agent
+       * @type Object
+       */
       agent: {
         type: Agent,
         required: true
@@ -135,158 +149,6 @@ class Client extends Document {
   }
 
   /**
-   * @method _createURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for use when creating a record.
-   * @param {String} layout The layout to use when creating a record.
-   * @return {String} A URL to use when creating records.
-   */
-
-  _createURL(layout) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records`;
-    return url;
-  }
-
-  /**
-   * @method _updateURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for use when updating a record.
-   * @param {String} layout The layout to use when updating a record.
-   * @param {String} recordId The FileMaker internal record id to use.
-   * @return {String} A URL to use when updating records.
-   */
-
-  _updateURL(layout, recordId) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records/${recordId}`;
-    return url;
-  }
-  /**
-   * @method _deleteURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for use when deleting a record.
-   * @param {String} layout The layout to use when creating a record.
-   * @param {String} recordId The FileMaker internal record id to use.
-   * @return {String} A URL to use when deleting records.
-   */
-  _deleteURL(layout, recordId) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records/${recordId}`;
-    return url;
-  }
-  /**
-   * @method _getURL
-   * @private
-   * @memberOf Client
-   * @description Generates a url to access a record.
-   * @param {String} layout The layout to use when acessing a record.
-   * @param {String} recordId The FileMaker internal record id to use.
-   * @return {String} A URL to used when getting one record.
-   */
-  _getURL(layout, recordId) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records/${recordId}`;
-    return url;
-  }
-  /**
-   * @method _listURL
-   * @private
-   * @memberOf Client
-   * @descriptionGenerates a url for use when listing records.
-   * @param {String} layout The layout to use when listing records.
-   * @return {String} A URL to use when listing records.
-   */
-  _listURL(layout) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records`;
-    return url;
-  }
-  /**
-   * @method _findURL
-   * @private
-   * @memberOf Client
-   * @description Generates a url for use when performing a find request.
-   * @param {String} layout The layout to use when listing records.
-   * @return {String} A URL to use when performing a find.
-   */
-  _findURL(layout) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/_find`;
-    return url;
-  }
-  /**
-   * @method _globalsURL
-   * @private
-   * @memberOf Client
-   * @description Generates a url for use when setting globals. Like FileMaker
-   * globals, these values will only be set for the current session.
-   * @param {String} layout The layout to use when setting globals.
-   * @return {String} A URL to use when setting globals
-   */
-  _globalsURL() {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/globals`;
-    return url;
-  }
-  /**
-   * @method _logoutURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for use when logging out of a FileMaker Session.
-   * @return {String} A URL to use when logging out of a FileMaker DAPI session.
-   */
-  _logoutURL(token) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/sessions/${token}`;
-    return url;
-  }
-  /**
-   * @method _uploadURL
-   * @memberOf Client
-   * @description Generates a url for use when uploading files to FileMaker containers.
-   * @private
-   * @param {String} layout The layout to use when setting globals.
-   * @param {String} recordId the record id to use when inserting the file.
-   * @param {String} fieldName the field to use when inserting a file.
-   * @param {String} fieldRepetition The repetition to use when inserting the file.
-   * default is 1.
-   * @return {String} A URL to use when uploading files to FileMaker.
-   */
-  _uploadURL(layout, recordId, fieldName, fieldRepetition = 1) {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/layouts/${layout}/records/${recordId}/containers/${fieldName}/${fieldRepetition}`;
-    return url;
-  }
-
-  /**
-   * @method _authURL
-   * @memberof Client
-   * @private
-   * @description Generates a url for use when retrieving authentication tokens
-   * in exchange for Account credentials.
-   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
-   */
-  _authURL() {
-    let url = `${this.server}/fmi/data/v1/databases/${
-      this.application
-    }/sessions`;
-    return url;
-  }
-
-  /**
    * @method authenticate
    * @memberof Client
    * @private
@@ -298,13 +160,17 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
+
   authenticate() {
     return new Promise((resolve, reject) => {
       if (this.connection.valid()) {
         resolve(this.connection.token);
       } else {
         this.connection
-          .generate(this.agent, this._authURL())
+          .generate(
+            this.agent,
+            urls.authentication(this.server, this.database, this.version)
+          )
           .then(body => this._saveState(body))
           .then(body => this.data.outgoing(body))
           .then(body => resolve(body.response.token))
@@ -328,6 +194,180 @@ class Client extends Document {
       token
     }));
   }
+  /**
+   * @method productInfo
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server or FileMaker Cloud host.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   *
+   */
+  productInfo() {
+    return new Promise((resolve, reject) =>
+      productInfo(this.server, this.version)
+        .then(response => resolve(response))
+        .catch(error => reject(error))
+    );
+  }
+
+  /**
+   * @method databases
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  databases() {
+    return databases(this.server, this.credentials, this.version);
+  }
+
+  /**
+   * @method layouts
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  layouts(parameters = {}) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request(
+            {
+              url: urls.layouts(this.server, this.database, this.version),
+              method: 'get',
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            },
+            parameters
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => parseScriptResult(body))
+        .then(response => resolve(response))
+        .catch(error => reject(this._checkToken(error)))
+    );
+  }
+
+  /**
+   * @method scripts
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  scripts(parameters = {}) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request(
+            {
+              url: urls.scripts(this.server, this.database, this.version),
+              method: 'get',
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            },
+            parameters
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => resolve(body.response))
+        .catch(error => reject(this._checkToken(error)))
+    );
+  }
+
+  /**
+   * @method layout
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  layout(layout, parameters = {}) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request(
+            {
+              url: urls.layout(
+                this.server,
+                this.database,
+                layout,
+                this.version
+              ),
+              method: 'get',
+              params: toStrings(sanitizeParameters(parameters, ['recordId'])),
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            },
+            parameters
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => resolve(body.response))
+        .catch(error => reject(this._checkToken(error)))
+    );
+  }
+
+  /**
+   * @method duplicate
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  duplicate(layout, recordId, parameters = {}) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request(
+            {
+              url: urls.duplicate(
+                this.server,
+                this.database,
+                layout,
+                recordId,
+                this.version
+              ),
+              method: 'post',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+              },
+              data: sanitizeParameters(parameters, [
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'request'
+              ])
+            },
+            parameters
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body => parseScriptResult(body))
+        .then(response => resolve(response))
+        .catch(error => reject(this._checkToken(error)))
+    );
+  }
 
   /**
    * @method logout
@@ -340,22 +380,26 @@ class Client extends Document {
    */
 
   logout() {
-    return new Promise(
-      (resolve, reject) =>
-        this.connection.valid()
-          ? this.agent
-              .request({
-                url: this._logoutURL(this.connection.token),
-                method: 'delete',
-                data: {}
-              })
-              .then(response => response.data)
-              .then(body => this.data.outgoing(body))
-              .then(body => this.connection.clear(body))
-              .then(body => this._saveState(body))
-              .then(body => resolve(body.messages[0]))
-              .catch(error => reject(this._checkToken(error)))
-          : reject({ message: 'No session to log out.' })
+    return new Promise((resolve, reject) =>
+      this.connection.valid()
+        ? this.agent
+            .request({
+              url: urls.logout(
+                this.server,
+                this.database,
+                this.connection.token,
+                this.version
+              ),
+              method: 'delete',
+              data: {}
+            })
+            .then(response => response.data)
+            .then(body => this.data.outgoing(body))
+            .then(body => this.connection.clear(body))
+            .then(body => this._saveState(body))
+            .then(body => resolve(body.messages[0]))
+            .catch(error => reject(this._checkToken(error)))
+        : reject({ message: 'No session to log out.' })
     );
   }
 
@@ -372,7 +416,10 @@ class Client extends Document {
    */
 
   _checkToken(error) {
-    if (error.expired) {
+    if (
+      error.expired ||
+      error.message === 'Invalid FileMaker Data API token (*)'
+    ) {
       delete error.expired;
       this.connection.clear();
       this.save();
@@ -413,7 +460,12 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._createURL(layout),
+              url: urls.create(
+                this.server,
+                this.database,
+                layout,
+                this.version
+              ),
               method: 'post',
               headers: {
                 authorization: `Bearer ${token}`,
@@ -441,9 +493,8 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => parseScriptResult(body))
-        .then(
-          response =>
-            parameters.merge ? Object.assign(data, response) : response
+        .then(response =>
+          parameters.merge ? Object.assign(data, response) : response
         )
         .then(response => resolve(response))
         .catch(error => reject(this._checkToken(error)))
@@ -469,7 +520,13 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._updateURL(layout, recordId),
+              url: urls.update(
+                this.server,
+                this.database,
+                layout,
+                recordId,
+                this.version
+              ),
               method: 'patch',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -498,11 +555,10 @@ class Client extends Document {
         .then(body => this.connection.extend(body))
         .then(body => this._saveState(body))
         .then(body => parseScriptResult(body))
-        .then(
-          body =>
-            parameters.merge
-              ? Object.assign(data, { recordId: recordId }, body)
-              : body
+        .then(body =>
+          parameters.merge
+            ? Object.assign(data, { recordId: recordId }, body)
+            : body
         )
         .then(response => resolve(response))
         .catch(error => reject(this._checkToken(error)))
@@ -526,7 +582,13 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._deleteURL(layout, recordId),
+              url: urls.delete(
+                this.server,
+                this.database,
+                layout,
+                recordId,
+                this.version
+              ),
               method: 'delete',
               headers: {
                 Authorization: `Bearer ${token}`
@@ -572,7 +634,13 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._getURL(layout, recordId),
+              url: urls.get(
+                this.server,
+                this.database,
+                layout,
+                recordId,
+                this.version
+              ),
               method: 'get',
               headers: {
                 Authorization: `Bearer ${token}`
@@ -623,7 +691,7 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._listURL(layout),
+              url: urls.list(this.server, this.database, layout, this.version),
               method: 'get',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -679,7 +747,7 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._findURL(layout),
+              url: urls.find(this.server, this.database, layout, this.version),
               method: 'post',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -714,15 +782,14 @@ class Client extends Document {
         .then(body => this._saveState(body))
         .then(body => parseScriptResult(body))
         .then(response => resolve(response))
-        .catch(
-          error =>
-            error.code === '401'
-              ? resolve({
-                  data: [],
-                  message: 'No records match the request'
-                })
-              : reject(this._checkToken(error))
-        )
+        .catch(error => {
+          return error.code === '401'
+            ? resolve({
+                data: [],
+                message: 'No records match the request'
+              })
+            : reject(this._checkToken(error));
+        })
     );
   }
 
@@ -741,7 +808,7 @@ class Client extends Document {
         .then(token =>
           this.agent.request(
             {
-              url: this._globalsURL(),
+              url: urls.globals(this.server, this.database, this.version),
               method: 'patch',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -802,18 +869,20 @@ class Client extends Document {
       }
 
       form.append('upload', stream);
-
       resolveRecordId()
         .then(resolvedId =>
           this.authenticate()
             .then(token =>
               this.agent.request(
                 {
-                  url: this._uploadURL(
+                  url: urls.upload(
+                    this.server,
+                    this.database,
                     layout,
                     resolvedId,
                     containerFieldName,
-                    parameters.fieldRepetition
+                    parameters.fieldRepetition,
+                    this.version
                   ),
                   method: 'post',
                   data: form,
@@ -838,25 +907,25 @@ class Client extends Document {
   }
 
   /**
-   * @method script
+   * @method run
    * @public
    * @memberof Client
    * @description A public method to make triggering a script easier. This method uses the list method with
    * a limit of 1. This is the lightest weight query possible while still allowing for a script to be triggered.
    * For a more robust query with scripts use the find method.
    * @param  {String} layout     The layout to use for the list request
-   * @param  {String} name       The name of the script
+   * @param  {Object|Array} scripts       The name of the script
    * @param  {Object} parameters Parameters to pass to the script
    * @return {Promise}           returns a promise that will either resolve or reject based on the Data API.
    */
 
-  script(layout, script, param = {}, parameters) {
+  run(layout, scripts, parameters) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
           this.agent.request(
             {
-              url: this._listURL(layout),
+              url: urls.list(this.server, this.database, layout, this.version),
               method: 'get',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -864,14 +933,21 @@ class Client extends Document {
               },
               params: sanitizeParameters(
                 Object.assign(
-                  {
-                    script: script,
-                    'script.param': isJson(param)
-                      ? toStrings(param)
-                      : param.toString()
-                  },
+                  Array.isArray(scripts)
+                    ? { scripts: [scripts] }
+                    : isJson(scripts)
+                    ? { scripts: scripts }
+                    : { script: scripts },
                   namespace({ limit: 1 })
-                )
+                ),
+                [
+                  'script',
+                  'script.param',
+                  'script.prerequest',
+                  'script.prerequest.param',
+                  'script.presort',
+                  'script.presort.param'
+                ]
               )
             },
             parameters
@@ -884,6 +960,63 @@ class Client extends Document {
         .then(body =>
           resolve({
             result: isJson(body.response.scriptResult)
+              ? JSON.parse(body.response.scriptResult)
+              : body.response.scriptResult
+          })
+        )
+        .catch(error => reject(this._checkToken(error)))
+    );
+  }
+
+  /**
+   * @method script
+   * @public
+   * @memberof Client
+   * @description A public method to make triggering a script easier.
+   * @param  {String} layout The layout to use for the list request
+   * @param  {String} script The name of the script
+   * @param  {Object|String} param Parameter  to pass to the script
+   * @param  {Object} param Parameter  to pass to the script
+   * @return {Promise}      returns a promise that will either resolve or reject based on the Data API.
+   */
+
+  script(layout, script, param = {}, parameters) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request(
+            {
+              url: urls.script(
+                this.server,
+                this.database,
+                layout,
+                script,
+                this.version
+              ),
+              method: 'get',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              params: !isEmpty(param)
+                ? {
+                    'script.param': isJson(param)
+                      ? JSON.stringify(param)
+                      : param.toString()
+                  }
+                : param
+            },
+            parameters
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body =>
+          resolve({
+            ...body.response,
+            scriptResult: isJson(body.response.scriptResult)
               ? JSON.parse(body.response.scriptResult)
               : body.response.scriptResult
           })
