@@ -11,7 +11,8 @@ const {
   toStrings,
   toArray,
   deepMapKeys,
-  isJson
+  isJson,
+  isEmpty
 } = require('./conversion.utilities');
 const { urls } = require('./urls.utilities');
 
@@ -21,6 +22,7 @@ module.exports = {
   setData,
   toArray,
   isJson,
+  isEmpty,
   deepMapKeys,
   namespace,
   parseScriptResult,

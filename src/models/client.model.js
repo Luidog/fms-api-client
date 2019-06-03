@@ -11,6 +11,7 @@ const {
   toArray,
   namespace,
   isJson,
+  isEmpty,
   toStrings,
   sanitizeParameters,
   parseScriptResult,
@@ -906,19 +907,19 @@ class Client extends Document {
   }
 
   /**
-   * @method script
+   * @method run
    * @public
    * @memberof Client
    * @description A public method to make triggering a script easier. This method uses the list method with
    * a limit of 1. This is the lightest weight query possible while still allowing for a script to be triggered.
    * For a more robust query with scripts use the find method.
    * @param  {String} layout     The layout to use for the list request
-   * @param  {String} name       The name of the script
+   * @param  {Object|Array} scripts       The name of the script
    * @param  {Object} parameters Parameters to pass to the script
    * @return {Promise}           returns a promise that will either resolve or reject based on the Data API.
    */
 
-  script(layout, script, param = {}, parameters) {
+  run(layout, scripts, parameters) {
     return new Promise((resolve, reject) =>
       this.authenticate()
         .then(token =>
@@ -932,14 +933,21 @@ class Client extends Document {
               },
               params: sanitizeParameters(
                 Object.assign(
-                  {
-                    script: script,
-                    'script.param': isJson(param)
-                      ? toStrings(param)
-                      : param.toString()
-                  },
+                  Array.isArray(scripts)
+                    ? { scripts: [scripts] }
+                    : isJson(scripts)
+                    ? { scripts: scripts }
+                    : { script: scripts },
                   namespace({ limit: 1 })
-                )
+                ),
+                [
+                  'script',
+                  'script.param',
+                  'script.prerequest',
+                  'script.prerequest.param',
+                  'script.presort',
+                  'script.presort.param'
+                ]
               )
             },
             parameters
@@ -952,6 +960,63 @@ class Client extends Document {
         .then(body =>
           resolve({
             result: isJson(body.response.scriptResult)
+              ? JSON.parse(body.response.scriptResult)
+              : body.response.scriptResult
+          })
+        )
+        .catch(error => reject(this._checkToken(error)))
+    );
+  }
+
+  /**
+   * @method script
+   * @public
+   * @memberof Client
+   * @description A public method to make triggering a script easier.
+   * @param  {String} layout The layout to use for the list request
+   * @param  {String} script The name of the script
+   * @param  {Object|String} param Parameter  to pass to the script
+   * @param  {Object} param Parameter  to pass to the script
+   * @return {Promise}      returns a promise that will either resolve or reject based on the Data API.
+   */
+
+  script(layout, script, param = {}, parameters) {
+    return new Promise((resolve, reject) =>
+      this.authenticate()
+        .then(token =>
+          this.agent.request(
+            {
+              url: urls.script(
+                this.server,
+                this.database,
+                layout,
+                script,
+                this.version
+              ),
+              method: 'get',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              params: !isEmpty(param)
+                ? {
+                    'script.param': isJson(param)
+                      ? JSON.stringify(param)
+                      : param.toString()
+                  }
+                : param
+            },
+            parameters
+          )
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this.connection.extend(body))
+        .then(body => this._saveState(body))
+        .then(body =>
+          resolve({
+            ...body.response,
+            scriptResult: isJson(body.response.scriptResult)
               ? JSON.parse(body.response.scriptResult)
               : body.response.scriptResult
           })

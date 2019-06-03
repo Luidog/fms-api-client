@@ -16,7 +16,7 @@ const { Filemaker } = require('../index.js');
 
 chai.use(chaiAsPromised);
 
-describe('Script Capabilities', () => {
+describe('Single Script Capabilities', () => {
   let database, client;
 
   before(done => {
@@ -59,7 +59,7 @@ describe('Script Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult', 'scriptError');
   });
 
   it('should allow you to specify a timeout', () => {
@@ -89,13 +89,13 @@ describe('Script Capabilities', () => {
       client.script(process.env.LAYOUT, 'FMS Triggered Script', 'string-here')
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult', 'scriptError');
   });
 
   it('should allow you to trigger a script specifying a number as a parameter', () => {
     return expect(client.script(process.env.LAYOUT, 'FMS Triggered Script', 1))
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult', 'scriptError');
   });
 
   it('should allow you to trigger a script specifying an object as a parameter', () => {
@@ -105,7 +105,101 @@ describe('Script Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult', 'scriptError');
+  });
+
+  it('should allow you to trigger a script specifying an array as a parameter', () => {
+    return expect(client.script(process.env.LAYOUT, 'FMS Triggered Script', []))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('scriptResult', 'scriptError');
+  });
+
+  it('should allow you to trigger a script without a parameter', () => {
+    return expect(client.script(process.env.LAYOUT, 'FMS Triggered Script'))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('scriptResult', 'scriptError');
+  });
+
+  it('should reject a script that does not exist', () => {
+    return expect(
+      client.script(process.env.LAYOUT, 'Made up Script').catch(error => error)
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should parse script results if the results are json', () => {
+    return expect(
+      client.script(process.env.LAYOUT, 'FMS Triggered Script', { name: 'Han' })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('scriptResult', 'scriptError')
+      .and.property('scriptResult')
+      .to.be.a('object');
+  });
+
+  it('should not parse script results if the results are not json', () => {
+    return expect(client.script(process.env.LAYOUT, 'Non JSON Script'))
+      .to.eventually.be.a('object')
+      .that.has.all.keys('scriptResult', 'scriptError')
+      .and.property('scriptResult')
+      .to.be.a('string');
+  });
+
+  it('should remove an expired token', () => {
+    client.connection.token = `${client.connection.token}-error`;
+    return expect(
+      client
+        .script(process.env.LAYOUT, 'FMS Triggered Script', {
+          name: 'han',
+          number: 102,
+          object: { child: 'ben' },
+          array: ['leia', 'chewbacca']
+        })
+        .catch(error => {
+          let errorWithToken = Object.assign(error, {
+            token: client.connection.token
+          });
+          return errorWithToken;
+        })
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message', 'token')
+      .and.property('token').to.be.empty;
+  });
+});
+
+describe('General Script Capabilities', () => {
+  let database, client;
+
+  before(done => {
+    environment.config({ path: './tests/.env' });
+    varium(process.env, './tests/env.manifest');
+    connect('nedb://memory')
+      .then(db => {
+        database = db;
+        return database.dropDatabase();
+      })
+      .then(() => {
+        return done();
+      });
+  });
+
+  before(done => {
+    client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+    client.save().then(client => done());
+  });
+
+  after(done => {
+    client
+      .logout()
+      .then(response => done())
+      .catch(error => done());
   });
 
   it('should allow you to trigger a script in a find', () => {
@@ -134,7 +228,7 @@ describe('Script Capabilities', () => {
   it('should reject a script that does not exist', () => {
     return expect(
       client
-        .script(process.env.LAYOUT, {
+        .list(process.env.LAYOUT, {
           limit: 2,
           script: 'Made up Script'
         })
@@ -171,10 +265,15 @@ describe('Script Capabilities', () => {
   });
 
   it('should not parse script results if the results are not json', () => {
-    return expect(client.script(process.env.LAYOUT, 'Non JSON Script'))
+    return expect(
+      client.list(process.env.LAYOUT, {
+        limit: 2,
+        scripts: [{ name: 'Non JSON Script', param: { name: 'Han' } }]
+      })
+    )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result')
-      .and.property('result')
+      .that.has.all.keys('scriptResult', 'scriptError', 'data', 'dataInfo')
+      .and.property('scriptResult')
       .to.be.a('string');
   });
 
@@ -223,27 +322,5 @@ describe('Script Capabilities', () => {
       )
       .and.property('scriptResult')
       .to.be.a('object');
-  });
-
-  it('should remove an expired token', () => {
-    client.connection.token = `${client.connection.token}-error`;
-    return expect(
-      client
-        .script('FMS Triggered Script', process.env.LAYOUT, {
-          name: 'han',
-          number: 102,
-          object: { child: 'ben' },
-          array: ['leia', 'chewbacca']
-        })
-        .catch(error => {
-          let errorWithToken = Object.assign(error, {
-            token: client.connection.token
-          });
-          return errorWithToken;
-        })
-    )
-      .to.eventually.be.an('object')
-      .that.has.all.keys('code', 'message', 'token')
-      .and.property('token').to.be.empty;
   });
 });

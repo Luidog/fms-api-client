@@ -107,7 +107,7 @@ const urls = {
    * @param {String} layout The layout to use when setting globals.
    * @param {String} recordId the record id to use when inserting the file.
    * @param {String} fieldName the field to use when inserting a file.
-   * @param {String} fieldRepetition The repetition to use when inserting the file.
+   * @param {String|Number} fieldRepetition The repetition to use when inserting the file.
    * default is 1.
    * @return {String} A URL to use when uploading files to FileMaker.
    */
@@ -134,7 +134,7 @@ const urls = {
     `${host}/fmi/data/${version}/databases/${database}/sessions`,
 
   /**
-   * @method layoutsURL
+   * @method layouts
    * @memberof Client
    * @public
    * @description Generates a url for use when retrieving authentication tokens
@@ -200,7 +200,18 @@ const urls = {
    */
 
   databases: (host, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases`
+    `${host}/fmi/data/${version}/databases`,
+
+  /**
+   * @method script
+   * @memberof Client
+   * @public
+   * @description Generates a url for retrieving FileMaker Server hosted databases.
+   * @return {String} The URL to use to retrieve FileMaker Server hosted databases.
+   */
+
+  script: (host, database, layout, script, parameter, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/script/${script}`
 };
 
 module.exports = { urls };

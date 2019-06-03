@@ -74,6 +74,17 @@ const isJson = data => {
 };
 
 /**
+ * @method isEmptyObject
+ * @public
+ * @description The isEmptyObject method uses the a try / catch to parse incoming data safely as json.
+ * This method will return true if it is able to cast the incoming data as json.
+ * @param  {Any} data The data to be evaluated as json.
+ * @return {Boolean}      A boolean result depending on if the data passed to it is valid JSON
+ */
+
+const isEmpty = data => (isJson(data) ? _.isEmpty(data) : false);
+
+/**
  * @method omit
  * @public
  * @description omit will remove properties from the first object or array passed to it that are in the second parameter passed it.
@@ -119,6 +130,7 @@ module.exports = {
   stringify,
   toArray,
   isJson,
+  isEmpty,
   omit,
   parse,
   deepMapKeys

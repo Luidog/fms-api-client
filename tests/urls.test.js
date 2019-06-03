@@ -421,4 +421,29 @@ describe('Data API URL Construction Capabilities', () => {
       return expect(urls.databases(process.env.SERVER)).to.be.a('string');
     });
   });
+  describe('Run a Script URL Construction', () => {
+    it('should generate a server databases metadata url', () => {
+      return expect(
+        urls.script(
+          process.env.SERVER,
+          process.env.DATABASE,
+          process.env.LAYOUT,
+          'FMS Triggered Script',
+          process.env.VERSION
+        )
+      ).to.be.a('string');
+    });
+
+    it('should not require a version', () => {
+      return expect(
+        urls.script(
+          process.env.SERVER,
+          process.env.DATABASE,
+          process.env.LAYOUT,
+          'FMS Triggered Script',
+          process.env.VERSION
+        )
+      ).to.be.a('string');
+    });
+  });
 });
