@@ -205,10 +205,7 @@ describe('ContainerData Capabilities', () => {
           );
         })
 
-        .catch(error => {
-          console.log(error);
-          return error;
-        })
+        .catch(error => error)
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('code', 'message');
