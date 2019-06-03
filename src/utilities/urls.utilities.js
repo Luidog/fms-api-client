@@ -1,13 +1,17 @@
 'use strict';
 
+/** @namespace */
+
 const urls = {
   /**
-   * @method create
-   * @memberof Client
+   * @function create
+   * @memberof urls
    * @public
-   * @description Generates a url for use when creating a record.
-   * @param {String} layout The layout to use when creating a record.
-   * @param {String} layout The layout to use when creating a record.
+   * @description The create function generates a url for creating a new record.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when creating records.
    */
 
@@ -15,12 +19,15 @@ const urls = {
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records`,
 
   /**
-   * @method update
-   * @memberof Client
+   * @function update
+   * @memberof urls
    * @public
-   * @description Generates a url for use when updating a record.
-   * @param {String} layout The layout to use when updating a record.
-   * @param {String} recordId The FileMaker internal record id to use.
+   * @description The update function generates a url for updating a record.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} recordId The FileMaker internal record id to update.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when updating records.
    */
 
@@ -28,12 +35,15 @@ const urls = {
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
 
   /**
-   * @method delete
-   * @memberof Client
+   * @function delete
+   * @memberof urls
    * @public
-   * @description Generates a url for use when deleting a record.
-   * @param {String} layout The layout to use when creating a record.
-   * @param {String} recordId The FileMaker internal record id to use.
+   * @description The delete funtion generates a url for  deleting a record.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} recordId The FileMaker internal record id to update.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when deleting records.
    */
 
@@ -41,12 +51,15 @@ const urls = {
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
 
   /**
-   * @method get
+   * @function get
    * @public
-   * @memberOf Client
-   * @description Generates a url to access a record.
-   * @param {String} layout The layout to use when acessing a record.
-   * @param {String} recordId The FileMaker internal record id to use.
+   * @memberOf urls
+   * @description The get function generates a url to get a record's details.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} recordId The FileMaker internal record id to update.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to used when getting one record.
    */
 
@@ -54,11 +67,14 @@ const urls = {
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
 
   /**
-   * @method list
+   * @function list
    * @public
-   * @memberOf Client
-   * @descriptionGenerates a url for use when listing records.
-   * @param {String} layout The layout to use when listing records.
+   * @memberOf urls
+   * @description The list function generates a url for listing records.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when listing records.
    */
 
@@ -66,11 +82,14 @@ const urls = {
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records`,
 
   /**
-   * @method find
+   * @function find
    * @public
-   * @memberOf Client
-   * @description Generates a url for use when performing a find request.
-   * @param {String} layout The layout to use when listing records.
+   * @memberOf urls
+   * @description The find function generates a url for performing a find request.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when performing a find.
    */
 
@@ -78,37 +97,46 @@ const urls = {
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/_find`,
 
   /**
-   * @method globals
+   * @function globals
    * @public
-   * @memberOf Client
-   * @description Generates a url for use when setting globals. Like FileMaker
+   * @memberOf urls
+   * @description The global function generates a url for setting globals. Like FileMaker
    * globals, these values will only be set for the current session.
-   * @param {String} layout The layout to use when setting globals.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when setting globals
    */
   globals: (host, database, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/globals`,
 
   /**
-   * @method logout
-   * @memberof Client
+   * @function logout
+   * @memberOf urls
    * @public
-   * @description Generates a url for use when logging out of a FileMaker Session.
+   * @description The logout function generates a url for logging out of a FileMaker Session.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when logging out of a FileMaker DAPI session.
    */
   logout: (host, database, token, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/sessions/${token}`,
 
   /**
-   * @method upload
-   * @memberOf Client
-   * @description Generates a url for use when uploading files to FileMaker containers.
+   * @function upload
+   * @memberOf urls
+   * @description The upload function generates a url for use when uploading files to FileMaker containers.
    * @public
-   * @param {String} layout The layout to use when setting globals.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
    * @param {String} recordId the record id to use when inserting the file.
    * @param {String} fieldName the field to use when inserting a file.
-   * @param {String|Number} fieldRepetition The repetition to use when inserting the file.
-   * default is 1.
+   * @param {String|Number} [fieldRepetition=1] The field repetition to use when inserting the file. The default is 1.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when uploading files to FileMaker.
    */
   upload: (
@@ -123,79 +151,98 @@ const urls = {
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}/containers/${fieldName}/${fieldRepetition}`,
 
   /**
-   * @method authentication
-   * @memberof Client
+   * @function authentication
+   * @memberOf urls
    * @public
-   * @description Generates a url for use when retrieving authentication tokens
-   * in exchange for Account credentials.
+   * @description The authentication function generates a url for retrieving authentication tokens.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when authenticating a FileMaker DAPI session.
    */
+
   authentication: (host, database, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/sessions`,
 
   /**
-   * @method layouts
-   * @memberof Client
+   * @function layouts
+   * @memberOf urls
    * @public
-   * @description Generates a url for use when retrieving authentication tokens
-   * in exchange for Account credentials.
-   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
+   * @description The layouts function generates a url for retrieving database layouts.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL for retrieving database layouts.
    */
 
   layouts: (host, database, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts`,
 
   /**
-   * @method layout
-   * @memberof Client
+   * @function layout
+   * @memberOf urls
    * @public
-   * @description Generates a url for use when retrieving authentication tokens
+   * @description The layout function generates a url for getting specific layout metadata.
    * in exchange for Account credentials.
-   * @param {String} layout The layout to use when getting metadata.
-   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL for retrieving specific layout metadata.
    */
+
   layout: (host, database, layout, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}`,
 
   /**
-   * @method scripts
-   * @memberof Client
+   * @function scripts
+   * @memberOf urls
    * @public
-   * @description Generates a url for use when retrieving authentication tokens
-   * in exchange for Account credentials.
-   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
+   * @description The scripts function generates a url for listing database scripts.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL for listing datbase scripts
    */
 
   scripts: (host, database, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/scripts`,
 
   /**
-   * @method duplicate
-   * @memberof Client
+   * @function duplicate
+   * @memberOf urls
    * @public
-   * @description Generates a url for use when retrieving authentication tokens
+   * @description The duplicate function generates a url for duplicating FileMaker records.
    * in exchange for Account credentials.
-   * @param {String} layout The layout to use when duplicating the record.
-   * @param {String} recordId the record id to duplicate.
-   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} recordId The FileMaker internal record id to duplicate.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to duplicate FileMaker records.
    */
   duplicate: (host, database, layout, recordId, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
+
   /**
-   * @method productInfo
-   * @memberof Client
+   * @function productInfo
+   * @memberOf urls
    * @public
-   * @description Generates a url for retrieving FileMaker Server host metadata.
-   * @return {String} The URL to use to retrieve FileMaker server host information.
+   * @description The productInfo function generates a url for retrieving FileMaker Server metadata.
+   * @param {String} host The host FileMaker server.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} The URL to use to retrieve FileMaker Server metadata.
    */
   productInfo: (host, version = 'vLatest') =>
     `${host}/fmi/data/${version}/productInfo`,
 
   /**
-   * @method databases
-   * @memberof Client
+   * @function databases
+   * @memberOf urls
    * @public
-   * @description Generates a url for retrieving FileMaker Server hosted databases.
+   * @description The databases function generates a url for retrieving FileMaker Server hosted databases.
+   * @param {String} host The host FileMaker server.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} The URL to use to retrieve FileMaker Server hosted databases.
    */
 
@@ -203,11 +250,17 @@ const urls = {
     `${host}/fmi/data/${version}/databases`,
 
   /**
-   * @method script
-   * @memberof Client
+   * @function script
+   * @memberOf urls
    * @public
-   * @description Generates a url for retrieving FileMaker Server hosted databases.
-   * @return {String} The URL to use to retrieve FileMaker Server hosted databases.
+   * @description The script function generates a url for running a FileMaker script.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} script The name of the script to run .
+   * @param {String|Object|Number} [parameter] Optional script parameters to pass to the called script.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} The URL to call a specific FileMaker script
    */
 
   script: (host, database, layout, script, parameter, version = 'vLatest') =>
