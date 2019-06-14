@@ -2,14 +2,14 @@
 
 const { log } = require('./services');
 
-//#script-trigger-example
+//#script-example
 const triggerScript = client =>
   client
     .script('Heroes', 'FMS Triggered Script', { name: 'Han' })
     .then(result => log('script-trigger-example', result));
 //#
 
-const scripts = client =>
+const script = client =>
   Promise.all([triggerScript(client)]).then(responses => client);
 
-module.exports = { scripts };
+module.exports = { script };

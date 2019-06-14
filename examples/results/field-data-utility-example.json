@@ -1,12 +1,12 @@
 [
   {
-    "name": "Yoda",
-    "image": "https://some-server.com/Streaming_SSL/MainDB/D080B1F946C8CC14C262E086E0A7D0E2D9C201169B717ECE1F701963889782F9?RCType=EmbeddedRCFileProcessor",
+    "name": "yoda",
+    "image": "",
     "object": "",
     "array": "",
     "height": "",
     "id": "r2d2-c3po-l3-37-bb-8",
-    "imageName": "placeholder.md",
+    "imageName": "",
     "creationAccountName": "obi-wan",
     "creationTimestamp": "05/25/1977 6:00:00",
     "modificationAccountName": "obi-wan",

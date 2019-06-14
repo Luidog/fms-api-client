@@ -11,7 +11,8 @@ const { gets } = require('./get.examples');
 const { lists } = require('./list.examples');
 const { finds } = require('./find.examples');
 const { edits } = require('./edit.examples');
-const { scripts } = require('./script.examples');
+const { script } = require('./script.examples');
+const { scripts } = require('./scripts.examples');
 const { globals } = require('./globals.examples');
 const { deletes } = require('./delete.examples');
 const { uploads } = require('./upload.examples');
@@ -50,6 +51,7 @@ connect('nedb://memory')
   .then(client => finds(client))
   .then(client => edits(client))
   .then(client => scripts(client))
+  .then(client => script(client))
   .then(client => globals(client))
   .then(client => deletes(client))
   .then(client => uploads(client))

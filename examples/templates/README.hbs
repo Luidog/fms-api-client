@@ -28,8 +28,11 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
       - [Login Method](#login-method)
       - [Logout Method](#logout-method)
     + [Client Methods](#client-methods)
-      - [Product Info](#product-info)
-      - [Databases](#databases)
+      - [Get Product Info](#productinfo)
+      - [Get Databases](#databases)
+      - [Get Layouts](#layouts)
+      - [Get scripts](#scripts)
+      - [Get Layout Metadata](#layout)
       - [Create Records](#create-records)
       - [Duplicate Record](#duplicate-record)
       - [Get Record Details](#get-record-details)
@@ -37,7 +40,8 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
       - [Find Records](#find-records)
       - [Edit Records](#edit-records)
       - [Delete Records](#delete-records)
-      - [Trigger Script](#trigger-script)
+      - [Trigger A Script](#trigger-script)
+      - [Run Multiple Scripts](#run-multiple-scripts)
       - [Upload Files](#upload-files)
       - [Set Session Globals](#set-session-globals)
     + [Utilities](#utilities)
@@ -149,6 +153,7 @@ After connecting to a datastore you can import and create clients. A client is c
 | [name]      |  <code>String</code> |                                A name for the client.                               |
 | [usage]     | <code>Boolean</code> |          Track Data API usage for this client. **Note:** Default is `true`          |
 | [timeout]   |  <code>Number</code> |      The default timeout time for requests **Note:** Default is 0, (no timeout)     |
+| [concurrency]   |  <code>Number</code> |      The number of concurrent requests that will be made to FileMaker     |
 | [proxy]     |  <code>Object</code> |                             settings for a proxy server                             |
 | [agent]     |  <code>Object</code> |                         settings for a custom request agent                         |
 
@@ -224,6 +229,49 @@ A client can get the databases accessible using the configured credentials the d
 Result:
 <!--@snippet('./examples/results/databases-info-example.json', { showSource: true })-->
 <!--/@-->
+#### layouts
+
+A client can get the databases accessible using the configured credentials the databases method will return all databases hosted by the currently configured server that the client can connect to. 
+
+`client.layouts()`
+
+{{#functions name="layouts"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/metadata.examples.js#layouts-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/layouts-example.json', { showSource: true })-->
+<!--/@-->
+#### scripts
+
+A client can get the databases accessible using the configured credentials the databases method will return all databases hosted by the currently configured server that the client can connect to. 
+
+`client.scripts()`
+
+{{#functions name="scripts"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/metadata.examples.js#scripts-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/scripts-example.json', { showSource: true })-->
+<!--/@-->
+#### layout
+
+A client can get the databases accessible using the configured credentials the databases method will return all databases hosted by the currently configured server that the client can connect to. 
+
+`client.layout()`
+
+{{#functions name="layout"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/metadata.examples.js#layout-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/layout-example.json', { showSource: true })-->
+<!--/@-->
+
 #### Create Records
 
 Using the client you can create filemaker records. To create a record specify the layout to use and the data to insert on creation. The client will automatically convert numbers, arrays, and objects into strings so they can be inserted into a filemaker field. The create method will automatically create a `fieldData` property and add all data to that property if there is no fieldData property present. The client will preserve the contents of the `portalData` property.
@@ -349,6 +397,21 @@ The client's script method will trigger a script. You can also trigger scripts w
 <!--/@-->
 Result:
 <!--@snippet('./examples/results/script-trigger-example.json', { showSource: true })-->
+<!--/@-->
+
+#### Run Multiple Scripts
+
+The client's script method will trigger a script. You can also trigger scripts with the create, edit, list, find, and delete methods. This method performs a list with a limit of one on the specified layout before triggering the script. this is the most lightweight request possible while still being able to trigger a script.
+
+`client.run(layout, scripts,parameters)`
+
+{{#functions name="run"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/script.examples.js#run-scripts-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/run-scripts-example.json', { showSource: true })-->
 <!--/@-->
 #### Upload Files
 

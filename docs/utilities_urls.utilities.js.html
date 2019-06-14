@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>utilities/urls.utilities.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Agent.html">Agent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Agent.html#._globalize">_globalize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Agent.html#._localize">_localize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Agent.html#.request">request</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Agent.html#preDelete">preDelete</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Agent.html#preInit">preInit</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Client.html">Client</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#._checkToken">_checkToken</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.authenticate">authenticate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.databases">databases</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.delete">delete</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.destroy">destroy</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.duplicate">duplicate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.edit">edit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.find">find</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.get">get</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.globals">globals</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.layout">layout</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.layouts">layouts</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.list">list</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.login">login</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.logout">logout</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.productInfo">productInfo</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.run">run</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.saveState">saveState</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.script">script</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.scripts">scripts</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#.upload">upload</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#preDelete">preDelete</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Client.html#preInit">preInit</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Connection.html">Connection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Connection.html#._basicAuth">_basicAuth</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Connection.html#._saveToken">_saveToken</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Connection.html#.clears">clears</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Connection.html#.extend">extend</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Connection.html#.generate">generate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Connection.html#.valid">valid</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Connection.html#preInit">preInit</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Credentials.html">Credentials</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Data.html">Data</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Data.html#.clear">clear</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Data.html#.incoming">incoming</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Data.html#.outgoing">outgoing</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Data.html#.status">status</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="urls.html">urls</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.authentication">authentication</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.databases">databases</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.delete">delete</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.duplicate">duplicate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.find">find</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.get">get</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.globals">globals</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.layout">layout</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.layouts">layouts</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.list">list</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.logout">logout</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.productInfo">productInfo</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.script">script</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.scripts">scripts</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.update">update</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="urls.html#.upload">upload</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#FMS_API_CLIENT">FMS_API_CLIENT</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">utilities/urls.utilities.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+/** @class urls */
+
+const urls = {
+  /**
+   * @function create
+   * @memberof urls
+   * @public
+   * @description The create function generates a url for creating a new record.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to use when creating records.
+   */
+
+  create: (host, database, layout, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records`,
+
+  /**
+   * @function update
+   * @memberof urls
+   * @public
+   * @description The update function generates a url for updating a record.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} recordId The FileMaker internal record id to update.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to use when updating records.
+   */
+
+  update: (host, database, layout, recordId, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
+
+  /**
+   * @function delete
+   * @memberof urls
+   * @public
+   * @description The delete funtion generates a url for  deleting a record.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} recordId The FileMaker internal record id to update.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to use when deleting records.
+   */
+
+  delete: (host, database, layout, recordId, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
+
+  /**
+   * @function get
+   * @public
+   * @memberOf urls
+   * @description The get function generates a url to get a record's details.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} recordId The FileMaker internal record id to update.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to used when getting one record.
+   */
+
+  get: (host, database, layout, recordId, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
+
+  /**
+   * @function list
+   * @public
+   * @memberOf urls
+   * @description The list function generates a url for listing records.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to use when listing records.
+   */
+
+  list: (host, database, layout, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records`,
+
+  /**
+   * @function find
+   * @public
+   * @memberOf urls
+   * @description The find function generates a url for performing a find request.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to use when performing a find.
+   */
+
+  find: (host, database, layout, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/_find`,
+
+  /**
+   * @function globals
+   * @public
+   * @memberOf urls
+   * @description The global function generates a url for setting globals. Like FileMaker
+   * globals, these values will only be set for the current session.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to use when setting globals
+   */
+
+  globals: (host, database, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/globals`,
+
+  /**
+   * @function logout
+   * @memberOf urls
+   * @public
+   * @description The logout function generates a url for logging out of a FileMaker Session.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to use when logging out of a FileMaker DAPI session.
+   */
+
+  logout: (host, database, token, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/sessions/${token}`,
+
+  /**
+   * @function upload
+   * @memberOf urls
+   * @description The upload function generates a url for use when uploading files to FileMaker containers.
+   * @public
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} recordId the record id to use when inserting the file.
+   * @param {String} fieldName the field to use when inserting a file.
+   * @param {String|Number} [fieldRepetition=1] The field repetition to use when inserting the file. The default is 1.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to use when uploading files to FileMaker.
+   */
+
+  upload: (
+    host,
+    database,
+    layout,
+    recordId,
+    fieldName,
+    fieldRepetition = 1,
+    version = 'vLatest'
+  ) =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}/containers/${fieldName}/${fieldRepetition}`,
+
+  /**
+   * @function authentication
+   * @memberOf urls
+   * @public
+   * @description The authentication function generates a url for retrieving authentication tokens.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to use when authenticating a FileMaker DAPI session.
+   */
+
+  authentication: (host, database, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/sessions`,
+
+  /**
+   * @function layouts
+   * @memberOf urls
+   * @public
+   * @description The layouts function generates a url for retrieving database layouts.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL for retrieving database layouts.
+   */
+
+  layouts: (host, database, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts`,
+
+  /**
+   * @function layout
+   * @memberOf urls
+   * @public
+   * @description The layout function generates a url for getting specific layout metadata.
+   * in exchange for Account credentials.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL for retrieving specific layout metadata.
+   */
+
+  layout: (host, database, layout, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}`,
+
+  /**
+   * @function scripts
+   * @memberOf urls
+   * @public
+   * @description The scripts function generates a url for listing database scripts.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL for listing datbase scripts
+   */
+
+  scripts: (host, database, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/scripts`,
+
+  /**
+   * @function duplicate
+   * @memberOf urls
+   * @public
+   * @description The duplicate function generates a url for duplicating FileMaker records.
+   * in exchange for Account credentials.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} recordId The FileMaker internal record id to duplicate.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} A URL to duplicate FileMaker records.
+   */
+
+  duplicate: (host, database, layout, recordId, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
+
+  /**
+   * @function productInfo
+   * @memberOf urls
+   * @public
+   * @description The productInfo function generates a url for retrieving FileMaker Server metadata.
+   * @param {String} host The host FileMaker server.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} The URL to use to retrieve FileMaker Server metadata.
+   */
+
+  productInfo: (host, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/productInfo`,
+
+  /**
+   * @function databases
+   * @memberOf urls
+   * @public
+   * @description The databases function generates a url for retrieving FileMaker Server hosted databases.
+   * @param {String} host The host FileMaker server.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} The URL to use to retrieve FileMaker Server hosted databases.
+   */
+
+  databases: (host, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases`,
+
+  /**
+   * @function script
+   * @memberOf urls
+   * @public
+   * @description The script function generates a url for running a FileMaker script.
+   * @param {String} host The host FileMaker server.
+   * @param {String} database The FileMaker database to target.
+   * @param {String} layout The database layout to use.
+   * @param {String} script The name of the script to run .
+   * @param {String|Object|Number} [parameter] Optional script parameters to pass to the called script.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} The URL to call a specific FileMaker script
+   */
+
+  script: (host, database, layout, script, parameter, version = 'vLatest') =>
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/script/${script}`
+};
+
+module.exports = { urls };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> on Mon Jun 03 2019 22:09:17 GMT-0700 (Pacific Daylight Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
