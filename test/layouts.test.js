@@ -22,11 +22,11 @@ const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
 
-describe('Layout Metadata Capabilities', () => {
+describe('Database Layout List Capabilities', () => {
   let database, client;
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -59,18 +59,14 @@ describe('Layout Metadata Capabilities', () => {
     return done();
   });
 
-  it('should get field and portal metaData for a layout', () => {
-    return expect(client.layout(process.env.LAYOUT))
+  it('should get a list of Layouts and folders for the currently configured database', () => {
+    return expect(client.layouts())
       .to.eventually.be.a('object')
-      .that.has.all.keys('fieldMetaData', 'portalMetaData');
-  });
-  it('should require a layout', () => {
-    return expect(client.layout().catch(error => error))
-      .to.eventually.be.a('object')
-      .that.has.all.keys('message', 'code');
+      .that.has.all.keys('layouts');
   });
   it('should fail with a code and a message', () => {
-    return expect(client.layout('not a layout').catch(error => error))
+    sandbox.stub(urls, 'layouts').callsFake(() => 'https://httpstat.us/502');
+    return expect(client.layouts().catch(error => error))
       .to.eventually.be.a('object')
       .that.has.all.keys('message', 'code');
   });

@@ -1,31 +1,21 @@
 'use strict';
 
-const moment = require('moment');
+const _ = require('lodash');
 const { EmbeddedDocument } = require('marpat');
 const { Credentials } = require('./credentials.model');
+const { Session } = require('./session.model');
+const { urls } = require('../utilities');
+const { instance } = require('../services');
+
 /**
  * @class Connection
  * @classdesc The class used to connection with the FileMaker server Data API
  */
+
 class Connection extends EmbeddedDocument {
   constructor() {
     super();
     this.schema({
-      /** A string containing the time the token token was issued.
-       * @member Connection#issued
-       * @type String
-       */
-      issued: {
-        type: String
-      },
-      /** A connection name.
-       * @public
-       * @member Connection#name
-       * @type String
-       */
-      name: {
-        type: String
-      },
       /** The FileMaker server (host).
        * @public
        * @member Connection#server
@@ -44,63 +34,52 @@ class Connection extends EmbeddedDocument {
         type: String,
         required: true
       },
-      /** The client credentials.
-       * @public
-       * @member Connection#credentials
-       * @type Object
+      /**
+       * Open Data API sessions.
+       * @member Connection#sessions
+       * @type Array
        */
-      credentials: Credentials,
-      /* A string containing the time the token will expire.
-       * @member Connection#expires
-       * @type String
-       */
-      expires: {
-        type: String
+      starting: {
+        type: Boolean,
+        default: false
       },
-      /** The token to use when querying an endpoint.
-       * @member Connection#token
-       * @type String
+      sessions: {
+        type: [Session],
+        default: () => []
+      },
+      /** A string containing the time the token token was issued.
+       * @member Credentials
+       * @type class
        */
-      token: {
-        type: String
+      credentials: {
+        type: Credentials,
+        required: true
       }
     });
   }
 
-  /**
-   * preInit is a hook
-   * @schema
-   * @description The connection preInit hook creates an embedded credentials document on create
-   * @param {Object} data The data used to create the client.
-   * @return {null} The preInit hook does not return anything.
-   */
+  preInit({ user, password }) {
+    this.credentials = Credentials.create({ user, password });
+  }
 
-  preInit(data) {
-    this.credentials = Credentials.create({
-      user: data.user,
-      password: data.password
-    });
+  authentication({ headers, ...request }) {
+    return {
+      ...request,
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${this.available().token}`
+      }
+    };
+  }
+
+  available() {
+    let session = _.find(this.sessions, session => session.valid());
+
+    return typeof session === 'undefined' ? false : session;
   }
 
   /**
-   * @method _basicAuth
-   * @private
-   * @memberof Connection
-   * @description This method constructs the basic authentication headers used
-   * when authenticating a FileMaker DAPI session.
-   * @return {String} A string containing the user and password authentication
-   * pair.
-   */
-
-  _basicAuth() {
-    const auth = `Basic ${Buffer.from(
-      `${this.credentials.user}:${this.credentials.password}`
-    ).toString('base64')}`;
-    return auth;
-  }
-
-  /**
-   * @method _saveToken
+   * @method save
    * @public
    * @memberof Connection
    * @description Saves a token retrieved from the Data API.
@@ -109,30 +88,10 @@ class Connection extends EmbeddedDocument {
    *
    */
 
-  _saveToken(data) {
-    this.expires = moment()
-      .add(15, 'minutes')
-      .format();
-    this.issued = moment().format();
-    this.token = data.response.token;
-    return data;
-  }
-
-  /**
-   * @method valid
-   * @public
-   * @memberof Connection
-   * @description Saves a token retrieved from the Data API.
-   * @params {String} token The token to save to the class instance.
-   * @return {String} a token retrieved from the private generation method
-   *
-   */
-
-  valid() {
-    return (
-      this.token !== undefined &&
-      moment().isBetween(this.issued, this.expires, '()')
-    );
+  save(data) {
+    this.starting = false;
+    this.sessions.push(Session.create({ token: data.response.token }));
+    return data.response.token;
   }
 
   /**
@@ -146,31 +105,67 @@ class Connection extends EmbeddedDocument {
    * response.
    */
 
-  generate(axios, url) {
+  generate() {
     return new Promise((resolve, reject) => {
-      this.request =
-        this.request instanceof Promise
-          ? this.request
-          : axios.request({
-              url: url,
-              method: 'post',
-              headers: {
-                'Content-Type': 'application/json',
-                authorization: this._basicAuth()
-              },
-              data: {}
-            });
+      let session = _.find(this.sessions, session => session.valid());
 
-      this.request
+      typeof session !== 'object'
+        ? this.start()
+            .then(token => resolve(token))
+            .catch(error => reject(error))
+        : resolve(session.token);
+    });
+  }
+
+  start() {
+    this.starting = true;
+    return new Promise((resolve, reject) => {
+      instance
+        .request({
+          url: urls.authentication(this.server, this.database, this.version),
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: this.credentials.basic()
+          },
+          data: {}
+        })
         .then(response => response.data)
-        .then(body => this._saveToken(body))
-        .then(body => resolve(body))
+        .then(body => this.save(body))
+        .then(token => resolve(token))
         .catch(error => reject(error));
     });
   }
 
+  end() {
+    return new Promise((resolve, reject) => {
+      if (this.sessions.length > 0) {
+        let session = this.available();
+        session.active = true;
+        instance
+          .request({
+            url: urls.logout(
+              this.server,
+              this.database,
+              session.token,
+              this.version
+            ),
+            method: 'delete',
+            data: {}
+          })
+          .then(response => {
+            this.clear(session.token);
+            resolve(response.data);
+          })
+          .catch(error => reject(error));
+      } else {
+        reject({ message: 'No session to Log out' });
+      }
+    });
+  }
+
   /**
-   * @method clears
+   * @method clear
    * @memberof Connection
    * @public
    * @description clears the currently saved token, expiration, and issued data by setting them to empty strings. This method
@@ -180,12 +175,9 @@ class Connection extends EmbeddedDocument {
    *
    */
 
-  clear(response) {
-    this.token = '';
-    this.issued = '';
-    this.expires = '';
-
-    return response;
+  clear(data) {
+    let token = data.replace('Bearer ', '');
+    this.sessions = this.sessions.filter(session => session.token !== token);
   }
 
   /**
@@ -198,12 +190,10 @@ class Connection extends EmbeddedDocument {
    *
    */
 
-  extend(response) {
-    this.expires = moment()
-      .add(15, 'minutes')
-      .format();
-
-    return response;
+  extend(data) {
+    let token = data.replace('Bearer ', '');
+    let session = _.find(this.sessions, session => session.token === token);
+    if (session) session.extend();
   }
 }
 

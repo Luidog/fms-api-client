@@ -22,8 +22,8 @@ describe('Authentication Capabilities', () => {
   let database, client;
 
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -41,7 +41,7 @@ describe('Authentication Capabilities', () => {
       user: process.env.USERNAME,
       password: process.env.PASSWORD
     });
-    done();
+    client.save().then(client => done());
   });
 
   it('should authenticate into FileMaker.', () => {
@@ -54,32 +54,38 @@ describe('Authentication Capabilities', () => {
     return expect(
       client
         .create(process.env.LAYOUT, {})
-        .then(record => Promise.resolve(client.connection.token))
+        .then(record =>
+          Promise.resolve(client.agent.connection.sessions[0].token)
+        )
     ).to.eventually.be.a('string');
   });
 
-  it('should reuse a saved authentication token', () => {
+  it('should reuse an open session', () => {
     return expect(
       client
         .create(process.env.LAYOUT, {})
-        .then(record => client.connection.token)
+        .then(record => client.agent.connection.sessions[0].token)
         .then(token => {
           client.create(process.env.LAYOUT, {});
           return token;
         })
-        .then(token => Promise.resolve(token === client.connection.token))
+        .then(
+          token =>
+            client.agent.connection.sessions.length === 1 &&
+            token === client.agent.connection.sessions[0].token
+        )
     ).to.eventually.be.true;
   });
 
   it('should log out of the filemaker.', () => {
     return expect(
       client
-        .authenticate()
+        .login()
         .then(token => client.logout())
         .catch(error => error)
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('code', 'message');
+      .that.has.all.keys('messages', 'response');
   });
 
   it('should not attempt a logout if there is no valid token.', () => {
@@ -91,9 +97,9 @@ describe('Authentication Capabilities', () => {
   it('should reject if the logout request fails', () => {
     return expect(
       client
-        .authenticate()
+        .login()
         .then(token => {
-          client.connection.token = 'invalid';
+          client.agent.connection.sessions[0].token = 'invalid';
           return client;
         })
         .then(client => client.logout())
@@ -104,7 +110,13 @@ describe('Authentication Capabilities', () => {
   });
 
   it('should reject if the authentication request fails', () => {
-    client.connection.credentials.password = 'incorrect';
+    client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: 'incorrect-password'
+    });
+
     return expect(
       client
         .save()
@@ -132,13 +144,12 @@ describe('Authentication Capabilities', () => {
   });
 
   it('should catch the log out error before being removed if the login is not valid', () => {
-    client = Filemaker.create({
-      database: process.env.DATABASE,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: 'wrong-password'
-    });
-    return expect(client.save().then(client => client.destroy()))
+    return expect(
+      client.login().then(token => {
+        client.agent.connection.sessions[0].token = 'invalid';
+        return client.destroy();
+      })
+    )
       .to.eventually.be.an('number')
       .and.equal(1);
   });

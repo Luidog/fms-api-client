@@ -19,9 +19,9 @@ const { uploads } = require('./upload.examples');
 const { utilities } = require('./utility.examples');
 const { datastore } = require('./datastore.examples');
 
-environment.config({ path: './tests/.env' });
+environment.config({ path: './test/.env' });
 
-varium(process.env, './tests/env.manifest');
+varium(process.env, './test/env.manifest');
 
 //#datastore-connect-example
 const { connect } = require('marpat');

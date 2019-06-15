@@ -10,13 +10,13 @@
   "data": [
     {
       "fieldData": {
-        "name": "Yoda",
-        "image": "",
+        "name": "yoda",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/54D1BAF762F372F1A35102EF8B10348E79372BB12F579F4D08CA3A2F04431D8E?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
         "id": "r2d2-c3po-l3-37-bb-8",
-        "imageName": "",
+        "imageName": "placeholder.md",
         "creationAccountName": "obi-wan",
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",

@@ -10,12 +10,44 @@ const _ = require('lodash');
 const { instance } = require('./request.service');
 
 /**
- * @method transport
+ * @class Container Service
+ */
+
+/**
+ * Attach Interceptors to Axios instance
+ * @param  {Any} response Web publishing response.
+ * @param  {Any} error We publishing error.
+ */
+
+instance.interceptors.response.use(
+  response => response,
+  error => handleError(error)
+);
+
+/**
+ * @function handleError
  * @private
- * @description This method retrieves container data from the FileMaker WPE.
+ * @memberof Container Service
+ * @description handles errors from the Web Publishing service by ensuring the error is an object.
+ * @param  {Error} error The error recieved from the Web Publishing service.
+ * @return {Object} An object with a code and a message.
+ */
+
+const handleError = error =>
+  Promise.reject({ code: 100, message: error.message });
+
+/**
+ * @function transport
+ * @private
+ * @memberof Container Service
+ * @description This function retrieves container data from the FileMaker WPE.
+ * @see writeFile
+ * @see writeBuffer
  * @param  {String} url The url to use for retrieval.
- * @param  {Object} object optional request configuration parameters.
- * @return {Promise}      a promise which will resolve to the file.
+ * @param  {String} destination The file's destination. Send buffer if it should be set to buffer.
+ * @param  {String} name The name of the file.
+ * @param  {Object} [parameters]  Request configuration parameters.
+ * @return {Promise}      A promise which will resolve to the file.
  */
 
 const transport = (url, destination, name, parameters = {}) =>
@@ -41,13 +73,14 @@ const transport = (url, destination, name, parameters = {}) =>
     });
 
 /**
- * @method writeFile
+ * @function writeFile
  * @private
- * @description This method will write a file to the filesystem
- * @param  {Buffer} stream the stream of data to write.
- * @param  {String} name the file's name and extension.
- * @param  {String} path the path to write the file.
- * @return {Promise}      a promise which will resolve with file path and name.
+ * @memberof Container Service
+ * @description This function will write a file to the filesystem.
+ * @param  {Buffer} stream The stream of data to write.
+ * @param  {String} name The file's name and extension.
+ * @param  {String} destination The destination path to write the file.
+ * @return {Promise}      A promise which will resolve with file path and name.
  */
 
 const writeFile = (stream, name, destination) =>
@@ -61,27 +94,30 @@ const writeFile = (stream, name, destination) =>
   });
 
 /**
- * @method bufferFile
+ * @function bufferFile
  * @private
- * @description This method will write a stream to a buffer object.
+ * @memberof Metadata Service
+ * @description This function will write a stream to a buffer object.
  * @param  {Stream} stream The url to use for retrieval.
- * @param  {String} name the name and extension of the file.
- * @return {Promise}      a promise which will resolve with file path and name.
+ * @param  {String} name The name and extension of the file.
+ * @return {Promise}      A promise which will resolve with file path and name.
  */
 
 const bufferFile = (stream, name) =>
   toArray(stream).then(parts => ({ name, buffer: Buffer.concat(parts) }));
 
 /**
- * @method containerData
+ * @function containerData
  * @public
- * @description This method retrieves container data from the FileMaker WPE.
+ * @memberof Metadata Service
+ * @description This function retrieves container data from the FileMaker WPE.
+ * @see transport
  * @param  {Object|Array} data The response recieved from the FileMaker DAPI.
- * @param  {String} field - The container field name to target. This can be a nested property.
- * @param  {String} destination - "buffer" if a buffer object should be returned or the path to write the file.
- * @param  {String} name - The field to use for the file name or a static string.
- * @param  {Object=} parameters - request parameters.
- * @param  {Number=} parameters.timeout - a timeout for the request.
+ * @param  {String} field The container field name to target. This can be a nested property.
+ * @param  {String} destination "buffer" if a buffer object should be returned or the path to write the file.
+ * @param  {String} name The field to use for the file name or a static string.
+ * @param  {Object=} parameters Request configuration parameters.
+ * @param  {Number=} parameters.timeout  a timeout for the request.
  * @return {Promise}      a promise which will resolve to the file data.
  */
 

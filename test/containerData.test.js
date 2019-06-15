@@ -20,8 +20,8 @@ describe('ContainerData Capabilities', () => {
   let database, client;
 
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -188,7 +188,7 @@ describe('ContainerData Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys('code', 'message');
   });
-  it('should reject if the WPE rejects the request', () => {
+  it('should reject if WPE rejects the request', () => {
     return expect(
       client
         .find(process.env.LAYOUT, { imageName: '*' }, { limit: 1 })

@@ -1,6 +1,4 @@
-'use strict';
-
-/* global describe before after afterEach it */
+/* global describe before after it */
 
 /* eslint-disable */
 
@@ -10,23 +8,20 @@ const { expect, should } = require('chai');
 /* eslint-enable */
 
 const chai = require('chai');
-const sinon = require('sinon');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker } = require('../index.js');
-const { urls } = require('../src/utilities');
-
-const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
 
-describe('Database Script List Capabilities', () => {
+describe('Request Queue Capabilities', () => {
   let database, client;
+
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -54,20 +49,20 @@ describe('Database Script List Capabilities', () => {
       .catch(error => done());
   });
 
-  afterEach(done => {
-    sandbox.restore();
-    return done();
-  });
+  it('should queue requests to FileMaker', () => {
+    let requests = [];
+    for (var i = 6; i >= 0; i--) {
+      requests.push(
+        client.find(
+          process.env.LAYOUT,
+          { id: '*' },
+          { sort: [{ fieldName: 'id', sortOrder: 'descend' }], limit: 2 }
+        )
+      );
+    }
 
-  it('should get a list of scripts and folders for the currently configured database', () => {
-    return expect(client.scripts())
-      .to.eventually.be.a('object')
-      .that.has.all.keys('scripts');
-  });
-  it('should fail with a code and a message', () => {
-    sandbox.stub(urls, 'scripts').callsFake(() => 'https://httpstat.us/502');
-    return expect(client.scripts().catch(error => error))
-      .to.eventually.be.a('object')
-      .that.has.all.keys('message', 'code');
+    return Promise.all(requests).then(results =>
+      expect(client.agent.queue).to.be.an('array')
+    );
   });
 });

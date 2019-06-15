@@ -1,6 +1,6 @@
 'use strict';
 
-/** @module */
+/** @class urls */
 
 const urls = {
   /**

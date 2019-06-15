@@ -1,6 +1,6 @@
 'use strict';
 
-/* global describe before after afterEach it */
+/* global describe before after it */
 
 /* eslint-disable */
 
@@ -10,23 +10,19 @@ const { expect, should } = require('chai');
 /* eslint-enable */
 
 const chai = require('chai');
-const sinon = require('sinon');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker } = require('../index.js');
-const { urls } = require('../src/utilities');
-
-const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
 
-describe('Database Layout List Capabilities', () => {
+describe('Duplicate Record Capabilities', () => {
   let database, client;
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -54,20 +50,24 @@ describe('Database Layout List Capabilities', () => {
       .catch(error => done());
   });
 
-  afterEach(done => {
-    sandbox.restore();
-    return done();
+  it('should allow you to duplicate a record', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(result => client.duplicate(process.env.LAYOUT, result.recordId))
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('recordId', 'modId');
   });
 
-  it('should get a list of Layouts and folders for the currently configured database', () => {
-    return expect(client.layouts())
-      .to.eventually.be.a('object')
-      .that.has.all.keys('layouts');
-  });
-  it('should fail with a code and a message', () => {
-    sandbox.stub(urls, 'layouts').callsFake(() => 'https://httpstat.us/502');
-    return expect(client.layouts().catch(error => error))
-      .to.eventually.be.a('object')
-      .that.has.all.keys('message', 'code');
+  it('should require an id to duplicate a record', () => {
+    return expect(
+      client
+        .create(process.env.LAYOUT, { name: 'Han Solo' })
+        .then(result => client.duplicate(process.env.LAYOUT))
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message');
   });
 });

@@ -21,8 +21,8 @@ chai.use(chaiAsPromised);
 describe('Edit Capabilities', () => {
   let database, client;
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -353,26 +353,5 @@ describe('Edit Capabilities', () => {
         'scriptError.prerequest',
         'scriptResult.prerequest'
       );
-  });
-  it('should remove an expired token', () => {
-    return expect(
-      client
-        .create(process.env.LAYOUT, { name: 'Obi-Wan' })
-        .then(response => {
-          client.connection.token = `${client.connection.token}-error`;
-          return client.edit(process.env.LAYOUT, response.recordId, {
-            name: 'Han Solo'
-          });
-        })
-        .catch(error => {
-          let errorWithToken = Object.assign(error, {
-            token: client.connection.token
-          });
-          return errorWithToken;
-        })
-    )
-      .to.eventually.be.an('object')
-      .that.has.all.keys('code', 'message', 'token')
-      .and.property('token').to.be.empty;
   });
 });

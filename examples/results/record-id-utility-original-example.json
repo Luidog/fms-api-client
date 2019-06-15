@@ -1,13 +1,13 @@
 [
   {
     "fieldData": {
-      "name": "yoda",
-      "image": "",
+      "name": "Yoda",
+      "image": "https://some-server.com/Streaming_SSL/MainDB/DE46306681088F38AABD093B79EBCBFEB3E3ACE9D9D0AC26C63FC2015B0AC975?RCType=EmbeddedRCFileProcessor",
       "object": "",
       "array": "",
       "height": "",
       "id": "r2d2-c3po-l3-37-bb-8",
-      "imageName": "",
+      "imageName": "placeholder.md",
       "creationAccountName": "obi-wan",
       "creationTimestamp": "05/25/1977 6:00:00",
       "modificationAccountName": "obi-wan",
@@ -38,7 +38,7 @@
   },
   {
     "fieldData": {
-      "name": "Yoda",
+      "name": "yoda",
       "image": "",
       "object": "",
       "array": "",

@@ -3,16 +3,15 @@
 const _ = require('lodash');
 const { stringify, parse } = require('./conversion.utilities');
 
-/**
- * @module Filemaker Utilities
- */
+/** @class Filemaker Utilities */
 
 /**
- * @method convertPortals
+ * @function convertPortals
  * @public
- * @description The convertPortals method converts a request containing a portal array into the syntax
- * supported by the filemaker data api.
- * @param  {Object|Array} data The data to use when invoking the method
+ * @memberof Filemaker Utilities
+ * @description The convertPortals function converts a request containing a portal array into the syntax
+ * supported by the FileMaker Data API.
+ * @param  {Object|Array} data The data to use when invoking the function.
  * @return {Object}      A new object with the FileMaker required parameters for portals.
  */
 
@@ -39,11 +38,12 @@ const convertPortals = data => {
 };
 
 /**
- * @method convertScripts
+ * @function convertScripts
  * @public
- * @description The converScript method abstracts the lodash map method to reduce the number of imports required
- * for each model. This method accepts an array and a method to use when mapping the array of values.
- * @param  {Object} data The data to use when invoking the method
+ * @memberof Filemaker Utilities
+ * @description The converScript function abstracts the lodash map method to reduce the number of imports required
+ * for each model. This method accepts an array and a function to use when mapping the array of values.
+ * @param  {Object} data The data to convert.
  * @return {Object}      A new object based on the assignment of incoming properties.
  */
 
@@ -69,10 +69,13 @@ const convertScripts = data => {
 };
 
 /**
- * @method convertParameters
+ * @function convertParameters
  * @public
- * @description Handles converting portals and scripts from array based parameters to object key based
+ * @memberof Filemaker Utilities
+ * @description The converParameters function handles converting portals and scripts from array based parameters to object key based
  * parameters to FileMaker required parameters.
+ * @see convertPortals
+ * @see convertScripts
  * @param  {Object|Array} data The raw data to use converting parameters
  * @return {Object|Array} A json object or array of objects without the properties passed to it
  */
@@ -81,11 +84,13 @@ const convertParameters = data =>
   Object.assign(convertPortals(data), stringify(convertScripts(data)), data);
 
 /**
- * @method sanitizeParameters
+ * @function sanitizeParameters
  * @public
- * @description The santizeParameters method filters unsafe parameters from its return object based
- * on the safeOarameters array that is passed to it. This method is currently used in the client.create
- * method to seperate the merge option from the paramaters that are safe to send to FileMaker.
+ * @memberof Filemaker Utilities
+ * @description The santizeParameters function filters unsafe parameters from its return object based
+ * on the safeOarameters array that is passed to it. This function is currently used in the client.create
+ * function to seperate the merge option from the paramaters that are safe to send to FileMaker.
+ * @see convertParameters
  * @param {Object} parameters An array values being passed to the FileMaker DAPI.
  * @param {Array} safeParameters An array values allowed to be sent to filemaker.
  * @return {Object|Array} returns an object or array of objects with only allowed keys
@@ -110,9 +115,10 @@ const sanitizeParameters = (parameters, safeParameters) =>
   );
 
 /**
- * @method parseScriptResults
+ * @function parseScriptResults
  * @public
- * @description This method filters the FileMaker DAPI response by testing if a script was triggered
+ * @memberof Filemaker Utilities
+ * @description The parseScriptResults function filters the FileMaker DAPI response by testing if a script was triggered
  * with the request, then either selecting the response, script error, and script result from the
  * response or selecting just the response.
  * @param  {Object} data The response recieved from the FileMaker DAPI.
@@ -127,9 +133,10 @@ const parseScriptResult = data =>
   );
 
 /**
- * @method namespace
+ * @function namespace
  * @public
- * @description The namespace method maps through an incoming data object's keys and replaces the properties
+ * @memberof Filemaker Utilities
+ * @description The namespace functions maps through an incoming data object's keys and replaces the properties
  * of limit, offset, and sort with their _ counterparts.
  * @param  {Object} data An object used in a DAPI query.
  * @return {Object}      A modified object containing modified keys to match expected properties
@@ -141,9 +148,10 @@ const namespace = data =>
   );
 
 /**
- * @method setData
+ * @function setData
  * @public
- * @description The setData method checks the incoming data for a fieldData property. If
+ * @memberof Filemaker Utilities
+ * @description The setData function checks the incoming data for a fieldData property. If
  * the fieldData property is not found it will create the property and add all properties
  * except portalData to this new property. It will also stringify any numbers or objects
  * in portalData's properties.

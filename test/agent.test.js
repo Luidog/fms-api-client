@@ -34,8 +34,8 @@ chai.use(chaiAsPromised);
 describe('Agent Configuration Capabilities', () => {
   let database, client;
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -72,7 +72,6 @@ describe('Agent Configuration Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         '_schema',
-        'connection',
         '_id',
         'data',
         'agent',
@@ -86,6 +85,7 @@ describe('Agent Configuration Capabilities', () => {
       .to.have.all.keys(
         '_schema',
         'concurrency',
+        'connection',
         'queue',
         'delay',
         'pending',
@@ -113,7 +113,7 @@ describe('Agent Configuration Capabilities', () => {
     ).to.eventually.be.an('array').that.is.empty;
   });
 
-  it('adjusts the request protocol according to the server', () => {
+  it('should adjust the request protocol according to the server', () => {
     let client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER.replace('https://', 'http://'),
@@ -125,7 +125,6 @@ describe('Agent Configuration Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         '_schema',
-        'connection',
         '_id',
         'data',
         'agent',
@@ -139,6 +138,7 @@ describe('Agent Configuration Capabilities', () => {
       .to.have.all.keys(
         '_schema',
         'agent',
+        'connection',
         'concurrency',
         'delay',
         'pending',
@@ -152,7 +152,7 @@ describe('Agent Configuration Capabilities', () => {
       .to.equal('http');
   });
 
-  it('should create a https agent', () => {
+  it('should create an https agent', () => {
     let client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
@@ -164,7 +164,6 @@ describe('Agent Configuration Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         '_schema',
-        'connection',
         '_id',
         'data',
         'agent',
@@ -179,6 +178,7 @@ describe('Agent Configuration Capabilities', () => {
         '_schema',
         'agent',
         'concurrency',
+        'connection',
         'delay',
         'global',
         'pending',
@@ -227,7 +227,7 @@ describe('Agent Configuration Capabilities', () => {
     ).to.eventually.be.undefined;
   });
 
-  it('should create a http agent', () => {
+  it('should create an http agent', () => {
     let client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER.replace('https://', 'http://'),
@@ -239,7 +239,6 @@ describe('Agent Configuration Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         '_schema',
-        'connection',
         '_id',
         'data',
         'agent',
@@ -254,6 +253,7 @@ describe('Agent Configuration Capabilities', () => {
         '_schema',
         'agent',
         'concurrency',
+        'connection',
         'delay',
         'global',
         'pending',
@@ -280,7 +280,6 @@ describe('Agent Configuration Capabilities', () => {
       .to.eventually.be.a('object')
       .that.has.all.keys(
         '_schema',
-        'connection',
         '_id',
         'data',
         'agent',
@@ -294,6 +293,7 @@ describe('Agent Configuration Capabilities', () => {
       .to.have.all.keys(
         '_schema',
         'protocol',
+        'connection',
         'global',
         'proxy',
         'timeout',
@@ -322,56 +322,5 @@ describe('Agent Configuration Capabilities', () => {
     )
       .to.eventually.be.an('object')
       .with.any.keys('message', 'code');
-  });
-
-  it('should use a proxy if one is set', () => {
-    let client = Filemaker.create({
-      database: process.env.DATABASE,
-      server: process.env.SERVER.replace('https://', 'http://'),
-      user: process.env.USERNAME,
-      password: process.env.PASSWORD,
-      usage: true,
-      proxy: {
-        host: '127.0.0.1',
-        port: 9000
-      }
-    });
-    return expect(
-      client
-        .save()
-        .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
-        .catch(error => error)
-    )
-      .to.eventually.be.an('object')
-      .with.any.keys('data');
-  });
-
-  it('should automatically recreate an agent if one is deleted', () => {
-    let globalId;
-    let client = Filemaker.create({
-      database: process.env.DATABASE,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: process.env.PASSWORD,
-      usage: true,
-      agent: { rejectUnauthorized: true }
-    });
-    return expect(
-      client
-        .save()
-        .then(client => {
-          globalId = client.agent.global;
-          delete global.FMS_API_CLIENT.AGENTS[globalId];
-          return client.list(process.env.LAYOUT, { limit: 1 });
-        })
-        .then(response => {
-          response.agent = global.FMS_API_CLIENT.AGENTS[globalId];
-          return response;
-        })
-    )
-      .to.eventually.be.an('object')
-      .with.any.keys('data', 'agent')
-      .and.property('agent')
-      .is.an('object');
   });
 });

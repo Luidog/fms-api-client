@@ -15,7 +15,7 @@ const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
-const { Filemaker, productInfo } = require('../index.js');
+const { Filemaker, databases } = require('../index.js');
 const { urls } = require('../src/utilities');
 
 const sandbox = sinon.createSandbox();
@@ -23,13 +23,14 @@ const sandbox = sinon.createSandbox();
 chai.use(chaiAsPromised);
 
 process.on('unhandledRejection', () => {});
+
 process.on('rejectionHandled', () => {});
 
-describe('Client Product Info Capabilities', () => {
+describe('Databases Capabilities', () => {
   let database, client;
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -62,54 +63,48 @@ describe('Client Product Info Capabilities', () => {
     return done();
   });
 
-  it('should get FileMaker Server Information', () => {
-    return expect(client.productInfo())
+  it('should get hosted databases', () => {
+    return expect(client.databases())
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        'name',
-        'buildDate',
-        'version',
-        'dateFormat',
-        'timeFormat',
-        'timeStampFormat'
-      );
+      .that.has.all.keys('databases');
   });
   it('should fail with a code and a message', () => {
-    sandbox
-      .stub(urls, 'productInfo')
-      .callsFake(() => 'https://httpstat.us/502');
-    return expect(client.productInfo().catch(error => error))
+    sandbox.stub(urls, 'databases').callsFake(() => 'https://httpstat.us/502');
+    return expect(client.databases().catch(error => error))
       .to.eventually.be.a('object')
       .that.has.all.keys('message', 'code');
   });
 });
 
-describe('Product Info Utility Capabilities', () => {
+describe('Databases Utility Capabilities', () => {
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     return done();
   });
 
-  it('should get FileMaker Server Information', () => {
-    return expect(productInfo(process.env.SERVER))
+  it('should retrieve databases without credentials', () => {
+    return expect(databases(process.env.SERVER))
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        'name',
-        'buildDate',
-        'version',
-        'dateFormat',
-        'timeFormat',
-        'timeStampFormat'
-      );
+      .that.has.all.keys('databases');
+  });
+  it('should retrieve databases using account credentials', () => {
+    return expect(
+      databases(process.env.SERVER, {
+        user: process.env.USER,
+        password: process.env.PASSWORD
+      })
+    )
+      .to.eventually.be.a('object')
+      .that.has.all.keys('databases');
   });
   it('should fail with a code and a message', () => {
-    return expect(productInfo('http://not-a-server.com').catch(error => error))
+    return expect(databases('http://not-a-server.com').catch(error => error))
       .to.eventually.be.a('object')
       .that.has.all.keys('message', 'code');
   });
-  it('should require a server parameter', () => {
-    return expect(productInfo().catch(error => error))
+  it('should require a server to list databases', () => {
+    return expect(databases().catch(error => error))
       .to.eventually.be.a('object')
       .that.has.all.keys('message', 'code');
   });

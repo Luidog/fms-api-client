@@ -26,6 +26,22 @@ class Credentials extends EmbeddedDocument {
       }
     });
   }
+  /**
+   * @method basic
+   * @private
+   * @memberof Connection
+   * @description This method constructs the basic authentication headers used
+   * when authenticating a FileMaker DAPI session.
+   * @return {String} A string containing the user and password authentication
+   * pair.
+   */
+
+  basic() {
+    const auth = `Basic ${Buffer.from(`${this.user}:${this.password}`).toString(
+      'base64'
+    )}`;
+    return auth;
+  }
 }
 
 module.exports = {

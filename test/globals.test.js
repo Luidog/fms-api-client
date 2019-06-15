@@ -19,8 +19,8 @@ chai.use(chaiAsPromised);
 describe('Global Capabilities', () => {
   let database, client;
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -75,20 +75,5 @@ describe('Global Capabilities', () => {
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('message', 'code');
-  });
-
-  it('should remove an expired token', () => {
-    client.connection.token = `${client.connection.token}-error`;
-    return expect(
-      client.globals({ 'Globals::ship': 'Millenium Falcon' }).catch(error => {
-        let errorWithToken = Object.assign(error, {
-          token: client.connection.token
-        });
-        return errorWithToken;
-      })
-    )
-      .to.eventually.be.an('object')
-      .that.has.all.keys('code', 'message', 'token')
-      .and.property('token').to.be.empty;
   });
 });

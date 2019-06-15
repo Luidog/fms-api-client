@@ -12,7 +12,7 @@ const chaiAsPromised = require('chai-as-promised');
 const {
   omit,
   parse,
-  isJson
+  isJSON
 } = require('../src/utilities/conversion.utilities');
 
 chai.use(chaiAsPromised);
@@ -53,27 +53,27 @@ describe('Utility Capabilities', () => {
         .and.to.include.keys('name');
     });
   });
-  describe('isJson Utility', () => {
+  describe('isJSON Utility', () => {
     it('it should return true for an object', () => {
-      return expect(isJson({ object: true })).to.equal(true);
+      return expect(isJSON({ object: true })).to.equal(true);
     });
     it('it should return true for an empty object', () => {
-      return expect(isJson({ object: true })).to.equal(true);
+      return expect(isJSON({ object: true })).to.equal(true);
     });
     it('it should return true for a stringified object', () => {
-      return expect(isJson({})).to.equal(true);
+      return expect(isJSON({})).to.equal(true);
     });
     it('it should return false for a number', () => {
-      return expect(isJson(1)).to.equal(false);
+      return expect(isJSON(1)).to.equal(false);
     });
     it('it should return false for undefined', () => {
-      return expect(isJson()).to.equal(false);
+      return expect(isJSON()).to.equal(false);
     });
     it('it should return false for a string', () => {
-      return expect(isJson('string')).to.equal(false);
+      return expect(isJSON('string')).to.equal(false);
     });
     it('it should return false for null', () => {
-      return expect(isJson(null)).to.equal(false);
+      return expect(isJSON(null)).to.equal(false);
     });
   });
 });

@@ -21,8 +21,8 @@ chai.use(chaiAsPromised);
 describe('Delete Capabilities', () => {
   let database, client;
   before(done => {
-    environment.config({ path: './tests/.env' });
-    varium(process.env, './tests/env.manifest');
+    environment.config({ path: './test/.env' });
+    varium(process.env, './test/env.manifest');
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -144,19 +144,4 @@ describe('Delete Capabilities', () => {
     expect(client.delete(process.env.LAYOUT, '-2').catch(error => error))
       .to.eventually.be.a('object')
       .that.has.all.keys('code', 'message'));
-
-  it('should remove an expired token', () => {
-    client.connection.token = `${client.connection.token}-error`;
-    return expect(
-      client.delete(process.env.LAYOUT, '-2').catch(error => {
-        let errorWithToken = Object.assign(error, {
-          token: client.connection.token
-        });
-        return errorWithToken;
-      })
-    )
-      .to.eventually.be.an('object')
-      .that.has.all.keys('code', 'message', 'token')
-      .and.property('token').to.be.empty;
-  });
 });
