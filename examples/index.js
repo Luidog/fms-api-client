@@ -23,19 +23,6 @@ environment.config({ path: './test/.env' });
 
 varium(process.env, './test/env.manifest');
 
-const http = require('http');
-const httpProxy = require('http-proxy');
-
-const proxy = httpProxy.createProxyServer();
-
-http
-  .createServer(function(req, res) {
-    proxy.web(req, res, {
-      target: process.env.SERVER
-    });
-  })
-  .listen(9000);
-
 //#datastore-connect-example
 const { connect } = require('marpat');
 connect('nedb://memory')
@@ -48,30 +35,26 @@ connect('nedb://memory')
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
-      usage: process.env.CLIENT_USAGE_TRACKING,
-      proxy: {
-        host: '127.0.0.1',
-        port: 9000
-      }
+      usage: process.env.CLIENT_USAGE_TRACKING
     });
     //#
     //#client-save-example
     return client.save();
   })
-  .then(client => authentication(client))
-  .then(client => metadata(client))
-  .then(client => creates(client))
-  .then(client => duplicate(client))
-  .then(client => gets(client))
-  .then(client => lists(client))
-  .then(client => finds(client))
-  .then(client => edits(client))
+  // .then(client => authentication(client))
+  // .then(client => metadata(client))
+  // .then(client => creates(client))
+  // .then(client => duplicate(client))
+  // .then(client => gets(client))
+  // .then(client => lists(client))
+  // .then(client => finds(client))
+  // .then(client => edits(client))
   .then(client => scripts(client))
-  .then(client => script(client))
-  .then(client => globals(client))
-  .then(client => deletes(client))
-  .then(client => uploads(client))
-  .then(client => utilities(client))
+  // .then(client => script(client))
+  // .then(client => globals(client))
+  // .then(client => deletes(client))
+  // .then(client => uploads(client))
+  // .then(client => utilities(client))
   // #
-  .then(client => datastore(client))
+  // .then(client => datastore(client))
   .catch(error => console.log('error', error));

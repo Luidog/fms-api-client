@@ -12,10 +12,6 @@ const logout = client =>
   client
     .login()
     .then(() => client.logout())
-    .then(response => {
-      console.log(response);
-      return client.find(process.env.LAYOUT, { id: '*' }, { limit: 1 });
-    })
     .then(result => log('client-logout-example', result));
 //#
 

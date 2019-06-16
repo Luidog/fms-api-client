@@ -1,56 +1,9 @@
 {
-  "dataInfo": {
-    "database": "fms-api-app",
-    "layout": "Heroes",
-    "table": "Heroes",
-    "totalRecordCount": "1977",
-    "foundCount": 32679,
-    "returnedCount": 1
-  },
-  "data": [
+  "response": {},
+  "messages": [
     {
-      "fieldData": {
-        "name": "George Lucas",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/0687A68F1011E2D0B6BB03FAD4BAC27C6FC91C595A7100E74E8D93ACD3C8F56F.png?RCType=EmbeddedRCFileProcessor",
-        "object": "",
-        "array": "",
-        "height": "",
-        "id": "r2d2-c3po-l3-37-bb-8",
-        "imageName": "IMG_0001.PNG",
-        "creationAccountName": "obi-wan",
-        "creationTimestamp": "05/25/1977 6:00:00",
-        "modificationAccountName": "obi-wan",
-        "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": "test",
-        "hash": ""
-      },
-      "portalData": {
-        "Planets": [],
-        "Vehicles": [
-          {
-            "recordId": "1138",
-            "Vehicles::name": "test",
-            "Vehicles::type": "",
-            "modId": "327"
-          }
-        ]
-      },
-      "recordId": "1138",
-      "modId": "327",
-      "portalDataInfo": [
-        {
-          "database": "fms-api-app",
-          "table": "Planets",
-          "foundCount": 0,
-          "returnedCount": 0
-        },
-        {
-          "database": "fms-api-app",
-          "table": "Vehicles",
-          "foundCount": 1,
-          "returnedCount": 1
-        }
-      ]
+      "code": "0",
+      "message": "OK"
     }
   ]
 }

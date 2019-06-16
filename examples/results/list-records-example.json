@@ -4,14 +4,14 @@
     "layout": "Heroes",
     "table": "Heroes",
     "totalRecordCount": "1977",
-    "foundCount": 32686,
+    "foundCount": 34721,
     "returnedCount": 2
   },
   "data": [
     {
       "fieldData": {
         "name": "George Lucas",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/A10A897BFBA244B502E8C2F72A706C7CA26115300520FA2A82D53FFBC8AC9E52.png?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/5A958DA632260DABD6E555998B08C6CCAA51AD40DB63A8DAFDA5B8F0A85AEA0B.png?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",

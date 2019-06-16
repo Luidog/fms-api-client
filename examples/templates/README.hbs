@@ -3,7 +3,7 @@
 <!--/@-->
 [![Build Status](https://travis-ci.com/Luidog/fms-api-client.png?branch=master)](https://travis-ci.com/Luidog/fms-api-client) [![Known Vulnerabilities](https://snyk.io/test/github/Luidog/fms-api-client/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Luidog/fms-api-client?targetFile=package.json) [![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=master)](https://coveralls.io/github/Luidog/fms-api-client?branch=master) [![GitHub issues](https://img.shields.io/github/issues/Luidog/fms-api-client.svg?style=plastic)](https://github.com/Luidog/fms-api-client/issues) [![Github commits (since latest release)](https://img.shields.io/github/commits-since/luidog/fms-api-client/latest.svg)](https://img.shields.io/github/issues/Luidog/fms-api-client.svg) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![GitHub license](https://img.shields.io/github/license/Luidog/fms-api-client.svg)](https://github.com/Luidog/fms-api-client/blob/master/LICENSE.md)
 
-A FileMaker Data API client designed to allow easier interaction with a FileMaker database from a web environment. This client abstracts the FileMaker 17 Data API into class based methods. 
+A FileMaker Data API client designed to allow easier interaction with a FileMaker database from a web environment. This client abstracts the FileMaker 17 & 18 Data API into class based methods. 
 
 [fms-api-client documentation](https://luidog.github.io/fms-api-client/)
 
@@ -24,11 +24,12 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
     + [Datastore Connection](#datastore-connection)
     + [Client Creation](#client-creation)
     + [Client Use](#client-use)
+    + [Request Queue](#request-queue)
     + [Data API Sessions](#data-api-sessions)
       - [Login Method](#login-method)
       - [Logout Method](#logout-method)
     + [Client Methods](#client-methods)
-      - [Get Product Info](#productinfo)
+      - [Get Product Info](#product-info)
       - [Get Databases](#databases)
       - [Get Layouts](#layouts)
       - [Get scripts](#scripts)
@@ -51,7 +52,10 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
         * [Field Data Utility Results](#field-data-utility-results)
       - [Transform Utility](#transform-utility)
         * [Transform Utility Results](#transform-utility-results)
-      - [Container Data Utility](#container-data-utility)
+      - [Product Info Utility](#product-info-utility)
+        * [Product Info Utility Results](#product-info-utility-results)
+      - [Databases Utility](#databases-utility)
+        * [Databases Results](#databases-utility-results)
     + [Additional Client Capabilities](#additional-client-capabilities)
       - [Data Merge](#data-merge)
       - [Custom Request Agents](#custom-request-agents)
@@ -177,11 +181,15 @@ A client can be used after it is created and saved or recalled from the datastor
 Results:
 <!--@snippet('./examples/results/create-many-records-example.json', { showSource: true })-->
 <!--/@-->
+### Request Queue
+
+The client will automatically queue a requests to the FileMaker Data API if there are no available sessions to make the request. The client will ensure that a session is not in use or expired before it uses a session token in a request. This functionality is designed to prevent session collisions. The client will open and use a new session up to the configured concurrency limit. The concurrency limit is set when a client is created. By default the concurrency limit is one.
+
 ### Data API Sessions
 
-The client will automatically handle creating and closing Data API sessions. If required the client will authenticate and generate a new session token with each method call. 
+The client will automatically handle creating and closing Data API sessions. If a new session is required the client will authenticate and generate a new session or queue requests if the session limit has been reached.
 
-The Data API session is also monitored, updated, and saved as the client interacts with the Data API. A client will always attempt to reuse a valid token whenever possible.
+The Data API session is also monitored, updated, and saved as the client interacts with the Data API. The client will always attempt to reuse a valid token whenever possible.
 
 The client contains two methods related to Data API sessions. These methods are `client.login()` and `client.logout()`. The login method is used to start a Data API session and the logout method will end a Data API session.
 
@@ -207,7 +215,7 @@ A client can get server product info. The productInfo method will return metadat
 
 `client.productInfo()`
 
-{{#functions name="productInfo"}}
+{{#functions name="productInfo" memberof="client"}}
 {{>parameters}}
 {{/functions}}
 <!--@snippet('./examples/metadata.examples.js#product-info-example', { showSource: true })-->
@@ -217,11 +225,11 @@ Result:
 <!--/@-->
 #### databases
 
-A client can get the databases accessible using the configured credentials the databases method will return all databases hosted by the currently configured server that the client can connect to. 
+A client can get the databases accessible using the configured credentials. This method will return all databases hosted by the currently configured server that the client can connect to. An alternative set of credentials can be passed to this method to check what databases alternate credentials are able to access.
 
-`client.databases()`
+`client.databases(credentials)`
 
-{{#functions name="databases"}}
+{{#functions name="databases" memberof="client"}}
 {{>parameters}}
 {{/functions}}
 <!--@snippet('./examples/metadata.examples.js#databases-info-example', { showSource: true })-->
@@ -231,7 +239,7 @@ Result:
 <!--/@-->
 #### layouts
 
-A client can get the databases accessible using the configured credentials the databases method will return all databases hosted by the currently configured server that the client can connect to. 
+The layouts method will return a list of layouts accessible by the configured client.
 
 `client.layouts()`
 
@@ -245,7 +253,7 @@ Result:
 <!--/@-->
 #### scripts
 
-A client can get the databases accessible using the configured credentials the databases method will return all databases hosted by the currently configured server that the client can connect to. 
+The scripts method will return metadata for the scripts accessible by the configured client.
 
 `client.scripts()`
 
@@ -259,9 +267,9 @@ Result:
 <!--/@-->
 #### layout
 
-A client can get the databases accessible using the configured credentials the databases method will return all databases hosted by the currently configured server that the client can connect to. 
+The layout method will get metadata for the specified layout.
 
-`client.layout()`
+`client.layout(layout)`
 
 {{#functions name="layout"}}
 {{>parameters}}
@@ -294,7 +302,7 @@ Result:
 <!--/@-->
 #### Duplicate Record
 
-Using the client you can duplicate a FileMaker record.
+The duplicate method duplicates the FileMaker record using the layout and recordId parameters passed to it.
 
 `client.duplicate(layout, recordId, parameters)`
 
@@ -524,6 +532,36 @@ The container data utility will retrieve FileMaker container data by following t
 <!--/@-->
 Result:
 <!--@snippet('./examples/results/container-data-example.json', { showSource: true })-->
+<!--/@-->
+
+#### Databases Utility
+
+The databases utility will get the accessible databases for the server and credentials passed to it. 
+
+`databases(server, credentials, version, parameters)` 
+
+{{#functions name="databases" memberof="Metadata Service"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/utility.examples.js#databases-utility-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/databases-utility-example.json', { showSource: true })-->
+<!--/@-->
+
+#### Product Info Utility
+
+The productInfo utility will get Data API information for the server passed to it.
+
+`productInfo(host, version, parameters)` 
+
+{{#functions name="productInfo" memberof="Metadata Service"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/utility.examples.js#product-info-utility-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/product-info-utility-example.json', { showSource: true })-->
 <!--/@-->
 ### Additional Client Capabilities
 

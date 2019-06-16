@@ -1,78 +1,70 @@
 {
-  "response": {
-    "scripts": [
-      {
-        "name": "Upon Open",
-        "isFolder": false
-      },
-      {
-        "name": "FMS Triggered Script",
-        "isFolder": false
-      },
-      {
-        "name": "node-red-script",
-        "isFolder": false
-      },
-      {
-        "name": "example script",
-        "isFolder": false
-      },
-      {
-        "name": "Error Script",
-        "isFolder": false
-      },
-      {
-        "name": "Non JSON Script",
-        "isFolder": false
-      },
-      {
-        "name": "Create Droids",
-        "isFolder": false
-      },
-      {
-        "name": "Delete All Records",
-        "isFolder": false
-      },
-      {
-        "name": "Buttons",
-        "folderScriptNames": [
-          {
-            "name": "New Clip Record",
-            "isFolder": false
-          },
-          {
-            "name": "Update Clip Button",
-            "isFolder": false
-          },
-          {
-            "name": "Replace Clip Record Data",
-            "isFolder": false
-          },
-          {
-            "name": "Delete All Clip Records",
-            "isFolder": false
-          },
-          {
-            "name": "Push all flagged clips",
-            "isFolder": false
-          },
-          {
-            "name": "Set Clipboard",
-            "isFolder": false
-          }
-        ],
-        "isFolder": true
-      },
-      {
-        "name": "Collision Script",
-        "isFolder": false
-      }
-    ]
-  },
-  "messages": [
+  "scripts": [
     {
-      "code": "0",
-      "message": "OK"
+      "name": "Upon Open",
+      "isFolder": false
+    },
+    {
+      "name": "FMS Triggered Script",
+      "isFolder": false
+    },
+    {
+      "name": "node-red-script",
+      "isFolder": false
+    },
+    {
+      "name": "example script",
+      "isFolder": false
+    },
+    {
+      "name": "Error Script",
+      "isFolder": false
+    },
+    {
+      "name": "Non JSON Script",
+      "isFolder": false
+    },
+    {
+      "name": "Create Droids",
+      "isFolder": false
+    },
+    {
+      "name": "Delete All Records",
+      "isFolder": false
+    },
+    {
+      "name": "Buttons",
+      "folderScriptNames": [
+        {
+          "name": "New Clip Record",
+          "isFolder": false
+        },
+        {
+          "name": "Update Clip Button",
+          "isFolder": false
+        },
+        {
+          "name": "Replace Clip Record Data",
+          "isFolder": false
+        },
+        {
+          "name": "Delete All Clip Records",
+          "isFolder": false
+        },
+        {
+          "name": "Push all flagged clips",
+          "isFolder": false
+        },
+        {
+          "name": "Set Clipboard",
+          "isFolder": false
+        }
+      ],
+      "isFolder": true
+    },
+    {
+      "name": "Collision Script",
+      "isFolder": false
     }
   ]
 }
