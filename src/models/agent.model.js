@@ -140,7 +140,10 @@ class Agent extends EmbeddedDocument {
    */
 
   preDelete() {
-    if (global.FMS_API_CLIENT.AGENTS[this.global]) {
+    if (
+      global.FMS_API_CLIENT.AGENTS &&
+      global.FMS_API_CLIENT.AGENTS[this.global]
+    ) {
       this._localize()[`${this.protocol}Agent`].destroy();
       delete global.FMS_API_CLIENT.AGENTS[this.global];
     }
@@ -275,6 +278,7 @@ class Agent extends EmbeddedDocument {
     return config.url.startsWith('http')
       ? omit(config, ['params.request', 'data.request'])
       : Promise.reject({
+          code: '1630',
           message: 'The Data API Requires https or http'
         });
   }
@@ -364,7 +368,9 @@ class Agent extends EmbeddedDocument {
       });
     } else {
       if (error.response.data.messages[0].code === '952')
-        this.connection.clear(error.response.config.headers.Authorization);
+        this.connection.clear(
+          _.get(error, 'response.config.headers.Authorization')
+        );
       return Promise.reject(error.response.data.messages[0]);
     }
   }

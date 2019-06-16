@@ -151,9 +151,12 @@ class Connection extends EmbeddedDocument {
    *
    */
 
-  clear(data) {
-    let token = data.replace('Bearer ', '');
-    this.sessions = this.sessions.filter(session => session.token !== token);
+  clear(header) {
+    this.sessions = this.sessions.filter(session =>
+      typeof header === 'string'
+        ? header.replace('Bearer ', '') === session.token || session.expired()
+        : session.expired()
+    );
   }
 
   /**

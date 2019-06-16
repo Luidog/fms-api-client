@@ -1,6 +1,6 @@
 'use strict';
 
-/* global describe before beforeEach it */
+/* global describe before beforeEach afterEach it */
 
 /* eslint-disable */
 
@@ -10,11 +10,14 @@ const { expect, should } = require('chai');
 /* eslint-enable */
 
 const chai = require('chai');
+const sinon = require('sinon');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
 const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker } = require('../index.js');
+
+const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
 
@@ -42,6 +45,11 @@ describe('Authentication Capabilities', () => {
       password: process.env.PASSWORD
     });
     client.save().then(client => done());
+  });
+
+  afterEach(done => {
+    sandbox.restore();
+    return done();
   });
 
   it('should authenticate into FileMaker.', () => {
@@ -124,19 +132,56 @@ describe('Authentication Capabilities', () => {
   });
 
   it('should attempt to log out before being removed', () => {
-    client = Filemaker.create({
-      database: process.env.DATABASE,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: process.env.PASSWORD
+    let called = false;
+    sandbox.stub(client.agent.connection, 'end').callsFake(() => {
+      called = true;
+      return Promise.resolve(called);
     });
+
     return expect(
       client
-        .save()
-        .then(client => client.login().then(response => client.destroy()))
+        .login()
+        .then(response => client.destroy())
+        .then(response => {
+          expect(called).to.equal(true);
+          return response;
+        })
     )
       .to.eventually.be.an('number')
       .and.equal(1);
+  });
+
+  it('should clear invalid sessions', () => {
+    let newClient = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: 'incorrect-password'
+    });
+    sandbox
+      .stub(newClient.agent.connection, 'authentication')
+      .callsFake(({ headers, ...request }) => ({
+        ...request,
+        headers: {
+          ...headers,
+          Authorization: `Bearer Invalid`
+        }
+      }));
+    return expect(
+      newClient
+        .login()
+        .then(() => {
+          newClient.agent.connection.sessions = [];
+          return newClient.list(process.env.LAYOUT, { limit: 1 });
+        })
+        .then(response => {
+          console.log(response);
+          return response;
+        })
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('message', 'code');
   });
 
   it('should catch the log out error before being removed if the login is not valid', () => {

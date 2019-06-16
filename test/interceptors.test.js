@@ -74,7 +74,7 @@ describe('Request Interceptor Capabilities', () => {
       .that.has.all.keys('code', 'message');
   });
 
-  it('should handle non JSON responses by rejecting with a json error', () => {
+  it('should intercept authentication errors', () => {
     sandbox
       .stub(urls, 'authentication')
       .callsFake(() => 'https://httpstat.us/200');
@@ -125,6 +125,17 @@ describe('Request Interceptor Capabilities', () => {
       client
         .save()
         .then(client => client.login())
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('message', 'code');
+  });
+
+  it('should convert non json responses to json', () => {
+    return expect(
+      client
+        .save()
+        .then(client => client.agent.handleResponse('string response'))
         .catch(error => error)
     )
       .to.eventually.be.an('object')

@@ -56,17 +56,24 @@ class Session extends EmbeddedDocument {
    */
 
   valid() {
-    // console.log({
-    //   active: this.active,
-    //   token: this.token,
-    //   expires: this.expires,
-    //   between: moment().isBetween(this.issued, this.expires, '()')
-    // });
     return (
       !this.active &&
       this.token !== undefined &&
       moment().isBetween(this.issued, this.expires, '()')
     );
+  }
+
+  /**
+   * @method expired
+   * @public
+   * @memberof Session
+   * @description Saves a token retrieved from the Data API.
+   * @return {Boolean} True if the token has expired, otherwise False.
+   *
+   */
+
+  expired() {
+    return moment().isSameOrAfter(this.expires);
   }
 
   /**

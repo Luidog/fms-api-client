@@ -53,30 +53,6 @@ describe('Agent Configuration Capabilities', () => {
       .catch(error => done());
   });
 
-  it('should remove invalid sessions', () => {
-    let client = Filemaker.create({
-      database: process.env.DATABASE,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: process.env.PASSWORD,
-      usage: true
-    });
-    return expect(
-      client
-        .save()
-        .then(client => client.login())
-        .then(() => {
-          let session = client.agent.connection.sessions[0];
-          session.token = 'invalid';
-          client.agent.connection.sessions = [session];
-          return client.list(process.env.LAYOUT, { limit: 1 });
-        })
-        .catch(error => error)
-    )
-      .to.eventually.be.an('object')
-      .with.any.keys('message');
-  });
-
   it('should accept no agent configuration', () => {
     let client = Filemaker.create({
       database: process.env.DATABASE,
