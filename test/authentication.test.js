@@ -69,11 +69,7 @@ describe('Authentication Capabilities', () => {
           client.create(process.env.LAYOUT, {});
           return token;
         })
-        .then(
-          token =>
-            client.agent.connection.sessions.length === 1 &&
-            token === client.agent.connection.sessions[0].token
-        )
+        .then(token => token === client.agent.connection.sessions[0].token)
     ).to.eventually.be.true;
   });
 

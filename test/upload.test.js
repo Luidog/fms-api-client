@@ -227,14 +227,7 @@ describe('File Upload Capabilities', () => {
             record.recordId
           )
         )
-        .then(response => {
-          console.log(response);
-          return response;
-        })
-        .catch(error => {
-          console.log(error);
-          return error;
-        })
+        .catch(error => error)
     )
       .to.eventually.be.a('object')
       .that.has.all.keys('code', 'message');

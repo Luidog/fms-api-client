@@ -19,14 +19,6 @@ const httpProxy = require('http-proxy');
 
 const proxy = httpProxy.createProxyServer();
 
-http
-  .createServer(function(req, res) {
-    proxy.web(req, res, {
-      target: process.env.SERVER
-    });
-  })
-  .listen(9000);
-
 const { Filemaker } = require('../index.js');
 
 chai.use(chaiAsPromised);
@@ -59,6 +51,30 @@ describe('Agent Configuration Capabilities', () => {
       .logout()
       .then(response => done())
       .catch(error => done());
+  });
+
+  it('should remove invalid sessions', () => {
+    let client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      usage: true
+    });
+    return expect(
+      client
+        .save()
+        .then(client => client.login())
+        .then(() => {
+          let session = client.agent.connection.sessions[0];
+          session.token = 'invalid';
+          client.agent.connection.sessions = [session];
+          return client.list(process.env.LAYOUT, { limit: 1 });
+        })
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message');
   });
 
   it('should accept no agent configuration', () => {
@@ -109,8 +125,10 @@ describe('Agent Configuration Capabilities', () => {
       client
         .save()
         .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
-        .then(response => global.FMS_API_CLIENT.AGENTS)
-    ).to.eventually.be.an('array').that.is.empty;
+        .then(response => global.FMS_API_CLIENT)
+    )
+      .to.eventually.be.an('object')
+      .to.not.contain.key('AGENTS');
   });
 
   it('should adjust the request protocol according to the server', () => {
@@ -203,7 +221,8 @@ describe('Agent Configuration Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => global.FMS_API_CLIENT.AGENTS[client.agent.global])
+        .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
+        .then(response => global.FMS_API_CLIENT.AGENTS[client.agent.global])
     ).to.eventually.be.an('object');
   });
 
@@ -219,7 +238,8 @@ describe('Agent Configuration Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => {
+        .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
+        .then(response => {
           globalId = client.agent.global;
           return client.destroy();
         })
@@ -265,6 +285,60 @@ describe('Agent Configuration Capabilities', () => {
       .and.property('agent')
       .to.be.a('object')
       .to.have.any.keys('rejectUnauthorized');
+  });
+
+  it('should use a proxy if one is set', () => {
+    http
+      .createServer(function(req, res) {
+        proxy.web(req, res, {
+          target: process.env.SERVER
+        });
+      })
+      .listen(9000);
+
+    client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      usage: true,
+      agent: { rejectUnauthorized: false },
+      proxy: {
+        host: '127.0.0.1',
+        port: 9000
+      }
+    });
+    return expect(
+      client
+        .save()
+        .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('data');
+  });
+
+  it('should require the http protocol', () => {
+    let client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      usage: true
+    });
+    return expect(
+      client
+        .save()
+        .then(client => {
+          client.agent.connection.server = process.env.SERVER.replace(
+            'https://',
+            'fmp://'
+          );
+          return client.login();
+        })
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .with.any.keys('message');
   });
 
   it('should accept a timeout property', () => {

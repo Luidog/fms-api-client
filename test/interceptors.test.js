@@ -67,7 +67,7 @@ describe('Request Interceptor Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => client.authenticate())
+        .then(client => client.login())
         .catch(error => error)
     )
       .to.eventually.be.an('object')
@@ -81,7 +81,10 @@ describe('Request Interceptor Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => client.authenticate())
+        .then(client => {
+          client.agent.connection.sessions = [];
+          return client.login();
+        })
         .catch(error => error)
     )
       .to.eventually.be.an('object')
@@ -101,7 +104,7 @@ describe('Request Interceptor Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => client.authenticate())
+        .then(client => client.login())
         .catch(error => error)
     )
       .to.eventually.be.an('object')
@@ -121,7 +124,7 @@ describe('Request Interceptor Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => client.authenticate())
+        .then(client => client.login())
         .catch(error => error)
     )
       .to.eventually.be.an('object')

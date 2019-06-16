@@ -74,7 +74,6 @@ class Connection extends EmbeddedDocument {
 
   available() {
     let session = _.find(this.sessions, session => session.valid());
-
     return typeof session === 'undefined' ? false : session;
   }
 
@@ -92,29 +91,6 @@ class Connection extends EmbeddedDocument {
     this.starting = false;
     this.sessions.push(Session.create({ token: data.response.token }));
     return data.response.token;
-  }
-
-  /**
-   * @method generate
-   * @memberof Connection
-   * @public
-   * @description Retrieves an authentication token from the Data API. This promise method will check for
-   * a zero string in the response errorCode before resolving. If an http error code or a non zero response error code.
-   * is returned this will reject.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   * response.
-   */
-
-  generate() {
-    return new Promise((resolve, reject) => {
-      let session = _.find(this.sessions, session => session.valid());
-
-      typeof session !== 'object'
-        ? this.start()
-            .then(token => resolve(token))
-            .catch(error => reject(error))
-        : resolve(session.token);
-    });
   }
 
   start() {

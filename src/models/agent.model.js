@@ -4,6 +4,7 @@ const https = require('https');
 const http = require('http');
 const uuidv4 = require('uuid/v4');
 const { EmbeddedDocument } = require('marpat');
+const _ = require('lodash');
 const { deepMapKeys } = require('../utilities');
 const { Connection } = require('./connection.model');
 
@@ -126,7 +127,6 @@ class Agent extends EmbeddedDocument {
 
   preInit({ agent, protocol, connection }) {
     this.connection = Connection.create(connection);
-
     if (agent) this._globalize(protocol, agent);
   }
 
@@ -222,8 +222,8 @@ class Agent extends EmbeddedDocument {
       Object.assign(
         data,
         this.timeout ? { timeout: this.timeout } : {},
-        this.proxy ? { proxy: this.proxy } : {},
-        this.agent ? this._localize() : {},
+        _.isEmpty(this.proxy) ? {} : { proxy: this.proxy },
+        _.isEmpty(this.agent) ? {} : this._localize(),
         parameters.request || {}
       )
     );
@@ -302,16 +302,12 @@ class Agent extends EmbeddedDocument {
       ...value
     } = request;
 
-    if (request.url.includes('/containers/')) {
-      return request;
-    }
-
-    let sanitized = deepMapKeys(value, (value, key) =>
-      key.replace(/\./g, '{{dot}}')
-    );
+    let modified = request.url.includes('/containers/')
+      ? request
+      : deepMapKeys(value, (value, key) => key.replace(/\./g, '{{dot}}'));
 
     return {
-      ...sanitized,
+      ...modified,
       transformRequest,
       transformResponse,
       adapter,
@@ -358,9 +354,6 @@ class Agent extends EmbeddedDocument {
   handleError(error) {
     if (error.code) {
       return Promise.reject({ code: error.code, message: error.message });
-    }
-    if (!error.response && !error.code) {
-      return Promise.reject({ message: error.message, code: '1630' });
     } else if (
       error.response.status === 502 ||
       typeof error.response.data !== 'object'
@@ -369,18 +362,9 @@ class Agent extends EmbeddedDocument {
         message: 'The Data API is currently unavailable',
         code: '1630'
       });
-    } else if (
-      error.response.status === 400 &&
-      error.request.path.includes('RCType=EmbeddedRCFileProcessor')
-    ) {
-      return Promise.reject({
-        message: 'FileMaker WPE rejected the request',
-        code: '9'
-      });
-    } else if (error.response.data.messages[0].code === '952') {
-      this.connection.clear(error.response.config.headers.Authorization);
-      return Promise.reject(error.response.data.messages[0]);
     } else {
+      if (error.response.data.messages[0].code === '952')
+        this.connection.clear(error.response.config.headers.Authorization);
       return Promise.reject(error.response.data.messages[0]);
     }
   }
@@ -402,7 +386,7 @@ class Agent extends EmbeddedDocument {
             resolved.resolve(
               Object.assign(
                 this.connection.authentication(request),
-                this._localize()
+                _.isEmpty(this.agent) ? {} : this._localize()
               )
             )
           );
@@ -411,12 +395,6 @@ class Agent extends EmbeddedDocument {
           this.connection.sessions.length <= this.concurrency &&
           !this.connection.starting
         ) {
-          // console.log('watcher', {
-          //   concurrency: this.concurrency,
-          //   pending: this.pending.length,
-          //   sessions: this.connection.sessions.length,
-          //   starting: this.connection.starting
-          // });
           this.connection.start();
         }
       }

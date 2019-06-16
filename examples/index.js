@@ -23,6 +23,19 @@ environment.config({ path: './test/.env' });
 
 varium(process.env, './test/env.manifest');
 
+const http = require('http');
+const httpProxy = require('http-proxy');
+
+const proxy = httpProxy.createProxyServer();
+
+http
+  .createServer(function(req, res) {
+    proxy.web(req, res, {
+      target: process.env.SERVER
+    });
+  })
+  .listen(9000);
+
 //#datastore-connect-example
 const { connect } = require('marpat');
 connect('nedb://memory')
@@ -36,7 +49,10 @@ connect('nedb://memory')
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
       usage: process.env.CLIENT_USAGE_TRACKING,
-      agent: { rejectUnauthorized: false }
+      proxy: {
+        host: '127.0.0.1',
+        port: 9000
+      }
     });
     //#
     //#client-save-example

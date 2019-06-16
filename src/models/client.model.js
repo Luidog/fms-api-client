@@ -139,27 +139,6 @@ class Client extends Document {
   }
 
   /**
-   * @method authenticate
-   * @memberof Client
-   * @private
-   * @description Checks the private connection schema for a token and if the current time is between when that token was
-   * issued and when it will expire. If the connection token is not a string (its empty) or the current time is
-   * not between when the token is issued and the time it will expire this method calls the private
-   * is returned this promise method will reject.
-   * @see {@method Connnection#generate}
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   *
-   */
-
-  authenticate() {
-    return this.agent
-      .login()
-      .then(body => this._save(body))
-      .then(body => this.data.outgoing(body))
-      .then(body => body.response.token);
-  }
-
-  /**
    * @method login
    * @memberof Client
    * @public
@@ -173,6 +152,9 @@ class Client extends Document {
     return this.agent.login().then(token => ({
       token
     }));
+    // .then(body => this._save(body))
+    // .then(body => this.data.outgoing(body))
+    // .then(body => body.response.token);
   }
 
   /**
@@ -186,8 +168,8 @@ class Client extends Document {
    */
 
   logout() {
-    return this.agent.connection
-      .end()
+    return this.agent
+      .logout()
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body));
   }
