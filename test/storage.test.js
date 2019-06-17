@@ -45,31 +45,13 @@ describe('Storage', () => {
   it('should allow an instance to be created', () => {
     return expect(Promise.resolve(client))
       .to.eventually.be.an('object')
-      .that.has.all.keys(
-        '_schema',
-        '_id',
-        'data',
-        'agent',
-        'name',
-        'database',
-        'server',
-        'version'
-      );
+      .that.has.all.keys('_schema', '_id', 'data', 'agent', 'name');
   });
 
   it('should allow an instance to be saved.', () => {
     return expect(client.save())
       .to.eventually.be.an('object')
-      .that.has.all.keys(
-        '_schema',
-        '_id',
-        'data',
-        'agent',
-        'name',
-        'database',
-        'server',
-        'version'
-      );
+      .that.has.all.keys('_schema', '_id', 'data', 'agent', 'name');
   });
 
   it('should reject if a client can not be validated', () => {
@@ -87,16 +69,7 @@ describe('Storage', () => {
   it('should allow an instance to be recalled', () => {
     return expect(Filemaker.findOne({}))
       .to.eventually.be.an('object')
-      .that.has.all.keys(
-        '_schema',
-        '_id',
-        'data',
-        'agent',
-        'name',
-        'database',
-        'server',
-        'version'
-      );
+      .that.has.all.keys('_schema', '_id', 'data', 'agent', 'name');
   });
 
   it('should allow instances to be listed', () => {
