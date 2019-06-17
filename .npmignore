@@ -26,7 +26,7 @@ coverage
 docs/
 examples/
 assets/
-tests/
+test/
 .travis.yml
 .eslintrc.js
 .jsdoc.js
