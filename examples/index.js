@@ -11,16 +11,17 @@ const { gets } = require('./get.examples');
 const { lists } = require('./list.examples');
 const { finds } = require('./find.examples');
 const { edits } = require('./edit.examples');
-const { scripts } = require('./script.examples');
+const { script } = require('./script.examples');
+const { scripts } = require('./scripts.examples');
 const { globals } = require('./globals.examples');
 const { deletes } = require('./delete.examples');
 const { uploads } = require('./upload.examples');
 const { utilities } = require('./utility.examples');
 const { datastore } = require('./datastore.examples');
 
-environment.config({ path: './tests/.env' });
+environment.config({ path: './test/.env' });
 
-varium(process.env, './tests/env.manifest');
+varium(process.env, './test/env.manifest');
 
 //#datastore-connect-example
 const { connect } = require('marpat');
@@ -34,8 +35,7 @@ connect('nedb://memory')
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
-      usage: process.env.CLIENT_USAGE_TRACKING,
-      agent: { rejectUnauthorized: false }
+      usage: process.env.CLIENT_USAGE_TRACKING
     });
     //#
     //#client-save-example
@@ -50,6 +50,7 @@ connect('nedb://memory')
   .then(client => finds(client))
   .then(client => edits(client))
   .then(client => scripts(client))
+  .then(client => script(client))
   .then(client => globals(client))
   .then(client => deletes(client))
   .then(client => uploads(client))

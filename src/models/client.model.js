@@ -1,19 +1,19 @@
 'use strict';
 
 const fs = require('fs');
-const { Document } = require('marpat');
 const FormData = require('form-data');
 const intoStream = require('into-stream');
-const { Connection } = require('./connection.model');
+const { Document } = require('marpat');
 const { Data } = require('./data.model');
-const { Agent } = require('./agent.model.js');
+const { Agent } = require('./agent.model');
 const {
   toArray,
   namespace,
-  isJson,
+  isJSON,
   isEmpty,
   toStrings,
   sanitizeParameters,
+  pick,
   parseScriptResult,
   setData,
   urls
@@ -24,7 +24,6 @@ const { productInfo, databases } = require('../services');
 /**
  * @global FMS_API_CLIENT
  */
-
 global.FMS_API_CLIENT = {};
 
 /**
@@ -83,15 +82,7 @@ class Client extends Document {
         type: Data,
         required: true
       },
-      /** The client application connection object.
-       * @public
-       * @member Client#connection
-       * @type Object
-       */
-      connection: {
-        type: Connection,
-        required: true
-      },
+
       /** The client agent object.
        * @public
        * @member Client#agent
@@ -115,8 +106,7 @@ class Client extends Document {
     let { agent, timeout, usage, proxy, ...connection } = data;
     let protocol = data.server.startsWith('https') ? 'https' : 'http';
     this.data = Data.create({ track: usage === undefined });
-    this.connection = Connection.create(connection);
-    this.agent = Agent.create({ agent, proxy, timeout, protocol });
+    this.agent = Agent.create({ agent, proxy, timeout, protocol, connection });
   }
 
   /**
@@ -129,8 +119,9 @@ class Client extends Document {
 
   preDelete() {
     return new Promise((resolve, reject) =>
-      this.logout()
-        .then(response => resolve(response))
+      this.agent.connection
+        .end()
+        .then(response => resolve())
         .catch(error => resolve(error))
     );
   }
@@ -149,37 +140,6 @@ class Client extends Document {
   }
 
   /**
-   * @method authenticate
-   * @memberof Client
-   * @private
-   * @description Checks the private connection schema for a token and if the current time is between when that token was
-   * issued and when it will expire. If the connection token is not a string (its empty) or the current time is
-   * not between when the token is issued and the time it will expire this method calls the private
-   * is returned this promise method will reject.
-   * @see {@method Connnection#generate}
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   *
-   */
-
-  authenticate() {
-    return new Promise((resolve, reject) => {
-      if (this.connection.valid()) {
-        resolve(this.connection.token);
-      } else {
-        this.connection
-          .generate(
-            this.agent,
-            urls.authentication(this.server, this.database, this.version)
-          )
-          .then(body => this._saveState(body))
-          .then(body => this.data.outgoing(body))
-          .then(body => resolve(body.response.token))
-          .catch(error => reject(error));
-      }
-    });
-  }
-
-  /**
    * @method login
    * @memberof Client
    * @public
@@ -190,183 +150,9 @@ class Client extends Document {
    */
 
   login() {
-    return this.authenticate().then(token => ({
+    return this.agent.login().then(token => ({
       token
     }));
-  }
-  /**
-   * @method productInfo
-   * @memberof Client
-   * @public
-   * @description Retrieves information about the FileMaker Server or FileMaker Cloud host.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   *
-   */
-  productInfo() {
-    return new Promise((resolve, reject) =>
-      productInfo(this.server, this.version)
-        .then(response => resolve(response))
-        .catch(error => reject(error))
-    );
-  }
-
-  /**
-   * @method databases
-   * @memberof Client
-   * @public
-   * @description Retrieves information about the FileMaker Server's hosted databases.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   */
-  databases() {
-    return databases(this.server, this.credentials, this.version);
-  }
-
-  /**
-   * @method layouts
-   * @memberof Client
-   * @public
-   * @description Retrieves information about the FileMaker Server's hosted databases.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   */
-  layouts(parameters = {}) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.layouts(this.server, this.database, this.version),
-              method: 'get',
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            },
-            parameters
-          )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => parseScriptResult(body))
-        .then(response => resolve(response))
-        .catch(error => reject(this._checkToken(error)))
-    );
-  }
-
-  /**
-   * @method scripts
-   * @memberof Client
-   * @public
-   * @description Retrieves information about the FileMaker Server's hosted databases.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   */
-  scripts(parameters = {}) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.scripts(this.server, this.database, this.version),
-              method: 'get',
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            },
-            parameters
-          )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => resolve(body.response))
-        .catch(error => reject(this._checkToken(error)))
-    );
-  }
-
-  /**
-   * @method layout
-   * @memberof Client
-   * @public
-   * @description Retrieves information about the FileMaker Server's hosted databases.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   */
-  layout(layout, parameters = {}) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.layout(
-                this.server,
-                this.database,
-                layout,
-                this.version
-              ),
-              method: 'get',
-              params: toStrings(sanitizeParameters(parameters, ['recordId'])),
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            },
-            parameters
-          )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => resolve(body.response))
-        .catch(error => reject(this._checkToken(error)))
-    );
-  }
-
-  /**
-   * @method duplicate
-   * @memberof Client
-   * @public
-   * @description Retrieves information about the FileMaker Server's hosted databases.
-   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   */
-  duplicate(layout, recordId, parameters = {}) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.duplicate(
-                this.server,
-                this.database,
-                layout,
-                recordId,
-                this.version
-              ),
-              method: 'post',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-              },
-              data: sanitizeParameters(parameters, [
-                'script',
-                'script.param',
-                'script.prerequest',
-                'script.prerequest.param',
-                'script.presort',
-                'script.presort.param',
-                'request'
-              ])
-            },
-            parameters
-          )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => parseScriptResult(body))
-        .then(response => resolve(response))
-        .catch(error => reject(this._checkToken(error)))
-    );
   }
 
   /**
@@ -380,55 +166,153 @@ class Client extends Document {
    */
 
   logout() {
-    return new Promise((resolve, reject) =>
-      this.connection.valid()
-        ? this.agent
-            .request({
-              url: urls.logout(
-                this.server,
-                this.database,
-                this.connection.token,
-                this.version
-              ),
-              method: 'delete',
-              data: {}
-            })
-            .then(response => response.data)
-            .then(body => this.data.outgoing(body))
-            .then(body => this.connection.clear(body))
-            .then(body => this._saveState(body))
-            .then(body => resolve(body.messages[0]))
-            .catch(error => reject(this._checkToken(error)))
-        : reject({ message: 'No session to log out.' })
+    return this.agent
+      .logout()
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body));
+  }
+  /**
+   * @method productInfo
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server or FileMaker Cloud host.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   *
+   */
+  productInfo() {
+    return productInfo(this.server, this.version);
+  }
+
+  /**
+   * @method databases
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @see Metadata Service#databases
+   * @param {Object} [credentials] Credentials to use when listing server databases
+   * @param {String} [credentials.user='configured user'] Credentials to use when listing server databases
+   * @param {String} [credentials.password='configured password'] Credentials to use when listing server databases
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  databases(credentials, version) {
+    return databases(
+      this.server,
+      credentials || this.agent.connection.credentials,
+      this.version
     );
   }
 
   /**
-   * @method _checkToken
-   * @private
-   * @description The _checkToken method will check the error based to it
-   * for an expired property and if found will delete that property, clear
-   * the current token and save the client. This method is used to discard
-   * tokens which have been invalidated before their 15 minute expiration
-   * lifespan is exceed.
-   * @param {Object} error The layout to use when acessing a record.
-   * @return {Object} The error object with the expired key removed
+   * @method layouts
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
-
-  _checkToken(error) {
-    if (
-      error.expired ||
-      error.message === 'Invalid FileMaker Data API token (*)'
-    ) {
-      delete error.expired;
-      this.connection.clear();
-      this.save();
-    }
-    return error;
+  layouts(parameters = {}) {
+    return this.agent
+      .request(
+        {
+          url: urls.layouts(this.server, this.database, this.version),
+          method: 'get'
+        },
+        parameters
+      )
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => body.response);
   }
 
   /**
-   * @method saveState
+   * @method scripts
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  scripts(parameters = {}) {
+    return this.agent
+      .request(
+        {
+          url: urls.scripts(this.server, this.database, this.version),
+          method: 'get'
+        },
+        parameters
+      )
+
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => body.response);
+  }
+
+  /**
+   * @method layout
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  layout(layout, parameters = {}) {
+    return this.agent
+      .request(
+        {
+          url: urls.layout(this.server, this.database, layout, this.version),
+          method: 'get',
+          params: toStrings(sanitizeParameters(parameters, ['recordId']))
+        },
+        parameters
+      )
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => body.response);
+  }
+
+  /**
+   * @method duplicate
+   * @memberof Client
+   * @public
+   * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  duplicate(layout, recordId, parameters = {}) {
+    return this.agent
+      .request(
+        {
+          url: urls.duplicate(
+            this.server,
+            this.database,
+            layout,
+            recordId,
+            this.version
+          ),
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: sanitizeParameters(parameters, [
+            'script',
+            'script.param',
+            'script.prerequest',
+            'script.prerequest.param',
+            'script.presort',
+            'script.presort.param',
+            'request'
+          ])
+        },
+        parameters
+      )
+
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => parseScriptResult(body));
+  }
+
+  /**
+   * @method _save
    * @private
    * @memberof Client
    * @description Triggers a save and returns the response. This is responsible for ensuring the documents are up to date.
@@ -437,7 +321,7 @@ class Client extends Document {
    *
    */
 
-  _saveState(response) {
+  _save(response) {
     this.save();
     return response;
   }
@@ -455,50 +339,38 @@ class Client extends Document {
    */
 
   create(layout, data = {}, parameters = {}) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.create(
-                this.server,
-                this.database,
-                layout,
-                this.version
-              ),
-              method: 'post',
-              headers: {
-                authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              },
-              data: Object.assign(
-                sanitizeParameters(parameters, [
-                  'portalData',
-                  'script',
-                  'script.param',
-                  'script.prerequest',
-                  'script.prerequest.param',
-                  'script.presort',
-                  'script.presort.param',
-                  'request'
-                ]),
-                this.data.incoming(setData(data))
-              )
-            },
-            parameters
+    return this.agent
+      .request(
+        {
+          url: urls.create(this.server, this.database, layout, this.version),
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: Object.assign(
+            sanitizeParameters(parameters, [
+              'portalData',
+              'script',
+              'script.param',
+              'script.prerequest',
+              'script.prerequest.param',
+              'script.presort',
+              'script.presort.param',
+              'request'
+            ]),
+            this.data.incoming(setData(data))
           )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => parseScriptResult(body))
-        .then(response =>
-          parameters.merge ? Object.assign(data, response) : response
-        )
-        .then(response => resolve(response))
-        .catch(error => reject(this._checkToken(error)))
-    );
+        },
+        parameters
+      )
+
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => parseScriptResult(body))
+      .then(response =>
+        parameters.merge ? Object.assign(data, response) : response
+      );
   }
 
   /**
@@ -515,54 +387,47 @@ class Client extends Document {
    */
 
   edit(layout, recordId, data, parameters = {}) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.update(
-                this.server,
-                this.database,
-                layout,
-                recordId,
-                this.version
-              ),
-              method: 'patch',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              },
-              data: Object.assign(
-                sanitizeParameters(parameters, [
-                  'portalData',
-                  'modId',
-                  'script',
-                  'script.param',
-                  'script.prerequest',
-                  'script.prerequest.param',
-                  'script.presort',
-                  'script.presort.param',
-                  'request'
-                ]),
-                this.data.incoming(setData(data))
-              )
-            },
-            parameters
+    return this.agent
+      .request(
+        {
+          url: urls.update(
+            this.server,
+            this.database,
+            layout,
+            recordId,
+            this.version
+          ),
+          method: 'patch',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: Object.assign(
+            sanitizeParameters(parameters, [
+              'portalData',
+              'modId',
+              'script',
+              'script.param',
+              'script.prerequest',
+              'script.prerequest.param',
+              'script.presort',
+              'script.presort.param',
+              'request'
+            ]),
+            this.data.incoming(setData(data))
           )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => parseScriptResult(body))
-        .then(body =>
-          parameters.merge
-            ? Object.assign(data, { recordId: recordId }, body)
-            : body
-        )
-        .then(response => resolve(response))
-        .catch(error => reject(this._checkToken(error)))
-    );
+        },
+        parameters
+      )
+
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => parseScriptResult(body))
+      .then(body =>
+        parameters.merge
+          ? Object.assign(data, { recordId: recordId }, body)
+          : body
+      );
   }
 
   /**
@@ -577,43 +442,33 @@ class Client extends Document {
    */
 
   delete(layout, recordId, parameters = {}) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.delete(
-                this.server,
-                this.database,
-                layout,
-                recordId,
-                this.version
-              ),
-              method: 'delete',
-              headers: {
-                Authorization: `Bearer ${token}`
-              },
-              data: sanitizeParameters(parameters, [
-                'script',
-                'script.param',
-                'script.prerequest',
-                'script.prerequest.param',
-                'script.presort',
-                'script.presort.param',
-                'request'
-              ])
-            },
-            parameters
-          )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => parseScriptResult(body))
-        .then(response => resolve(response))
-        .catch(error => reject(this._checkToken(error)))
-    );
+    return this.agent
+      .request(
+        {
+          url: urls.delete(
+            this.server,
+            this.database,
+            layout,
+            recordId,
+            this.version
+          ),
+          method: 'delete',
+          data: sanitizeParameters(parameters, [
+            'script',
+            'script.param',
+            'script.prerequest',
+            'script.prerequest.param',
+            'script.presort',
+            'script.presort.param',
+            'request'
+          ])
+        },
+        parameters
+      )
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => parseScriptResult(body));
   }
 
   /**
@@ -629,49 +484,39 @@ class Client extends Document {
    */
 
   get(layout, recordId, parameters = {}) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.get(
-                this.server,
-                this.database,
-                layout,
-                recordId,
-                this.version
-              ),
-              method: 'get',
-              headers: {
-                Authorization: `Bearer ${token}`
-              },
-              params: toStrings(
-                sanitizeParameters(namespace(parameters), [
-                  'script',
-                  'script.param',
-                  'script.prerequest',
-                  'script.prerequest.param',
-                  'script.presort',
-                  'script.presort.param',
-                  'layout.response',
-                  'portal',
-                  '_offset.*',
-                  '_limit.*',
-                  'request'
-                ])
-              )
-            },
-            parameters
+    return this.agent
+      .request(
+        {
+          url: urls.get(
+            this.server,
+            this.database,
+            layout,
+            recordId,
+            this.version
+          ),
+          method: 'get',
+          params: toStrings(
+            sanitizeParameters(namespace(parameters), [
+              'script',
+              'script.param',
+              'script.prerequest',
+              'script.prerequest.param',
+              'script.presort',
+              'script.presort.param',
+              'layout.response',
+              'portal',
+              '_offset.*',
+              '_limit.*',
+              'request'
+            ])
           )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => parseScriptResult(body))
-        .then(response => resolve(response))
-        .catch(error => reject(this._checkToken(error)))
-    );
+        },
+        parameters
+      )
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => parseScriptResult(body));
   }
 
   /**
@@ -686,47 +531,39 @@ class Client extends Document {
    */
 
   list(layout, parameters = {}) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.list(this.server, this.database, layout, this.version),
-              method: 'get',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              },
-              params: toStrings(
-                sanitizeParameters(namespace(parameters), [
-                  '_limit',
-                  '_offset',
-                  '_sort',
-                  'portal',
-                  'script',
-                  'script.param',
-                  'script.prerequest',
-                  'script.prerequest.param',
-                  'script.presort',
-                  'script.presort.param',
-                  'layout.response',
-                  '_offset.*',
-                  '_limit.*',
-                  'request'
-                ])
-              )
-            },
-            parameters
+    return this.agent
+      .request(
+        {
+          url: urls.list(this.server, this.database, layout, this.version),
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          params: toStrings(
+            sanitizeParameters(namespace(parameters), [
+              '_limit',
+              '_offset',
+              '_sort',
+              'portal',
+              'script',
+              'script.param',
+              'script.prerequest',
+              'script.prerequest.param',
+              'script.presort',
+              'script.presort.param',
+              'layout.response',
+              '_offset.*',
+              '_limit.*',
+              'request'
+            ])
           )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => parseScriptResult(body))
-        .then(response => resolve(response))
-        .catch(error => reject(this._checkToken(error)))
-    );
+        },
+        parameters
+      )
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => parseScriptResult(body));
   }
 
   /**
@@ -743,43 +580,40 @@ class Client extends Document {
 
   find(layout, query, parameters = {}) {
     return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.find(this.server, this.database, layout, this.version),
-              method: 'post',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              },
-              data: Object.assign(
-                { query: toStrings(toArray(query)) },
-                sanitizeParameters(parameters, [
-                  'limit',
-                  'sort',
-                  'offset',
-                  'portal',
-                  'script',
-                  'script.param',
-                  'script.prerequest',
-                  'script.prerequest.param',
-                  'script.presort',
-                  'script.presort.param',
-                  'layout.response',
-                  'offset.*',
-                  'limit.*',
-                  'request'
-                ])
-              )
+      this.agent
+        .request(
+          {
+            url: urls.find(this.server, this.database, layout, this.version),
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json'
             },
-            parameters
-          )
+            data: Object.assign(
+              { query: toStrings(toArray(query)) },
+              sanitizeParameters(parameters, [
+                'limit',
+                'sort',
+                'offset',
+                'portal',
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'layout.response',
+                'offset.*',
+                'limit.*',
+                'request'
+              ])
+            )
+          },
+          parameters
         )
+
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
+        .then(body => this._save(body))
         .then(body => parseScriptResult(body))
         .then(response => resolve(response))
         .catch(error => {
@@ -788,7 +622,7 @@ class Client extends Document {
                 data: [],
                 message: 'No records match the request'
               })
-            : reject(this._checkToken(error));
+            : reject(error);
         })
     );
   }
@@ -803,29 +637,22 @@ class Client extends Document {
    */
 
   globals(data, parameters) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.globals(this.server, this.database, this.version),
-              method: 'patch',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              },
-              data: { globalFields: toStrings(data) }
-            },
-            parameters
-          )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body => resolve(body.response))
-        .catch(error => reject(this._checkToken(error)))
-    );
+    return this.agent
+      .request(
+        {
+          url: urls.globals(this.server, this.database, this.version),
+          method: 'patch',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: { globalFields: toStrings(data) }
+        },
+        parameters
+      )
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => body.response);
   }
 
   /**
@@ -871,38 +698,34 @@ class Client extends Document {
       form.append('upload', stream);
       resolveRecordId()
         .then(resolvedId =>
-          this.authenticate()
-            .then(token =>
-              this.agent.request(
-                {
-                  url: urls.upload(
-                    this.server,
-                    this.database,
-                    layout,
-                    resolvedId,
-                    containerFieldName,
-                    parameters.fieldRepetition,
-                    this.version
-                  ),
-                  method: 'post',
-                  data: form,
-                  headers: {
-                    ...form.getHeaders(),
-                    Authorization: `Bearer ${token}`
-                  }
-                },
-                parameters
-              )
+          this.agent
+            .request(
+              {
+                url: urls.upload(
+                  this.server,
+                  this.database,
+                  layout,
+                  resolvedId,
+                  containerFieldName,
+                  parameters.fieldRepetition,
+                  this.version
+                ),
+                method: 'post',
+                data: form,
+                headers: {
+                  ...form.getHeaders()
+                }
+              },
+              parameters
             )
             .then(response => response.data)
             .then(body => this.data.outgoing(body))
-            .then(body => this.connection.extend(body))
-            .then(body => this._saveState(body))
+            .then(body => this._save(body))
             .then(body => parseScriptResult(body))
             .then(response => Object.assign(response, { recordId: resolvedId }))
         )
         .then(response => resolve(response))
-        .catch(error => reject(this._checkToken(error)));
+        .catch(error => reject(error));
     });
   }
 
@@ -919,53 +742,46 @@ class Client extends Document {
    * @return {Promise}           returns a promise that will either resolve or reject based on the Data API.
    */
 
-  run(layout, scripts, parameters) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.list(this.server, this.database, layout, this.version),
-              method: 'get',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              },
-              params: sanitizeParameters(
-                Object.assign(
-                  Array.isArray(scripts)
-                    ? { scripts: [scripts] }
-                    : isJson(scripts)
-                    ? { scripts: scripts }
-                    : { script: scripts },
-                  namespace({ limit: 1 })
-                ),
-                [
-                  'script',
-                  'script.param',
-                  'script.prerequest',
-                  'script.prerequest.param',
-                  'script.presort',
-                  'script.presort.param'
-                ]
-              )
-            },
-            parameters
+  run(layout, scripts, parameters, request) {
+    return this.agent
+      .request(
+        {
+          url: urls.list(this.server, this.database, layout, this.version),
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          params: sanitizeParameters(
+            Object.assign(
+              Array.isArray(scripts)
+                ? { scripts }
+                : isJSON(scripts)
+                ? { scripts: [scripts] }
+                : { script: scripts },
+              typeof scripts === 'string' && typeof parameters !== 'undefined'
+                ? { 'script.param': parameters }
+                : {},
+              namespace({ limit: 1 })
+            ),
+            [
+              'script',
+              'script.param',
+              'script.prerequest',
+              'script.prerequest.param',
+              'script.presort',
+              'script.presort.param',
+              '_limit'
+            ]
           )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body =>
-          resolve({
-            result: isJson(body.response.scriptResult)
-              ? JSON.parse(body.response.scriptResult)
-              : body.response.scriptResult
-          })
-        )
-        .catch(error => reject(this._checkToken(error)))
-    );
+        },
+        typeof scripts === 'string' && typeof parameters !== 'undefined'
+          ? request
+          : parameters
+      )
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => pick(parseScriptResult(body), 'scriptResult'));
   }
 
   /**
@@ -981,48 +797,39 @@ class Client extends Document {
    */
 
   script(layout, script, param = {}, parameters) {
-    return new Promise((resolve, reject) =>
-      this.authenticate()
-        .then(token =>
-          this.agent.request(
-            {
-              url: urls.script(
-                this.server,
-                this.database,
-                layout,
-                script,
-                this.version
-              ),
-              method: 'get',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              },
-              params: !isEmpty(param)
-                ? {
-                    'script.param': isJson(param)
-                      ? JSON.stringify(param)
-                      : param.toString()
-                  }
-                : param
-            },
-            parameters
-          )
-        )
-        .then(response => response.data)
-        .then(body => this.data.outgoing(body))
-        .then(body => this.connection.extend(body))
-        .then(body => this._saveState(body))
-        .then(body =>
-          resolve({
-            ...body.response,
-            scriptResult: isJson(body.response.scriptResult)
-              ? JSON.parse(body.response.scriptResult)
-              : body.response.scriptResult
-          })
-        )
-        .catch(error => reject(this._checkToken(error)))
-    );
+    return this.agent
+      .request(
+        {
+          url: urls.script(
+            this.server,
+            this.database,
+            layout,
+            script,
+            this.version
+          ),
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          params: !isEmpty(param)
+            ? {
+                'script.param': isJSON(param)
+                  ? JSON.stringify(param)
+                  : param.toString()
+              }
+            : param
+        },
+        parameters
+      )
+      .then(response => response.data)
+      .then(body => this.data.outgoing(body))
+      .then(body => this._save(body))
+      .then(body => ({
+        ...body.response,
+        scriptResult: isJSON(body.response.scriptResult)
+          ? JSON.parse(body.response.scriptResult)
+          : body.response.scriptResult
+      }));
   }
 }
 

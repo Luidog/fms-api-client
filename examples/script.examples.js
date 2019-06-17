@@ -9,7 +9,7 @@ const triggerScript = client =>
     .then(result => log('script-trigger-example', result));
 //#
 
-const scripts = client =>
+const script = client =>
   Promise.all([triggerScript(client)]).then(responses => client);
 
-module.exports = { scripts };
+module.exports = { script };

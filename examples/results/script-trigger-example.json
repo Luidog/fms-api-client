@@ -1,5 +1,6 @@
 {
-  "result": {
+  "scriptResult": {
     "answer": "Han shot first"
-  }
+  },
+  "scriptError": "0"
 }

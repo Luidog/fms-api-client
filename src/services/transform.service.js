@@ -3,15 +3,16 @@
 const _ = require('lodash');
 
 /**
- * @module Transformation Service
+ * @class Transformation Service
  */
 
 /**
- * @method transformRelatedTables
+ * @function transformRelatedTables
  * @public
- * @description This method tranforms an object given by turning related tables into objects
+ * @memberof Transformation Service
+ * @description This function tranforms an object given by turning related tables into objects
  * @param  {Object} object The response recieved from the FileMaker DAPI.
- * @return {Object}      A json object containing the selected data from the Data API Response.
+ * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
 
 const transformRelatedTables = (object, parentKey) =>
@@ -37,13 +38,14 @@ const transformRelatedTables = (object, parentKey) =>
   );
 
 /**
- * @method transformPortals
+ * @function transformPortals
  * @private
- * @description this method transforms portals by mapping keys found in the portalData object into the
- * transformRelatedTables function. This method passes the parent portal key to properly transform
+ * @memberof Transformation Service
+ * @description this function transforms portals by mapping keys found in the portalData object into the
+ * transformRelatedTables function. This function passes the parent portal key to properly transform
  * portal data related to the main portal table occurance.
  * @param  {Object} object The response recieved from the FileMaker DAPI.
- * @return {Object}      A json object containing the selected data from the Data API Response.
+ * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
 
 const transformPortals = portals =>
@@ -54,14 +56,15 @@ const transformPortals = portals =>
   });
 
 /**
- * @method transformObject
+ * @function transformObject
  * @private
- * @description this method transforms portals by mapping keys found in the portalData object into the
- * transformRelatedTables function. This method passes the parent portal key to properly transform
+ * @memberof Transformation Service
+ * @description this function transforms portals by mapping keys found in the portalData object into the
+ * transformRelatedTables function. This function passes the parent portal key to properly transform
  * portal data related to the main portal table occurance.
  * @param  {Object} object The response recieved from the FileMaker DAPI.
  * @param  {Object} options The response recieved from the FileMaker DAPI.
- * @return {Object}      A json object containing the selected data from the Data API Response.
+ * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
 
 const transformObject = (object, options = {}) => {
@@ -78,12 +81,13 @@ const transformObject = (object, options = {}) => {
 };
 
 /**
- * @method fieldData
+ * @function fieldData
  * @public
- * @description fieldData is a helper method that strips the filemaker structural layout and portal information
+ * @memberof Transformation Service
+ * @description fieldData is a helper function that strips the filemaker structural layout and portal information
  * from a record. It returns only the data contained in the fieldData key and the recordId.
  * @param  {Object|Array} data The raw data returned from a filemaker. This can be an array or an object.
- * @return {Object|Array} A json object containing fieldData from the record.
+ * @return {Object|Array} A JSON object containing fieldData from the record.
  */
 
 const fieldData = data =>
@@ -100,12 +104,13 @@ const fieldData = data =>
       });
 
 /**
- * @method recordId
+ * @function recordId
  * @public
+ * @memberof Transformation Service
  * @description returns record ids for the data parameters passed to it. This can be an array of ids or an object.
  * from a record. It returns only the data contained in the fieldData key adn the recordId.
  * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
- * @return {Object}      a json object containing fieldData from the record.
+ * @return {Object}      a JSON object containing fieldData from the record.
  */
 
 const recordId = data =>
@@ -114,13 +119,14 @@ const recordId = data =>
     : data.recordId.toString();
 
 /**
- * @method transform
+ * @function transform
  * @public
- * @description this method transforms portals by mapping keys found in the portalData object into the
- * transformRelatedTables function. This method passes the parent portal key to properly transform
+ * @memberof Transformation Service
+ * @description this function transforms portals by mapping keys found in the portalData object into the
+ * transformRelatedTables function. This function passes the parent portal key to properly transform
  * portal data related to the main portal table occurance.
  * @param  {Object} object The response recieved from the FileMaker DAPI.
- * @return {Object}      A json object containing the selected data from the Data API Response.
+ * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
 
 const transform = (data, options) =>

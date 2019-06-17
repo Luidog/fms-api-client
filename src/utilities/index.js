@@ -6,22 +6,26 @@ const {
   sanitizeParameters,
   setData
 } = require('./filemaker.utilities');
+
 const {
   omit,
+  pick,
   toStrings,
   toArray,
   deepMapKeys,
-  isJson,
+  isJSON,
   isEmpty
 } = require('./conversion.utilities');
+
 const { urls } = require('./urls.utilities');
 
 module.exports = {
   omit,
+  pick,
   toStrings,
   setData,
   toArray,
-  isJson,
+  isJSON,
   isEmpty,
   deepMapKeys,
   namespace,

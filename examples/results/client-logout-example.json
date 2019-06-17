@@ -1,4 +1,9 @@
 {
-  "code": "0",
-  "message": "OK"
+  "response": {},
+  "messages": [
+    {
+      "code": "0",
+      "message": "OK"
+    }
+  ]
 }

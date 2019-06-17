@@ -2,32 +2,14 @@
 
 const axios = require('axios');
 const axiosCookieJarSupport = require('axios-cookiejar-support').default;
-const { omit } = require('../utilities');
-
-/**
- * @module request
- */
 
 const instance = axios.create();
 
 axiosCookieJarSupport(instance);
 
 /**
- * @method interceptRequest
- * @private
- * @description handles request data before it is sent to the resource. This method
- * will eventually be used to cancel the request and return the configuration body.
- * This method will test the url for an http proticol and reject if none exist.
- * @param  {Object} config The axios request configuration
- * @return {Promise}      the request configuration object
+ * @class Request Service
  */
-
-const interceptRequest = config =>
-  config.url.startsWith('http')
-    ? omit(config, ['params.request', 'data.request'])
-    : Promise.reject({
-        message: 'The Data API Requires https or http'
-      });
 
 /**
  * @method interceptError
@@ -43,9 +25,6 @@ const interceptRequest = config =>
 const interceptError = error => {
   if (error.code) {
     return Promise.reject({ code: error.code, message: error.message });
-  }
-  if (!error.response && !error.code) {
-    return Promise.reject({ message: error.message, code: '1630' });
   } else if (
     error.response.status === 502 ||
     typeof error.response.data !== 'object'
@@ -62,21 +41,18 @@ const interceptError = error => {
       message: 'FileMaker WPE rejected the request',
       code: '9'
     });
-  } else if (error.response.data.messages[0].code === '952') {
-    return Promise.reject(
-      Object.assign(error.response.data.messages[0], { expired: true })
-    );
   } else {
     return Promise.reject(error.response.data.messages[0]);
   }
 };
 
 /**
- * @method interceptResponse
- * @private
- * @description handles request data before it is sent to the resource. This method
+ * @function interceptResponse
+ * @public
+ * @memberof Request Service
+ * @description handles request data before it is sent to the resource. This function
  * will eventually be used to cancel the request and return the configuration body.
- * This method will test the url for an http proticol and reject if none exist.
+ * This function will test the url for an http proticol and reject if none exist.
  * @param  {Object} config The axios request configuration
  * @return {Promise}      the request configuration object
  */
@@ -92,9 +68,17 @@ const interceptResponse = response => {
   }
 };
 
+/**
+ * Attach Interceptors to Axios instance
+ * @param  {Any} response Web publishing response.
+ * @param  {Any} error We publishing error.
+ */
+
+instance.interceptors.response.use(
+  response => interceptResponse(response),
+  error => interceptError(error)
+);
+
 module.exports = {
-  instance,
-  interceptRequest,
-  interceptResponse,
-  interceptError
+  instance
 };

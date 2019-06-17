@@ -24,12 +24,20 @@ const layout = client =>
     .then(result => log('layout-details-example', result));
 //#
 
+//#scripts-example
+const scripts = client =>
+  client
+    .scripts(process.env.LAYOUT)
+    .then(result => log('scripts-example', result));
+//#
+
 const metadata = client =>
   Promise.all([
     productInfo(client),
     databases(client),
     layouts(client),
-    layout(client)
+    layout(client),
+    scripts(client)
   ]).then(responses => {
     store(responses);
     return client;

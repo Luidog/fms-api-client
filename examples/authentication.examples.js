@@ -2,17 +2,17 @@
 
 const { log, store } = require('./services');
 
+//#client-login-example
+const login = client =>
+  client.login().then(result => log('client-login-example', result));
+//#
+
 //#client-logout-example
 const logout = client =>
   client
     .login()
-    .then(() =>
-      client.logout().then(result => log('client-logout-example', result))
-    );
-//#
-
-//#client-login-example
-const login = client => client.login();
+    .then(() => client.logout())
+    .then(result => log('client-logout-example', result));
 //#
 
 const authentication = client =>

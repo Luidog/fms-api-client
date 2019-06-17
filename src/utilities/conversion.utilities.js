@@ -3,28 +3,29 @@
 const _ = require('lodash');
 
 /**
- * @module Conversion Utilities
+ * @class Conversion Utilities
  */
 
 /**
- * @method toStrings
+ * @function toStrings
  * @public
- * @descript toStrings is a helper method that converts arrays of objects or a single object
- * into stringified values
+ * @memberof Conversion Utilities
+ * @description The toStrings function converts arrays of objects or a single object into stringified values.
  * @see stringify
  * @param  {Object|Array} data The data to stringify.
- * @return {Object|Array}      a json object containing stringified data.
+ * @return {Object|Array}      a JSON object containing stringified data.
  */
 
 const toStrings = data =>
   Array.isArray(data) ? data.map(datum => stringify(datum)) : stringify(data);
 
 /**
- * @method stringify
+ * @function stringify
  * @public
- * @description stringify is a helper method that converts numbers, objects, or booleans to strings.
+ * @memberof Conversion Utilities
+ * @description The stringify function converts numbers, objects, or booleans to strings.
  * @param  {Object} data The object to stringify.
- * @return {Object}      a json object containing stringified data.
+ * @return {Object}      a JSON object containing stringified data.
  */
 
 const stringify = data =>
@@ -37,27 +38,29 @@ const stringify = data =>
   );
 
 /**
- * @method toArray
+ * @function toArray
  * @public
- * @description The toArray method converts an object into an array. This method uses the object prototype method
- * isArray to check if the incoming data is an array. If the incoming data is not an array this method will
- * return the data in an array
+ * @memberof Conversion Utilities
+ * @description The toArray function converts an object into an array. This function uses the object prototype function
+ * isArray to check if the incoming data is an array. If the incoming data is not an array this function will
+ * return the data in an array.
  * @param  {Object|Array} data An array or object containing query information. This can be an array or an object.
- * @return {Object}      An array containing the data passed to the method.
+ * @return {Object}      An array containing the data passed to the function.
  */
 
 const toArray = data => (Array.isArray(data) ? data : [data]);
 
 /**
- * @method isJson
+ * @function isJSON
  * @public
- * @description The isJson method uses the a try / catch to parse incoming data safely as json.
- * This method will return true if it is able to cast the incoming data as json.
- * @param  {Any} data The data to be evaluated as json.
+ * @memberof Conversion Utilities
+ * @description The isJSON function uses the try / catch to parse incoming data safely as JSON.
+ * This function will return true if it is able to cast the incoming data as JSON.
+ * @param  {Any} data The data to be evaluated as JSON.
  * @return {Boolean}      A boolean result depending on if the data passed to it is valid JSON
  */
 
-const isJson = data => {
+const isJSON = data => {
   data = typeof data !== 'string' ? JSON.stringify(data) : data;
 
   try {
@@ -74,22 +77,26 @@ const isJson = data => {
 };
 
 /**
- * @method isEmptyObject
+ * @function isEmptyObject
  * @public
- * @description The isEmptyObject method uses the a try / catch to parse incoming data safely as json.
- * This method will return true if it is able to cast the incoming data as json.
- * @param  {Any} data The data to be evaluated as json.
- * @return {Boolean}      A boolean result depending on if the data passed to it is valid JSON
+ * @memberof Conversion Utilities
+ * @description The isEmptyObject function uses the try / catch to parse incoming data safely as JSON.
+ * This function will return true if it is able to cast the incoming data as JSON.
+ * @see stringify
+ * @param  {Any} data The data to be evaluated as JSON.
+ * @return {Boolean}      A boolean result depending on if the data passed to it is valid JSON.
  */
 
-const isEmpty = data => (isJson(data) ? _.isEmpty(data) : false);
+const isEmpty = data => (isJSON(data) ? _.isEmpty(data) : false);
 
 /**
- * @method omit
+ * @function omit
  * @public
- * @description omit will remove properties from the first object or array passed to it that are in the second parameter passed it.
+ * @memberof Conversion Utilities
+ * @description The omit function will remove properties from the first object or array passed to it that are in the second parameter passed it.
+ * @param  {Object|Array} data The data to parse for omits.
  * @param  {Array} properties An array properties to remove.
- * @return {Object|Array} A json object or array of objects without the properties passed to it
+ * @return {Object|Array} A JSON object or array of objects without the properties passed to it.
  */
 
 const omit = (data, properties) =>
@@ -98,22 +105,48 @@ const omit = (data, properties) =>
     : _.omit(data, properties);
 
 /**
- * @method parse
+ * @function parse
  * @public
- * @description parse performs a try catch before attempting to parse the value as json. If the value is not valid json it wil return the value.
+ * @memberof Conversion Utilities
+ * @description The parse function performs a try catch before attempting to parse the value as JSON. If the value is not valid JSON it wil return the value.
+ * @see isJSON
  * @param  {Any} values The value to attempt to parse.
- * @return {Object|Any} A json object or array of objects without the properties passed to it
+ * @return {Object|Any} A JSON object or array of objects without the properties passed to it
  */
 
-const parse = value => (isJson(value) ? JSON.parse(value) : value);
+/**
+ * @function pick
+ * @public
+ * @memberof Filemaker Utilities
+ * @description The parseScriptResults function filters the FileMaker DAPI response by testing if a script was triggered
+ * with the request, then either selecting the response, script error, and script result from the
+ * response or selecting just the response.
+ * @param  {Array|Object} data The response recieved from the FileMaker DAPI.
+ * @param  {Array|String} data The response recieved from the FileMaker DAPI.
+ * @return {Object}      A json object containing the selected data from the Data API Response.
+ */
+
+const pick = (data, filter) =>
+  Array.isArray(data)
+    ? data.map(object =>
+        _.pickBy(object, (value, key) =>
+          Array.isArray(filter) ? _.includes(filter, key) : key.includes(filter)
+        )
+      )
+    : _.pickBy(data, (value, key) =>
+        Array.isArray(filter) ? _.includes(filter, key) : key.includes(filter)
+      );
+
+const parse = value => (isJSON(value) ? JSON.parse(value) : value);
 
 /**
- * @method deepMapKeys
+ * @function deepMapKeys
  * @public
+ * @memberof Conversion Utilities
  * @description deepMapKeys provides deep mapping of objects using a recursive lodash function. This function expects an iteratee that matches the iteratee of _.mapKeys.
  * @param  {Object|Array} object The object or array to deep map
  * @param {Function} iteratee The function to use to map the object's keys.
- * @return {Object} An object whose keys are modified by the iteratee.
+ * @return {Object|Array} An object or array whose keys or members are modified by the iteratee.
  */
 
 const deepMapKeys = (data, iteratee) =>
@@ -129,9 +162,10 @@ module.exports = {
   toStrings,
   stringify,
   toArray,
-  isJson,
+  isJSON,
   isEmpty,
   omit,
+  pick,
   parse,
   deepMapKeys
 };

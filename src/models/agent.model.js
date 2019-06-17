@@ -4,13 +4,17 @@ const https = require('https');
 const http = require('http');
 const uuidv4 = require('uuid/v4');
 const { EmbeddedDocument } = require('marpat');
-const {
-  instance,
-  interceptRequest,
-  interceptResponse,
-  interceptError
-} = require('../services');
+const _ = require('lodash');
 const { deepMapKeys } = require('../utilities');
+const { Connection } = require('./connection.model');
+
+const axios = require('axios');
+const axiosCookieJarSupport = require('axios-cookiejar-support').default;
+const { omit } = require('../utilities');
+
+const instance = axios.create();
+
+axiosCookieJarSupport(instance);
 
 /**
  * @class Agent
@@ -49,7 +53,16 @@ class Agent extends EmbeddedDocument {
       },
       /**
        * maximum amount of concurrent requests to send.
-       * @member Agent#concurrency
+       * @member Agent#connection
+       * @type Class
+       */
+      connection: {
+        type: Connection,
+        required: true
+      },
+      /**
+       * maximum amount of concurrent requests to send.
+       * @member Connection#concurrency
        * @type Number
        */
       concurrency: {
@@ -112,8 +125,8 @@ class Agent extends EmbeddedDocument {
    * @return {null} The preInit hook does not return anything.
    */
 
-  preInit(data) {
-    let { agent, protocol } = data;
+  preInit({ agent, protocol, connection }) {
+    this.connection = Connection.create(connection);
     if (agent) this._globalize(protocol, agent);
   }
 
@@ -127,7 +140,10 @@ class Agent extends EmbeddedDocument {
    */
 
   preDelete() {
-    if (global.FMS_API_CLIENT.AGENTS[this.global]) {
+    if (
+      global.FMS_API_CLIENT.AGENTS &&
+      global.FMS_API_CLIENT.AGENTS[this.global]
+    ) {
       this._localize()[`${this.protocol}Agent`].destroy();
       delete global.FMS_API_CLIENT.AGENTS[this.global];
     }
@@ -153,7 +169,7 @@ class Agent extends EmbeddedDocument {
             httpsAgent: new https.Agent(this.agent)
           }
         : {
-            httpAgent: new http.Agent(this.Agent)
+            httpAgent: new http.Agent(this.agent)
           };
     return global.FMS_API_CLIENT.AGENTS[this.global];
   }
@@ -194,26 +210,77 @@ class Agent extends EmbeddedDocument {
       ({ httpAgent, httpsAgent, ...request }) =>
         new Promise(resolve =>
           this.push({
-            request: interceptRequest(request),
+            request: this.handleRequest(request),
             resolve
           })
         )
     );
 
     instance.interceptors.response.use(
-      response => interceptResponse(response),
-      error => interceptError(error)
+      response => this.handleResponse(response),
+      error => this.handleError(error)
     );
 
     return instance(
       Object.assign(
         data,
         this.timeout ? { timeout: this.timeout } : {},
-        this.proxy ? { proxy: this.proxy } : {},
-        this.agent ? this._localize() : {},
+        _.isEmpty(this.proxy) ? {} : { proxy: this.proxy },
+        _.isEmpty(this.agent) ? {} : this._localize(),
         parameters.request || {}
       )
     );
+  }
+
+  /**
+   * @function handleResponse
+   * @public
+   * @memberof Request Service
+   * @description handles request data before it is sent to the resource. This function
+   * will eventually be used to cancel the request and return the configuration body.
+   * This function will test the url for an http proticol and reject if none exist.
+   * @param  {Object} config The axios request configuration
+   * @return {Promise}      the request configuration object
+   */
+
+  handleResponse(response) {
+    if (typeof response.data !== 'object') {
+      return Promise.reject({
+        message: 'The Data API is currently unavailable',
+        code: '1630'
+      });
+    } else {
+      this.connection.extend(response.config.headers.Authorization);
+      return response;
+    }
+  }
+
+  logout() {
+    return this.connection.end();
+  }
+
+  login() {
+    return this.connection.start();
+  }
+
+  /**
+   * @function handleRequest
+   * @public
+   * @memberof Request Service
+   * @description handles request data before it is sent to the resource. This function
+   * will eventually be used to cancel the request and return the configuration body.
+   * This function will test the url for an http proticol and reject if none exist.
+   * @param  {Object} config The axios request configuration
+   * @return {Promise}      the request configuration object
+   */
+
+  handleRequest(config) {
+    return config.url.startsWith('http')
+      ? omit(config, ['params.request', 'data.request'])
+      : Promise.reject({
+          code: '1630',
+          message: 'The Data API Requires https or http'
+        });
   }
 
   push({ request, resolve }) {
@@ -239,16 +306,12 @@ class Agent extends EmbeddedDocument {
       ...value
     } = request;
 
-    if (request.url.includes('/containers/')) {
-      return request;
-    }
-
-    let sanitized = deepMapKeys(value, (value, key) =>
-      key.replace(/\./g, '{{dot}}')
-    );
+    let modified = request.url.includes('/containers/')
+      ? request
+      : deepMapKeys(value, (value, key) => key.replace(/\./g, '{{dot}}'));
 
     return {
-      ...sanitized,
+      ...modified,
       transformRequest,
       transformResponse,
       adapter,
@@ -257,27 +320,59 @@ class Agent extends EmbeddedDocument {
   }
 
   unsanitize(request) {
-    let {
-      transformRequest,
-      transformResponse,
-      adapter,
-      validateStatus,
-      ...value
-    } = request;
+    return new Promise((resolve, reject) => {
+      let {
+        transformRequest,
+        transformResponse,
+        adapter,
+        validateStatus,
+        ...value
+      } = request;
 
-    if (request.url.includes('/containers/')) {
-      return request;
+      let modified = request.url.includes('/containers/')
+        ? request
+        : deepMapKeys(value, (value, key) => key.replace(/{{dot}}/g, '.'));
+
+      resolve({
+        ...modified,
+        transformRequest,
+        transformResponse,
+        adapter,
+        validateStatus
+      });
+    });
+  }
+
+  /**
+   * @function handleError
+   * @public
+   * @memberof Agent
+   * @description This function evaluates the error response. This function will substitute
+   * a non JSON error or a bad gateway status with a JSON code and message error. This
+   * function will add an expired property to the error response if it recieves a invalid
+   * token response.
+   * @param  {Object} error The error recieved from the requested resource.
+   * @return {Promise}      A promise rejection containing a code and a message
+   */
+
+  handleError(error) {
+    if (error.code) {
+      return Promise.reject({ code: error.code, message: error.message });
+    } else if (
+      error.response.status === 502 ||
+      typeof error.response.data !== 'object'
+    ) {
+      return Promise.reject({
+        message: 'The Data API is currently unavailable',
+        code: '1630'
+      });
+    } else {
+      if (error.response.data.messages[0].code === '952')
+        this.connection.clear(
+          _.get(error, 'response.config.headers.Authorization')
+        );
+      return Promise.reject(error.response.data.messages[0]);
     }
-    let unsanitized = deepMapKeys(value, (value, key) =>
-      key.replace(/{{dot}}/g, '.')
-    );
-    return {
-      ...unsanitized,
-      transformRequest,
-      transformResponse,
-      adapter,
-      validateStatus
-    };
   }
 
   watch() {
@@ -291,11 +386,23 @@ class Agent extends EmbeddedDocument {
       }
 
       if (this.pending.length > 0) {
-        let resolved = this.pending.shift();
-
-        resolved.resolve(
-          Object.assign(this.unsanitize(resolved.request), this._localize())
-        );
+        if (this.connection.available()) {
+          let resolved = this.pending.shift();
+          this.unsanitize(resolved.request).then(request =>
+            resolved.resolve(
+              Object.assign(
+                this.connection.authentication(request),
+                _.isEmpty(this.agent) ? {} : this._localize()
+              )
+            )
+          );
+        }
+        if (
+          this.connection.sessions.length <= this.concurrency &&
+          !this.connection.starting
+        ) {
+          this.connection.start();
+        }
       }
     }, this.delay);
   }
