@@ -1,15 +1,9 @@
 {
   "name": "fms-api-client",
   "version": "2.0.0",
-  "description": "A FileMaker Data API client designed to allow easier interaction with a FileMaker application from a web environment.",
+  "description": "A FileMaker Data API client designed to allow easier interaction with a FileMaker database from a web environment.",
   "main": "index.js",
   "scripts": {
-    "test-agent": "nyc _mocha ./test/agent.test.js --timeout=3000 --exit",
-    "test-agent-model": "nyc _mocha ./test/agent.model.test.js --timeout=3000 --exit",
-    "test-auth": "nyc _mocha ./test/authentication.test.js --timeout=3000 --exit",
-    "test-create": "nyc _mocha ./test/create.test.js --timeout=3000 --exit",
-    "test-databases": "nyc _mocha ./test/databases.test.js --timeout=3000 --exit",
-    "test-interceptors": "nyc _mocha ./test/interceptors.test.js --timeout=30000 --exit",
     "test": "nyc _mocha --recursive  ./test --timeout=15000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "examples": "node examples/index.js",
@@ -45,7 +39,7 @@
   "homepage": "https://github.com/Luidog/fms-api-client",
   "dependencies": {
     "axios": "^0.19.0",
-    "axios-cookiejar-support": "^0.4.2",
+    "axios-cookiejar-support": "^0.5.0",
     "form-data": "^2.3.3",
     "into-stream": "^5.1.0",
     "lodash": "^4.17.11",
@@ -61,12 +55,12 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "coveralls": "^3.0.3",
+    "coveralls": "^3.0.4",
     "deep-map": "^2.0.0",
     "dotenv": "^8.0.0",
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.13.0",
-    "eslint-config-prettier": "^4.3.0",
+    "eslint-config-prettier": "^5.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "fs-extra": "^8.0.1",
     "http-proxy": "^1.17.0",
@@ -82,9 +76,9 @@
     "mos-plugin-license": "^1.2.2",
     "mos-plugin-snippet": "^2.1.3",
     "nyc": "^14.1.1",
-    "prettier": "^1.17.1",
+    "prettier": "^1.18.2",
     "sinon": "^7.3.2",
-    "snyk": "^1.170.0",
+    "snyk": "^1.179.0",
     "varium": "^1.0.1"
   },
   "snyk": true

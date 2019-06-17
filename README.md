@@ -85,7 +85,9 @@ In addition to the expanded syntax the client will also automatically parse arra
 
 All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable.
 
-The client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, `containerData`, and `transform`. These utilities will accept and return either an object or an an array objects. For more information on the utility modules see the [utilities section](#utilities).
+The client will queue concurrent requests to the Data API. The client can be configured with a [concurrency setting](#client-creation). The client will attempt ensure that each request to the Data API is made with an valid token which is not in use. This behavior prevents request session collisions. For more information on Data API Session handling see the [request queue section](#request-queue).
+
+The client also provides utility modules to aid in working with FileMaker Data API Results. The provided utility modules are `fieldData`, `recordId`, `containerData`, and `transform`. These utilities will accept and return either an object or an array objects. For more information on the utility modules see the [utilities section](#utilities).
 
 ### Parameter Syntax
 
