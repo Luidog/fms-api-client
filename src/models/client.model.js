@@ -22,7 +22,7 @@ const {
 const { productInfo, databases } = require('../services');
 
 /**
- * @global FMS_API_CLIENT
+ * @global
  */
 global.FMS_API_CLIENT = {};
 

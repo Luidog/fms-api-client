@@ -163,6 +163,9 @@ class Agent extends EmbeddedDocument {
 
   globalize(protocol, agent) {
     if (!this.global) this.global = uuidv4();
+    /**
+     * @global
+     */
     global.FMS_API_CLIENT.AGENTS[this.global] =
       protocol === 'https'
         ? {
@@ -324,6 +327,20 @@ class Agent extends EmbeddedDocument {
     }
   }
 
+  /**
+   * @method mutate
+   * @private
+   * @memberof Agent
+   * @description This method is used to modify keys in an object. This method is used by the watch and resolve methods to
+   * allow request data to be written to the datastore.
+   * @see {@link Agent#resolve}
+   * @see {@link Agent#watch}
+   * @see {@link Conversion Utilities#deepMapKeys}
+   * @param  {Object} request The agent request object.
+   * @param  {Function} mutation The function to upon each key in the request.
+   * @return {Object} This mutated request
+   */
+
   mutate(request, mutation) {
     let {
       transformRequest,
@@ -427,12 +444,13 @@ class Agent extends EmbeddedDocument {
    */
 
   resolve() {
-    let { resolve, request } = this.pending.shift();
-
-    resolve(
+    let pending = this.pending.shift();
+    pending.resolve(
       Object.assign(
         this.connection.authentication(
-          this.mutate(request, (value, key) => key.replace(/{{dot}}/g, '.'))
+          this.mutate(pending.request, (value, key) =>
+            key.replace(/{{dot}}/g, '.')
+          )
         ),
         _.isEmpty(this.agent) ? {} : this.localize()
       )
