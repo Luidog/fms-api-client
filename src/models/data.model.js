@@ -77,7 +77,6 @@ class Data extends EmbeddedDocument {
    * @description increments the amount of data being recieved from filemaker.
    * @param {Any} data The data to record.
    * @return {Any} Returns data unmutated.
-   *
    */
 
   outgoing(data) {
@@ -91,7 +90,6 @@ class Data extends EmbeddedDocument {
    * @memberof Data
    * @description Clears the data in and out and resets the since date to the current time as an ISO date string.
    * @return {null} This method does not return anything.
-   *
    */
 
   clear() {
@@ -105,7 +103,6 @@ class Data extends EmbeddedDocument {
    * @memberof Data
    * @description Prettifies the class data by stringifying the in and out data and returning since.
    * @return {Object} An object contain the key of data with keys of since, in, and out as strings.
-   *
    */
 
   status() {
