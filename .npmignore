@@ -31,5 +31,6 @@ tests/
 .eslintrc.js
 .jsdoc.js
 .prettierrc.js
+.github/
 CODE_OF_CONDUCT.md
 .DS_Store

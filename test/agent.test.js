@@ -62,16 +62,7 @@ describe('Agent Configuration Capabilities', () => {
     });
     return expect(client.save())
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        '_schema',
-        '_id',
-        'data',
-        'agent',
-        'name',
-        'database',
-        'server',
-        'version'
-      )
+      .that.has.all.keys('_schema', '_id', 'data', 'agent', 'name')
       .and.property('agent')
       .to.be.a('object')
       .to.have.all.keys(
@@ -117,16 +108,7 @@ describe('Agent Configuration Capabilities', () => {
     });
     return expect(client.save())
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        '_schema',
-        '_id',
-        'data',
-        'agent',
-        'name',
-        'database',
-        'server',
-        'version'
-      )
+      .that.has.all.keys('_schema', '_id', 'data', 'agent', 'name')
       .and.property('agent')
       .to.be.a('object')
       .to.have.all.keys(
@@ -156,16 +138,7 @@ describe('Agent Configuration Capabilities', () => {
     });
     return expect(client.save())
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        '_schema',
-        '_id',
-        'data',
-        'agent',
-        'name',
-        'database',
-        'server',
-        'version'
-      )
+      .that.has.all.keys('_schema', '_id', 'data', 'agent', 'name')
       .and.property('agent')
       .to.be.a('object')
       .to.have.all.keys(
@@ -233,16 +206,7 @@ describe('Agent Configuration Capabilities', () => {
     });
     return expect(client.save())
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        '_schema',
-        '_id',
-        'data',
-        'agent',
-        'name',
-        'database',
-        'server',
-        'version'
-      )
+      .that.has.all.keys('_schema', '_id', 'data', 'agent', 'name')
       .and.property('agent')
       .to.be.a('object')
       .to.have.all.keys(
@@ -328,16 +292,7 @@ describe('Agent Configuration Capabilities', () => {
     });
     return expect(client.save())
       .to.eventually.be.a('object')
-      .that.has.all.keys(
-        '_schema',
-        '_id',
-        'data',
-        'agent',
-        'name',
-        'database',
-        'server',
-        'version'
-      )
+      .that.has.all.keys('_schema', '_id', 'data', 'agent', 'name')
       .and.property('agent')
       .to.be.a('object')
       .to.have.all.keys(

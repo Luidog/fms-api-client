@@ -43,36 +43,6 @@ class Client extends Document {
       name: {
         type: String
       },
-      /**
-       * The client FileMaker Server.
-       * @member Client#server
-       * @type String
-       */
-      server: {
-        type: String,
-        validate: data =>
-          data.startsWith('http://') || data.startsWith('https://'),
-        required: true
-      },
-      /**
-       * The client database name.
-       * @member Client#database
-       * @type String
-       */
-      database: {
-        type: String,
-        required: true
-      },
-      /**
-       * The version of Data API to use.
-       * @member Client#version
-       * @type String
-       */
-      version: {
-        type: String,
-        required: true,
-        default: 'vLatest'
-      },
       /** The client data logger.
        * @public
        * @member Client#data
@@ -180,7 +150,10 @@ class Client extends Document {
    *
    */
   productInfo() {
-    return productInfo(this.server, this.version);
+    return productInfo(
+      this.agent.connection.server,
+      this.agent.connection.version
+    );
   }
 
   /**
@@ -196,9 +169,9 @@ class Client extends Document {
    */
   databases(credentials, version) {
     return databases(
-      this.server,
+      this.agent.connection.server,
       credentials || this.agent.connection.credentials,
-      this.version
+      this.agent.connection.version
     );
   }
 
@@ -213,7 +186,11 @@ class Client extends Document {
     return this.agent
       .request(
         {
-          url: urls.layouts(this.server, this.database, this.version),
+          url: urls.layouts(
+            this.agent.connection.server,
+            this.agent.connection.database,
+            this.agent.connection.version
+          ),
           method: 'get'
         },
         parameters
@@ -235,7 +212,11 @@ class Client extends Document {
     return this.agent
       .request(
         {
-          url: urls.scripts(this.server, this.database, this.version),
+          url: urls.scripts(
+            this.agent.connection.server,
+            this.agent.connection.database,
+            this.agent.connection.version
+          ),
           method: 'get'
         },
         parameters
@@ -258,7 +239,12 @@ class Client extends Document {
     return this.agent
       .request(
         {
-          url: urls.layout(this.server, this.database, layout, this.version),
+          url: urls.layout(
+            this.agent.connection.server,
+            this.agent.connection.database,
+            layout,
+            this.agent.connection.version
+          ),
           method: 'get',
           params: toStrings(sanitizeParameters(parameters, ['recordId']))
         },
@@ -282,11 +268,11 @@ class Client extends Document {
       .request(
         {
           url: urls.duplicate(
-            this.server,
-            this.database,
+            this.agent.connection.server,
+            this.agent.connection.database,
             layout,
             recordId,
-            this.version
+            this.agent.connection.version
           ),
           method: 'post',
           headers: {
@@ -342,7 +328,12 @@ class Client extends Document {
     return this.agent
       .request(
         {
-          url: urls.create(this.server, this.database, layout, this.version),
+          url: urls.create(
+            this.agent.connection.server,
+            this.agent.connection.database,
+            layout,
+            this.agent.connection.version
+          ),
           method: 'post',
           headers: {
             'Content-Type': 'application/json'
@@ -391,11 +382,11 @@ class Client extends Document {
       .request(
         {
           url: urls.update(
-            this.server,
-            this.database,
+            this.agent.connection.server,
+            this.agent.connection.database,
             layout,
             recordId,
-            this.version
+            this.agent.connection.version
           ),
           method: 'patch',
           headers: {
@@ -446,11 +437,11 @@ class Client extends Document {
       .request(
         {
           url: urls.delete(
-            this.server,
-            this.database,
+            this.agent.connection.server,
+            this.agent.connection.database,
             layout,
             recordId,
-            this.version
+            this.agent.connection.version
           ),
           method: 'delete',
           data: sanitizeParameters(parameters, [
@@ -488,11 +479,11 @@ class Client extends Document {
       .request(
         {
           url: urls.get(
-            this.server,
-            this.database,
+            this.agent.connection.server,
+            this.agent.connection.database,
             layout,
             recordId,
-            this.version
+            this.agent.connection.version
           ),
           method: 'get',
           params: toStrings(
@@ -534,7 +525,12 @@ class Client extends Document {
     return this.agent
       .request(
         {
-          url: urls.list(this.server, this.database, layout, this.version),
+          url: urls.list(
+            this.agent.connection.server,
+            this.agent.connection.database,
+            layout,
+            this.agent.connection.version
+          ),
           method: 'get',
           headers: {
             'Content-Type': 'application/json'
@@ -583,7 +579,12 @@ class Client extends Document {
       this.agent
         .request(
           {
-            url: urls.find(this.server, this.database, layout, this.version),
+            url: urls.find(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              layout,
+              this.agent.connection.version
+            ),
             method: 'post',
             headers: {
               'Content-Type': 'application/json'
@@ -640,7 +641,11 @@ class Client extends Document {
     return this.agent
       .request(
         {
-          url: urls.globals(this.server, this.database, this.version),
+          url: urls.globals(
+            this.agent.connection.server,
+            this.agent.connection.database,
+            this.agent.connection.version
+          ),
           method: 'patch',
           headers: {
             'Content-Type': 'application/json'
@@ -702,13 +707,13 @@ class Client extends Document {
             .request(
               {
                 url: urls.upload(
-                  this.server,
-                  this.database,
+                  this.agent.connection.server,
+                  this.agent.connection.database,
                   layout,
                   resolvedId,
                   containerFieldName,
                   parameters.fieldRepetition,
-                  this.version
+                  this.agent.connection.version
                 ),
                 method: 'post',
                 data: form,
@@ -746,7 +751,12 @@ class Client extends Document {
     return this.agent
       .request(
         {
-          url: urls.list(this.server, this.database, layout, this.version),
+          url: urls.list(
+            this.agent.connection.server,
+            this.agent.connection.database,
+            layout,
+            this.agent.connection.version
+          ),
           method: 'get',
           headers: {
             'Content-Type': 'application/json'
@@ -801,11 +811,11 @@ class Client extends Document {
       .request(
         {
           url: urls.script(
-            this.server,
-            this.database,
+            this.agent.connection.server,
+            this.agent.connection.database,
             layout,
             script,
-            this.version
+            this.agent.connection.version
           ),
           method: 'get',
           headers: {
