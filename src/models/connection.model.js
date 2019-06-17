@@ -16,17 +16,19 @@ class Connection extends EmbeddedDocument {
   constructor() {
     super();
     this.schema({
-      /** The FileMaker server (host).
-       * @public
+      /**
+       * The client FileMaker Server.
        * @member Connection#server
        * @type String
        */
       server: {
         type: String,
+        validate: data =>
+          data.startsWith('http://') || data.startsWith('https://'),
         required: true
       },
-      /** The FileMaker Database (database).
-       * @public
+      /**
+       * The client database name.
        * @member Connection#database
        * @type String
        */
@@ -35,14 +37,31 @@ class Connection extends EmbeddedDocument {
         required: true
       },
       /**
+       * The version of Data API to use.
+       * @member Connection#version
+       * @type String
+       */
+      version: {
+        type: String,
+        required: true,
+        default: 'vLatest'
+      },
+      /**
        * Open Data API sessions.
        * @member Connection#sessions
+       * @see  {@link Session}
        * @type Array
        */
       starting: {
         type: Boolean,
         default: false
       },
+      /**
+       * Open Data API sessions.
+       * @member Connection#sessions
+       * @see  {@link Session}
+       * @type Array
+       */
       sessions: {
         type: [Session],
         default: () => []
@@ -58,9 +77,33 @@ class Connection extends EmbeddedDocument {
     });
   }
 
+  /**
+   * @method preInit
+   * @schema
+   * @description The preInit method is called on creation of the connection. On creation this preInit will create a credential
+   * embedded document.
+   * @see  {@link [marpat]https://github.com/Luidog/marpat}
+   * @param {Object} data The data used to create the connection.
+   * @param {String} data.user The FileMaker user account to use when creating connections.
+   * @param {String} data.password The FileMaker user account password.
+   * @return {null} The preInit hook does not return anything.
+   */
+
   preInit({ user, password }) {
     this.credentials = Credentials.create({ user, password });
   }
+
+  /**
+   * @method authentication
+   * @public
+   * @memberof Connection
+   * @description the authentication method merges the request passed to it with authentication headers.
+   * This method is used to ensure requests are sent with the latest available session authentication.
+   * @param {Object} request The request to inject the authentication header
+   * @param {Object} request.headers The headers to inject the authentication header into.
+   * @see  {@link Connection#available}
+   * @return {String} The session token.
+   */
 
   authentication({ headers, ...request }) {
     return {
@@ -81,10 +124,10 @@ class Connection extends EmbeddedDocument {
    * @method save
    * @public
    * @memberof Connection
-   * @description Saves a token retrieved from the Data API.
-   * @params {Object} data an object. The FileMaker authentication response.
+   * @description Saves a token retrieved from the Data API as a sessions
+   * @see  {@link session}
+   * @params {Object} data The FileMaker authentication response.
    * @return {String} a token retrieved from the private generation method
-   *
    */
 
   save(data) {
@@ -92,6 +135,14 @@ class Connection extends EmbeddedDocument {
     this.sessions.push(Session.create({ token: data.response.token }));
     return data.response.token;
   }
+
+  /**
+   * @method starts
+   * @public
+   * @memberof Connection
+   * @description Starts a FileMaker Data API session
+   * @return {String} The session token.
+   */
 
   start() {
     this.starting = true;
@@ -112,6 +163,15 @@ class Connection extends EmbeddedDocument {
         .catch(error => reject(error));
     });
   }
+
+  /**
+   * @method end
+   * @public
+   * @memberof Connection
+   * @description ends a FileMaker Data API session and clears the session.
+   * @see  {@link Connection#clear}
+   * @return {String} The session token.
+   */
 
   end() {
     return new Promise((resolve, reject) => {

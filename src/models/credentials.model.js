@@ -15,21 +15,24 @@ class Credentials extends EmbeddedDocument {
        * @type String
        */
       password: {
-        type: String
+        type: String,
+        required: true
       },
       /** The token to use when querying an endpoint.
        * @member Credentials#user
        * @type String
        */
       user: {
-        type: String
+        type: String,
+        required: true
       }
     });
   }
+
   /**
    * @method basic
-   * @private
-   * @memberof Connection
+   * @public
+   * @memberof Credentials
    * @description This method constructs the basic authentication headers used
    * when authenticating a FileMaker DAPI session.
    * @return {String} A string containing the user and password authentication

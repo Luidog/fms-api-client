@@ -31,6 +31,10 @@ class Session extends EmbeddedDocument {
             .add(15, 'minutes')
             .format()
       },
+      /* A boolean set if the current session is in use.
+       * @member Session#active
+       * @type Boolean
+       */
       active: {
         type: Boolean,
         default: () => false
@@ -49,9 +53,10 @@ class Session extends EmbeddedDocument {
    * @method valid
    * @public
    * @memberof Session
-   * @description Saves a token retrieved from the Data API.
-   * @params {String} token The token to save to the class instance.
-   * @return {String} a token retrieved from the private generation method
+   * @see  {@link Agent#watch}
+   * @see  {@link Connection#available}
+   * @description This method checks to see if the session is not currently active and not expired.
+   * @return {Boolean} True if the token is valid, otherwise False.
    *
    */
 
@@ -67,7 +72,9 @@ class Session extends EmbeddedDocument {
    * @method expired
    * @public
    * @memberof Session
-   * @description Saves a token retrieved from the Data API.
+   * @description This method checks to see if a session has expired.
+   * @see  {@link Agent#watch}
+   * @see  {@link Connection#available}
    * @return {Boolean} True if the token has expired, otherwise False.
    *
    */
@@ -80,9 +87,9 @@ class Session extends EmbeddedDocument {
    * @method extend
    * @memberof Session
    * @public
-   * @description Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.
+   * @description This method extends a Data API session and sets it to inactive.
+   * @see  {@link Agent#handleResponse}
    * @return {Undefined}
-   *
    */
 
   extend() {
