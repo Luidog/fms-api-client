@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>services/request.service.js - Documentation</title>
+    <title>models/session.model.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">services/request.service.js</h1>
+    <h1 class="page-title">models/session.model.js</h1>
     
 
     
@@ -41,87 +41,101 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
-const axios = require('axios');
-const axiosCookieJarSupport = require('axios-cookiejar-support').default;
-
-const instance = axios.create();
-
-axiosCookieJarSupport(instance);
+const moment = require('moment');
+const { EmbeddedDocument } = require('marpat');
 
 /**
- * @class Request Service
+ * @class Session
+ * @classdesc The class used to save FileMaker Data API Session information
  */
 
-/**
- * @method interceptError
- * @private
- * @description This method evaluates the error response. This method will substitute
- * a non json error or a bad gateway status with a json code and message error. This
- * method will add an expired property to the error response if it recieves a invalid
- * token response.
- * @param  {Object} error The error recieved from the requested resource.
- * @return {Promise}      A promise rejection containing a code and a message
- */
-
-const interceptError = error => {
-  if (error.code) {
-    return Promise.reject({ code: error.code, message: error.message });
-  } else if (
-    error.response.status === 502 ||
-    typeof error.response.data !== 'object'
-  ) {
-    return Promise.reject({
-      message: 'The Data API is currently unavailable',
-      code: '1630'
+class Session extends EmbeddedDocument {
+  constructor() {
+    super();
+    this.schema({
+      /** A string containing the time the token token was issued.
+       * @member Session#issued
+       * @type String
+       */
+      issued: {
+        type: String,
+        default: () => moment().format()
+      },
+      /* A string containing the time the token will expire.
+       * @member Session#expires
+       * @type String
+       */
+      expires: {
+        type: String,
+        default: () =>
+          moment()
+            .add(15, 'minutes')
+            .format()
+      },
+      active: {
+        type: Boolean,
+        default: () => false
+      },
+      /** The token to use when querying an endpoint.
+       * @member Session#token
+       * @type String
+       */
+      token: {
+        type: String
+      }
     });
-  } else if (
-    error.response.status === 400 &amp;&amp;
-    error.request.path.includes('RCType=EmbeddedRCFileProcessor')
-  ) {
-    return Promise.reject({
-      message: 'FileMaker WPE rejected the request',
-      code: '9'
-    });
-  } else {
-    return Promise.reject(error.response.data.messages[0]);
   }
-};
 
-/**
- * @function interceptResponse
- * @public
- * @memberof Request Service
- * @description handles request data before it is sent to the resource. This function
- * will eventually be used to cancel the request and return the configuration body.
- * This function will test the url for an http proticol and reject if none exist.
- * @param  {Object} config The axios request configuration
- * @return {Promise}      the request configuration object
- */
+  /**
+   * @method valid
+   * @public
+   * @memberof Session
+   * @description Saves a token retrieved from the Data API.
+   * @params {String} token The token to save to the class instance.
+   * @return {String} a token retrieved from the private generation method
+   *
+   */
 
-const interceptResponse = response => {
-  if (typeof response.data !== 'object') {
-    return Promise.reject({
-      message: 'The Data API is currently unavailable',
-      code: '1630'
-    });
-  } else {
-    return response;
+  valid() {
+    return (
+      !this.active &amp;&amp;
+      this.token !== undefined &amp;&amp;
+      moment().isBetween(this.issued, this.expires, '()')
+    );
   }
-};
 
-/**
- * Attach Interceptors to Axios instance
- * @param  {Any} response Web publishing response.
- * @param  {Any} error We publishing error.
- */
+  /**
+   * @method expired
+   * @public
+   * @memberof Session
+   * @description Saves a token retrieved from the Data API.
+   * @return {Boolean} True if the token has expired, otherwise False.
+   *
+   */
 
-instance.interceptors.response.use(
-  response => interceptResponse(response),
-  error => interceptError(error)
-);
+  expired() {
+    return moment().isSameOrAfter(this.expires);
+  }
+
+  /**
+   * @method extend
+   * @memberof Session
+   * @public
+   * @description Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.
+   * @return {Undefined}
+   *
+   */
+
+  extend() {
+    this.active = false;
+    this.expires = moment()
+      .add(15, 'minutes')
+      .format();
+  }
+}
 
 module.exports = {
-  instance
+  Session
 };
 </code></pre>
         </article>

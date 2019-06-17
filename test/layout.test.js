@@ -58,10 +58,10 @@ describe('Layout Metadata Capabilities', () => {
     return done();
   });
 
-  it('should get field and portal metaData for a layout', () => {
+  it('should get field and portal metadata for a layout', () => {
     return expect(client.layout(process.env.LAYOUT))
       .to.eventually.be.a('object')
-      .that.has.all.keys('messages', 'response');
+      .that.has.all.keys('fieldMetaData', 'portalMetaData');
   });
   it('should require a layout', () => {
     return expect(client.layout().catch(error => error))

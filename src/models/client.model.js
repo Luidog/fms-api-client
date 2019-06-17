@@ -13,6 +13,7 @@ const {
   isEmpty,
   toStrings,
   sanitizeParameters,
+  pick,
   parseScriptResult,
   setData,
   urls
@@ -152,9 +153,6 @@ class Client extends Document {
     return this.agent.login().then(token => ({
       token
     }));
-    // .then(body => this._save(body))
-    // .then(body => this.data.outgoing(body))
-    // .then(body => body.response.token);
   }
 
   /**
@@ -191,10 +189,17 @@ class Client extends Document {
    * @public
    * @description Retrieves information about the FileMaker Server's hosted databases.
    * @see Metadata Service#databases
+   * @param {Object} [credentials] Credentials to use when listing server databases
+   * @param {String} [credentials.user='configured user'] Credentials to use when listing server databases
+   * @param {String} [credentials.password='configured password'] Credentials to use when listing server databases
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
-  databases() {
-    return databases(this.server, this.credentials, this.version);
+  databases(credentials, version) {
+    return databases(
+      this.server,
+      credentials || this.agent.connection.credentials,
+      this.version
+    );
   }
 
   /**
@@ -216,7 +221,7 @@ class Client extends Document {
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => parseScriptResult(body));
+      .then(body => body.response);
   }
 
   /**
@@ -238,7 +243,8 @@ class Client extends Document {
 
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
-      .then(body => this._save(body));
+      .then(body => this._save(body))
+      .then(body => body.response);
   }
 
   /**
@@ -260,7 +266,8 @@ class Client extends Document {
       )
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
-      .then(body => this._save(body));
+      .then(body => this._save(body))
+      .then(body => body.response);
   }
 
   /**
@@ -735,7 +742,7 @@ class Client extends Document {
    * @return {Promise}           returns a promise that will either resolve or reject based on the Data API.
    */
 
-  run(layout, scripts, parameters) {
+  run(layout, scripts, parameters, request) {
     return this.agent
       .request(
         {
@@ -747,10 +754,13 @@ class Client extends Document {
           params: sanitizeParameters(
             Object.assign(
               Array.isArray(scripts)
-                ? { scripts: [scripts] }
+                ? { scripts }
                 : isJSON(scripts)
-                ? { scripts: scripts }
+                ? { scripts: [scripts] }
                 : { script: scripts },
+              typeof scripts === 'string' && typeof parameters !== 'undefined'
+                ? { 'script.param': parameters }
+                : {},
               namespace({ limit: 1 })
             ),
             [
@@ -759,20 +769,19 @@ class Client extends Document {
               'script.prerequest',
               'script.prerequest.param',
               'script.presort',
-              'script.presort.param'
+              'script.presort.param',
+              '_limit'
             ]
           )
         },
-        parameters
+        typeof scripts === 'string' && typeof parameters !== 'undefined'
+          ? request
+          : parameters
       )
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => ({
-        result: isJSON(body.response.scriptResult)
-          ? JSON.parse(body.response.scriptResult)
-          : body.response.scriptResult
-      }));
+      .then(body => pick(parseScriptResult(body), 'scriptResult'));
   }
 
   /**

@@ -9,6 +9,7 @@ const {
 
 const {
   omit,
+  pick,
   toStrings,
   toArray,
   deepMapKeys,
@@ -20,6 +21,7 @@ const { urls } = require('./urls.utilities');
 
 module.exports = {
   omit,
+  pick,
   toStrings,
   setData,
   toArray,

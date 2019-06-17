@@ -10,6 +10,7 @@ const { expect, should } = require('chai');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const {
+  pick,
   omit,
   parse,
   isJSON
@@ -17,7 +18,7 @@ const {
 
 chai.use(chaiAsPromised);
 
-describe('Utility Capabilities', () => {
+describe('Conversion Utility Capabilities', () => {
   describe('Omit Utility', () => {
     it('it should remove properties while maintaing the array', () => {
       return expect(
@@ -74,6 +75,63 @@ describe('Utility Capabilities', () => {
     });
     it('it should return false for null', () => {
       return expect(isJSON(null)).to.equal(false);
+    });
+  });
+});
+
+describe('Filemaker Utility Capabilities', () => {
+  describe('filter Results', () => {
+    it('it should pick an array of properties while maintaing the array', () => {
+      return expect(
+        pick(
+          [
+            { name: 'Luke Skywalker', planet: 'tatooine' },
+            { name: 'Luke Skywalker', planet: 'tatooine' }
+          ],
+          ['name']
+        )
+      )
+        .to.be.a('array')
+        .and.property('0')
+        .to.be.a('object')
+        .and.to.include.keys('name');
+    });
+
+    it('it should pick an array of properties while maintaing the object', () => {
+      return expect(
+        pick(
+          { name: 'Luke Skywalker', affiliation: 'jedi', planet: 'tatooine' },
+          ['name', 'planet']
+        )
+      )
+        .to.be.a('object')
+        .and.to.include.all.keys('planet', 'name');
+    });
+    it('it should pick a string property while maintaing the array', () => {
+      return expect(
+        pick(
+          [
+            { name: 'Luke Skywalker', planet: 'tatooine' },
+            { name: 'Luke Skywalker', planet: 'tatooine' }
+          ],
+          'name'
+        )
+      )
+        .to.be.a('array')
+        .and.property('0')
+        .to.be.a('object')
+        .and.to.include.keys('name');
+    });
+
+    it('it should pick a string property while maintaing the object', () => {
+      return expect(
+        pick(
+          { name: 'Luke Skywalker', affiliation: 'jedi', planet: 'tatooine' },
+          'name'
+        )
+      )
+        .to.be.a('object')
+        .and.to.include.all.keys('name');
     });
   });
 });

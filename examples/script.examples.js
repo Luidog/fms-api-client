@@ -2,7 +2,7 @@
 
 const { log } = require('./services');
 
-//#script-example
+//#script-trigger-example
 const triggerScript = client =>
   client
     .script('Heroes', 'FMS Triggered Script', { name: 'Han' })

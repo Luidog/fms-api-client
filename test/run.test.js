@@ -63,7 +63,7 @@ describe('Script Queue Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult.presort');
   });
 
   it('should allow you to trigger a script with an object', () => {
@@ -80,7 +80,7 @@ describe('Script Queue Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult.presort');
   });
 
   it('should allow you to trigger a script with an array', () => {
@@ -98,13 +98,13 @@ describe('Script Queue Capabilities', () => {
       ])
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult');
   });
 
   it('should allow you to trigger a script via a string', () => {
     return expect(client.run(process.env.LAYOUT, 'FMS Triggered Script'))
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult');
   });
 
   it('should allow you to specify a timeout', () => {
@@ -134,7 +134,7 @@ describe('Script Queue Capabilities', () => {
   it('should allow you to trigger a script without specifying a parameter', () => {
     return expect(client.run(process.env.LAYOUT, 'FMS Triggered Script'))
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult');
   });
 
   it('should allow you to trigger a script specifying a string as a parameter', () => {
@@ -142,13 +142,13 @@ describe('Script Queue Capabilities', () => {
       client.run(process.env.LAYOUT, 'FMS Triggered Script', 'string-here')
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult');
   });
 
   it('should allow you to trigger a script specifying a number as a parameter', () => {
     return expect(client.run(process.env.LAYOUT, 'FMS Triggered Script', 1))
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult');
   });
 
   it('should allow you to trigger a script specifying an object as a parameter', () => {
@@ -158,7 +158,7 @@ describe('Script Queue Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult');
   });
 
   it('should reject a script that does not exist', () => {
@@ -174,7 +174,7 @@ describe('Script Queue Capabilities', () => {
       client.run(process.env.LAYOUT, 'Error Script').catch(error => error)
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult');
   });
 
   it('should parse script results if the results are json', () => {
@@ -185,12 +185,12 @@ describe('Script Queue Capabilities', () => {
       })
     )
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult');
   });
 
   it('should not parse script results if the results are not json', () => {
     return expect(client.run(process.env.LAYOUT, { name: 'Non JSON Script' }))
       .to.eventually.be.a('object')
-      .that.has.all.keys('result');
+      .that.has.all.keys('scriptResult');
   });
 });

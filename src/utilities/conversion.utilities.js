@@ -114,6 +114,29 @@ const omit = (data, properties) =>
  * @return {Object|Any} A JSON object or array of objects without the properties passed to it
  */
 
+/**
+ * @function pick
+ * @public
+ * @memberof Filemaker Utilities
+ * @description The parseScriptResults function filters the FileMaker DAPI response by testing if a script was triggered
+ * with the request, then either selecting the response, script error, and script result from the
+ * response or selecting just the response.
+ * @param  {Array|Object} data The response recieved from the FileMaker DAPI.
+ * @param  {Array|String} data The response recieved from the FileMaker DAPI.
+ * @return {Object}      A json object containing the selected data from the Data API Response.
+ */
+
+const pick = (data, filter) =>
+  Array.isArray(data)
+    ? data.map(object =>
+        _.pickBy(object, (value, key) =>
+          Array.isArray(filter) ? _.includes(filter, key) : key.includes(filter)
+        )
+      )
+    : _.pickBy(data, (value, key) =>
+        Array.isArray(filter) ? _.includes(filter, key) : key.includes(filter)
+      );
+
 const parse = value => (isJSON(value) ? JSON.parse(value) : value);
 
 /**
@@ -142,6 +165,7 @@ module.exports = {
   isJSON,
   isEmpty,
   omit,
+  pick,
   parse,
   deepMapKeys
 };

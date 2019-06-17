@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>services/request.service.js - Documentation</title>
+    <title>Session - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,103 +29,609 @@
 
 <div id="main">
     
-    <h1 class="page-title">services/request.service.js</h1>
+    <h1 class="page-title">Session</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>'use strict';
+        <h2>
+        Session
+        </h2>
+        
+            <div class="class-description"><p>The class used to save FileMaker Data API Session information</p></div>
+        
+    
+</header>
 
-const axios = require('axios');
-const axiosCookieJarSupport = require('axios-cookiejar-support').default;
+<article>
+    <div class="container-overview">
+    
+        
+<div class="section-method">
 
-const instance = axios.create();
+    
+    <h2>Constructor</h2>
+    
 
-axiosCookieJarSupport(instance);
+    <h4 class="name" id="Session"><span class="type-signature"></span>new Session<span class="signature">()</span><span class="type-signature"></span></h4>
 
-/**
- * @class Request Service
- */
+    
 
-/**
- * @method interceptError
- * @private
- * @description This method evaluates the error response. This method will substitute
- * a non json error or a bad gateway status with a json code and message error. This
- * method will add an expired property to the error response if it recieves a invalid
- * token response.
- * @param  {Object} error The error recieved from the requested resource.
- * @return {Promise}      A promise rejection containing a code and a message
- */
 
-const interceptError = error => {
-  if (error.code) {
-    return Promise.reject({ code: error.code, message: error.message });
-  } else if (
-    error.response.status === 502 ||
-    typeof error.response.data !== 'object'
-  ) {
-    return Promise.reject({
-      message: 'The Data API is currently unavailable',
-      code: '1630'
-    });
-  } else if (
-    error.response.status === 400 &amp;&amp;
-    error.request.path.includes('RCType=EmbeddedRCFileProcessor')
-  ) {
-    return Promise.reject({
-      message: 'FileMaker WPE rejected the request',
-      code: '9'
-    });
-  } else {
-    return Promise.reject(error.response.data.messages[0]);
-  }
-};
 
-/**
- * @function interceptResponse
- * @public
- * @memberof Request Service
- * @description handles request data before it is sent to the resource. This function
- * will eventually be used to cancel the request and return the configuration body.
- * This function will test the url for an http proticol and reject if none exist.
- * @param  {Object} config The axios request configuration
- * @return {Promise}      the request configuration object
- */
 
-const interceptResponse = response => {
-  if (typeof response.data !== 'object') {
-    return Promise.reject({
-      message: 'The Data API is currently unavailable',
-      code: '1630'
-    });
-  } else {
-    return response;
-  }
-};
 
-/**
- * Attach Interceptors to Axios instance
- * @param  {Any} response Web publishing response.
- * @param  {Any} error We publishing error.
- */
 
-instance.interceptors.response.use(
-  response => interceptResponse(response),
-  error => interceptError(error)
-);
 
-module.exports = {
-  instance
-};
-</code></pre>
-        </article>
-    </section>
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_session.model.js.html">models/session.model.js</a>, <a href="models_session.model.js.html#line6">line 6</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="issued"><span class="type-signature"></span>issued<span class="type-signature"> :String</span></h4>
+
+
+
+
+<div class="description">
+    <p>A string containing the time the token token was issued.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_session.model.js.html">models/session.model.js</a>, <a href="models_session.model.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><code>String</code></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</div>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="token"><span class="type-signature"></span>token<span class="type-signature"> :String</span></h4>
+
+
+
+
+<div class="description">
+    <p>The token to use when querying an endpoint.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_session.model.js.html">models/session.model.js</a>, <a href="models_session.model.js.html#line38">line 38</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><code>String</code></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</div>
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".expired"><span class="type-signature">(static) </span>expired<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Saves a token retrieved from the Data API.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_session.model.js.html">models/session.model.js</a>, <a href="models_session.model.js.html#line66">line 66</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Boolean</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>True if the token has expired, otherwise False.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".extend"><span class="type-signature">(static) </span>extend<span class="signature">()</span><span class="type-signature"> &rarr; {Undefined}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_session.model.js.html">models/session.model.js</a>, <a href="models_session.model.js.html#line79">line 79</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Undefined</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".valid"><span class="type-signature">(static) </span>valid<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Saves a token retrieved from the Data API.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_session.model.js.html">models/session.model.js</a>, <a href="models_session.model.js.html#line48">line 48</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>String</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>a token retrieved from the private generation method</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

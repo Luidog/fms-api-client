@@ -4,7 +4,7 @@
     "layout": "Heroes",
     "table": "Heroes",
     "totalRecordCount": "1977",
-    "foundCount": 133,
+    "foundCount": 135,
     "returnedCount": 1
   },
   "data": [
@@ -22,7 +22,7 @@
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
         "Vehicles::name": "",
-        "hash": "?"
+        "hash": ""
       },
       "portalData": {
         "Planets": [],

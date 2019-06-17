@@ -62,7 +62,7 @@ describe('Database Script List Capabilities', () => {
   it('should get a list of scripts and folders for the currently configured database', () => {
     return expect(client.scripts())
       .to.eventually.be.a('object')
-      .that.has.all.keys('messages', 'response');
+      .that.has.all.keys('scripts');
   });
   it('should fail with a code and a message', () => {
     sandbox.stub(urls, 'scripts').callsFake(() => 'https://httpstat.us/502');
