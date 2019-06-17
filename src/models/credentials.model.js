@@ -15,17 +15,20 @@ class Credentials extends EmbeddedDocument {
        * @type String
        */
       password: {
-        type: String
+        type: String,
+        required: true
       },
       /** The token to use when querying an endpoint.
        * @member Credentials#user
        * @type String
        */
       user: {
-        type: String
+        type: String,
+        required: true
       }
     });
   }
+
   /**
    * @method basic
    * @public
