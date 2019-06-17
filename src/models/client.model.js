@@ -120,7 +120,7 @@ class Client extends Document {
    */
 
   login() {
-    return this.agent.login().then(token => ({
+    return this.agent.connection.start().then(token => ({
       token
     }));
   }
@@ -136,8 +136,8 @@ class Client extends Document {
    */
 
   logout() {
-    return this.agent
-      .logout()
+    return this.agent.connection
+      .end()
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body));
   }
@@ -516,7 +516,7 @@ class Client extends Document {
    * @memberof Client
    * @description Retrieves a list of FileMaker records based upon a layout.
    * @param {String} layout The layout to use when retrieving the record.
-   * @param {Object} parameters the parameters to use to modify the query.
+   * @param {Object} [parameters] the parameters to use to modify the query.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
