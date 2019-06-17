@@ -127,7 +127,7 @@ class Agent extends EmbeddedDocument {
 
   preInit({ agent, protocol, connection }) {
     this.connection = Connection.create(connection);
-    if (agent) this._globalize(protocol, agent);
+    if (agent) this.globalize(protocol, agent);
   }
 
   /**
@@ -144,16 +144,16 @@ class Agent extends EmbeddedDocument {
       global.FMS_API_CLIENT.AGENTS &&
       global.FMS_API_CLIENT.AGENTS[this.global]
     ) {
-      this._localize()[`${this.protocol}Agent`].destroy();
+      this.localize()[`${this.protocol}Agent`].destroy();
       delete global.FMS_API_CLIENT.AGENTS[this.global];
     }
   }
 
   /**
-   * @method _globalize
+   * @method globalize
    * @private
    * @memberof Agent
-   * @description _globalize will create the global agent scope if it does not
+   * @description globalize will create the global agent scope if it does not
    * exist. It will set a global Id for retrieval later and create a new http or
    * https module depending on the protocol passed to it.
    * @param  {String} protocol   The protocol to use when creating an Agent.
@@ -161,7 +161,7 @@ class Agent extends EmbeddedDocument {
    * @return {Object}       returns a globalized request agent
    */
 
-  _globalize(protocol, agent) {
+  globalize(protocol, agent) {
     if (!this.global) this.global = uuidv4();
     global.FMS_API_CLIENT.AGENTS[this.global] =
       protocol === 'https'
@@ -175,23 +175,23 @@ class Agent extends EmbeddedDocument {
   }
 
   /**
-   * @method _localize
+   * @method localize
    * @private
    * @memberof Agent
-   * @description _localize will check to see if a global agent exists.
+   * @description localize will check to see if a global agent exists.
    * If the agent does not exist this method will call _globalize to add
    * it.
-   * @see _globalize
+   * @see globalize
    * @return {Object} returns a globalized request agent
    */
 
-  _localize() {
+  localize() {
     if (typeof global.FMS_API_CLIENT.AGENTS === 'undefined')
       global.FMS_API_CLIENT.AGENTS = [];
     if (global.FMS_API_CLIENT.AGENTS[this.global]) {
       return global.FMS_API_CLIENT.AGENTS[this.global];
     } else {
-      return this._globalize(this.protocol, this.agent);
+      return this.globalize(this.protocol, this.agent);
     }
   }
 
@@ -201,8 +201,14 @@ class Agent extends EmbeddedDocument {
    * @memberof Agent
    * @description request will merge agent properties with request properties
    * in order to make the request. This method removes httpAgent and httpsAgents through destructoring.
-   * @see _localize
-   * @return {Object} returns the request instance used to make the request.
+   * @see {@link localize}
+   * @see {@link push}
+   * @see {@link handleResponse}
+   * @see {@link handleRequest}
+   * @see {@link handleError}
+   * @param  {Object} data The request
+   * @param  {Object} [parameters] The request parameters. Individualized request parameters.
+   * @return {Object} request The configured axios instance to use for a request.
    */
 
   request(data, parameters = {}) {
@@ -226,16 +232,16 @@ class Agent extends EmbeddedDocument {
         data,
         this.timeout ? { timeout: this.timeout } : {},
         _.isEmpty(this.proxy) ? {} : { proxy: this.proxy },
-        _.isEmpty(this.agent) ? {} : this._localize(),
+        _.isEmpty(this.agent) ? {} : this.localize(),
         parameters.request || {}
       )
     );
   }
 
   /**
-   * @function handleResponse
-   * @public
-   * @memberof Request Service
+   * @method handleResponse
+   * @private
+   * @memberof Agent
    * @description handles request data before it is sent to the resource. This function
    * will eventually be used to cancel the request and return the configuration body.
    * This function will test the url for an http proticol and reject if none exist.
@@ -255,18 +261,10 @@ class Agent extends EmbeddedDocument {
     }
   }
 
-  logout() {
-    return this.connection.end();
-  }
-
-  login() {
-    return this.connection.start();
-  }
-
   /**
-   * @function handleRequest
-   * @public
-   * @memberof Request Service
+   * @method handleRequest
+   * @private
+   * @memberof Agent
    * @description handles request data before it is sent to the resource. This function
    * will eventually be used to cancel the request and return the configuration body.
    * This function will test the url for an http proticol and reject if none exist.
@@ -283,13 +281,42 @@ class Agent extends EmbeddedDocument {
         });
   }
 
+  /**
+   * @method push
+   * @private
+   * @memberof Agent
+   * @description the push method queues requests and begins the request watcher process. This method will also call shift to
+   * ensure a request is being processed.
+   * @param  {Object} agent The agent request configuration.
+   * @param  {Object} agent.request The agent request object.
+   * @param  {Function} agent.resolve The function to call when the request has been completed.
+   * @see  {@link Agent#watch}
+   * @see  {@link Agent#mutate}
+   * @see  {@link Agent#shift}
+   * @return {undefined} This method does not return anything.
+   */
+
   push({ request, resolve }) {
-    this.queue.push({ request: this.sanitize(request), resolve });
+    this.queue.push({
+      request: this.mutate(request, (value, key) =>
+        key.replace(/\./g, '{{dot}}')
+      ),
+      resolve
+    });
     if (this.pending.length < this.concurrency) {
       this.shift();
       this.watch();
     }
   }
+
+  /**
+   * @method shift
+   * @private
+   * @memberof Agent
+   * @description the shift method will send a request if there are less pending requests than the set limit.
+   * @see {@link agent#concurrency}
+   * @return {undefined} This method does not return anything.
+   */
 
   shift() {
     if (this.pending.length < this.concurrency) {
@@ -297,7 +324,7 @@ class Agent extends EmbeddedDocument {
     }
   }
 
-  sanitize(request) {
+  mutate(request, mutation) {
     let {
       transformRequest,
       transformResponse,
@@ -308,7 +335,7 @@ class Agent extends EmbeddedDocument {
 
     let modified = request.url.includes('/containers/')
       ? request
-      : deepMapKeys(value, (value, key) => key.replace(/\./g, '{{dot}}'));
+      : deepMapKeys(value, mutation);
 
     return {
       ...modified,
@@ -317,30 +344,6 @@ class Agent extends EmbeddedDocument {
       adapter,
       validateStatus
     };
-  }
-
-  unsanitize(request) {
-    return new Promise((resolve, reject) => {
-      let {
-        transformRequest,
-        transformResponse,
-        adapter,
-        validateStatus,
-        ...value
-      } = request;
-
-      let modified = request.url.includes('/containers/')
-        ? request
-        : deepMapKeys(value, (value, key) => key.replace(/{{dot}}/g, '.'));
-
-      resolve({
-        ...modified,
-        transformRequest,
-        transformResponse,
-        adapter,
-        validateStatus
-      });
-    });
   }
 
   /**
@@ -375,6 +378,19 @@ class Agent extends EmbeddedDocument {
     }
   }
 
+  /**
+   * @method watch
+   * @private
+   * @memberof Agent
+   * @description This method creates a timer to check on the status of queued and resolved requests
+   * This method will queue and resolve requests based on the number of incoming requests and the availability
+   * of sessions. This method will resolve requests and create sessions based upon the agent's configured concurrency.
+   * token response.
+   * @see  {@link Agent#concurrency}
+   * @see  {@link Connection@available}
+   * @return {Undefined}      A promise rejection containing a code and a message
+   */
+
   watch() {
     const WATCHER = setInterval(() => {
       if (this.queue.length > 0) {
@@ -387,15 +403,7 @@ class Agent extends EmbeddedDocument {
 
       if (this.pending.length > 0) {
         if (this.connection.available()) {
-          let resolved = this.pending.shift();
-          this.unsanitize(resolved.request).then(request =>
-            resolved.resolve(
-              Object.assign(
-                this.connection.authentication(request),
-                _.isEmpty(this.agent) ? {} : this._localize()
-              )
-            )
-          );
+          this.resolve();
         }
         if (
           this.connection.sessions.length <= this.concurrency &&
@@ -405,6 +413,30 @@ class Agent extends EmbeddedDocument {
         }
       }
     }, this.delay);
+  }
+
+  /**
+   * @method resolve
+   * @private
+   * @memberof Agent
+   * @description This method resolves requests by sending them to FileMaker for processing. This method will
+   * resolve requests currently in the pending queue. This method will inject the available session token into the request.
+   * @see  {@link Agent#pending}
+   * @see  {@link Connection@authentication}
+   * @return {Undefined}      A promise rejection containing a code and a message
+   */
+
+  resolve() {
+    let { resolve, request } = this.pending.shift();
+
+    resolve(
+      Object.assign(
+        this.connection.authentication(
+          this.mutate(request, (value, key) => key.replace(/{{dot}}/g, '.'))
+        ),
+        _.isEmpty(this.agent) ? {} : this.localize()
+      )
+    );
   }
 }
 
