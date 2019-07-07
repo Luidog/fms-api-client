@@ -8,8 +8,9 @@ module.exports = {
 		ecmaVersion: '2019'
 	},
 	plugins: ['prettier'],
-	extends: ['google', 'eslint:recommended'],
+	extends: ['google', 'eslint:recommended', 'prettier'],
 	rules: {
-		'prettier/prettier': 'error'
+		'prettier/prettier': 'error',
+		'require-jsdoc': 'off'
 	}
 };
