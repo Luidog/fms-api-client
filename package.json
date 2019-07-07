@@ -43,7 +43,7 @@
     "form-data": "^2.5.0",
     "into-stream": "^5.1.0",
     "lodash": "^4.17.11",
-    "marpat": "^2.0.0",
+    "marpat": "^2.0.1",
     "mime-types": "^2.1.24",
     "moment": "^2.24.0",
     "object-sizeof": "^1.4.0",
