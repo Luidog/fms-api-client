@@ -91,6 +91,23 @@ describe('Request Interceptor Capabilities', () => {
       .that.has.all.keys('code', 'message');
   });
 
+  it('should intercept non json responses', () => {
+    sandbox
+      .stub(urls, 'authentication')
+      .callsFake(() => 'https://httpstat.us/200');
+    return expect(
+      client
+        .save()
+        .then(client => {
+          client.agent.connection.sessions = [];
+          return client.login();
+        })
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message');
+  });
+
   it('should reject non http requests to the server with a json error', () => {
     sandbox
       .stub(urls, 'authentication')
