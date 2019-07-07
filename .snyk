@@ -8,8 +8,6 @@ patch:
         patched: '2019-07-07T14:47:05.925Z'
     - lodash:
         patched: '2019-07-07T14:46:10.103Z'
-      snyk > lodash:
-        patched: '2019-07-07T14:47:05.925Z'
     - snyk > @snyk/dep-graph > lodash:
         patched: '2019-07-07T14:47:05.925Z'
     - snyk > inquirer > lodash:
@@ -31,4 +29,6 @@ patch:
     - snyk > snyk-php-plugin > @snyk/composer-lockfile-parser > lodash:
         patched: '2019-07-07T14:47:05.925Z'
     - lodash:
+        patched: '2019-07-07T14:47:05.925Z'
+    - snyk > lodash:
         patched: '2019-07-07T14:47:05.925Z'
