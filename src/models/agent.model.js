@@ -343,7 +343,7 @@ class Agent extends EmbeddedDocument {
    */
 
   mutate(request, mutation) {
-    let {
+    const {
       transformRequest,
       transformResponse,
       adapter,
@@ -351,7 +351,7 @@ class Agent extends EmbeddedDocument {
       ...value
     } = request;
 
-    let modified = request.url.includes('/containers/')
+    const modified = request.url.includes('/containers/')
       ? request
       : deepMapKeys(value, mutation);
 
@@ -410,28 +410,36 @@ class Agent extends EmbeddedDocument {
    */
 
   watch(reject) {
-    const WATCHER = setInterval(() => {
-      if (this.queue.length > 0) {
-        this.shift();
-      }
+    if (!this.global) this.global = uuidv4();
+    if (!global.FMS_API_CLIENT.WATCHERS) global.FMS_API_CLIENT.WATCHERS = {};
 
-      if (this.queue.length === 0 && this.pending.length === 0) {
-        clearInterval(WATCHER);
-      }
-
-      if (this.pending.length > 0) {
-        if (this.connection.available()) {
-          this.resolve();
+    if (!global.FMS_API_CLIENT.WATCHERS[this.global]) {
+      const WATCHER = setInterval(() => {
+        if (this.queue.length > 0) {
+          this.shift();
         }
 
-        if (
-          this.connection.sessions.length <= this.concurrency &&
-          !this.connection.starting
-        ) {
-          this.connection.start().catch(error => reject(error));
+        if (this.queue.length === 0 && this.pending.length === 0) {
+          clearInterval(global.FMS_API_CLIENT.WATCHERS[this.global]);
+          delete global.FMS_API_CLIENT.WATCHERS[this.global];
         }
-      }
-    }, this.delay);
+
+        if (this.pending.length > 0) {
+          if (this.connection.available()) {
+            this.resolve();
+          }
+
+          if (
+            this.connection.sessions.length <= this.concurrency &&
+            !this.connection.starting
+          ) {
+            this.connection.start().catch(error => reject(error));
+          }
+        }
+      }, this.delay);
+
+      global.FMS_API_CLIENT.WATCHERS[this.global] = WATCHER;
+    }
   }
 
   /**
