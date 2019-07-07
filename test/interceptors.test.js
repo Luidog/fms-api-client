@@ -77,7 +77,7 @@ describe('Request Interceptor Capabilities', () => {
   it('should intercept authentication errors', () => {
     sandbox
       .stub(urls, 'authentication')
-      .callsFake(() => 'https://httpstat.us/200');
+      .callsFake(() => 'https://httpstat.us/400');
     return expect(
       client
         .save()
