@@ -4,7 +4,7 @@
   "description": "A FileMaker Data API client designed to allow easier interaction with a FileMaker database from a web environment.",
   "main": "index.js",
   "scripts": {
-    "test": "nyc _mocha --recursive  ./test --timeout=15000 --exit",
+    "test": "snyk test && nyc _mocha --recursive  ./test --timeout=15000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "examples": "node examples/index.js",
     "update-results": "RESULTS=true npm run examples",
@@ -48,6 +48,7 @@
     "moment": "^2.24.0",
     "object-sizeof": "^1.4.0",
     "prettysize": "^2.0.0",
+    "snyk": "^1.192.3",
     "stream-to-array": "^2.3.0",
     "tough-cookie": "^3.0.1",
     "uuid": "^3.3.2"
@@ -78,7 +79,6 @@
     "nyc": "^14.1.1",
     "prettier": "^1.18.2",
     "sinon": "^7.3.2",
-    "snyk": "^1.179.0",
     "varium": "^1.0.1"
   },
   "snyk": true
