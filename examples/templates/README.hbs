@@ -30,10 +30,10 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
       - [Logout Method](#logout-method)
     + [Client Methods](#client-methods)
       - [Get Product Info](#product-info)
-      - [Get Databases](#databases)
-      - [Get Layouts](#layouts)
-      - [Get scripts](#scripts)
-      - [Get Layout Metadata](#layout)
+      - [Get Databases](#get-databases)
+      - [Get Layouts](#get-layouts)
+      - [Get scripts](#get-scripts)
+      - [Get Layout Metadata](#get-layout)
       - [Create Records](#create-records)
       - [Duplicate Record](#duplicate-record)
       - [Get Record Details](#get-record-details)
@@ -224,7 +224,7 @@ A client can get server product info. The productInfo method will return metadat
 Result:
 <!--@snippet('./examples/results/product-info-example.json', { showSource: true })-->
 <!--/@-->
-#### databases
+#### Get Databases
 
 A client can get the databases accessible using the configured credentials. This method will return all databases hosted by the currently configured server that the client can connect to. An alternative set of credentials can be passed to this method to check what databases alternate credentials are able to access.
 
@@ -238,7 +238,7 @@ A client can get the databases accessible using the configured credentials. This
 Result:
 <!--@snippet('./examples/results/databases-info-example.json', { showSource: true })-->
 <!--/@-->
-#### layouts
+#### Get Layouts
 
 The layouts method will return a list of layouts accessible by the configured client.
 
@@ -252,7 +252,7 @@ The layouts method will return a list of layouts accessible by the configured cl
 Result:
 <!--@snippet('./examples/results/layouts-example.json', { showSource: true })-->
 <!--/@-->
-#### scripts
+#### Get Scripts
 
 The scripts method will return metadata for the scripts accessible by the configured client.
 
@@ -266,7 +266,7 @@ The scripts method will return metadata for the scripts accessible by the config
 Result:
 <!--@snippet('./examples/results/scripts-example.json', { showSource: true })-->
 <!--/@-->
-#### layout
+#### Get Layout
 
 The layout method will get metadata for the specified layout.
 

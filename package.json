@@ -59,6 +59,7 @@
     "coveralls": "^3.0.4",
     "deep-map": "^2.0.0",
     "dotenv": "^8.0.0",
+    "es6-weak-map": "^2.0.3",
     "eslint": "^6.0.1",
     "eslint-config-google": "^0.13.0",
     "eslint-config-prettier": "^6.0.0",
