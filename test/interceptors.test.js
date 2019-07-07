@@ -93,7 +93,7 @@ describe('Request Interceptor Capabilities', () => {
       .that.has.all.keys('code', 'message');
   });
 
-  it('should intercept json responses that not return a token', () => {
+  it('should intercept json responses that do not return a token', () => {
     sandbox
       .stub(urls, 'authentication')
       .callsFake(() => 'https://httpstat.us/200');
@@ -109,12 +109,8 @@ describe('Request Interceptor Capabilities', () => {
   });
 
   it('should intercept non json responses', () => {
-    sandbox
-      .stub(urls, 'authentication')
-      .callsFake(() => 'https://httpstat.us/200');
-    sandbox
-      .stub(instance, 'request')
-      .callsFake(() => Promise.resolve({ data: 'some text' }));
+    sandbox.stub(urls, 'authentication').callsFake(() => 'https://httpstat.us');
+
     return expect(
       client
         .save()
