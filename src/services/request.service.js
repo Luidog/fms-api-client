@@ -58,6 +58,7 @@ const interceptError = error => {
  */
 
 const interceptResponse = response => {
+  console.log(typeof response.data);
   if (typeof response.data !== 'object') {
     return Promise.reject({
       message: 'The Data API is currently unavailable',
