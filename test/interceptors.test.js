@@ -18,6 +18,8 @@ const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker } = require('../index.js');
 const { urls } = require('../src/utilities');
+const { instance } = require('../src/services');
+
 const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
@@ -77,7 +79,7 @@ describe('Request Interceptor Capabilities', () => {
   it('should intercept authentication errors', () => {
     sandbox
       .stub(urls, 'authentication')
-      .callsFake(() => 'https://httpstat.us/200');
+      .callsFake(() => 'https://httpstat.us/400');
     return expect(
       client
         .save()
@@ -85,6 +87,34 @@ describe('Request Interceptor Capabilities', () => {
           client.agent.connection.sessions = [];
           return client.login();
         })
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should intercept json responses that do not return a token', () => {
+    sandbox
+      .stub(urls, 'authentication')
+      .callsFake(() => 'https://httpstat.us/200');
+
+    return expect(
+      client
+        .save()
+        .then(client => client.login())
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should intercept non json responses', () => {
+    sandbox.stub(urls, 'authentication').callsFake(() => 'https://httpstat.us');
+
+    return expect(
+      client
+        .save()
+        .then(client => client.login())
         .catch(error => error)
     )
       .to.eventually.be.an('object')

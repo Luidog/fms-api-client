@@ -113,18 +113,42 @@ describe('Authentication Capabilities', () => {
       .that.has.all.keys('code', 'message');
   });
 
-  it('should reject if the authentication request fails', () => {
-    client = Filemaker.create({
+  it('should reject if the login request fails', () => {
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
-      password: 'incorrect-password'
+      password: process.env.PASSWORD
     });
+
+    sandbox
+      .stub(client.agent.connection.credentials, 'password')
+      .value('incorrect');
 
     return expect(
       client
         .save()
         .then(client => client.login())
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should reject if it can not create a new data api session', () => {
+    const client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+    sandbox
+      .stub(client.agent.connection.credentials, 'password')
+      .value('incorrect');
+    return expect(
+      client
+        .save()
+        .then(client => client.list())
         .catch(error => error)
     )
       .to.eventually.be.an('object')
@@ -152,14 +176,17 @@ describe('Authentication Capabilities', () => {
   });
 
   it('should clear invalid sessions', () => {
-    let newClient = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
-      password: 'incorrect-password'
+      password: process.env.PASSWORD
     });
     sandbox
-      .stub(newClient.agent.connection, 'authentication')
+      .stub(client.agent.connection.credentials, 'password')
+      .value('incorrect');
+    sandbox
+      .stub(client.agent.connection, 'authentication')
       .callsFake(({ headers, ...request }) => ({
         ...request,
         headers: {
@@ -168,15 +195,11 @@ describe('Authentication Capabilities', () => {
         }
       }));
     return expect(
-      newClient
+      client
         .login()
         .then(() => {
-          newClient.agent.connection.sessions = [];
-          return newClient.list(process.env.LAYOUT, { limit: 1 });
-        })
-        .then(response => {
-          console.log(response);
-          return response;
+          client.agent.connection.sessions = [];
+          return client.list(process.env.LAYOUT, { limit: 1 });
         })
         .catch(error => error)
     )
