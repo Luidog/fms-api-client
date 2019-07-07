@@ -217,10 +217,11 @@ class Agent extends EmbeddedDocument {
   request(data, parameters = {}) {
     instance.interceptors.request.use(
       ({ httpAgent, httpsAgent, ...request }) =>
-        new Promise(resolve =>
+        new Promise((resolve, reject) =>
           this.push({
             request: this.handleRequest(request),
-            resolve
+            resolve,
+            reject
           })
         )
     );
@@ -299,7 +300,7 @@ class Agent extends EmbeddedDocument {
    * @return {undefined} This method does not return anything.
    */
 
-  push({ request, resolve }) {
+  push({ request, resolve, reject }) {
     this.queue.push({
       request: this.mutate(request, (value, key) =>
         key.replace(/\./g, '{{dot}}')
@@ -308,7 +309,7 @@ class Agent extends EmbeddedDocument {
     });
     if (this.pending.length < this.concurrency) {
       this.shift();
-      this.watch();
+      this.watch(reject);
     }
   }
 
@@ -408,7 +409,7 @@ class Agent extends EmbeddedDocument {
    * @return {Undefined}      A promise rejection containing a code and a message
    */
 
-  watch() {
+  watch(reject) {
     const WATCHER = setInterval(() => {
       if (this.queue.length > 0) {
         this.shift();
@@ -422,11 +423,12 @@ class Agent extends EmbeddedDocument {
         if (this.connection.available()) {
           this.resolve();
         }
+
         if (
           this.connection.sessions.length <= this.concurrency &&
           !this.connection.starting
         ) {
-          this.connection.start();
+          this.connection.start().catch(error => reject(error));
         }
       }
     }, this.delay);

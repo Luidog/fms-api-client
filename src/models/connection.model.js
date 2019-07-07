@@ -160,7 +160,10 @@ class Connection extends EmbeddedDocument {
         .then(response => response.data)
         .then(body => this.save(body))
         .then(token => resolve(token))
-        .catch(error => reject(error));
+        .catch(error => {
+          this.starting = false;
+          reject(error);
+        });
     });
   }
 
