@@ -131,9 +131,17 @@ class Connection extends EmbeddedDocument {
    */
 
   save(data) {
-    this.starting = false;
-    this.sessions.push(Session.create({ token: data.response.token }));
-    return data.response.token;
+    return new Promise((resolve, reject) => {
+      this.starting = false;
+      if (!data.response || !data.response.token)
+        reject({
+          code: '1760',
+          message: 'Unable to parse session token from server response.'
+        });
+      this.sessions.push(Session.create({ token: data.response.token }));
+
+      resolve(data.response.token);
+    });
   }
 
   /**

@@ -149,10 +149,7 @@ describe('Authentication Capabilities', () => {
       client
         .save()
         .then(client => client.list())
-        .catch(error => {
-          console.log(error);
-          return error;
-        })
+        .catch(error => error)
     )
       .to.eventually.be.an('object')
       .that.has.all.keys('code', 'message');
