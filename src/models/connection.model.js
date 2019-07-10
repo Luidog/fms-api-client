@@ -116,7 +116,7 @@ class Connection extends EmbeddedDocument {
   }
 
   available() {
-    let session = _.find(this.sessions, session => session.valid());
+    const session = _.find(this.sessions, session => session.valid());
     return typeof session === 'undefined' ? false : session;
   }
 
@@ -188,7 +188,7 @@ class Connection extends EmbeddedDocument {
   end() {
     return new Promise((resolve, reject) => {
       if (this.sessions.length > 0) {
-        let session = this.available();
+        const session = this.available();
         session.active = true;
         instance
           .request({
@@ -242,8 +242,8 @@ class Connection extends EmbeddedDocument {
    */
 
   extend(data) {
-    let token = data.replace('Bearer ', '');
-    let session = _.find(this.sessions, session => session.token === token);
+    const token = data.replace('Bearer ', '');
+    const session = _.find(this.sessions, session => session.token === token);
     if (session) session.extend();
   }
 }
