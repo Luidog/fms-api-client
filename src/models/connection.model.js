@@ -131,8 +131,8 @@ class Connection extends EmbeddedDocument {
    */
 
   save(data) {
+    this.starting = false;
     return new Promise((resolve, reject) => {
-      this.starting = false;
       if (!data.response || !data.response.token)
         reject({
           code: '1760',
