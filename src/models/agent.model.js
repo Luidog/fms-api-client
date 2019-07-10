@@ -102,7 +102,7 @@ class Agent extends EmbeddedDocument {
        */
       delay: {
         type: Number,
-        default: () => 1
+        default: () => 800
       },
       /**
        * A proxy to use for requests.
@@ -414,29 +414,30 @@ class Agent extends EmbeddedDocument {
     if (!global.FMS_API_CLIENT.WATCHERS) global.FMS_API_CLIENT.WATCHERS = {};
 
     if (!global.FMS_API_CLIENT.WATCHERS[this.global]) {
-      const WATCHER = setInterval(() => {
+      const WATCHER = setTimeout(function watch(){
         if (this.queue.length > 0) {
           this.shift();
-        }
-
-        if (this.queue.length === 0 && this.pending.length === 0) {
-          clearInterval(global.FMS_API_CLIENT.WATCHERS[this.global]);
-          delete global.FMS_API_CLIENT.WATCHERS[this.global];
         }
 
         if (this.pending.length > 0) {
           if (this.connection.available()) {
             this.resolve();
           }
-
           if (
-            this.connection.sessions.length <= this.concurrency &&
+            (!this.connection.available() || this.connection.sessions.length < this.concurrency) &&
             !this.connection.starting
           ) {
-            this.connection.start().catch(error => reject(error));
+            this.connection.start().then(()=>setTimeout(watch.bind(this), this.delay)).catch(error => reject(error));
           }
         }
-      }, this.delay);
+
+        if (this.queue.length === 0 && this.pending.length === 0) {
+          clearInterval(global.FMS_API_CLIENT.WATCHERS[this.global]);
+          delete global.FMS_API_CLIENT.WATCHERS[this.global];
+        } else {
+          !this.connection.starting ? setTimeout(watch.bind(this), this.delay) : null
+        }
+      }.bind(this), this.delay);
 
       global.FMS_API_CLIENT.WATCHERS[this.global] = WATCHER;
     }

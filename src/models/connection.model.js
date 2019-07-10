@@ -139,7 +139,7 @@ class Connection extends EmbeddedDocument {
           message: 'Unable to parse session token from server response.'
         });
       this.sessions.push(Session.create({ token: data.response.token }));
-
+      this.clear();
       resolve(data.response.token);
     });
   }
@@ -159,6 +159,7 @@ class Connection extends EmbeddedDocument {
         .request({
           url: urls.authentication(this.server, this.database, this.version),
           method: 'post',
+          timeout: 3000,
           headers: {
             'Content-Type': 'application/json',
             authorization: this.credentials.basic()
@@ -225,8 +226,8 @@ class Connection extends EmbeddedDocument {
   clear(header) {
     this.sessions = this.sessions.filter(session =>
       typeof header === 'string'
-        ? header.replace('Bearer ', '') === session.token || session.expired()
-        : session.expired()
+        ? header.replace('Bearer ', '') !== session.token || !session.expired()
+        : !session.expired()
     );
   }
 
