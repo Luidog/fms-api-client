@@ -136,6 +136,26 @@ describe('Authentication Capabilities', () => {
   });
 
   it('should reject if it can not create a new data api session', () => {
+    let client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+    sandbox
+      .stub(client.agent.connection.credentials, 'password')
+      .value('incorrect');
+    return expect(
+      client
+        .save()
+        .then(client => client.login())
+        .catch(error => error)
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('code', 'message');
+  });
+
+  it('should reject if it can not create a new data api session with authentication', () => {
     const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,

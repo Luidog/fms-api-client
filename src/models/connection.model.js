@@ -116,7 +116,7 @@ class Connection extends EmbeddedDocument {
   }
 
   available() {
-    let session = _.find(this.sessions, session => session.valid());
+    const session = _.find(this.sessions, session => session.valid());
     return typeof session === 'undefined' ? false : session;
   }
 
@@ -131,15 +131,15 @@ class Connection extends EmbeddedDocument {
    */
 
   save(data) {
+    this.starting = false;
     return new Promise((resolve, reject) => {
-      this.starting = false;
       if (!data.response || !data.response.token)
         reject({
           code: '1760',
           message: 'Unable to parse session token from server response.'
         });
       this.sessions.push(Session.create({ token: data.response.token }));
-
+      this.clear();
       resolve(data.response.token);
     });
   }
@@ -159,6 +159,7 @@ class Connection extends EmbeddedDocument {
         .request({
           url: urls.authentication(this.server, this.database, this.version),
           method: 'post',
+          timeout: 3000,
           headers: {
             'Content-Type': 'application/json',
             authorization: this.credentials.basic()
@@ -187,7 +188,7 @@ class Connection extends EmbeddedDocument {
   end() {
     return new Promise((resolve, reject) => {
       if (this.sessions.length > 0) {
-        let session = this.available();
+        const session = this.available();
         session.active = true;
         instance
           .request({
@@ -225,8 +226,8 @@ class Connection extends EmbeddedDocument {
   clear(header) {
     this.sessions = this.sessions.filter(session =>
       typeof header === 'string'
-        ? header.replace('Bearer ', '') === session.token || session.expired()
-        : session.expired()
+        ? header.replace('Bearer ', '') !== session.token || !session.expired()
+        : !session.expired()
     );
   }
 
@@ -241,8 +242,8 @@ class Connection extends EmbeddedDocument {
    */
 
   extend(data) {
-    let token = data.replace('Bearer ', '');
-    let session = _.find(this.sessions, session => session.token === token);
+    const token = data.replace('Bearer ', '');
+    const session = _.find(this.sessions, session => session.token === token);
     if (session) session.extend();
   }
 }
