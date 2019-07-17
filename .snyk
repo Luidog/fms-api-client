@@ -6,12 +6,8 @@ patch:
   SNYK-JS-LODASH-450202:
     - marpat > lodash:
         patched: '2019-07-07T14:47:05.925Z'
-      snyk > lodash:
-        patched: '2019-07-07T20:07:54.255Z'
     - lodash:
         patched: '2019-07-07T14:46:10.103Z'
-      marpat > lodash:
-        patched: '2019-07-07T20:07:54.255Z'
     - snyk > @snyk/dep-graph > lodash:
         patched: '2019-07-07T20:07:54.255Z'
     - snyk > inquirer > lodash:
@@ -26,28 +22,16 @@ patch:
         patched: '2019-07-07T20:07:54.255Z'
     - snyk > @snyk/dep-graph > graphlib > lodash:
         patched: '2019-07-07T14:47:05.925Z'
-      marpat > snyk > lodash:
-        patched: '2019-07-07T20:07:54.255Z'
     - snyk > snyk-go-plugin > graphlib > lodash:
         patched: '2019-07-07T14:47:05.925Z'
-      snyk > @snyk/dep-graph > graphlib > lodash:
-        patched: '2019-07-07T20:07:54.255Z'
     - snyk > snyk-nodejs-lockfile-parser > graphlib > lodash:
         patched: '2019-07-07T14:47:05.925Z'
-      snyk > snyk-go-plugin > graphlib > lodash:
-        patched: '2019-07-07T20:07:54.255Z'
     - snyk > snyk-php-plugin > @snyk/composer-lockfile-parser > lodash:
         patched: '2019-07-07T14:47:05.925Z'
-      snyk > snyk-nodejs-lockfile-parser > graphlib > lodash:
-        patched: '2019-07-07T20:07:54.255Z'
     - lodash:
         patched: '2019-07-07T14:47:05.925Z'
-      marpat > snyk > @snyk/dep-graph > lodash:
-        patched: '2019-07-07T20:07:54.255Z'
     - snyk > lodash:
         patched: '2019-07-07T14:47:05.925Z'
-      marpat > snyk > inquirer > lodash:
-        patched: '2019-07-07T20:07:54.255Z'
     - marpat > snyk > snyk-config > lodash:
         patched: '2019-07-07T20:07:54.255Z'
     - marpat > snyk > snyk-mvn-plugin > lodash:
@@ -67,4 +51,20 @@ patch:
     - marpat > snyk > snyk-php-plugin > @snyk/composer-lockfile-parser > lodash:
         patched: '2019-07-07T20:07:54.255Z'
     - lodash:
+        patched: '2019-07-07T20:07:54.255Z'
+    - snyk > lodash:
+        patched: '2019-07-07T20:07:54.255Z'
+    - marpat > lodash:
+        patched: '2019-07-07T20:07:54.255Z'
+    - marpat > snyk > lodash:
+        patched: '2019-07-07T20:07:54.255Z'
+    - snyk > @snyk/dep-graph > graphlib > lodash:
+        patched: '2019-07-07T20:07:54.255Z'
+    - snyk > snyk-go-plugin > graphlib > lodash:
+        patched: '2019-07-07T20:07:54.255Z'
+    - snyk > snyk-nodejs-lockfile-parser > graphlib > lodash:
+        patched: '2019-07-07T20:07:54.255Z'
+    - marpat > snyk > @snyk/dep-graph > lodash:
+        patched: '2019-07-07T20:07:54.255Z'
+    - marpat > snyk > inquirer > lodash:
         patched: '2019-07-07T20:07:54.255Z'

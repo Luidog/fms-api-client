@@ -427,7 +427,11 @@ class Agent extends EmbeddedDocument {
               this.connection.sessions.length < this.concurrency) &&
             !this.connection.starting
           ) {
-            this.connection.start().catch(error => reject(error));
+            this.connection.start().catch(error => {
+              this.pending = [];
+              this.queue = [];
+              reject(error);
+            });
           }
 
           if (this.queue.length === 0 && this.pending.length === 0) {
