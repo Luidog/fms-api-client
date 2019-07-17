@@ -175,6 +175,58 @@ describe('Authentication Capabilities', () => {
       .that.has.all.keys('code', 'message');
   });
 
+  it('should clear queued requests if it can not add a new data api session', () => {
+    const client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+    sandbox
+      .stub(client.agent.connection.credentials, 'password')
+      .value('incorrect');
+    return expect(
+      client
+        .save()
+        .then(client => client.list())
+        .catch(error => ({
+          pending: client.agent.pending,
+          queue: client.agent.queue,
+          error
+        }))
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('error', 'pending', 'queue')
+      .and.to.have.property('pending')
+      .to.be.an('array').and.to.be.empty;
+  });
+
+  it('should clear pending requests if it can not add a new data api session', () => {
+    const client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+    sandbox
+      .stub(client.agent.connection.credentials, 'password')
+      .value('incorrect');
+    return expect(
+      client
+        .save()
+        .then(client => client.list())
+        .catch(error => ({
+          pending: client.agent.pending,
+          queue: client.agent.queue,
+          error
+        }))
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('error', 'pending', 'queue')
+      .and.to.have.property('queue')
+      .to.be.an('array').and.to.be.empty;
+  });
+
   it('should attempt to log out before being removed', () => {
     let called = false;
     sandbox.stub(client.agent.connection, 'end').callsFake(() => {
