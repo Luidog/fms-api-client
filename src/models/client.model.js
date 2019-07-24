@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const _ = require('lodash');
 const FormData = require('form-data');
 const intoStream = require('into-stream');
 const { Document } = require('marpat');
@@ -120,9 +121,11 @@ class Client extends Document {
    */
 
   login() {
-    return this.agent.connection.start().then(token => ({
-      token
-    }));
+    return this.agent.connection
+      .start(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false)
+      .then(token => ({
+        token
+      }));
   }
 
   /**

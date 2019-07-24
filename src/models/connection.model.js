@@ -152,20 +152,31 @@ class Connection extends EmbeddedDocument {
    * @return {String} The session token.
    */
 
-  start() {
+  start(agent) {
     this.starting = true;
     return new Promise((resolve, reject) => {
       instance
-        .request({
-          url: urls.authentication(this.server, this.database, this.version),
-          method: 'post',
-          timeout: 3000,
-          headers: {
-            'Content-Type': 'application/json',
-            authorization: this.credentials.basic()
-          },
-          data: {}
-        })
+        .request(
+          Object.assign(
+            {
+              url: urls.authentication(
+                this.server,
+                this.database,
+                this.version
+              ),
+              method: 'post',
+              timeout: 3000
+            },
+            agent ? { ...agent } : {},
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                authorization: this.credentials.basic()
+              },
+              data: {}
+            }
+          )
+        )
         .then(response => response.data)
         .then(body => this.save(body))
         .then(token => resolve(token))

@@ -84,7 +84,7 @@ describe('Agent Configuration Capabilities', () => {
       .that.has.all.keys('message', 'code');
   });
 
-  it('should reject non http proticol requests', () => {
+  it('should reject non http protocol requests', () => {
     return expect(
       client
         .login()
