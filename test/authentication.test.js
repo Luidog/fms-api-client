@@ -279,6 +279,66 @@ describe('Authentication Capabilities', () => {
       .that.has.all.keys('message', 'code');
   });
 
+  it('should open sessions with a custom agent automatically', () => {
+    const client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      agent: { rejectUnauthorized: true }
+    });
+    let requestAgent;
+    sandbox.stub(client.agent.connection, 'start').callsFake(agent => {
+      requestAgent = agent;
+      return Promise.reject(agent);
+    });
+
+    return expect(
+      client
+        .save()
+        .then(client => client.list())
+        .catch(error => {
+          return requestAgent;
+        })
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('httpsAgent')
+      .and.property('httpsAgent')
+      .to.have.any.keys('options')
+      .and.property('options')
+      .to.have.any.keys('rejectUnauthorized');
+  });
+
+  it('should open sessions with a custom agent on login', () => {
+    const client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      agent: { rejectUnauthorized: true }
+    });
+    let requestAgent;
+    sandbox.stub(client.agent.connection, 'start').callsFake(agent => {
+      requestAgent = agent;
+      return Promise.reject(agent);
+    });
+
+    return expect(
+      client
+        .save()
+        .then(client => client.login())
+        .catch(error => {
+          return requestAgent;
+        })
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('httpsAgent')
+      .and.property('httpsAgent')
+      .to.have.any.keys('options')
+      .and.property('options')
+      .to.have.any.keys('rejectUnauthorized');
+  });
+
   it('should catch the log out error before being removed if the login is not valid', () => {
     return expect(
       client.login().then(token => {
