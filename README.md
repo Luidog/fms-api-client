@@ -2102,9 +2102,7 @@ const mergeDataOnCreate = client =>
 
 > Excerpt from [./examples/create.examples.js](./examples/create.examples.js#L15-L24)
 
-
 Result:
-
 
 ```json
 {
@@ -2189,6 +2187,7 @@ Local Snyk policy: found
     ✓ should clear invalid sessions (1445ms)
     ✓ should open sessions with a custom agent automatically
     ✓ should open sessions with a custom agent on login
+    ✓ should close sessions with a custom agent automatically
     ✓ should catch the log out error before being removed if the login is not valid (167ms)
 
   ContainerData Capabilities
@@ -2507,7 +2506,7 @@ Local Snyk policy: found
       ✓ it should pick a string property while maintaing the object
 
 
-  261 passing (2m)
+  262 passing (2m)
 
 ------------------------------|----------|----------|----------|----------|-------------------|
 File                          |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
