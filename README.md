@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/Luidog/fms-api-client.png?branch=master)](https://travis-ci.com/Luidog/fms-api-client) [![Known Vulnerabilities](https://snyk.io/test/github/Luidog/fms-api-client/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Luidog/fms-api-client?targetFile=package.json) [![Coverage Status](https://coveralls.io/repos/github/Luidog/fms-api-client/badge.svg?branch=master)](https://coveralls.io/github/Luidog/fms-api-client?branch=master) [![GitHub issues](https://img.shields.io/github/issues/Luidog/fms-api-client.svg?style=plastic)](https://github.com/Luidog/fms-api-client/issues) [![Github commits (since latest release)](https://img.shields.io/github/commits-since/luidog/fms-api-client/latest.svg)](https://img.shields.io/github/issues/Luidog/fms-api-client.svg) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![GitHub license](https://img.shields.io/github/license/Luidog/fms-api-client.svg)](https://github.com/Luidog/fms-api-client/blob/master/LICENSE.md)
 
-A FileMaker Data API client designed to allow easier interaction with a FileMaker database from a web environment. This client abstracts the FileMaker 17 & 18 Data API into class based methods. 
+A FileMaker Data API client designed to allow easier interaction with a FileMaker database from a web environment. This client abstracts the FileMaker 17 & 18 Data API into class based methods.
 
 [fms-api-client documentation](https://luidog.github.io/fms-api-client/)
 
@@ -65,13 +65,11 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
 
 MIT © Lui de la Parra
 
-
 ## Installation
 
 ```sh
 npm install --save fms-api-client
 ```
-
 
 ## Usage
 
@@ -83,9 +81,9 @@ Each client committed to the datastore will automatically handle Data API Sessio
 
 All client methods accept parameters as defined by FileMaker. The client also allows for an expanded parameter syntax designed to make interacting with the client easier. Scripts and portals can be defined as arrays. Find queries can be defined as either an object or an array. For more information on the syntax supported by the client see [the parameter syntax section](#parameter-syntax).
 
-In addition to the expanded syntax the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API. The `limit` and `offset` parameters can be either strings or a numbers. The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result is valid JSON it will be automatically parsed for you by the client. 
+In addition to the expanded syntax the client will also automatically parse arrays, objects, and numbers to adhere to the requirements of the Data API. The `limit` and `offset` parameters can be either strings or a numbers. The client will also automatically convert `limit`, `find`, and `offset` parameters into their underscored conterparts as needed. Additionally, if a script result is valid JSON it will be automatically parsed for you by the client.
 
-All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable. 
+All methods on the client return promises and each method will reject with a message and code upon encountering an error. All messages and codes follow the FileMaker Data API codes where applicable.
 
 The client will queue concurrent requests to the Data API. The client can be configured with a [concurrency setting](#client-creation). The client will attempt ensure that each request to the Data API is made with an valid token which is not in use. This behavior prevents request session collisions. For more information on Data API Session handling see the [request queue section](#request-queue).
 
@@ -93,7 +91,7 @@ The client also provides utility modules to aid in working with FileMaker Data A
 
 ### Parameter Syntax
 
-The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters. 
+The client supports the same parameter syntax as is found in the [Data API Documentation](https://fm.mutesymphony.com/fmi/data/apidoc/). Where appropriate and useful the client also allows additional parameters.
 
 #### Script Array Syntax
 
@@ -164,7 +162,7 @@ Any property not nested in a `portalData` property will be moved into the `field
 
 #### Sort Syntax
 
-The client accepts the same sort parameters as the Data API. 
+The client accepts the same sort parameters as the Data API.
 
 ```json
 {
@@ -177,8 +175,8 @@ The client accepts the same sort parameters as the Data API.
 
 > File [./examples/schema/sort-schema.json](./examples/schema/sort-schema.json)
 
-
 #### Query Syntax
+
 When using the `find` method a query is required. The query can either be a single json object or an array of json objects.
 
 ```json
@@ -203,7 +201,7 @@ When using the `find` method a query is required. The query can either be a sing
 
 ### Datastore Connection
 
-The connect  method must be called before the FileMaker class is used. The connect method is not currently exposed by fms-api-client, but from the marpat dependency. marpat is a fork of camo. Thanks and love to [Scott Robinson](https://github.com/scottwrobinson) for his creation and maintenance of camo.
+The connect method must be called before the FileMaker class is used. The connect method is not currently exposed by fms-api-client, but from the marpat dependency. marpat is a fork of camo. Thanks and love to [Scott Robinson](https://github.com/scottwrobinson) for his creation and maintenance of camo.
 
 marpat is designed to allow the use of multiple datastores with the focus on encrypted file storage and project flexibility.
 
@@ -211,11 +209,10 @@ For more information on marpat and the different types of supported storage visi
 
 ```js
 const { connect } = require('marpat');
-connect('nedb://memory')
+connect('nedb://memory');
 ```
 
 > Excerpt from [./examples/index.js](./examples/index.js#L27-L28)
-
 
 ### Client Creation
 
@@ -223,29 +220,28 @@ After connecting to a datastore you can import and create clients. A client is c
 
 | Property      |         Type         |                                     Description                                     |
 | ------------- | :------------------: | :---------------------------------------------------------------------------------: |
-| database      |  <code>String</code> |                         The FileMaker database to connect to                        |
-| server        |  <code>String</code> | The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
-| user          |  <code>String</code> |     The FileMaker user account to be used when authenticating into the Data API     |
-| password      |  <code>String</code> |                        The FileMaker user account's password.                       |
-| [name]        |  <code>String</code> |                                A name for the client.                               |
+| database      | <code>String</code>  |                        The FileMaker database to connect to                         |
+| server        | <code>String</code>  | The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
+| user          | <code>String</code>  |     The FileMaker user account to be used when authenticating into the Data API     |
+| password      | <code>String</code>  |                       The FileMaker user account's password.                        |
+| [name]        | <code>String</code>  |                               A name for the client.                                |
 | [usage]       | <code>Boolean</code> |          Track Data API usage for this client. **Note:** Default is `true`          |
-| [timeout]     |  <code>Number</code> |      The default timeout time for requests **Note:** Default is 0, (no timeout)     |
-| [concurrency] |  <code>Number</code> |           The number of concurrent requests that will be made to FileMaker          |
-| [proxy]       |  <code>Object</code> |                             settings for a proxy server                             |
-| [agent]       |  <code>Object</code> |                         settings for a custom request agent                         |
+| [timeout]     | <code>Number</code>  |     The default timeout time for requests **Note:** Default is 0, (no timeout)      |
+| [concurrency] | <code>Number</code>  |          The number of concurrent requests that will be made to FileMaker           |
+| [proxy]       | <code>Object</code>  |                             settings for a proxy server                             |
+| [agent]       | <code>Object</code>  |                         settings for a custom request agent                         |
 
 :warning: You should only use the agent parameter when absolutely necessary. The Data API was designed to be used on https. Deviating from the intended use should be done with caution.
 
-
 ```js
-    const client = Filemaker.create({
-      name: process.env.CLIENT_NAME,
-      database: process.env.DATABASE,
-      server: process.env.SERVER,
-      user: process.env.USERNAME,
-      password: process.env.PASSWORD,
-      usage: process.env.CLIENT_USAGE_TRACKING
-    });
+const client = Filemaker.create({
+  name: process.env.CLIENT_NAME,
+  database: process.env.DATABASE,
+  server: process.env.SERVER,
+  user: process.env.USERNAME,
+  password: process.env.PASSWORD,
+  usage: process.env.CLIENT_USAGE_TRACKING
+});
 ```
 
 > Excerpt from [./examples/index.js](./examples/index.js#L32-L39)
@@ -253,7 +249,6 @@ After connecting to a datastore you can import and create clients. A client is c
 **Note:** The server must be an http or https domain.
 
 A client can be used directly after saving it. The `client.save()` method takes no arguments and will either reject with an error or resolve with a useable client. The client will automatically handle Data API session creation and expiration. Once a client is saved it will be stored on the datastore for reuse later.
-
 
 ```js
     return client.save();
@@ -364,7 +359,7 @@ const logout = client =>
 
 #### Product Info
 
-A client can get server product info. The productInfo method will return metadata about the FileMaker server the client is configured to use. 
+A client can get server product info. The productInfo method will return metadata about the FileMaker server the client is configured to use.
 
 `client.productInfo()`
 
@@ -380,8 +375,8 @@ Result:
 ```json
 {
   "name": "FileMaker Data API Engine",
-  "buildDate": "03/27/2019",
-  "version": "18.0.1.109",
+  "buildDate": "04/29/2019",
+  "version": "18.0.1.123",
   "dateFormat": "MM/dd/yyyy",
   "timeFormat": "HH:mm:ss",
   "timeStampFormat": "MM/dd/yyyy HH:mm:ss"
@@ -420,8 +415,8 @@ Result:
 
 > File [./examples/results/databases-info-example.json](./examples/results/databases-info-example.json)
 
-
 #### Get Layouts
+
 The layouts method will return a list of layouts accessible by the configured client.
 
 `client.layouts()`
@@ -432,7 +427,6 @@ The layouts method will return a list of layouts accessible by the configured cl
 | database  | <code>String</code> |                        | The FileMaker database to target.                      |
 | [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
 
-
 ```js
 const layouts = client =>
   client.layouts().then(result => log('layouts-example', result));
@@ -440,8 +434,8 @@ const layouts = client =>
 
 > Excerpt from [./examples/metadata.examples.js](./examples/metadata.examples.js#L16-L17)
 
-
 Result:
+
 ```json
 {
   "layouts": [
@@ -538,7 +532,6 @@ The scripts method will return metadata for the scripts accessible by the config
 | database  | <code>String</code> |                        | The FileMaker database to target.                      |
 | [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
 
-
 ```js
 const scripts = client =>
   client
@@ -547,7 +540,6 @@ const scripts = client =>
 ```
 
 > Excerpt from [./examples/metadata.examples.js](./examples/metadata.examples.js#L28-L31)
-
 
 Result:
 
@@ -615,10 +607,6 @@ Result:
         }
       ],
       "isFolder": true
-    },
-    {
-      "name": "Collision Script",
-      "isFolder": false
     }
   ]
 }
@@ -629,7 +617,6 @@ Result:
 #### Get Layout
 
 The layout method will get metadata for the specified layout.
-
 `client.layout(layout)`
 
 | Param     | Type                | Default                | Description                                            |
@@ -638,7 +625,6 @@ The layout method will get metadata for the specified layout.
 | database  | <code>String</code> |                        | The FileMaker database to target.                      |
 | layout    | <code>String</code> |                        | The database layout to use.                            |
 | [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
-
 
 ```js
 const layout = client =>
@@ -845,22 +831,6 @@ Result:
       "timeOfDay": false,
       "repetitionStart": 1,
       "repetitionEnd": 1
-    },
-    {
-      "name": "hash",
-      "type": "normal",
-      "displayType": "editText",
-      "result": "text",
-      "global": false,
-      "autoEnter": false,
-      "fourDigitYear": false,
-      "maxRepeat": 1,
-      "maxCharacters": 0,
-      "notEmpty": false,
-      "numeric": false,
-      "timeOfDay": false,
-      "repetitionStart": 1,
-      "repetitionEnd": 1
     }
   ],
   "portalMetaData": {
@@ -979,9 +949,7 @@ Result:
 
 > File [./examples/results/create-record-example.json](./examples/results/create-record-example.json)
 
-
-The create method also allows you to trigger scripts when creating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional  `params` parameters. For more information see the scripts syntax example in the introduction.
-
+The create method also allows you to trigger scripts when creating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional `params` parameters. For more information see the scripts syntax example in the introduction.
 
 ```js
 const triggerScriptsOnCreate = client =>
@@ -1029,13 +997,12 @@ The duplicate method duplicates the FileMaker record using the layout and record
 | [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
 
 ```js
-      client
-        .duplicate('Heroes', response.data[0].recordId)
-        .then(result => log('duplicate-record-example', result))
+client
+  .duplicate('Heroes', response.data[0].recordId)
+  .then(result => log('duplicate-record-example', result));
 ```
 
 > Excerpt from [./examples/duplicate.examples.js](./examples/duplicate.examples.js#L9-L11)
-
 
 Result:
 
@@ -1048,9 +1015,7 @@ Result:
 
 > File [./examples/results/duplicate-record-example.json](./examples/results/duplicate-record-example.json)
 
-
-The duplicate method also allows you to trigger scripts when duplicating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional  `params` parameters. For more information see the scripts syntax example in the introduction.
-
+The duplicate method also allows you to trigger scripts when duplicating a record. Notice the scripts property in the following example. You can specify scripts to run using either FileMaker's script.key syntax or specify an array of in a `scripts` property. The script objects should have with `name`, optional `phase`, and optional `params` parameters. For more information see the scripts syntax example in the introduction.
 
 ```js
 const triggerScriptsOnCreate = client =>
@@ -1103,15 +1068,13 @@ The Get method will return a specific FileMaker record based on the recordId pas
 | recordId  | <code>String</code> |                        | The FileMaker internal record id to update.            |
 | [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
 
-
 ```js
-      client
-        .get('Heroes', response.data[0].recordId)
-        .then(result => log('get-record-example', result))
+client
+  .get('Heroes', response.data[0].recordId)
+  .then(result => log('get-record-example', result));
 ```
 
 > Excerpt from [./examples/get.examples.js](./examples/get.examples.js#L9-L11)
-
 
 Result:
 
@@ -1129,7 +1092,7 @@ Result:
     {
       "fieldData": {
         "name": "Yoda",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/1E9BC72B8BC4C1F05AEB43A24209F6EBE383E7DE590466C577D0AC50F0CA88F0?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/CBAEA4AA3ECA8010D2E352259493A803AAACE257D5E8CF7BA3BD2EB1B5973BFF?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -1139,8 +1102,7 @@ Result:
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": "",
-        "hash": "?"
+        "Vehicles::name": ""
       },
       "portalData": {
         "Planets": [],
@@ -1196,7 +1158,6 @@ const listHeroes = client =>
 
 > Excerpt from [./examples/list.examples.js](./examples/list.examples.js#L6-L9)
 
-
 Result:
 
 ```json
@@ -1206,14 +1167,14 @@ Result:
     "layout": "Heroes",
     "table": "Heroes",
     "totalRecordCount": "1977",
-    "foundCount": 39322,
+    "foundCount": 25052,
     "returnedCount": 2
   },
   "data": [
     {
       "fieldData": {
         "name": "George Lucas",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/1E057CAB71BBBCB3F44A86C1E5C83E8C9A57DC1E973EECA28BFEBE07E7987C6E.png?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/D4055446E09B59A0B1870948411D169E2F87A4DDCC51D5B560E19B6EC4D6AEC2.png?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -1223,8 +1184,7 @@ Result:
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": "test",
-        "hash": ""
+        "Vehicles::name": "test"
       },
       "portalData": {
         "Planets": [],
@@ -1267,8 +1227,7 @@ Result:
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": "",
-        "hash": "?"
+        "Vehicles::name": ""
       },
       "portalData": {
         "Planets": [],
@@ -1334,7 +1293,7 @@ Result:
     "layout": "Heroes",
     "table": "Heroes",
     "totalRecordCount": "1977",
-    "foundCount": 138,
+    "foundCount": 49,
     "returnedCount": 1
   },
   "data": [
@@ -1351,8 +1310,7 @@ Result:
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": "",
-        "hash": ""
+        "Vehicles::name": ""
       },
       "portalData": {
         "Planets": [],
@@ -1463,8 +1421,8 @@ The client's script method will trigger a script. You can also trigger scripts w
 | ------ | ------------------------------------------ | -------------------------------------- |
 | layout | <code>String</code>                        | The layout to use for the list request |
 | script | <code>String</code>                        | The name of the script                 |
-| param  | <code>Object</code> \| <code>String</code> | Parameter  to pass to the script       |
-| param  | <code>Object</code>                        | Parameter  to pass to the script       |
+| param  | <code>Object</code> \| <code>String</code> | Parameter to pass to the script        |
+| param  | <code>Object</code>                        | Parameter to pass to the script        |
 
 | Param       | Type                                                              | Default                | Description                                              |
 | ----------- | ----------------------------------------------------------------- | ---------------------- | -------------------------------------------------------- |
@@ -1484,7 +1442,6 @@ const triggerScript = client =>
 
 > Excerpt from [./examples/script.examples.js](./examples/script.examples.js#L6-L9)
 
-
 Result:
 
 ```json
@@ -1497,7 +1454,6 @@ Result:
 ```
 
 > File [./examples/results/script-trigger-example.json](./examples/results/script-trigger-example.json)
-
 
 #### Run Multiple Scripts
 
@@ -1523,7 +1479,6 @@ const runMultipleScripts = client =>
 
 > Excerpt from [./examples/scripts.examples.js](./examples/scripts.examples.js#L27-L33)
 
-
 Result:
 
 ```json
@@ -1538,7 +1493,6 @@ Result:
 ```
 
 > File [./examples/results/run-scripts-example.json](./examples/results/run-scripts-example.json)
-
 
 #### Upload Files
 
@@ -1673,8 +1627,8 @@ original:
 [
   {
     "fieldData": {
-      "name": "yoda",
-      "image": "https://some-server.com/Streaming_SSL/MainDB/251E73810A43B01572353F09941B7CB23D69784FA37B4DE9175EC029FA2CD6D8?RCType=EmbeddedRCFileProcessor",
+      "name": "Yoda",
+      "image": "https://some-server.com/Streaming_SSL/MainDB/CD6A74CEB6EA34D3A67C271064A2944D0FE408AE81B4CD09C76A1266DAF374F6?RCType=EmbeddedRCFileProcessor",
       "object": "",
       "array": "",
       "height": "",
@@ -1684,8 +1638,7 @@ original:
       "creationTimestamp": "05/25/1977 6:00:00",
       "modificationAccountName": "obi-wan",
       "modificationTimestamp": "05/25/1977 6:00:00",
-      "Vehicles::name": "",
-      "hash": "?"
+      "Vehicles::name": ""
     },
     "portalData": {
       "Planets": [],
@@ -1710,7 +1663,7 @@ original:
   },
   {
     "fieldData": {
-      "name": "Yoda",
+      "name": "yoda",
       "image": "",
       "object": "",
       "array": "",
@@ -1721,8 +1674,7 @@ original:
       "creationTimestamp": "05/25/1977 6:00:00",
       "modificationAccountName": "obi-wan",
       "modificationTimestamp": "05/25/1977 6:00:00",
-      "Vehicles::name": "",
-      "hash": "?"
+      "Vehicles::name": ""
     },
     "portalData": {
       "Planets": [],
@@ -1753,18 +1705,14 @@ original:
 Transformed:
 
 ```json
-[
-  "751467",
-  "751533"
-]
+["739188", "739194"]
 ```
 
 > File [./examples/results/record-id-utility-example.json](./examples/results/record-id-utility-example.json)
 
-
 #### Field Data Utility
-The field data utility retrieves the `fieldData`, `recordId`, and `modId` properties from a Data API response. The fieldData utility will merge the `recordId` and `modId` properties into fielData properties. This utility will not convert `table::field` properties.
 
+The field data utility retrieves the `fieldData`, `recordId`, and `modId` properties from a Data API response. The fieldData utility will merge the `recordId` and `modId` properties into fielData properties. This utility will not convert `table::field` properties.
 `fieldData(data)`
 
 | Param | Type                                      | Description                                                                |
@@ -1789,8 +1737,8 @@ Original:
 [
   {
     "fieldData": {
-      "name": "yoda",
-      "image": "https://some-server.com/Streaming_SSL/MainDB/0293945D832736BE7B5156EA6BF6A8297A34E1BC5FBC6C3CB652869AF28AB173?RCType=EmbeddedRCFileProcessor",
+      "name": "Yoda",
+      "image": "https://some-server.com/Streaming_SSL/MainDB/105E1DDE2D79CAD3C210B960F4247DD0F2F51E9479D5FC091AEEFA6112AE811E?RCType=EmbeddedRCFileProcessor",
       "object": "",
       "array": "",
       "height": "",
@@ -1800,8 +1748,7 @@ Original:
       "creationTimestamp": "05/25/1977 6:00:00",
       "modificationAccountName": "obi-wan",
       "modificationTimestamp": "05/25/1977 6:00:00",
-      "Vehicles::name": "",
-      "hash": "?"
+      "Vehicles::name": ""
     },
     "portalData": {
       "Planets": [],
@@ -1826,7 +1773,7 @@ Original:
   },
   {
     "fieldData": {
-      "name": "Yoda",
+      "name": "yoda",
       "image": "",
       "object": "",
       "array": "",
@@ -1837,8 +1784,7 @@ Original:
       "creationTimestamp": "05/25/1977 6:00:00",
       "modificationAccountName": "obi-wan",
       "modificationTimestamp": "05/25/1977 6:00:00",
-      "Vehicles::name": "",
-      "hash": "?"
+      "Vehicles::name": ""
     },
     "portalData": {
       "Planets": [],
@@ -1871,8 +1817,8 @@ Transformed:
 ```json
 [
   {
-    "name": "yoda",
-    "image": "https://some-server.com/Streaming_SSL/MainDB/35EBC57140FD9929CAFE6D30177937A8D4947E4DC2AD1253F8FB83CF0C10E2BB?RCType=EmbeddedRCFileProcessor",
+    "name": "Yoda",
+    "image": "https://some-server.com/Streaming_SSL/MainDB/9FC32B057AD73037A1FBA71E2583BBEAE3FB1E058F5AA337EB154400DBAE2183?RCType=EmbeddedRCFileProcessor",
     "object": "",
     "array": "",
     "height": "",
@@ -1883,12 +1829,11 @@ Transformed:
     "modificationAccountName": "obi-wan",
     "modificationTimestamp": "05/25/1977 6:00:00",
     "Vehicles::name": "",
-    "hash": "?",
     "recordId": "1138",
     "modId": "327"
   },
   {
-    "name": "Yoda",
+    "name": "yoda",
     "image": "",
     "object": "",
     "array": "",
@@ -1900,7 +1845,6 @@ Transformed:
     "modificationAccountName": "obi-wan",
     "modificationTimestamp": "05/25/1977 6:00:00",
     "Vehicles::name": "",
-    "hash": "?",
     "recordId": "1138",
     "modId": "327"
   }
@@ -1911,9 +1855,8 @@ Transformed:
 
 #### Transform Utility
 
-The transform utility converts Data API response data by converting `table::field` properties into objects. This utility will traverse the response data converting `{ table::field : value}` properties to `{ table:{ field : value } }`. This utility will also convert `portalData` into arrays of objects. 
-
-The transform utility accepts three option properties. The three option properties are all booleans and true by default. The properties are `convert`,`fieldData`,`portalData`. The `convert` property toggles the transformation of `table::field` properties. The `fieldData` property toggles merging of fieldData to the result. The `portalData` property toggles merging portalData to the result. Setting any property to false  will turn that transformation off. 
+The transform utility converts Data API response data by converting `table::field` properties into objects. This utility will traverse the response data converting `{ table::field : value}` properties to `{ table:{ field : value } }`. This utility will also convert `portalData` into arrays of objects.
+The transform utility accepts three option properties. The three option properties are all booleans and true by default. The properties are `convert`,`fieldData`,`portalData`. The `convert` property toggles the transformation of `table::field` properties. The `fieldData` property toggles merging of fieldData to the result. The `portalData` property toggles merging portalData to the result. Setting any property to false will turn that transformation off.
 
 `transform(data, parameters)`
 
@@ -1931,8 +1874,8 @@ const transformData = client =>
 
 > Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L46-L50)
 
-
 ##### Transform Utility Results
+
 Original:
 
 ```json
@@ -2025,7 +1968,7 @@ Transformed:
 
 The container data utility will retrieve FileMaker container data by following the links returned by the Data API. This utility will accept either a single data object or an array of objects. The utility will use the `field` parameter to target container data urls in the data parameter. This utility also requires a `name` parameter which will be used to target a data property that should be used as the file's name. If a name parameter is provided that is not a property or nested property in the `data` parameter, the name parameter itself will be used. The `destination` parameter should be either 'buffer' to indicate that an object with a file's name and buffer should be returned or the path, relative to the current working directory, where the utility should write container data to a file. This utility will also accept optional request `parameters` to modify the http request.
 
-`containerData(data, field, destination, name, parameters)` 
+`containerData(data, field, destination, name, parameters)`
 
 | Param                | Type                                      | Description                                                                   |
 | -------------------- | ----------------------------------------- | ----------------------------------------------------------------------------- |
@@ -2068,9 +2011,9 @@ Result:
 
 #### Databases Utility
 
-The databases utility will get the accessible databases for the server and credentials passed to it. 
+The databases utility will get the accessible databases for the server and credentials passed to it.
 
-`databases(server, credentials, version, parameters)` 
+`databases(server, credentials, version, parameters)`
 
 | Param         | Type                | Default                | Description                                            |
 | ------------- | ------------------- | ---------------------- | ------------------------------------------------------ |
@@ -2088,7 +2031,6 @@ const getDatabases = client =>
 
 > Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L93-L96)
 
-
 Result:
 
 ```json
@@ -2103,12 +2045,11 @@ Result:
 
 > File [./examples/results/databases-utility-example.json](./examples/results/databases-utility-example.json)
 
-
 #### Product Info Utility
 
 The productInfo utility will get Data API information for the server passed to it.
 
-`productInfo(host, version, parameters)` 
+`productInfo(host, version, parameters)`
 
 | Param        | Type                | Default                | Description                                            |
 | ------------ | ------------------- | ---------------------- | ------------------------------------------------------ |
@@ -2125,7 +2066,6 @@ const getProductInfo = client =>
 
 > Excerpt from [./examples/utility.examples.js](./examples/utility.examples.js#L86-L89)
 
-
 Result:
 
 ```json
@@ -2140,7 +2080,6 @@ Result:
 ```
 
 > File [./examples/results/product-info-utility-example.json](./examples/results/product-info-utility-example.json)
-
 
 ### Additional Client Capabilities
 
@@ -2187,7 +2126,7 @@ A client can have a custom [Agent](https://nodejs.org/api/http.html#http_class_h
 
 #### Custom Request Parameters
 
-All client methods except `client.login()` and `client.logout()` accept request parameters. These parameters are `request.proxy` and `request.timeout`, `request.agent`. These properties will apply only to the current request. 
+All client methods except `client.login()` and `client.logout()` accept request parameters. These parameters are `request.proxy` and `request.timeout`, `request.agent`. These properties will apply only to the current request.
 
 #### Proxies
 
@@ -2201,248 +2140,246 @@ npm test
 ```
 
 ```default
-> fms-api-client@2.0.0 test /Users/Lui/Documents/Development/fms-api-client
+> fms-api-client@2.1.3 test fms-api-client
 > snyk test && nyc _mocha --recursive  ./test --timeout=15000 --exit
 
-Testing /Users/Lui/Documents/Development/fms-api-client...
+
+Testing ms-api-client...
 
 Organisation:      luidog
 Package manager:   npm
 Target file:       package-lock.json
 Open source:       yes
-Project path:      /Users/Lui/Documents/Development/fms-api-client
+Project path:      fms-api-client
 Local Snyk policy: found
 
-✓ Tested 344 dependencies for known vulnerabilities, no vulnerable paths found.
-
-Next steps:
-- Run `snyk monitor` to be notified about new related vulnerabilities.
-- Run `snyk test` as part of your CI/test.
-
-You are approaching your monthly limit of 200 private tests.
-To learn more about our plans and increase your tests limit visit https://snyk.io/plans.
-
+✓ Tested 338 dependencies for known vulnerabilities, no vulnerable paths found.
 
   Agent Configuration Capabilities
-    ✓ should attempt to clear invalid sessions (151ms)
-    ✓ should attempt to clear invalid sessions even if there is no header (86ms)
-    ✓ should reject non http proticol requests (94ms)
+    ✓ should attempt to clear invalid sessions (144ms)
+    ✓ should attempt to clear invalid sessions even if there is no header (89ms)
+    ✓ should reject non http protocol requests (82ms)
 
   Agent Configuration Capabilities
     ✓ should accept no agent configuration
-    ✓ should not create an agent unless one is defined (179ms)
+    ✓ should not create an agent unless one is defined (167ms)
     ✓ should adjust the request protocol according to the server
     ✓ should create an https agent
-    ✓ should use a created request agent (178ms)
-    ✓ should destory the agent when the client is deleted (263ms)
+    ✓ should use a created request agent (194ms)
+    ✓ should destory the agent when the client is deleted (284ms)
     ✓ should create an http agent
-    ✓ should use a proxy if one is set (311ms)
-    ✓ should require the http protocol (134ms)
+    ✓ should use a proxy if one is set (342ms)
+    ✓ should require the http protocol (119ms)
     ✓ should accept a timeout property
-    ✓ should use a timeout if one is set (106ms)
+    ✓ should use a timeout if one is set (113ms)
 
   Authentication Capabilities
-    ✓ should authenticate into FileMaker. (91ms)
-    ✓ should automatically request an authentication token (274ms)
-    ✓ should reuse an open session (188ms)
-    ✓ should log out of the filemaker. (206ms)
+    ✓ should authenticate into FileMaker. (80ms)
+    ✓ should automatically request an authentication token (259ms)
+    ✓ should reuse an open session (174ms)
+    ✓ should log out of the filemaker. (185ms)
     ✓ should not attempt a logout if there is no valid token.
-    ✓ should reject if the logout request fails (176ms)
-    ✓ should reject if the login request fails (1427ms)
-    ✓ should reject if it can not create a new data api session (1420ms)
-    ✓ should attempt to log out before being removed (93ms)
-    ✓ should clear invalid sessions (1435ms)
+    ✓ should reject if the logout request fails (166ms)
+    ✓ should reject if the login request fails (1467ms)
+    ✓ should reject if it can not create a new data api session (1432ms)
+    ✓ should reject if it can not create a new data api session with authentication (1418ms)
+    ✓ should clear queued requests if it can not add a new data api session (1421ms)
+    ✓ should clear pending requests if it can not add a new data api session (1457ms)
+    ✓ should attempt to log out before being removed (86ms)
+    ✓ should clear invalid sessions (1445ms)
+    ✓ should open sessions with a custom agent automatically
+    ✓ should open sessions with a custom agent on login
     ✓ should catch the log out error before being removed if the login is not valid (167ms)
 
   ContainerData Capabilities
-    ✓ should download container data from an object to a file (360ms)
-    ✓ should download container data from an array to a file (1596ms)
-    ✓ should return an array of records if it is passed an array (270ms)
-    ✓ should return a single record object if passed an object (279ms)
-    ✓ should download container data from an array to a buffer (267ms)
-    ✓ should download container data from an object to a buffer (268ms)
-    ✓ should substitute a uuid if the record id can not be found in an object (254ms)
-    ✓ should substitute a uuid if the record id can not be found in an array (257ms)
-    ✓ should reject with an error and a message (185ms)
-    ✓ should reject if WPE rejects the request (178ms)
+    ✓ should download container data from an object to a file (479ms)
+    ✓ should download container data from an array to a file (2389ms)
+    ✓ should return an array of records if it is passed an array (1401ms)
+    ✓ should return a single record object if passed an object (337ms)
+    ✓ should download container data from an array to a buffer (1363ms)
+    ✓ should download container data from an object to a buffer (1414ms)
+    ✓ should substitute a uuid if the record id can not be found in an object (1364ms)
+    ✓ should substitute a uuid if the record id can not be found in an array (1361ms)
+    ✓ should reject with an error and a message (1277ms)
+    ✓ should reject if WPE rejects the request (200ms)
 
   Create Capabilities
-    ✓ should create FileMaker records without fieldData (275ms)
-    ✓ should allow you to specify a timeout (38ms)
-    ✓ should create FileMaker records using fieldData (112ms)
-    ✓ should create FileMaker records with portalData (110ms)
-    ✓ should allow portalData to be an object or number (111ms)
-    ✓ should reject bad data with an error (104ms)
-    ✓ should create records with mixed types (114ms)
-    ✓ should substitute an empty object if data is not provided (107ms)
-    ✓ should return an object with merged data properties (107ms)
-    ✓ should allow you to run a script when creating a record with a merge response (128ms)
-    ✓ should allow you to specify scripts as an array (113ms)
-    ✓ should allow you to specify scripts as an array with a merge response (123ms)
-    ✓ should sanitize parameters when creating a new record (122ms)
-    ✓ should accept both the default script parameters and a scripts array (129ms)
+    ✓ should create FileMaker records without fieldData (281ms)
+    ✓ should allow you to specify a timeout (55ms)
+    ✓ should create FileMaker records using fieldData (128ms)
+    ✓ should create FileMaker records with portalData (126ms)
+    ✓ should allow portalData to be an object or number (127ms)
+    ✓ should reject bad data with an error (132ms)
+    ✓ should create records with mixed types (131ms)
+    ✓ should substitute an empty object if data is not provided (125ms)
+    ✓ should return an object with merged data properties (130ms)
+    ✓ should allow you to run a script when creating a record with a merge response (149ms)
+    ✓ should allow you to specify scripts as an array (142ms)
+    ✓ should allow you to specify scripts as an array with a merge response (143ms)
+    ✓ should sanitize parameters when creating a new record (139ms)
+    ✓ should accept both the default script parameters and a scripts array (143ms)
 
   Databases Capabilities
-    ✓ should get hosted databases (81ms)
-    ✓ should fail with a code and a message (101ms)
+    ✓ should get hosted databases (80ms)
+    ✓ should fail with a code and a message (95ms)
 
   Databases Utility Capabilities
-    ✓ should retrieve databases without credentials (76ms)
-    ✓ should retrieve databases using account credentials (72ms)
-    ✓ should fail with a code and a message (267ms)
+    ✓ should retrieve databases without credentials (88ms)
+    ✓ should retrieve databases using account credentials (76ms)
+    ✓ should fail with a code and a message (182ms)
     ✓ should require a server to list databases
 
   Delete Capabilities
-    ✓ should delete FileMaker records. (414ms)
-    ✓ should allow you to specify a timeout (168ms)
-    ✓ should trigger scripts via an array when deleting records. (250ms)
-    ✓ should trigger scripts via parameters when deleting records. (236ms)
-    ✓ should allow you to mix script parameters and scripts array when deleting records. (345ms)
-    ✓ should stringify script parameters. (239ms)
-    ✓ should reject deletions that do not specify a recordId (126ms)
-    ✓ should reject deletions that do not specify an invalid recordId (118ms)
+    ✓ should delete FileMaker records. (447ms)
+    ✓ should allow you to specify a timeout (220ms)
+    ✓ should trigger scripts via an array when deleting records. (290ms)
+    ✓ should trigger scripts via parameters when deleting records. (309ms)
+    ✓ should allow you to mix script parameters and scripts array when deleting records. (295ms)
+    ✓ should stringify script parameters. (319ms)
+    ✓ should reject deletions that do not specify a recordId (160ms)
+    ✓ should reject deletions that do not specify an invalid recordId (165ms)
 
   Duplicate Record Capabilities
-    ✓ should allow you to duplicate a record (420ms)
-    ✓ should require an id to duplicate a record (242ms)
+    ✓ should allow you to duplicate a record (496ms)
+    ✓ should require an id to duplicate a record (331ms)
 
   Edit Capabilities
-    ✓ should edit FileMaker records without fieldData (436ms)
-    ✓ should allow you to specify a timeout (193ms)
-    ✓ should edit FileMaker records using fieldData (251ms)
-    ✓ should edit FileMaker records with portalData (261ms)
-    ✓ should edit FileMaker records with portalData and allow portalData to be an array. (259ms)
-    ✓ should reject bad data with an error (260ms)
-    ✓ should return an object with merged filemaker and data properties (262ms)
-    ✓ should allow you to run a script when editing a record (286ms)
-    ✓ should allow you to run a script via a scripts array when editing a record (264ms)
-    ✓ should allow you to specify scripts as an array (292ms)
-    ✓ should allow you to specify scripts as an array with a merge response (286ms)
-    ✓ should sanitize parameters when creating a editing record (280ms)
-    ✓ should accept both the default script parameters and a scripts array (279ms)
+    ✓ should edit FileMaker records without fieldData (518ms)
+    ✓ should allow you to specify a timeout (281ms)
+    ✓ should edit FileMaker records using fieldData (349ms)
+    ✓ should edit FileMaker records with portalData (361ms)
+    ✓ should edit FileMaker records with portalData and allow portalData to be an array. (368ms)
+    ✓ should reject bad data with an error (373ms)
+    ✓ should return an object with merged filemaker and data properties (381ms)
+    ✓ should allow you to run a script when editing a record (385ms)
+    ✓ should allow you to run a script via a scripts array when editing a record (400ms)
+    ✓ should allow you to specify scripts as an array (413ms)
+    ✓ should allow you to specify scripts as an array with a merge response (423ms)
+    ✓ should sanitize parameters when creating a editing record (424ms)
+    ✓ should accept both the default script parameters and a scripts array (433ms)
 
   FieldData Capabilities
-    ✓ it should extract field data while maintaining the array (444ms)
-    ✓ it should extract field data while maintaining the object (288ms)
+    ✓ it should extract field data while maintaining the array (597ms)
+    ✓ it should extract field data while maintaining the object (426ms)
 
   Find Capabilities
-    ✓ should perform a find request (501ms)
-    ✓ should allow you to use an object instead of an array for a find (302ms)
-    ✓ should specify omit Criterea (211ms)
-    ✓ should safely parse omit true and false (208ms)
-    ✓ should allow additional parameters to manipulate the results (153ms)
-    ✓ should allow you to limit the number of portal records to return (155ms)
-    ✓ should allow you to use numbers in the find query parameters (152ms)
-    ✓ should allow you to sort the results (2250ms)
-    ✓ should return an empty array if the find does not return results (158ms)
-    ✓ should allow you run a pre request script (158ms)
-    ✓ should return a response even if a script fails (156ms)
-    ✓ should allow you to send a parameter to the pre request script (161ms)
-    ✓ should allow you run script after the find and before the sort (893ms)
-    ✓ should allow you to pass a parameter to a script after the find and before the sort (922ms)
-    ✓ should reject of there is an issue with the find request (148ms)
+    ✓ should perform a find request (548ms)
+    ✓ should allow you to use an object instead of an array for a find (374ms)
+    ✓ should specify omit Criterea (304ms)
+    ✓ should safely parse omit true and false (298ms)
+    ✓ should allow additional parameters to manipulate the results (219ms)
+    ✓ should allow you to limit the number of portal records to return (228ms)
+    ✓ should allow you to use numbers in the find query parameters (229ms)
+    ✓ should allow you to sort the results (1591ms)
+    ✓ should return an empty array if the find does not return results (231ms)
+    ✓ should allow you run a pre request script (238ms)
+    ✓ should return a response even if a script fails (237ms)
+    ✓ should allow you to send a parameter to the pre request script (243ms)
+    ✓ should allow you run script after the find and before the sort (693ms)
+    ✓ should allow you to pass a parameter to a script after the find and before the sort (709ms)
+    ✓ should reject of there is an issue with the find request (232ms)
 
   Get Capabilities
-    ✓ should get specific FileMaker records. (486ms)
-    ✓ should allow you to specify a timeout (231ms)
-    ✓ should reject get requests that do not specify a recordId (293ms)
-    ✓ should allow you to limit the number of portal records to return (307ms)
-    ✓ should accept namespaced portal limit and offset parameters (315ms)
+    ✓ should get specific FileMaker records. (661ms)
+    ✓ should allow you to specify a timeout (423ms)
+    ✓ should reject get requests that do not specify a recordId (483ms)
+    ✓ should allow you to limit the number of portal records to return (507ms)
+    ✓ should accept namespaced portal limit and offset parameters (508ms)
 
   Global Capabilities
-    ✓ should allow you to set session globals (336ms)
-    ✓ should allow you to specify a timeout (87ms)
-    ✓ should reject with a message and code if it fails to set a global (159ms)
+    ✓ should allow you to set session globals (430ms)
+    ✓ should allow you to specify a timeout (190ms)
+    ✓ should reject with a message and code if it fails to set a global (257ms)
 
   Request Interceptor Capabilities
-    ✓ should reject if the server errors (105ms)
-    ✓ should intercept authentication errors (98ms)
-    ✓ should intercept json responses that do not return a token (96ms)
-    ✓ should intercept non json responses (108ms)
+    ✓ should reject if the server errors (540ms)
+    ✓ should intercept authentication errors (102ms)
+    ✓ should intercept json responses that do not return a token (104ms)
+    ✓ should intercept non json responses (106ms)
     ✓ should reject non http requests to the server with a json error
-    ✓ should reject non https requests to the server with a json error (131ms)
+    ✓ should reject non https requests to the server with a json error (123ms)
     ✓ should convert non json responses to json
 
   Layout Metadata Capabilities
-    ✓ should get field and portal metadata for a layout (340ms)
-    ✓ should require a layout (208ms)
-    ✓ should fail with a code and a message (164ms)
+    ✓ should get field and portal metadata for a layout (437ms)
+    ✓ should require a layout (263ms)
+    ✓ should fail with a code and a message (261ms)
 
   Database Layout List Capabilities
-    ✓ should get a list of Layouts and folders for the currently configured database (348ms)
-    ✓ should fail with a code and a message (186ms)
+    ✓ should get a list of Layouts and folders for the currently configured database (439ms)
+    ✓ should fail with a code and a message (372ms)
 
   List Capabilities
-    ✓ should allow you to list records (403ms)
-    ✓ should allow you to specify a timeout (99ms)
-    ✓ should allow you use parameters to modify the list response (166ms)
-    ✓ should should allow you to use numbers in parameters (164ms)
-    ✓ should should allow you to provide an array of portals in parameters (173ms)
-    ✓ should should remove non used properties from a portal object (168ms)
-    ✓ should modify requests to comply with DAPI name reservations (164ms)
-    ✓ should allow strings while complying with DAPI name reservations (174ms)
-    ✓ should allow you to offset the list response (163ms)
-    ✓ should santize parameters that would cause unexpected parameters (171ms)
-    ✓ should allow you to limit the number of portal records to return (166ms)
-    ✓ should accept namespaced portal limit and offset parameters (175ms)
-    ✓ should reject invalid parameters (167ms)
+    ✓ should allow you to list records (508ms)
+    ✓ should allow you to specify a timeout (206ms)
+    ✓ should allow you use parameters to modify the list response (269ms)
+    ✓ should should allow you to use numbers in parameters (273ms)
+    ✓ should should allow you to provide an array of portals in parameters (281ms)
+    ✓ should should remove non used properties from a portal object (276ms)
+    ✓ should modify requests to comply with DAPI name reservations (279ms)
+    ✓ should allow strings while complying with DAPI name reservations (281ms)
+    ✓ should allow you to offset the list response (281ms)
+    ✓ should santize parameters that would cause unexpected parameters (283ms)
+    ✓ should allow you to limit the number of portal records to return (277ms)
+    ✓ should accept namespaced portal limit and offset parameters (282ms)
+    ✓ should reject invalid parameters (292ms)
 
   Client Product Info Capabilities
-    ✓ should get FileMaker Server Information (74ms)
-    ✓ should fail with a code and a message (103ms)
+    ✓ should get FileMaker Server Information (76ms)
+    ✓ should fail with a code and a message (112ms)
 
   Product Info Utility Capabilities
-    ✓ should get FileMaker Server Information (81ms)
-    ✓ should fail with a code and a message (191ms)
+    ✓ should get FileMaker Server Information (79ms)
+    ✓ should fail with a code and a message (200ms)
     ✓ should require a server parameter
 
   Request Queue Capabilities
-    ✓ should queue requests to FileMaker (5739ms)
+    ✓ should queue requests to FileMaker (3861ms)
 
   RecordId Capabilities
-    ✓ it should extract the recordId while maintaining the array (541ms)
-    ✓ it should extract recordId while maintaining the object (369ms)
+    ✓ it should extract the recordId while maintaining the array (754ms)
+    ✓ it should extract recordId while maintaining the object (604ms)
 
   Script Queue Capabilities
-    ✓ should allow you to trigger a script with an object (375ms)
-    ✓ should allow you to trigger a script with an object (195ms)
-    ✓ should allow you to trigger a script with an array (182ms)
-    ✓ should allow you to trigger a script via a string (186ms)
-    ✓ should allow you to specify a timeout (119ms)
-    ✓ should allow you to trigger a script without specifying a parameter (198ms)
-    ✓ should allow you to trigger a script specifying a string as a parameter (189ms)
-    ✓ should allow you to trigger a script specifying a number as a parameter (190ms)
-    ✓ should allow you to trigger a script specifying an object as a parameter (199ms)
-    ✓ should reject a script that does not exist (188ms)
-    ✓ should allow return a result even if a script returns an error (187ms)
-    ✓ should parse script results if the results are json (200ms)
-    ✓ should not parse script results if the results are not json (201ms)
+    ✓ should allow you to trigger a script with an object (481ms)
+    ✓ should allow you to trigger a script with an object (322ms)
+    ✓ should allow you to trigger a script with an array (323ms)
+    ✓ should allow you to trigger a script via a string (311ms)
+    ✓ should allow you to specify a timeout (253ms)
+    ✓ should allow you to trigger a script without specifying a parameter (322ms)
+    ✓ should allow you to trigger a script specifying a string as a parameter (327ms)
+    ✓ should allow you to trigger a script specifying a number as a parameter (328ms)
+    ✓ should allow you to trigger a script specifying an object as a parameter (327ms)
+    ✓ should reject a script that does not exist (323ms)
+    ✓ should allow return a result even if a script returns an error (330ms)
+    ✓ should parse script results if the results are json (330ms)
+    ✓ should not parse script results if the results are not json (334ms)
 
   Single Script Capabilities
-    ✓ should allow you to trigger a script (362ms)
-    ✓ should allow you to specify a timeout (121ms)
-    ✓ should allow you to trigger a script specifying a string as a parameter (200ms)
-    ✓ should allow you to trigger a script specifying a number as a parameter (207ms)
-    ✓ should allow you to trigger a script specifying an object as a parameter (189ms)
-    ✓ should allow you to trigger a script specifying an array as a parameter (212ms)
-    ✓ should allow you to trigger a script without a parameter (241ms)
-    ✓ should reject a script that does not exist (194ms)
-    ✓ should parse script results if the results are json (197ms)
-    ✓ should not parse script results if the results are not json (202ms)
+    ✓ should allow you to trigger a script (509ms)
+    ✓ should allow you to specify a timeout (266ms)
+    ✓ should allow you to trigger a script specifying a string as a parameter (335ms)
+    ✓ should allow you to trigger a script specifying a number as a parameter (335ms)
+    ✓ should allow you to trigger a script specifying an object as a parameter (339ms)
+    ✓ should allow you to trigger a script specifying an array as a parameter (342ms)
+    ✓ should allow you to trigger a script without a parameter (343ms)
+    ✓ should reject a script that does not exist (345ms)
+    ✓ should parse script results if the results are json (348ms)
+    ✓ should not parse script results if the results are not json (345ms)
 
   General Script Capabilities
-    ✓ should allow you to trigger a script in a find (521ms)
-    ✓ should allow you to trigger a script in a list (201ms)
-    ✓ should reject a script that does not exist (192ms)
-    ✓ should allow return a result even if a script returns an error (205ms)
-    ✓ should parse script results if the results are json (196ms)
-    ✓ should not parse script results if the results are not json (202ms)
-    ✓ should parse an array of scripts (211ms)
-    ✓ should trigger scripts on all three script phases (212ms)
+    ✓ should allow you to trigger a script in a find (623ms)
+    ✓ should allow you to trigger a script in a list (351ms)
+    ✓ should reject a script that does not exist (346ms)
+    ✓ should allow return a result even if a script returns an error (364ms)
+    ✓ should parse script results if the results are json (359ms)
+    ✓ should not parse script results if the results are not json (352ms)
+    ✓ should parse an array of scripts (361ms)
+    ✓ should trigger scripts on all three script phases (373ms)
 
   Database Script List Capabilities
-    ✓ should get a list of scripts and folders for the currently configured database (374ms)
-    ✓ should fail with a code and a message (480ms)
+    ✓ should get a list of scripts and folders for the currently configured database (523ms)
+    ✓ should fail with a code and a message (389ms)
 
   Storage
     ✓ should allow an instance to be created
@@ -2453,47 +2390,47 @@ To learn more about our plans and increase your tests limit visit https://snyk.i
     ✓ should allow you to remove an instance
 
   Transform Capabilities
-    ✓ should merge portal data and field data from an array (1082ms)
-    ✓ should merge portal data and field data from an object (668ms)
-    ✓ should optionally not convert table::field keys from an array (631ms)
-    ✓ should optionally not convert table::field keys from an object (441ms)
-    ✓ should allow you to remove field data from an array (282ms)
-    ✓ should allow you to remove field data from an object (282ms)
-    ✓ should allow you to remove portal data from an array (295ms)
-    ✓ should allow you to remove portal data from an object (289ms)
-    ✓ should merge portal data and portal data from an array (281ms)
+    ✓ should merge portal data and field data from an array (679ms)
+    ✓ should merge portal data and field data from an object (441ms)
+    ✓ should optionally not convert table::field keys from an array (444ms)
+    ✓ should optionally not convert table::field keys from an object (444ms)
+    ✓ should allow you to remove field data from an array (449ms)
+    ✓ should allow you to remove field data from an object (432ms)
+    ✓ should allow you to remove portal data from an array (448ms)
+    ✓ should allow you to remove portal data from an object (444ms)
+    ✓ should merge portal data and portal data from an array (456ms)
 
   File Upload Capabilities
-    ✓ should allow you to specify a timeout (535ms)
-    ✓ should allow you to upload a file to a new record (505ms)
-    ✓ should allow you to upload a buffer to a new record (731ms)
-    ✓ should allow you to upload a file to a specific container repetition (515ms)
-    ✓ should allow you to upload a buffer to a specific container repetition (517ms)
+    ✓ should allow you to specify a timeout (862ms)
+    ✓ should allow you to upload a file to a new record (1980ms)
+    ✓ should allow you to upload a buffer to a new record (1260ms)
+    ✓ should allow you to upload a file to a specific container repetition (873ms)
+    ✓ should allow you to upload a buffer to a specific container repetition (842ms)
     ✓ should reject with a message if it can not find the file to upload
-    ✓ should allow you to upload a file to a specific record (625ms)
-    ✓ should allow you to upload a buffer object to a specific record (510ms)
-    ✓ should allow you to upload a file to a specific record container repetition (515ms)
-    ✓ should allow you to upload a buffer to a specific record container repetition (511ms)
-    ✓ should reject of the request is invalid (482ms)
-    ✓ should reject an empty buffer object (219ms)
-    ✓ should reject a null buffer object (219ms)
-    ✓ should reject a number instead of an object (220ms)
-    ✓ should reject an object without a filename (226ms)
-    ✓ should reject an object without a buffer (216ms)
+    ✓ should allow you to upload a file to a specific record (1172ms)
+    ✓ should allow you to upload a buffer object to a specific record (875ms)
+    ✓ should allow you to upload a file to a specific record container repetition (839ms)
+    ✓ should allow you to upload a buffer to a specific record container repetition (860ms)
+    ✓ should reject of the request is invalid (832ms)
+    ✓ should reject an empty buffer object (394ms)
+    ✓ should reject a null buffer object (414ms)
+    ✓ should reject a number instead of an object (410ms)
+    ✓ should reject an object without a filename (434ms)
+    ✓ should reject an object without a buffer (434ms)
 
   Data API URL Construction Capabilities
     Get URL Construction
       ✓ should generate a get request url
       ✓ should not require a version
     Update URL Construction
-      ✓ should generate a record update url (403ms)
-      ✓ should not require a version (216ms)
+      ✓ should generate a record update url (577ms)
+      ✓ should not require a version (411ms)
     Delete URL Construction
-      ✓ should generate a record delete url (227ms)
-      ✓ should not require a version (228ms)
+      ✓ should generate a record delete url (420ms)
+      ✓ should not require a version (398ms)
     Get URL Construction
-      ✓ should generate a get record url (231ms)
-      ✓ should not require a version (228ms)
+      ✓ should generate a get record url (401ms)
+      ✓ should not require a version (418ms)
     List URL Construction
       ✓ should generate a list records url
       ✓ should not require a version
@@ -2538,13 +2475,13 @@ To learn more about our plans and increase your tests limit visit https://snyk.i
       ✓ should generate a server databases metadata url
       ✓ should not require a version
 
-  Data Usage 
+  Data Usage
     Tracks Data Usage
-      ✓ should track API usage data. (401ms)
-      ✓ should allow you to reset usage data. (235ms)
+      ✓ should track API usage data. (593ms)
+      ✓ should allow you to reset usage data. (421ms)
     Does Not Track Data Usage
-      ✓ should not track data usage in (438ms)
-      ✓ should not track data usage out (236ms)
+      ✓ should not track data usage in (597ms)
+      ✓ should not track data usage out (428ms)
 
   Conversion Utility Capabilities
     Omit Utility
@@ -2570,7 +2507,7 @@ To learn more about our plans and increase your tests limit visit https://snyk.i
       ✓ it should pick a string property while maintaing the object
 
 
-  256 passing (1m)
+  261 passing (2m)
 
 ------------------------------|----------|----------|----------|----------|-------------------|
 File                          |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
