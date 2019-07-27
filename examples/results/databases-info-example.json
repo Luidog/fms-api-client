@@ -1,10 +1,43 @@
 {
   "databases": [
     {
+      "name": "archives"
+    },
+    {
+      "name": "Cleansmart"
+    },
+    {
+      "name": "FileMaker-Of-Things"
+    },
+    {
+      "name": "FileMaker-Stripe"
+    },
+    {
+      "name": "fm-buddy"
+    },
+    {
       "name": "fms-api-app"
     },
     {
+      "name": "fms-api-app-two"
+    },
+    {
+      "name": "Invoicing"
+    },
+    {
+      "name": "node-red-app"
+    },
+    {
       "name": "node-red-contrib-filemaker"
+    },
+    {
+      "name": "particle-workshop"
+    },
+    {
+      "name": "slack-bot"
+    },
+    {
+      "name": "Solarsync-devices"
     }
   ]
 }

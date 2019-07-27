@@ -61,10 +61,6 @@
         }
       ],
       "isFolder": true
-    },
-    {
-      "name": "Collision Script",
-      "isFolder": false
     }
   ]
 }

@@ -4,14 +4,14 @@
     "layout": "Heroes",
     "table": "Heroes",
     "totalRecordCount": "1977",
-    "foundCount": 39322,
+    "foundCount": 25052,
     "returnedCount": 2
   },
   "data": [
     {
       "fieldData": {
         "name": "George Lucas",
-        "image": "https://some-server.com/Streaming_SSL/MainDB/1E057CAB71BBBCB3F44A86C1E5C83E8C9A57DC1E973EECA28BFEBE07E7987C6E.png?RCType=EmbeddedRCFileProcessor",
+        "image": "https://some-server.com/Streaming_SSL/MainDB/D4055446E09B59A0B1870948411D169E2F87A4DDCC51D5B560E19B6EC4D6AEC2.png?RCType=EmbeddedRCFileProcessor",
         "object": "",
         "array": "",
         "height": "",
@@ -21,8 +21,7 @@
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": "test",
-        "hash": ""
+        "Vehicles::name": "test"
       },
       "portalData": {
         "Planets": [],
@@ -65,8 +64,7 @@
         "creationTimestamp": "05/25/1977 6:00:00",
         "modificationAccountName": "obi-wan",
         "modificationTimestamp": "05/25/1977 6:00:00",
-        "Vehicles::name": "",
-        "hash": "?"
+        "Vehicles::name": ""
       },
       "portalData": {
         "Planets": [],

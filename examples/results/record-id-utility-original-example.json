@@ -1,8 +1,8 @@
 [
   {
     "fieldData": {
-      "name": "yoda",
-      "image": "https://some-server.com/Streaming_SSL/MainDB/251E73810A43B01572353F09941B7CB23D69784FA37B4DE9175EC029FA2CD6D8?RCType=EmbeddedRCFileProcessor",
+      "name": "Yoda",
+      "image": "https://some-server.com/Streaming_SSL/MainDB/CD6A74CEB6EA34D3A67C271064A2944D0FE408AE81B4CD09C76A1266DAF374F6?RCType=EmbeddedRCFileProcessor",
       "object": "",
       "array": "",
       "height": "",
@@ -12,8 +12,7 @@
       "creationTimestamp": "05/25/1977 6:00:00",
       "modificationAccountName": "obi-wan",
       "modificationTimestamp": "05/25/1977 6:00:00",
-      "Vehicles::name": "",
-      "hash": "?"
+      "Vehicles::name": ""
     },
     "portalData": {
       "Planets": [],
@@ -38,7 +37,7 @@
   },
   {
     "fieldData": {
-      "name": "Yoda",
+      "name": "yoda",
       "image": "",
       "object": "",
       "array": "",
@@ -49,8 +48,7 @@
       "creationTimestamp": "05/25/1977 6:00:00",
       "modificationAccountName": "obi-wan",
       "modificationTimestamp": "05/25/1977 6:00:00",
-      "Vehicles::name": "",
-      "hash": "?"
+      "Vehicles::name": ""
     },
     "portalData": {
       "Planets": [],

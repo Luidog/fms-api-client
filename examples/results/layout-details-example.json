@@ -191,22 +191,6 @@
       "timeOfDay": false,
       "repetitionStart": 1,
       "repetitionEnd": 1
-    },
-    {
-      "name": "hash",
-      "type": "normal",
-      "displayType": "editText",
-      "result": "text",
-      "global": false,
-      "autoEnter": false,
-      "fourDigitYear": false,
-      "maxRepeat": 1,
-      "maxCharacters": 0,
-      "notEmpty": false,
-      "numeric": false,
-      "timeOfDay": false,
-      "repetitionStart": 1,
-      "repetitionEnd": 1
     }
   ],
   "portalMetaData": {
