@@ -339,6 +339,36 @@ describe('Authentication Capabilities', () => {
       .to.have.any.keys('rejectUnauthorized');
   });
 
+  it('should close sessions with a custom agent automatically', () => {
+    const client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      agent: { rejectUnauthorized: true }
+    });
+    let requestAgent;
+    sandbox.stub(client.agent.connection, 'end').callsFake(agent => {
+      requestAgent = agent;
+      return Promise.reject(agent);
+    });
+
+    return expect(
+      client
+        .save()
+        .then(client => client.logout())
+        .catch(error => {
+          return requestAgent;
+        })
+    )
+      .to.eventually.be.an('object')
+      .that.has.all.keys('httpsAgent')
+      .and.property('httpsAgent')
+      .to.have.any.keys('options')
+      .and.property('options')
+      .to.have.any.keys('rejectUnauthorized');
+  });
+
   it('should catch the log out error before being removed if the login is not valid', () => {
     return expect(
       client.login().then(token => {

@@ -140,7 +140,7 @@ class Client extends Document {
 
   logout() {
     return this.agent.connection
-      .end()
+      .end(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body));
   }

@@ -196,22 +196,27 @@ class Connection extends EmbeddedDocument {
    * @return {String} The session token.
    */
 
-  end() {
+  end(agent) {
     return new Promise((resolve, reject) => {
       if (this.sessions.length > 0) {
         const session = this.available();
         session.active = true;
         instance
-          .request({
-            url: urls.logout(
-              this.server,
-              this.database,
-              session.token,
-              this.version
-            ),
-            method: 'delete',
-            data: {}
-          })
+          .request(
+            Object.assign(
+              {
+                url: urls.logout(
+                  this.server,
+                  this.database,
+                  session.token,
+                  this.version
+                ),
+                method: 'delete',
+                data: {}
+              },
+              agent ? { ...agent } : {}
+            )
+          )
           .then(response => {
             this.clear(session.token);
             resolve(response.data);
