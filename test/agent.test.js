@@ -24,7 +24,8 @@ const { Filemaker } = require('../index.js');
 chai.use(chaiAsPromised);
 
 describe('Agent Configuration Capabilities', () => {
-  let database, client;
+  let database;
+  let client;
   before(done => {
     environment.config({ path: './test/.env' });
     varium(process.env, './test/env.manifest');
@@ -54,7 +55,7 @@ describe('Agent Configuration Capabilities', () => {
   });
 
   it('should accept no agent configuration', () => {
-    let client = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
@@ -82,7 +83,7 @@ describe('Agent Configuration Capabilities', () => {
   });
 
   it('should not create an agent unless one is defined', () => {
-    let client = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
@@ -91,7 +92,10 @@ describe('Agent Configuration Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
+        .then(client => {
+          console.log(client);
+          client.list(process.env.LAYOUT, { limit: 1 });
+        })
         .then(response => global.FMS_API_CLIENT)
     )
       .to.eventually.be.an('object')
@@ -99,7 +103,7 @@ describe('Agent Configuration Capabilities', () => {
   });
 
   it('should adjust the request protocol according to the server', () => {
-    let client = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER.replace('https://', 'http://'),
       user: process.env.USERNAME,
@@ -129,7 +133,7 @@ describe('Agent Configuration Capabilities', () => {
   });
 
   it('should create an https agent', () => {
-    let client = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
@@ -160,7 +164,7 @@ describe('Agent Configuration Capabilities', () => {
   });
 
   it('should use a created request agent', () => {
-    let client = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
@@ -175,9 +179,9 @@ describe('Agent Configuration Capabilities', () => {
     ).to.eventually.be.an('object');
   });
 
-  it('should destory the agent when the client is deleted', () => {
+  it('should destroy the agent when the client is deleted', () => {
     let globalId = '';
-    let client = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
@@ -197,7 +201,7 @@ describe('Agent Configuration Capabilities', () => {
   });
 
   it('should create an http agent', () => {
-    let client = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER.replace('https://', 'http://'),
       user: process.env.USERNAME,
@@ -258,7 +262,7 @@ describe('Agent Configuration Capabilities', () => {
   });
 
   it('should require the http protocol', () => {
-    let client = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
@@ -282,7 +286,7 @@ describe('Agent Configuration Capabilities', () => {
   });
 
   it('should accept a timeout property', () => {
-    let client = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
@@ -307,11 +311,44 @@ describe('Agent Configuration Capabilities', () => {
         'delay',
         'pending',
         'queue'
-      );
+      )
+      .and.property('timeout')
+      .to.equal(2500);
+  });
+
+  it('should accept a concurrency property', () => {
+    const client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      usage: true,
+      concurrency: 10
+    });
+    return expect(client.save())
+      .to.eventually.be.a('object')
+      .that.has.all.keys('_schema', '_id', 'data', 'agent', 'name')
+      .and.property('agent')
+      .to.be.a('object')
+      .to.have.all.keys(
+        '_schema',
+        'protocol',
+        'connection',
+        'global',
+        'proxy',
+        'timeout',
+        'agent',
+        'concurrency',
+        'delay',
+        'pending',
+        'queue'
+      )
+      .and.property('concurrency')
+      .to.equal(10);
   });
 
   it('should use a timeout if one is set', () => {
-    let client = Filemaker.create({
+    const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
       user: process.env.USERNAME,
@@ -326,6 +363,8 @@ describe('Agent Configuration Capabilities', () => {
         .catch(error => error)
     )
       .to.eventually.be.an('object')
-      .with.any.keys('message', 'code');
+      .with.any.keys('message', 'code')
+      .and.property('code')
+      .to.equal('ECONNABORTED');
   });
 });
