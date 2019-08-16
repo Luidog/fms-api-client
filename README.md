@@ -2138,7 +2138,7 @@ npm test
 ```
 
 ```default
-> fms-api-client@2.1.3 test fms-api-client
+> fms-api-client@2.1.4 test fms-api-client
 > snyk test && nyc _mocha --recursive  ./test --timeout=15000 --exit
 
 
@@ -2169,6 +2169,7 @@ Local Snyk policy: found
     ✓ should use a proxy if one is set (342ms)
     ✓ should require the http protocol (119ms)
     ✓ should accept a timeout property
+    ✓ should accept a concurrency property
     ✓ should use a timeout if one is set (113ms)
 
   Authentication Capabilities
@@ -2506,7 +2507,7 @@ Local Snyk policy: found
       ✓ it should pick a string property while maintaing the object
 
 
-  262 passing (2m)
+  263 passing (2m)
 
 ------------------------------|----------|----------|----------|----------|-------------------|
 File                          |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
