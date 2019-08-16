@@ -125,7 +125,9 @@ class Agent extends EmbeddedDocument {
    * @return {null} The preInit hook does not return anything.
    */
 
-  preInit({ agent, protocol, connection }) {
+  preInit({ agent, protocol, timeout, concurrency, connection }) {
+    this.concurrency = concurrency > 0 ? concurrency : 1;
+
     this.connection = Connection.create(connection);
     if (agent) this.globalize(protocol, agent);
   }
@@ -418,7 +420,7 @@ class Agent extends EmbeddedDocument {
             this.shift();
           }
 
-          if (this.connection.available()) {
+          if (this.pending.length > 0 && this.connection.available()) {
             this.resolve();
           }
 
@@ -462,7 +464,7 @@ class Agent extends EmbeddedDocument {
    */
 
   resolve() {
-    let pending = this.pending.shift();
+    const pending = this.pending.shift();
     pending.resolve(
       Object.assign(
         this.connection.authentication(

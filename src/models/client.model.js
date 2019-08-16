@@ -74,10 +74,26 @@ class Client extends Document {
    * @return {null} The preInit hook does not return anything.
    */
   preInit(data) {
-    let { agent, timeout, usage, proxy, ...connection } = data;
+    let {
+      agent,
+      timeout,
+      concurrency,
+      threshold,
+      usage,
+      proxy,
+      ...connection
+    } = data;
     let protocol = data.server.startsWith('https') ? 'https' : 'http';
     this.data = Data.create({ track: usage === undefined });
-    this.agent = Agent.create({ agent, proxy, timeout, protocol, connection });
+    this.agent = Agent.create({
+      agent,
+      proxy,
+      timeout,
+      threshold,
+      concurrency,
+      protocol,
+      connection
+    });
   }
 
   /**
