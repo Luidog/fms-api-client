@@ -7,6 +7,7 @@ const { expect, should } = require('chai');
 
 /* eslint-enable */
 
+const path = require('path');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
@@ -14,10 +15,13 @@ const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker, recordId } = require('../index.js');
 
+const manifestPath = path.join(__dirname, './env.manifest');
+
 chai.use(chaiAsPromised);
 
 describe('RecordId Capabilities', () => {
-  let database, client;
+  let database;
+  let client;
 
   before(done => {
     client = Filemaker.create({
@@ -38,7 +42,7 @@ describe('RecordId Capabilities', () => {
 
   before(done => {
     environment.config({ path: './test/.env' });
-    varium(process.env, './test/env.manifest');
+    varium({ manifestPath });
     connect('nedb://memory')
       .then(db => {
         database = db;

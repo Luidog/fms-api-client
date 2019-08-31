@@ -4,9 +4,10 @@
 
 const assert = require('assert');
 const { expect, should } = require('chai');
-const _ = require('lodash');
+
 /* eslint-enable */
 
+const path = require('path');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
@@ -14,10 +15,13 @@ const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker, transform } = require('../index');
 
+const manifestPath = path.join(__dirname, './env.manifest');
+
 chai.use(chaiAsPromised);
 
 describe('Transform Capabilities', () => {
-  let database, client;
+  let database;
+  let client;
 
   before(done => {
     client = Filemaker.create({
@@ -35,7 +39,7 @@ describe('Transform Capabilities', () => {
 
   before(done => {
     environment.config({ path: './test/.env' });
-    varium(process.env, './test/env.manifest');
+    varium({ manifestPath });
     connect('nedb://memory')
       .then(db => {
         database = db;

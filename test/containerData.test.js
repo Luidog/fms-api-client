@@ -4,9 +4,10 @@
 
 const assert = require('assert');
 const { expect, should } = require('chai');
-const _ = require('lodash');
+
 /* eslint-enable */
 
+const path = require('path');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
@@ -14,14 +15,17 @@ const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker, containerData } = require('../index');
 
+const manifestPath = path.join(__dirname, './env.manifest');
+
 chai.use(chaiAsPromised);
 
 describe('ContainerData Capabilities', () => {
-  let database, client;
+  let database;
+  let client;
 
   before(done => {
     environment.config({ path: './test/.env' });
-    varium(process.env, './test/env.manifest');
+    varium({ manifestPath });
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -144,7 +148,7 @@ describe('ContainerData Capabilities', () => {
       client
         .find(process.env.LAYOUT, { imageName: '*' }, { limit: 1 })
         .then(response => {
-          let data = response.data[0];
+          const data = response.data[0];
           delete data.recordId;
           return data;
         })

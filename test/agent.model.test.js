@@ -9,6 +9,7 @@ const { expect, should } = require('chai');
 
 /* eslint-enable */
 
+const path = require('path');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
@@ -21,7 +22,9 @@ const sandbox = sinon.createSandbox();
 
 chai.use(chaiAsPromised);
 
-let error = {
+const manifestPath = path.join(__dirname, './env.manifest');
+
+const error = {
   response: {
     config: { headers: { Authorization: 'Bearer Invalid' } },
     status: 401,
@@ -29,15 +32,16 @@ let error = {
   }
 };
 
-let request = {
+const request = {
   url: 'fmp://test-server'
 };
 
 describe('Agent Configuration Capabilities', () => {
-  let database, client;
+  let database;
+  let client;
   before(done => {
     environment.config({ path: './test/.env' });
-    varium(process.env, './test/env.manifest');
+    varium({ manifestPath });
     connect('nedb://memory')
       .then(db => {
         database = db;

@@ -9,6 +9,7 @@ const { expect, should } = require('chai');
 
 /* eslint-enable */
 
+const path = require('path');
 const chai = require('chai');
 const sinon = require('sinon');
 const chaiAsPromised = require('chai-as-promised');
@@ -20,13 +21,16 @@ const { urls } = require('../src/utilities');
 
 const sandbox = sinon.createSandbox();
 
+const manifestPath = path.join(__dirname, './env.manifest');
+
 chai.use(chaiAsPromised);
 
 describe('Database Layout List Capabilities', () => {
-  let database, client;
+  let database;
+  let client;
   before(done => {
     environment.config({ path: './test/.env' });
-    varium(process.env, './test/env.manifest');
+    varium({ manifestPath });
     connect('nedb://memory')
       .then(db => {
         database = db;

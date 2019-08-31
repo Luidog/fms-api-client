@@ -9,6 +9,7 @@ const { expect, should } = require('chai');
 
 /* eslint-enable */
 
+const path = require('path');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const environment = require('dotenv');
@@ -19,6 +20,8 @@ const httpProxy = require('http-proxy');
 
 const proxy = httpProxy.createProxyServer();
 
+const manifestPath = path.join(__dirname, './env.manifest');
+
 const { Filemaker } = require('../index.js');
 
 chai.use(chaiAsPromised);
@@ -28,7 +31,7 @@ describe('Agent Configuration Capabilities', () => {
   let client;
   before(done => {
     environment.config({ path: './test/.env' });
-    varium(process.env, './test/env.manifest');
+    varium({ manifestPath });
     connect('nedb://memory')
       .then(db => {
         database = db;
@@ -92,10 +95,7 @@ describe('Agent Configuration Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => {
-          console.log(client);
-          client.list(process.env.LAYOUT, { limit: 1 });
-        })
+        .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
         .then(response => global.FMS_API_CLIENT)
     )
       .to.eventually.be.an('object')
