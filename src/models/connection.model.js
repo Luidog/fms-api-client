@@ -106,11 +106,13 @@ class Connection extends EmbeddedDocument {
    */
 
   authentication({ headers, ...request }) {
+    const session = this.available();
+    session.active = true;
     return {
       ...request,
       headers: {
         ...headers,
-        Authorization: `Bearer ${this.available().token}`
+        Authorization: `Bearer ${session.token}`
       }
     };
   }
