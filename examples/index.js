@@ -21,7 +21,7 @@ const { datastore } = require('./datastore.examples');
 
 environment.config({ path: './test/.env' });
 
-varium(process.env, './test/env.manifest');
+varium({ manifestPath: '../test/env.manifest' });
 
 //#datastore-connect-example
 const { connect } = require('marpat');
@@ -32,6 +32,7 @@ connect('nedb://memory')
     const client = Filemaker.create({
       name: process.env.CLIENT_NAME,
       database: process.env.DATABASE,
+      concurrency: 3,
       server: process.env.SERVER,
       user: process.env.USERNAME,
       password: process.env.PASSWORD,
