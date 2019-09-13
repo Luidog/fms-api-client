@@ -420,14 +420,14 @@ class Agent extends EmbeddedDocument {
             this.shift();
           }
 
-          if (this.pending.length > 0 && this.connection.available()) {
+          if (this.pending.length > 0 && this.connection.ready()) {
             this.resolve();
           }
 
           if (
-            (!this.connection.available() ||
-              this.connection.sessions.length < this.concurrency) &&
-            !this.connection.starting
+            !this.connection.available() &&
+            !this.connection.starting &&
+            this.connection.sessions.length < this.concurrency
           ) {
             this.connection
               .start(!_.isEmpty(this.agent) ? this.localize() : false)
@@ -465,16 +465,16 @@ class Agent extends EmbeddedDocument {
 
   resolve() {
     const pending = this.pending.shift();
-    pending.resolve(
-      Object.assign(
-        this.connection.authentication(
+    this.connection
+      .authentication(
+        Object.assign(
           this.mutate(pending.request, (value, key) =>
             key.replace(/{{dot}}/g, '.')
           )
         ),
         _.isEmpty(this.agent) ? {} : this.localize()
       )
-    );
+      .then(request => pending.resolve(request));
   }
 }
 
