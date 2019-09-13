@@ -31,6 +31,20 @@ class Session extends EmbeddedDocument {
             .add(15, 'minutes')
             .format()
       },
+      /* A string containing the last time the token was used.
+       * @member Session#used
+       * @type String
+       */
+      used: {
+        type: String
+      },
+      /* A string containing the last time the token was used.
+       * @member Session#used
+       * @type String
+       */
+      url: {
+        type: String
+      },
       /* A boolean set if the current session is in use.
        * @member Session#active
        * @type Boolean
@@ -94,6 +108,7 @@ class Session extends EmbeddedDocument {
 
   extend() {
     this.active = false;
+    this.url = '';
     this.expires = moment()
       .add(15, 'minutes')
       .format();

@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const moment = require('moment');
 const { EmbeddedDocument } = require('marpat');
 const { Credentials } = require('./credentials.model');
 const { Session } = require('./session.model');
@@ -106,15 +107,24 @@ class Connection extends EmbeddedDocument {
    */
 
   authentication({ headers, ...request }) {
-    const session = this.available();
-    session.active = true;
-    return {
-      ...request,
-      headers: {
-        ...headers,
-        Authorization: `Bearer ${session.token}`
-      }
-    };
+    return new Promise((resolve, reject) => {
+      const sessions = _.sortBy(this.sessions, ['active', 'used'], ['desc']);
+      const session = sessions[0];
+      session.active = true;
+      session.url = request.url;
+      session.used = moment().format();
+      resolve({
+        ...request,
+        headers: {
+          ...headers,
+          Authorization: `Bearer ${session.token}`
+        }
+      });
+    });
+  }
+
+  ready() {
+    return this.sessions.length > 0;
   }
 
   available() {
