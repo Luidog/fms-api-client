@@ -175,6 +175,41 @@ class Client extends Document {
     );
   }
 
+  status() {
+    return new Promise((resolve, reject) =>
+      resolve({
+        ...this.data.status(),
+        queue:
+          this.agent.queue && this.agent.queue.length
+            ? this.agent.queue.map(({ url }) => ({ url }))
+            : [],
+        pending:
+          this.agent.pending && this.agent.pending.length
+            ? this.agent.pending.map(({ url }) => ({ url }))
+            : [],
+        sessions:
+          this.agent.connection && this.agent.connection.sessions.length
+            ? this.agent.connections.sessions.map(
+                ({ issued, expired, url, active }) => ({
+                  issued,
+                  expired,
+                  url,
+                  active
+                })
+              )
+            : []
+      })
+    );
+  }
+
+  reset() {
+    this.agent.pending = [];
+    this.agent.queue = [];
+    this.agent.connection.sessions = [];
+    this.agent.connection.starting = false;
+    return this.save().then({ message: 'Client Reset' });
+  }
+
   /**
    * @method databases
    * @memberof Client
