@@ -96,6 +96,16 @@ const getDatabases = client =>
   );
 //#
 
+//#get-status-example
+const getStatus = client =>
+  client.status().then(result => log('get-status-example', result));
+//#
+
+//#client-reset-example
+const resetClient = client =>
+  client.reset().then(result => log('client-reset-example', result));
+//#
+
 const utilities = client =>
   Promise.all([
     extractFieldDataOriginal(client),
@@ -107,7 +117,9 @@ const utilities = client =>
     transformDataNoConvert(client),
     getContainerData(client),
     getProductInfo(client),
-    getDatabases(client)
+    getDatabases(client),
+    getStatus(client),
+    resetClient(client)
   ]).then(responses => client);
 
 module.exports = { utilities };
