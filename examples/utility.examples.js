@@ -84,14 +84,14 @@ const getContainerData = client =>
 
 //#product-info-utility-example
 const getProductInfo = client =>
-  productInfo(client.server).then(result =>
+  productInfo(process.env.SERVER).then(result =>
     log('product-info-utility-example', result)
   );
 //#
 
 //#databases-utility-example
 const getDatabases = client =>
-  databases(client.server, client.credentials).then(result =>
+  databases(process.env.SERVER).then(result =>
     log('databases-utility-example', result)
   );
 //#
