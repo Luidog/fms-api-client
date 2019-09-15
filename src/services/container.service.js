@@ -61,7 +61,7 @@ const transport = (url, destination, name, parameters = {}) =>
       )
     )
     .then(response => {
-      let filename = path.extname(name)
+      const filename = path.extname(name)
         ? name
         : `${name}.${mime.extension(response.headers['content-type'])}`;
       return destination && destination !== 'buffer'
@@ -81,7 +81,7 @@ const transport = (url, destination, name, parameters = {}) =>
  */
 const writeFile = (stream, name, destination) =>
   new Promise((resolve, reject) => {
-    let output = fs.createWriteStream(path.join(destination, name));
+    const output = fs.createWriteStream(path.join(destination, name));
     output.on('error', error => reject({ message: error.message, code: 100 }));
     output.on('finish', () =>
       resolve({ name, path: path.join(destination, name) })
