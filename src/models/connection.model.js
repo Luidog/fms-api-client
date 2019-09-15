@@ -219,12 +219,13 @@ class Connection extends EmbeddedDocument {
    * @description ends a FileMaker Data API session and clears the session.
    * @see  {@link Connection#clear}
    * @param {Object} [agent] An optional custom request agent.
+   * @param {String} [id] The session id to log out.
    * @return {String} The session token.
    */
-  end(agent) {
+  end(agent, id = false) {
     return new Promise((resolve, reject) => {
-      if (this.sessions.length > 0) {
-        const session = this.available();
+      const session = id ? _.find(this.sessions, { id }) : this.available();
+      if (session) {
         session.active = true;
         instance
           .request(
