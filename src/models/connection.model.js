@@ -11,9 +11,10 @@ const { instance } = require('../services');
 /**
  * @class Connection
  * @classdesc The class used to connection with the FileMaker server Data API
+ * @constructor
  */
-
 class Connection extends EmbeddedDocument {
+  /** @constructs */
   constructor() {
     super();
     this.schema({
@@ -87,9 +88,7 @@ class Connection extends EmbeddedDocument {
    * @param {Object} data The data used to create the connection.
    * @param {String} data.user The FileMaker user account to use when creating connections.
    * @param {String} data.password The FileMaker user account password.
-   * @return {null} The preInit hook does not return anything.
    */
-
   preInit({ user, password }) {
     this.credentials = Credentials.create({ user, password });
   }
@@ -105,7 +104,6 @@ class Connection extends EmbeddedDocument {
    * @see  {@link Connection#available}
    * @return {String} The session token.
    */
-
   authentication({ headers, ...request }) {
     return new Promise((resolve, reject) => {
       const sessions = _.sortBy(this.sessions, ['active', 'used'], ['desc']);
@@ -123,10 +121,26 @@ class Connection extends EmbeddedDocument {
     });
   }
 
+  /**
+   * @method ready
+   * @public
+   * @memberof Connection
+   * @description Saves a token retrieved from the Data API as a sessions
+   * @see  {@link session}
+   * @return {Boolean} data a boolean indicating if the connection has a session.
+   */
   ready() {
     return this.sessions.length > 0;
   }
 
+  /**
+   * @method available
+   * @public
+   * @memberof Connection
+   * @description Saves a token retrieved from the Data API as a sessions
+   * @see  {@link session}
+   * @return {Boolean|Class} data a false boolean or session
+   */
   available() {
     const session = _.find(this.sessions, session => session.valid());
     return typeof session === 'undefined' ? false : session;
@@ -138,10 +152,9 @@ class Connection extends EmbeddedDocument {
    * @memberof Connection
    * @description Saves a token retrieved from the Data API as a sessions
    * @see  {@link session}
-   * @params {Object} data The FileMaker authentication response.
+   * @param {Object} data The FileMaker authentication response.
    * @return {String} a token retrieved from the private generation method
    */
-
   save(data) {
     this.starting = false;
     return new Promise((resolve, reject) => {
@@ -161,9 +174,9 @@ class Connection extends EmbeddedDocument {
    * @public
    * @memberof Connection
    * @description Starts a FileMaker Data API session
+   * @param {Object} [agent] An optional custom request agent.
    * @return {String} The session token.
    */
-
   start(agent) {
     this.starting = true;
     return new Promise((resolve, reject) => {
@@ -205,9 +218,9 @@ class Connection extends EmbeddedDocument {
    * @memberof Connection
    * @description ends a FileMaker Data API session and clears the session.
    * @see  {@link Connection#clear}
+   * @param {Object} [agent] An optional custom request agent.
    * @return {String} The session token.
    */
-
   end(agent) {
     return new Promise((resolve, reject) => {
       if (this.sessions.length > 0) {
@@ -246,11 +259,8 @@ class Connection extends EmbeddedDocument {
    * @public
    * @description clears the currently saved token, expiration, and issued data by setting them to empty strings. This method
    * returns whatever is passed to it unmodified.
-   * @param {Object} response The response object.
-   * @return {Object} response The response recieved from the Data API.
-   *
+   * @param {String} [header] The header containing the token to clear.
    */
-
   clear(header) {
     this.sessions = this.sessions.filter(session =>
       typeof header === 'string'
@@ -264,13 +274,10 @@ class Connection extends EmbeddedDocument {
    * @memberof Connection
    * @public
    * @description Saves a token retrieved from the Data API. This method returns the response recieved to it unmodified.
-   * @param {Object} response The response object.
-   * @return {Object} response The response recieved from the Data API.
-   *
+   * @param {String} [header] The header containing the token to clear.
    */
-
-  extend(data) {
-    const token = data.replace('Bearer ', '');
+  extend(header) {
+    const token = header.replace('Bearer ', '');
     const session = _.find(this.sessions, session => session.token === token);
     if (session) session.extend();
   }

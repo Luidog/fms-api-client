@@ -11,7 +11,6 @@ module.exports = {
 	extends: ['google', 'eslint:recommended', 'prettier'],
 	rules: {
 		'prettier/prettier': 'error',
-		'require-jsdoc': 'off',
 		'prefer-promise-reject-errors': 'off'
 	}
 };

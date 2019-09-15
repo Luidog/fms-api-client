@@ -9,8 +9,8 @@ const { EmbeddedDocument } = require('marpat');
  * @class Data
  * @classdesc The class used to track FileMaker API data usage.
  **/
-
 class Data extends EmbeddedDocument {
+  /** @constructs */
   constructor() {
     super();
     this.schema({

@@ -14,11 +14,10 @@ const { stringify, parse } = require('./conversion.utilities');
  * @param  {Object|Array} data The data to use when invoking the function.
  * @return {Object}      A new object with the FileMaker required parameters for portals.
  */
-
 const convertPortals = data => {
-  let portalArray = [];
-  let { portals } = data;
-  let converted = Array.isArray(portals)
+  const portalArray = [];
+  const { portals } = data;
+  const converted = Array.isArray(portals)
     ? _.chain(portals)
         .map(portal =>
           _.mapKeys(portal, (value, key) =>
@@ -46,10 +45,9 @@ const convertPortals = data => {
  * @param  {Object} data The data to convert.
  * @return {Object}      A new object based on the assignment of incoming properties.
  */
-
 const convertScripts = data => {
-  let { scripts } = data;
-  let converted = Array.isArray(scripts)
+  const { scripts } = data;
+  const converted = Array.isArray(scripts)
     ? _.chain(scripts)
         .map(script =>
           _.mapKeys(script, (value, key) =>
@@ -79,7 +77,6 @@ const convertScripts = data => {
  * @param  {Object|Array} data The raw data to use converting parameters
  * @return {Object|Array} A json object or array of objects without the properties passed to it
  */
-
 const convertParameters = data =>
   Object.assign(convertPortals(data), stringify(convertScripts(data)), data);
 
@@ -96,7 +93,6 @@ const convertParameters = data =>
  * @return {Object|Array} returns an object or array of objects with only allowed keys
  * and values mapped to strings.
  */
-
 const sanitizeParameters = (parameters, safeParameters) =>
   _.mapValues(
     _.pickBy(
@@ -124,7 +120,6 @@ const sanitizeParameters = (parameters, safeParameters) =>
  * @param  {Object} data The response recieved from the FileMaker DAPI.
  * @return {Object}      A json object containing the selected data from the Data API Response.
  */
-
 const parseScriptResult = data =>
   _.mapValues(data.response, (value, property, object) =>
     property.includes('scriptResult')
@@ -141,7 +136,6 @@ const parseScriptResult = data =>
  * @param  {Object} data An object used in a DAPI query.
  * @return {Object}      A modified object containing modified keys to match expected properties
  */
-
 const namespace = data =>
   _.mapKeys(data, (value, key) =>
     _.includes(['limit', 'offset', 'sort'], key) ? `_${key}` : key
@@ -158,7 +152,6 @@ const namespace = data =>
  * @param  {Object} data An object to use when creating or editing records.
  * @return {Object}      A modified object containing a fieldData property.
  */
-
 const setData = data =>
   Object.assign(
     {},
