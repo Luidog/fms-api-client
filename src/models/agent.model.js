@@ -20,7 +20,6 @@ axiosCookieJarSupport(instance);
  * @class Agent
  * @classdesc The class used to model the axios http instance and agent
  */
-
 class Agent extends EmbeddedDocument {
   constructor() {
     super();
@@ -390,6 +389,7 @@ class Agent extends EmbeddedDocument {
    * This method will queue and resolve requests based on the number of incoming requests and the availability
    * of sessions. This method will resolve requests and create sessions based upon the agent's configured concurrency.
    * token response.
+   * @param  {Function} reject The reject function from the promise that initiated the function.
    * @see  {@link Agent#concurrency}
    * @see  {@link Connection@available}
    */
