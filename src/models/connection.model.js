@@ -163,9 +163,10 @@ class Connection extends EmbeddedDocument {
           code: '1760',
           message: 'Unable to parse session token from server response.'
         });
-      this.sessions.push(Session.create({ token: data.response.token }));
+      const session = Session.create({ token: data.response.token });
+      this.sessions.push(session);
       this.clear();
-      resolve(data.response.token);
+      resolve({ token: session.token, id: session.id });
     });
   }
 
@@ -265,7 +266,7 @@ class Connection extends EmbeddedDocument {
   clear(header) {
     this.sessions = this.sessions.filter(session =>
       typeof header === 'string'
-        ? header.replace('Bearer ', '') !== session.token || !session.expired()
+        ? header.replace('Bearer ', '') !== session.token && !session.expired()
         : !session.expired()
     );
   }
