@@ -203,22 +203,26 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either with a message object.
    */
   reset() {
-    const logouts = [];
-    this.agent.pending = [];
-    this.agent.queue = [];
+    return new Promise((resolve, reject) => {
+      const logouts = [];
+      this.agent.queue = [];
+      this.agent.pending = [];
+      this.agent.connection.sessions.forEach(({ id }) =>
+        logouts.push(this.logout(id))
+      );
 
-    this.agent.connection.sessions.forEach(({ id }) =>
-      logouts.push(this.logout(id))
-    );
-
-    return Promise.all(logouts)
-      .then(results => {
-        this.agent.connection.sessions = [];
-        this.save();
-      })
-      .then(client => ({
-        message: 'Client Reset'
-      }));
+      Promise.all(logouts)
+        .then(results => {
+          this.agent.connection.sessions = [];
+          return this.save();
+        })
+        .then(client =>
+          resolve({
+            message: 'Client Reset'
+          })
+        )
+        .catch(error => reject({ message: 'Client Reset Failed' }));
+    });
   }
 
   /**

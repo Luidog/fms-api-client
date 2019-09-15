@@ -50,9 +50,9 @@ class Connection extends EmbeddedDocument {
       },
       /**
        * Open Data API sessions.
-       * @member Connection#sessions
+       * @member Connection#starting
        * @see  {@link Session}
-       * @type Array
+       * @type Boolean
        */
       starting: {
         type: Boolean,
