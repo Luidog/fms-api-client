@@ -1,0 +1,28 @@
+{
+  "data": {
+    "since": "2019-09-14T23:35:20-07:00",
+    "in": "438 Bytes",
+    "out": "29.9 kB"
+  },
+  "queue": [],
+  "pending": [],
+  "sessions": [
+    {
+      "issued": "2019-09-14T23:35:20-07:00",
+      "expired": {},
+      "active": true
+    },
+    {
+      "issued": "2019-09-14T23:35:20-07:00",
+      "expired": {},
+      "url": "",
+      "active": false
+    },
+    {
+      "issued": "2019-09-14T23:35:21-07:00",
+      "expired": {},
+      "url": "https://some-server.com/fmi/data/vLatest/databases/fms-api-app/layouts/Heroes/records/747518/containers/image/1",
+      "active": true
+    }
+  ]
+}
