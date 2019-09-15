@@ -122,9 +122,7 @@ class Agent extends EmbeddedDocument {
    * client to use if one is required.
    * @see _globalize
    * @param {Object} data The data used to create the agent.
-   * @return {null} The preInit hook does not return anything.
    */
-
   preInit({ agent, protocol, timeout, concurrency, connection }) {
     this.concurrency = concurrency > 0 ? concurrency : 1;
 
@@ -138,9 +136,7 @@ class Agent extends EmbeddedDocument {
    * @description The agent preDelete hook will remove an Agent
    * from the global scope when the client is destroyed.
    * @param {Object} data The data used to create the client.
-   * @return {null} The delete hook does not return anything.
    */
-
   preDelete() {
     if (
       global.FMS_API_CLIENT.AGENTS &&
@@ -162,7 +158,6 @@ class Agent extends EmbeddedDocument {
    * @param  {Object} agent      The name of the script
    * @return {Object}       returns a globalized request agent
    */
-
   globalize(protocol, agent) {
     if (!this.global) this.global = uuidv4();
     /**
@@ -189,7 +184,6 @@ class Agent extends EmbeddedDocument {
    * @see globalize
    * @return {Object} returns a globalized request agent
    */
-
   localize() {
     if (typeof global.FMS_API_CLIENT.AGENTS === 'undefined')
       global.FMS_API_CLIENT.AGENTS = [];
@@ -215,7 +209,6 @@ class Agent extends EmbeddedDocument {
    * @param  {Object} [parameters] The request parameters. Individualized request parameters.
    * @return {Object} request The configured axios instance to use for a request.
    */
-
   request(data, parameters = {}) {
     instance.interceptors.request.use(
       ({ httpAgent, httpsAgent, ...request }) =>
@@ -251,10 +244,9 @@ class Agent extends EmbeddedDocument {
    * @description handles request data before it is sent to the resource. This function
    * will eventually be used to cancel the request and return the configuration body.
    * This function will test the url for an http proticol and reject if none exist.
-   * @param  {Object} config The axios request configuration
+   * @param  {Object} response The axios response
    * @return {Promise}      the request configuration object
    */
-
   handleResponse(response) {
     if (typeof response.data !== 'object') {
       return Promise.reject({
@@ -277,7 +269,6 @@ class Agent extends EmbeddedDocument {
    * @param  {Object} config The axios request configuration
    * @return {Promise}      the request configuration object
    */
-
   handleRequest(config) {
     return config.url.startsWith('http')
       ? omit(config, ['params.request', 'data.request'])
@@ -299,9 +290,7 @@ class Agent extends EmbeddedDocument {
    * @see  {@link Agent#watch}
    * @see  {@link Agent#mutate}
    * @see  {@link Agent#shift}
-   * @return {undefined} This method does not return anything.
    */
-
   push({ request, resolve, reject }) {
     this.queue.push({
       request: this.mutate(request, (value, key) =>
@@ -320,9 +309,7 @@ class Agent extends EmbeddedDocument {
    * @memberof Agent
    * @description the shift method will send a request if there are less pending requests than the set limit.
    * @see {@link agent#concurrency}
-   * @return {undefined} This method does not return anything.
    */
-
   shift() {
     if (this.pending.length < this.concurrency) {
       this.pending.push(this.queue.shift());
@@ -342,7 +329,6 @@ class Agent extends EmbeddedDocument {
    * @param  {Function} mutation The function to upon each key in the request.
    * @return {Object} This mutated request
    */
-
   mutate(request, mutation) {
     const {
       transformRequest,
@@ -376,7 +362,6 @@ class Agent extends EmbeddedDocument {
    * @param  {Object} error The error recieved from the requested resource.
    * @return {Promise}      A promise rejection containing a code and a message
    */
-
   handleError(error) {
     if (error.code) {
       return Promise.reject({ code: error.code, message: error.message });
@@ -407,9 +392,7 @@ class Agent extends EmbeddedDocument {
    * token response.
    * @see  {@link Agent#concurrency}
    * @see  {@link Connection@available}
-   * @return {Undefined}      A promise rejection containing a code and a message
    */
-
   watch(reject) {
     if (!this.global) this.global = uuidv4();
     if (!global.FMS_API_CLIENT.WATCHERS) global.FMS_API_CLIENT.WATCHERS = {};
@@ -460,9 +443,7 @@ class Agent extends EmbeddedDocument {
    * resolve requests currently in the pending queue. This method will inject the available session token into the request.
    * @see  {@link Agent#pending}
    * @see  {@link Connection@authentication}
-   * @return {Undefined}      A promise rejection containing a code and a message
    */
-
   resolve() {
     const pending = this.pending.shift();
     this.connection
@@ -474,7 +455,11 @@ class Agent extends EmbeddedDocument {
         ),
         _.isEmpty(this.agent) ? {} : this.localize()
       )
-      .then(request => pending.resolve(request));
+      .then(request =>
+        typeof pending.resolve === 'function'
+          ? pending.resolve(request)
+          : request
+      );
   }
 }
 
