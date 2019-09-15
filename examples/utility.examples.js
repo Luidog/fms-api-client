@@ -96,9 +96,9 @@ const getDatabases = client =>
   );
 //#
 
-//#get-status-example
+//#client-status-example
 const getStatus = client =>
-  client.status().then(result => log('get-status-example', result));
+  client.status().then(result => log('client-status-example', result));
 //#
 
 //#client-reset-example
