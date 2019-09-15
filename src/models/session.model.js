@@ -31,6 +31,20 @@ class Session extends EmbeddedDocument {
             .add(15, 'minutes')
             .format()
       },
+      /* A string containing the last time the token was used.
+       * @member Session#used
+       * @type String
+       */
+      used: {
+        type: String
+      },
+      /* A string containing the last time the token was used.
+       * @member Session#used
+       * @type String
+       */
+      url: {
+        type: String
+      },
       /* A boolean set if the current session is in use.
        * @member Session#active
        * @type Boolean
@@ -57,9 +71,7 @@ class Session extends EmbeddedDocument {
    * @see  {@link Connection#available}
    * @description This method checks to see if the session is not currently active and not expired.
    * @return {Boolean} True if the token is valid, otherwise False.
-   *
    */
-
   valid() {
     return (
       !this.active &&
@@ -76,9 +88,7 @@ class Session extends EmbeddedDocument {
    * @see  {@link Agent#watch}
    * @see  {@link Connection#available}
    * @return {Boolean} True if the token has expired, otherwise False.
-   *
    */
-
   expired() {
     return moment().isSameOrAfter(this.expires);
   }
@@ -89,11 +99,10 @@ class Session extends EmbeddedDocument {
    * @public
    * @description This method extends a Data API session and sets it to inactive.
    * @see  {@link Agent#handleResponse}
-   * @return {Undefined}
    */
-
   extend() {
     this.active = false;
+    this.url = '';
     this.expires = moment()
       .add(15, 'minutes')
       .format();

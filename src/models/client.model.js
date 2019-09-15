@@ -71,10 +71,9 @@ class Client extends Document {
    * @description The client preInit hook  creates a data embedded document and a connection
    * embedded document on create.
    * @param {Object} data The data used to create the client.
-   * @return {null} The preInit hook does not return anything.
    */
   preInit(data) {
-    let {
+    const {
       agent,
       timeout,
       concurrency,
@@ -83,7 +82,7 @@ class Client extends Document {
       proxy,
       ...connection
     } = data;
-    let protocol = data.server.startsWith('https') ? 'https' : 'http';
+    const protocol = data.server.startsWith('https') ? 'https' : 'http';
     this.data = Data.create({ track: usage === undefined });
     this.agent = Agent.create({
       agent,
@@ -166,13 +165,55 @@ class Client extends Document {
    * @public
    * @description Retrieves information about the FileMaker Server or FileMaker Cloud host.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   *
    */
   productInfo() {
     return productInfo(
       this.agent.connection.server,
       this.agent.connection.version
     );
+  }
+
+  /**
+   * @method status
+   * @memberof Client
+   * @public
+   * @description Compiles Data API Client status information.
+   * @return {Promise} returns a promise that will either resolve with client status information
+   */
+  status() {
+    return new Promise((resolve, reject) =>
+      resolve({
+        ...this.data.status(),
+        queue: this.agent.queue.map(({ url }) => ({ url })),
+        pending: this.agent.pending.map(({ url }) => ({ url })),
+        sessions: this.agent.connection.sessions.map(
+          ({ issued, expired, url, active }) => ({
+            issued,
+            expired,
+            url,
+            active
+          })
+        )
+      })
+    );
+  }
+
+  /**
+   * @method reset
+   * @memberof Client
+   * @public
+   * @description Resets the client, clearing pending and queued requests and DAPI sessions.
+   * @return {Promise} returns a promise that will either with a message object.
+   */
+
+  reset() {
+    this.agent.pending = [];
+    this.agent.queue = [];
+    this.agent.connection.sessions = [];
+    this.agent.connection.starting = false;
+    return this.save().then(client => ({
+      message: 'Client Reset'
+    }));
   }
 
   /**
@@ -184,6 +225,7 @@ class Client extends Document {
    * @param {Object} [credentials] Credentials to use when listing server databases
    * @param {String} [credentials.user='configured user'] Credentials to use when listing server databases
    * @param {String} [credentials.password='configured password'] Credentials to use when listing server databases
+   * @param {String} version The API version to use when gathering databases.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   databases(credentials, version) {
@@ -199,6 +241,7 @@ class Client extends Document {
    * @memberof Client
    * @public
    * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @param {Object} [parameters] optional request parameters for the request.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   layouts(parameters = {}) {
@@ -225,6 +268,7 @@ class Client extends Document {
    * @memberof Client
    * @public
    * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @param {Object} [parameters] optional request parameters for the request.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   scripts(parameters = {}) {
@@ -252,6 +296,8 @@ class Client extends Document {
    * @memberof Client
    * @public
    * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @param {String} layout The layout to use in the request.
+   * @param {Object} [parameters] optional request parameters for the request.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   layout(layout, parameters = {}) {
@@ -280,6 +326,9 @@ class Client extends Document {
    * @memberof Client
    * @public
    * @description Retrieves information about the FileMaker Server's hosted databases.
+   * @param {String} layout The layout to use in the request.
+   * @param {String} recordId The record id to target for duplication.
+   * @param {Object} [parameters] optional request parameters for the request.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   duplicate(layout, recordId, parameters = {}) {
@@ -325,7 +374,6 @@ class Client extends Document {
    * @return {Any} Returns the umodified response.
    *
    */
-
   _save(response) {
     this.save();
     return response;
@@ -342,7 +390,6 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
-
   create(layout, data = {}, parameters = {}) {
     return this.agent
       .request(
@@ -395,7 +442,6 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    *
    */
-
   edit(layout, recordId, data, parameters = {}) {
     return this.agent
       .request(
@@ -447,10 +493,9 @@ class Client extends Document {
    * @description Deletes a filemaker record.
    * @param {String} layout The layout to use when deleting the record.
    * @param {String} recordId The FileMaker internal record ID to use when editing the record.
+   * @param {Object} parameters parameters to use when performing the query.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   *
    */
-
   delete(layout, recordId, parameters = {}) {
     return this.agent
       .request(
@@ -488,11 +533,9 @@ class Client extends Document {
    * @description Retrieves a filemaker record based upon the layout and recordId.
    * @param {String} layout The layout to use when retrieving the record.
    * @param {String} recordId The FileMaker internal record ID to use when retrieving the record.
-   * @param {Object} parameters Parameters to add for the get query.
+   * @param {Object} [parameters] Parameters to add for the get query.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   *
    */
-
   get(layout, recordId, parameters = {}) {
     return this.agent
       .request(
@@ -537,9 +580,7 @@ class Client extends Document {
    * @param {String} layout The layout to use when retrieving the record.
    * @param {Object} [parameters] the parameters to use to modify the query.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   *
    */
-
   list(layout, parameters = {}) {
     return this.agent
       .request(
@@ -590,9 +631,7 @@ class Client extends Document {
    * @param {Object} query to use in the find request.
    * @param {Object} parameters the parameters to use to modify the query.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
-   *
    */
-
   find(layout, query, parameters = {}) {
     return new Promise((resolve, reject) =>
       this.agent
@@ -653,9 +692,9 @@ class Client extends Document {
    * @memberof Client
    * @description Sets global fields for the current session.
    * @param  {Object|Array} data a json object containing the name value pairs to set.
+   * @param {Object} parameters parameters to use when performing the query.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
-
   globals(data, parameters) {
     return this.agent
       .request(
@@ -690,16 +729,14 @@ class Client extends Document {
    * @param {String} layout The layout to use when performing the find.
    * @param  {String} containerFieldName The field name to insert the data into. It must be a container field.
    * @param  {Number|String} recordId the recordId to use when uploading the file.
-   * @param  {Number} fieldRepetition    The field repetition to use when inserting into a container field.
-   * by default this is 1.
+   * @param {Object} parameters parameters to use when performing the query.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
-
   upload(file, layout, containerFieldName, recordId = 0, parameters = {}) {
     return new Promise((resolve, reject) => {
       let stream;
-      let form = new FormData();
-      let resolveRecordId = () =>
+      const form = new FormData();
+      const resolveRecordId = () =>
         recordId === 0
           ? this.create(layout, {}).then(response => response.recordId)
           : Promise.resolve(recordId);
@@ -763,9 +800,9 @@ class Client extends Document {
    * @param  {String} layout     The layout to use for the list request
    * @param  {Object|Array} scripts       The name of the script
    * @param  {Object} parameters Parameters to pass to the script
+   * @param  {Object} request A request to run alongside the list method.
    * @return {Promise}           returns a promise that will either resolve or reject based on the Data API.
    */
-
   run(layout, scripts, parameters, request) {
     return this.agent
       .request(
@@ -821,10 +858,9 @@ class Client extends Document {
    * @param  {String} layout The layout to use for the list request
    * @param  {String} script The name of the script
    * @param  {Object|String} param Parameter  to pass to the script
-   * @param  {Object} param Parameter  to pass to the script
+   * @param  {Object} [parameters] Optional request parameters.
    * @return {Promise}      returns a promise that will either resolve or reject based on the Data API.
    */
-
   script(layout, script, param = {}, parameters) {
     return this.agent
       .request(

@@ -34,7 +34,10 @@ describe('Transform Capabilities', () => {
   });
 
   after(done => {
-    client.logout().then(response => done());
+    client
+      .logout()
+      .then(response => done())
+      .catch(error => done());
   });
 
   before(done => {

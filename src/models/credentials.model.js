@@ -38,7 +38,6 @@ class Credentials extends EmbeddedDocument {
    * @return {String} A string containing the user and password authentication
    * pair.
    */
-
   basic() {
     const auth = `Basic ${Buffer.from(`${this.user}:${this.password}`).toString(
       'base64'

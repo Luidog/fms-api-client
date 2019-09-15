@@ -43,7 +43,10 @@ describe('ContainerData Capabilities', () => {
   });
 
   after(done => {
-    client.logout().then(response => done());
+    client
+      .logout()
+      .then(response => done())
+      .catch(error => done());
   });
 
   it('should download container data from an object to a file', () => {
