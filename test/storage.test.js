@@ -1,3 +1,5 @@
+'use strict';
+
 /* global describe before beforeEach it */
 
 /* eslint-disable */

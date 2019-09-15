@@ -1,3 +1,5 @@
+'use strict';
+
 /* global describe before after it */
 
 /* eslint-disable */

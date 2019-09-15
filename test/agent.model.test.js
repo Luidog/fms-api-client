@@ -1,6 +1,6 @@
 'use strict';
 
-/* global describe before afterEach it */
+/* global describe before after afterEach it */
 
 /* eslint-disable */
 
@@ -58,6 +58,13 @@ describe('Agent Configuration Capabilities', () => {
       password: process.env.PASSWORD
     });
     client.save().then(client => done());
+  });
+
+  after(done => {
+    client
+      .reset()
+      .then(response => done())
+      .catch(error => done());
   });
 
   afterEach(done => {
