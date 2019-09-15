@@ -14,7 +14,6 @@ const _ = require('lodash');
  * @param  {Object} object The response recieved from the FileMaker DAPI.
  * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
-
 const transformRelatedTables = (object, parentKey) =>
   _.transform(
     object,
@@ -47,7 +46,6 @@ const transformRelatedTables = (object, parentKey) =>
  * @param  {Object} object The response recieved from the FileMaker DAPI.
  * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
-
 const transformPortals = portals =>
   _.flatMap(portals, (values, key, collection) => {
     let portal = {};
@@ -66,7 +64,6 @@ const transformPortals = portals =>
  * @param  {Object} options The response recieved from the FileMaker DAPI.
  * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
-
 const transformObject = (object, options = {}) => {
   let { fieldData, portalData, recordId, modId } = object;
   let transformedFieldData =
@@ -89,7 +86,6 @@ const transformObject = (object, options = {}) => {
  * @param  {Object|Array} data The raw data returned from a filemaker. This can be an array or an object.
  * @return {Object|Array} A JSON object containing fieldData from the record.
  */
-
 const fieldData = data =>
   Array.isArray(data)
     ? _.map(data, object =>
@@ -112,7 +108,6 @@ const fieldData = data =>
  * @param  {Object|Array} data the raw data returned from a filemaker. This can be an array or an object.
  * @return {Object}      a JSON object containing fieldData from the record.
  */
-
 const recordId = data =>
   Array.isArray(data)
     ? _.map(data, object => object.recordId)
@@ -128,7 +123,6 @@ const recordId = data =>
  * @param  {Object} object The response recieved from the FileMaker DAPI.
  * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
-
 const transform = (data, options) =>
   Array.isArray(data)
     ? _.map(data, object => transformObject(object, options))

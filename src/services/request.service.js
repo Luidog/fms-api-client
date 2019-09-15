@@ -21,7 +21,6 @@ axiosCookieJarSupport(instance);
  * @param  {Object} error The error recieved from the requested resource.
  * @return {Promise}      A promise rejection containing a code and a message
  */
-
 const interceptError = error => {
   if (error.code) {
     return Promise.reject({ code: error.code, message: error.message });
@@ -50,13 +49,12 @@ const interceptError = error => {
  * @function interceptResponse
  * @public
  * @memberof Request Service
- * @description handles request data before it is sent to the resource. This function
+ * @description handles response data before it is sent to the client. This function
  * will eventually be used to cancel the request and return the configuration body.
  * This function will test the url for an http proticol and reject if none exist.
- * @param  {Object} config The axios request configuration
- * @return {Promise}      the request configuration object
+ * @param  {Object} response The axios response
+ * @return {Promise} the axios response
  */
-
 const interceptResponse = response => {
   if (typeof response.data !== 'object') {
     return Promise.reject({
@@ -73,7 +71,6 @@ const interceptResponse = response => {
  * @param  {Any} response Web publishing response.
  * @param  {Any} error We publishing error.
  */
-
 instance.interceptors.response.use(
   response => interceptResponse(response),
   error => interceptError(error)

@@ -18,7 +18,6 @@ const { instance } = require('./request.service');
  * @param  {Any} response Web publishing response.
  * @param  {Any} error We publishing error.
  */
-
 instance.interceptors.response.use(
   response => response,
   error => handleError(error)
@@ -32,7 +31,6 @@ instance.interceptors.response.use(
  * @param  {Error} error The error recieved from the Web Publishing service.
  * @return {Object} An object with a code and a message.
  */
-
 const handleError = error =>
   Promise.reject({ code: 100, message: error.message });
 
@@ -49,7 +47,6 @@ const handleError = error =>
  * @param  {Object} [parameters]  Request configuration parameters.
  * @return {Promise}      A promise which will resolve to the file.
  */
-
 const transport = (url, destination, name, parameters = {}) =>
   instance
     .get(
@@ -82,7 +79,6 @@ const transport = (url, destination, name, parameters = {}) =>
  * @param  {String} destination The destination path to write the file.
  * @return {Promise}      A promise which will resolve with file path and name.
  */
-
 const writeFile = (stream, name, destination) =>
   new Promise((resolve, reject) => {
     let output = fs.createWriteStream(path.join(destination, name));
@@ -102,7 +98,6 @@ const writeFile = (stream, name, destination) =>
  * @param  {String} name The name and extension of the file.
  * @return {Promise}      A promise which will resolve with file path and name.
  */
-
 const bufferFile = (stream, name) =>
   toArray(stream).then(parts => ({ name, buffer: Buffer.concat(parts) }));
 
@@ -120,7 +115,6 @@ const bufferFile = (stream, name) =>
  * @param  {Number=} parameters.timeout  a timeout for the request.
  * @return {Promise}      a promise which will resolve to the file data.
  */
-
 const containerData = (data, field, destination, name, parameters) => {
   return Array.isArray(data)
     ? Promise.all(
