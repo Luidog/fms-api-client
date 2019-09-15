@@ -20,6 +20,14 @@ const filter = values =>
       return 'r2d2-c3po-l3-37-bb-8';
     } else if (key === 'totalRecordCount') {
       return '1977';
+    } else if (key === 'token') {
+      return 'shuttle-tydirium';
+    } else if (key === 'databases') {
+      return [
+        { name: 'A New Hope' },
+        { name: 'Empire Stikes Back' },
+        { name: 'Return of the Jedi' }
+      ];
     } else {
       return value;
     }
