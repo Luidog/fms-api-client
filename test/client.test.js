@@ -59,6 +59,16 @@ describe('Client Capabilities', () => {
       .and.property('data');
   });
 
+  it('should show the current status', () => {
+    client.agent.pending.push({ url: 'FileMaker DAPI URL' });
+    client.agent.queue.push({ url: 'FileMaker DAPI URL' });
+    client.agent.connection.sessions.push({ url: 'FileMaker DAPI URL' });
+    return expect(client.status())
+      .to.eventually.be.a('object')
+      .that.has.all.keys('data', 'pending', 'queue', 'sessions')
+      .and.property('data');
+  });
+
   it('should reset the client', () => {
     return expect(client.reset().catch(error => error))
       .to.eventually.be.a('object')
