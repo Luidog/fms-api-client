@@ -15,9 +15,9 @@ const { stringify, parse } = require('./conversion.utilities');
  * @return {Object}      A new object with the FileMaker required parameters for portals.
  */
 const convertPortals = data => {
-  let portalArray = [];
-  let { portals } = data;
-  let converted = Array.isArray(portals)
+  const portalArray = [];
+  const { portals } = data;
+  const converted = Array.isArray(portals)
     ? _.chain(portals)
         .map(portal =>
           _.mapKeys(portal, (value, key) =>
@@ -46,8 +46,8 @@ const convertPortals = data => {
  * @return {Object}      A new object based on the assignment of incoming properties.
  */
 const convertScripts = data => {
-  let { scripts } = data;
-  let converted = Array.isArray(scripts)
+  const { scripts } = data;
+  const converted = Array.isArray(scripts)
     ? _.chain(scripts)
         .map(script =>
           _.mapKeys(script, (value, key) =>
