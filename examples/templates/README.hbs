@@ -205,9 +205,9 @@ The client will automatically call the login method if it does not have a valid 
 <!--/@-->
 #### Logout Method
 
-The logout method is used to end a Data API session. This method will also remove the current client's authentication token.
+The logout method is used to end a Data API session. This method will also remove the current client's authentication token. The logout method accepts an optional id parameter. The logout method will use the id parameter as the session to target for ending.
 
-`client.logout()`
+`client.logout(id)`
 <!--@snippet('./examples/authentication.examples.js#client-logout-example', { showSource: true })-->
 <!--/@-->
 ### Client Methods
@@ -462,7 +462,7 @@ Result:
 <!--/@-->
 #### Client Status
 
-The client status method will return an object description the current client's connection status. This method will return overall client data usage, urls for pending and queued requests and specific session information.
+The client status method will return an object description the current client's connection status. This method will return overall client data usage, urls for pending and queued requests and current session information.
 
 `client.status()`
 
@@ -476,7 +476,7 @@ Result:
 <!--/@-->
 #### Client Reset
 
-The client reset method will drop all pending and queued requests while also clearing currently tracked sessions.
+The client reset method will drop all pending and queued requests while also clearing all open sessions. This method is experimental. It does not reject pending or queued requests before clearing them. Use with caution
 
 `client.reset()`
 
