@@ -210,15 +210,15 @@ describe('Agent Configuration Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => client.agent.connection.end())
-        .catch(error => error)
+        .then(client => client.login())
+        .then(() => client.agent.connection.end())
     )
       .to.eventually.be.an('object')
-      .with.any.keys('message');
+      .with.any.keys('response', 'messages');
   });
 
   it('should clear a connection with a custom agent', () => {
-    let agent = { rejectUnauthorized: true };
+    const agent = { rejectUnauthorized: true };
     const client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
@@ -228,11 +228,11 @@ describe('Agent Configuration Capabilities', () => {
     return expect(
       client
         .save()
-        .then(client => client.agent.connection.end(agent))
-        .catch(error => error)
+        .then(client => client.login())
+        .then(() => client.agent.connection.end(agent))
     )
       .to.eventually.be.an('object')
-      .with.any.keys('message');
+      .with.any.keys('response', 'messages');
   });
 
   it('should create an http agent', () => {
