@@ -183,9 +183,9 @@ class Client extends Document {
         queue: this.agent.queue.map(({ url }) => ({ url })),
         pending: this.agent.pending.map(({ url }) => ({ url })),
         sessions: this.agent.connection.sessions.map(
-          ({ issued, expired, url, active }) => ({
+          ({ issued, expires, url, active }) => ({
             issued,
-            expired,
+            expires,
             url,
             active
           })
