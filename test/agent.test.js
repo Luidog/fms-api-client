@@ -52,8 +52,8 @@ describe('Agent Configuration Capabilities', () => {
 
   after(done => {
     client
-      .logout()
-      .then(response => done())
+      .reset()
+      .then(() => client.logout().then(response => done()))
       .catch(error => done());
   });
 
@@ -401,5 +401,36 @@ describe('Agent Configuration Capabilities', () => {
       .with.any.keys('message', 'code')
       .and.property('code')
       .to.equal('ECONNABORTED');
+  });
+
+  it('should not try to resolve pending requests that do not have a resolve function', () => {
+    const client = Filemaker.create({
+      database: process.env.DATABASE,
+      server: process.env.SERVER,
+      user: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      usage: true,
+      timeout: 10
+    });
+    return expect(
+      client
+        .save()
+        .then(client => client.login())
+        .then(() => {
+          client.agent.pending = [
+            {
+              resolve: false,
+              request: {
+                url: 'https://mutesymphony.com',
+                transformRequest: '',
+                transformResponse: '',
+                adapter: '',
+                validateStatus: ''
+              }
+            }
+          ];
+          return client.agent.resolve();
+        })
+    );
   });
 });
