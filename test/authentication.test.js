@@ -56,6 +56,13 @@ describe('Authentication Capabilities', () => {
     return done();
   });
 
+  after(done => {
+    client
+      .reset()
+      .then(response => done())
+      .catch(error => done());
+  });
+
   it('should authenticate into FileMaker.', () => {
     return expect(client.login())
       .to.eventually.be.a('object')

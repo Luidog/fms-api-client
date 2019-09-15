@@ -55,7 +55,7 @@ describe('Client Product Info Capabilities', () => {
 
   after(done => {
     client
-      .logout()
+      .reset()
       .then(response => done())
       .catch(error => done());
   });

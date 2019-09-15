@@ -47,7 +47,7 @@ describe('Client Capabilities', () => {
 
   after(done => {
     client
-      .logout()
+      .reset()
       .then(response => done())
       .catch(error => done());
   });
