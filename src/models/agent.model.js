@@ -21,6 +21,7 @@ axiosCookieJarSupport(instance);
  * @classdesc The class used to model the axios http instance and agent
  */
 class Agent extends EmbeddedDocument {
+  /** @constructs */
   constructor() {
     super();
     this.schema({

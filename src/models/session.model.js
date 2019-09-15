@@ -7,8 +7,8 @@ const { EmbeddedDocument } = require('marpat');
  * @class Session
  * @classdesc The class used to save FileMaker Data API Session information
  */
-
 class Session extends EmbeddedDocument {
+  /** @constructs */
   constructor() {
     super();
     this.schema({

@@ -32,6 +32,7 @@ global.FMS_API_CLIENT = {};
  * @classdesc The class used to integrate with the FileMaker server Data API
  */
 class Client extends Document {
+  /** @constructs */
   constructor() {
     super();
     this.schema({

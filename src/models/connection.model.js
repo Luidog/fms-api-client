@@ -11,9 +11,10 @@ const { instance } = require('../services');
 /**
  * @class Connection
  * @classdesc The class used to connection with the FileMaker server Data API
+ * @constructor
  */
-
 class Connection extends EmbeddedDocument {
+  /** @constructs */
   constructor() {
     super();
     this.schema({
