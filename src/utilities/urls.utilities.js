@@ -14,7 +14,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when creating records.
    */
-
   create: (host, database, layout, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records`,
 
@@ -30,7 +29,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when updating records.
    */
-
   update: (host, database, layout, recordId, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
 
@@ -46,7 +44,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when deleting records.
    */
-
   delete: (host, database, layout, recordId, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
 
@@ -62,7 +59,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to used when getting one record.
    */
-
   get: (host, database, layout, recordId, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
 
@@ -77,7 +73,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when listing records.
    */
-
   list: (host, database, layout, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records`,
 
@@ -92,7 +87,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when performing a find.
    */
-
   find: (host, database, layout, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/_find`,
 
@@ -104,11 +98,9 @@ const urls = {
    * globals, these values will only be set for the current session.
    * @param {String} host The host FileMaker server.
    * @param {String} database The FileMaker database to target.
-   * @param {String} layout The database layout to use.
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when setting globals
    */
-
   globals: (host, database, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/globals`,
 
@@ -119,11 +111,10 @@ const urls = {
    * @description The logout function generates a url for logging out of a FileMaker Session.
    * @param {String} host The host FileMaker server.
    * @param {String} database The FileMaker database to target.
-   * @param {String} layout The database layout to use.
+   * @param {String} token The token to logout
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when logging out of a FileMaker DAPI session.
    */
-
   logout: (host, database, token, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/sessions/${token}`,
 
@@ -141,7 +132,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when uploading files to FileMaker.
    */
-
   upload: (
     host,
     database,
@@ -163,7 +153,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to use when authenticating a FileMaker DAPI session.
    */
-
   authentication: (host, database, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/sessions`,
 
@@ -177,7 +166,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL for retrieving database layouts.
    */
-
   layouts: (host, database, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts`,
 
@@ -193,7 +181,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL for retrieving specific layout metadata.
    */
-
   layout: (host, database, layout, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}`,
 
@@ -207,7 +194,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL for listing datbase scripts
    */
-
   scripts: (host, database, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/scripts`,
 
@@ -224,7 +210,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} A URL to duplicate FileMaker records.
    */
-
   duplicate: (host, database, layout, recordId, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/records/${recordId}`,
 
@@ -237,7 +222,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} The URL to use to retrieve FileMaker Server metadata.
    */
-
   productInfo: (host, version = 'vLatest') =>
     `${host}/fmi/data/${version}/productInfo`,
 
@@ -250,7 +234,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} The URL to use to retrieve FileMaker Server hosted databases.
    */
-
   databases: (host, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases`,
 
@@ -267,7 +250,6 @@ const urls = {
    * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
    * @return {String} The URL to call a specific FileMaker script
    */
-
   script: (host, database, layout, script, parameter, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/script/${script}`
 };

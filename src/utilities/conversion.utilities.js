@@ -15,7 +15,6 @@ const _ = require('lodash');
  * @param  {Object|Array} data The data to stringify.
  * @return {Object|Array}      a JSON object containing stringified data.
  */
-
 const toStrings = data =>
   Array.isArray(data) ? data.map(datum => stringify(datum)) : stringify(data);
 
@@ -27,7 +26,6 @@ const toStrings = data =>
  * @param  {Object} data The object to stringify.
  * @return {Object}      a JSON object containing stringified data.
  */
-
 const stringify = data =>
   _.mapValues(data, value =>
     typeof value === 'string'
@@ -47,7 +45,6 @@ const stringify = data =>
  * @param  {Object|Array} data An array or object containing query information. This can be an array or an object.
  * @return {Object}      An array containing the data passed to the function.
  */
-
 const toArray = data => (Array.isArray(data) ? data : [data]);
 
 /**
@@ -59,7 +56,6 @@ const toArray = data => (Array.isArray(data) ? data : [data]);
  * @param  {Any} data The data to be evaluated as JSON.
  * @return {Boolean}      A boolean result depending on if the data passed to it is valid JSON
  */
-
 const isJSON = data => {
   data = typeof data !== 'string' ? JSON.stringify(data) : data;
 
@@ -86,7 +82,6 @@ const isJSON = data => {
  * @param  {Any} data The data to be evaluated as JSON.
  * @return {Boolean}      A boolean result depending on if the data passed to it is valid JSON.
  */
-
 const isEmpty = data => (isJSON(data) ? _.isEmpty(data) : false);
 
 /**
@@ -98,7 +93,6 @@ const isEmpty = data => (isJSON(data) ? _.isEmpty(data) : false);
  * @param  {Array} properties An array properties to remove.
  * @return {Object|Array} A JSON object or array of objects without the properties passed to it.
  */
-
 const omit = (data, properties) =>
   Array.isArray(data)
     ? _.map(data, object => _.omit(object, properties))
@@ -110,9 +104,10 @@ const omit = (data, properties) =>
  * @memberof Conversion Utilities
  * @description The parse function performs a try catch before attempting to parse the value as JSON. If the value is not valid JSON it wil return the value.
  * @see isJSON
- * @param  {Any} values The value to attempt to parse.
+ * @param  {Any} value The value to attempt to parse.
  * @return {Object|Any} A JSON object or array of objects without the properties passed to it
  */
+const parse = value => (isJSON(value) ? JSON.parse(value) : value);
 
 /**
  * @function pick
@@ -122,10 +117,9 @@ const omit = (data, properties) =>
  * with the request, then either selecting the response, script error, and script result from the
  * response or selecting just the response.
  * @param  {Array|Object} data The response recieved from the FileMaker DAPI.
- * @param  {Array|String} data The response recieved from the FileMaker DAPI.
+ * @param  {Array|String} filter The response recieved from the FileMaker DAPI.
  * @return {Object}      A json object containing the selected data from the Data API Response.
  */
-
 const pick = (data, filter) =>
   Array.isArray(data)
     ? data.map(object =>
@@ -137,18 +131,15 @@ const pick = (data, filter) =>
         Array.isArray(filter) ? _.includes(filter, key) : key.includes(filter)
       );
 
-const parse = value => (isJSON(value) ? JSON.parse(value) : value);
-
 /**
  * @function deepMapKeys
  * @public
  * @memberof Conversion Utilities
  * @description deepMapKeys provides deep mapping of objects using a recursive lodash function. This function expects an iteratee that matches the iteratee of _.mapKeys.
- * @param  {Object|Array} object The object or array to deep map
+ * @param  {Object|Array} data The object or array to deep map
  * @param {Function} iteratee The function to use to map the object's keys.
  * @return {Object|Array} An object or array whose keys or members are modified by the iteratee.
  */
-
 const deepMapKeys = (data, iteratee) =>
   Array.isArray(data)
     ? data.map((value, key) =>
