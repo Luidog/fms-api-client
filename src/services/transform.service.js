@@ -12,6 +12,7 @@ const _ = require('lodash');
  * @memberof Transformation Service
  * @description This function tranforms an object given by turning related tables into objects
  * @param  {Object} object The response recieved from the FileMaker DAPI.
+ * @param  {String} parentKey The response recieved from the FileMaker DAPI.
  * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
 const transformRelatedTables = (object, parentKey) =>
@@ -19,11 +20,14 @@ const transformRelatedTables = (object, parentKey) =>
     object,
     (accumulator, value, key) => {
       if (key.includes('::')) {
-        let position = key.indexOf('::');
-        let parent = _.camelCase(parentKey);
-        let table = _.camelCase(key.slice(0, position));
-        let field = _.camelCase(key.slice(position + 2));
-        if (!accumulator.hasOwnProperty(table) && table !== parent) {
+        const position = key.indexOf('::');
+        const parent = _.camelCase(parentKey);
+        const table = _.camelCase(key.slice(0, position));
+        const field = _.camelCase(key.slice(position + 2));
+        if (
+          !Object.prototype.hasOwnProperty.call(accumulator, table) &&
+          table !== parent
+        ) {
           accumulator[table] = {};
         }
         table !== parent
@@ -43,12 +47,12 @@ const transformRelatedTables = (object, parentKey) =>
  * @description this function transforms portals by mapping keys found in the portalData object into the
  * transformRelatedTables function. This function passes the parent portal key to properly transform
  * portal data related to the main portal table occurance.
- * @param  {Object} object The response recieved from the FileMaker DAPI.
+ * @param  {Object} portals The response recieved from the FileMaker DAPI.
  * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
 const transformPortals = portals =>
   _.flatMap(portals, (values, key, collection) => {
-    let portal = {};
+    const portal = {};
     portal[key] = _.map(values, value => transformRelatedTables(value, key));
     return portal;
   });
@@ -65,15 +69,15 @@ const transformPortals = portals =>
  * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
 const transformObject = (object, options = {}) => {
-  let { fieldData, portalData, recordId, modId } = object;
-  let transformedFieldData =
+  const { fieldData, portalData, recordId, modId } = object;
+  const transformedFieldData =
     options.convert !== false ? transformRelatedTables(fieldData) : fieldData;
-  let transformedPortalData =
+  const transformedPortalData =
     options.convert !== false
       ? _.merge(...transformPortals(portalData))
       : portalData;
-  let portals = options.portalData !== false ? transformedPortalData : {};
-  let fields = options.fieldData !== false ? transformedFieldData : {};
+  const portals = options.portalData !== false ? transformedPortalData : {};
+  const fields = options.fieldData !== false ? transformedFieldData : {};
   return Object.assign(fields, portals, { recordId, modId });
 };
 
@@ -120,8 +124,10 @@ const recordId = data =>
  * @description this function transforms portals by mapping keys found in the portalData object into the
  * transformRelatedTables function. This function passes the parent portal key to properly transform
  * portal data related to the main portal table occurance.
- * @param  {Object} object The response recieved from the FileMaker DAPI.
+ * @param  {Object} data The data to transform.
+ * @param  {Object} options transformation options to pass to transformObject.
  * @return {Object}      A JSON object containing the selected data from the Data API Response.
+ * @see transformObject
  */
 const transform = (data, options) =>
   Array.isArray(data)
