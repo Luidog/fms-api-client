@@ -45,6 +45,8 @@ A FileMaker Data API client designed to allow easier interaction with a FileMake
       - [Run Multiple Scripts](#run-multiple-scripts)
       - [Upload Files](#upload-files)
       - [Set Session Globals](#set-session-globals)
+      - [Get Client Status](#client-status)
+      - [Reset Client](#client-reset)
     + [Utilities](#utilities)
       - [Record Id Utility](#record-id-utility)
         * [Record Id Utility Results](#record-id-utility-results)
@@ -458,6 +460,35 @@ The globals method will set global fields for the current session.
 Result:
 <!--@snippet('./examples/results/set-globals-example.json', { showSource: true })-->
 <!--/@-->
+#### Client Status
+
+The client status method will return an object description the current client's connection status. This method will return overall client data usage, urls for pending and queued requests and specific session information.
+
+`client.status()`
+
+{{#functions name="status"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/globals.examples.js#client-status-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/client-status-example.json', { showSource: true })-->
+<!--/@-->
+#### Client Reset
+
+The client reset method will drop all pending and queued requests while also clearing currently tracked sessions.
+
+`client.reset()`
+
+{{#functions name="reset"}}
+{{>parameters}}
+{{/functions}}
+<!--@snippet('./examples/globals.examples.js#client-reset-example', { showSource: true })-->
+<!--/@-->
+Result:
+<!--@snippet('./examples/results/client-reset-example.json', { showSource: true })-->
+<!--/@-->
+
 ### Utilities
 
 The client also provides utilities to aid in parsing and manipulating FileMaker Data. The client exports the `recordId(data)`, `fieldData(data)`, and `transform(data, options)` to aid in transforming Data API response data into other formats. Each utility is capable of recieving either an object or a array.
