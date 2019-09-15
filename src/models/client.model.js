@@ -71,10 +71,9 @@ class Client extends Document {
    * @description The client preInit hook  creates a data embedded document and a connection
    * embedded document on create.
    * @param {Object} data The data used to create the client.
-   * @return {null} The preInit hook does not return anything.
    */
   preInit(data) {
-    let {
+    const {
       agent,
       timeout,
       concurrency,
@@ -83,7 +82,7 @@ class Client extends Document {
       proxy,
       ...connection
     } = data;
-    let protocol = data.server.startsWith('https') ? 'https' : 'http';
+    const protocol = data.server.startsWith('https') ? 'https' : 'http';
     this.data = Data.create({ track: usage === undefined });
     this.agent = Agent.create({
       agent,
@@ -179,25 +178,16 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       resolve({
         ...this.data.status(),
-        queue:
-          this.agent.queue && this.agent.queue.length
-            ? this.agent.queue.map(({ url }) => ({ url }))
-            : [],
-        pending:
-          this.agent.pending && this.agent.pending.length
-            ? this.agent.pending.map(({ url }) => ({ url }))
-            : [],
-        sessions:
-          this.agent.connection && this.agent.connection.sessions.length
-            ? this.agent.connections.sessions.map(
-                ({ issued, expired, url, active }) => ({
-                  issued,
-                  expired,
-                  url,
-                  active
-                })
-              )
-            : []
+        queue: this.agent.queue.map(({ url }) => ({ url })),
+        pending: this.agent.pending.map(({ url }) => ({ url })),
+        sessions: this.agent.connection.sessions.map(
+          ({ issued, expired, url, active }) => ({
+            issued,
+            expired,
+            url,
+            active
+          })
+        )
       })
     );
   }
@@ -207,7 +197,9 @@ class Client extends Document {
     this.agent.queue = [];
     this.agent.connection.sessions = [];
     this.agent.connection.starting = false;
-    return this.save().then({ message: 'Client Reset' });
+    return this.save().then(client => ({
+      message: 'Client Reset'
+    }));
   }
 
   /**
@@ -219,6 +211,7 @@ class Client extends Document {
    * @param {Object} [credentials] Credentials to use when listing server databases
    * @param {String} [credentials.user='configured user'] Credentials to use when listing server databases
    * @param {String} [credentials.password='configured password'] Credentials to use when listing server databases
+   * @param {String} version The API version to use when gathering databases.
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   databases(credentials, version) {
