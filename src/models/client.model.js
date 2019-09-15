@@ -134,11 +134,9 @@ class Client extends Document {
 
    */
   login() {
-    return this.agent.connection
-      .start(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false)
-      .then(token => ({
-        token
-      }));
+    return this.agent.connection.start(
+      !_.isEmpty(this.agent.agent) ? this.agent.localize() : false
+    );
   }
 
   /**
@@ -210,10 +208,8 @@ class Client extends Document {
       this.agent.connection.sessions.forEach(({ id }) =>
         logouts.push(this.logout(id))
       );
-
       Promise.all(logouts)
         .then(results => {
-          this.agent.connection.sessions = [];
           return this.save();
         })
         .then(client =>
