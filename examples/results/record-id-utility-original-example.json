@@ -1,8 +1,8 @@
 [
   {
     "fieldData": {
-      "name": "yoda",
-      "image": "https://some-server.com/Streaming_SSL/MainDB/30B8AD396FFCB71B3343D03D27779D4BA1807D873FAAE59E9DFA567CDE76BD20?RCType=EmbeddedRCFileProcessor",
+      "name": "Yoda",
+      "image": "https://some-server.com/Streaming_SSL/MainDB/1D86123EDDA1866BDDC2962F71108F8D78EFCAE349E66934D2737E3615918167?RCType=EmbeddedRCFileProcessor",
       "object": "",
       "array": "",
       "height": "",
@@ -37,7 +37,7 @@
   },
   {
     "fieldData": {
-      "name": "Yoda",
+      "name": "yoda",
       "image": "",
       "object": "",
       "array": "",

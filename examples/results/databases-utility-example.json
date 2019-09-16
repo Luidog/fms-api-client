@@ -2,6 +2,9 @@
   "databases": [
     {
       "name": "fms-api-app"
+    },
+    {
+      "name": "node-red-app"
     }
   ]
 }

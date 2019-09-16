@@ -1,7 +1,7 @@
 [
   {
-    "name": "yoda",
-    "image": "https://some-server.com/Streaming_SSL/MainDB/4413692BEC4C2EBBDC35DE9A0DD07E90E27590FC19E549E8B04A1B81B709E8C6?RCType=EmbeddedRCFileProcessor",
+    "name": "Yoda",
+    "image": "https://some-server.com/Streaming_SSL/MainDB/27EA97DBE4B14E5BE2E09713E6C5CF75604F9458EC0885B00E436B618C798D87?RCType=EmbeddedRCFileProcessor",
     "object": "",
     "array": "",
     "height": "",
@@ -16,7 +16,7 @@
     "modId": "327"
   },
   {
-    "name": "Yoda",
+    "name": "yoda",
     "image": "",
     "object": "",
     "array": "",
