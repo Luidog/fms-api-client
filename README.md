@@ -2232,7 +2232,7 @@ npm test
 ```
 
 ```default
-> fms-api-client@2.0.0 test /fms-api-client
+> fms-api-client@2.2.0 test /fms-api-client
 > snyk test && nyc _mocha --recursive ./test --timeout=15000 --exit
 
 
