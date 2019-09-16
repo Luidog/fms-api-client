@@ -1,3 +1,5 @@
+'use strict';
+
 /* global describe before after it */
 
 /* eslint-disable */
@@ -35,7 +37,7 @@ describe('FieldData Capabilities', () => {
 
   after(done => {
     client
-      .logout()
+      .reset()
       .then(response => done())
       .catch(error => done());
   });

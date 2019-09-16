@@ -1,3 +1,5 @@
+'use strict';
+
 /* global describe before after it */
 
 /* eslint-disable */
@@ -48,7 +50,7 @@ describe('Single Script Capabilities', () => {
 
   after(done => {
     client
-      .logout()
+      .reset()
       .then(response => done())
       .catch(error => done());
   });
@@ -180,7 +182,7 @@ describe('General Script Capabilities', () => {
 
   after(done => {
     client
-      .logout()
+      .reset()
       .then(response => done())
       .catch(error => done());
   });

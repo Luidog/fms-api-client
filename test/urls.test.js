@@ -50,10 +50,11 @@ describe('Data API URL Construction Capabilities', () => {
 
   after(done => {
     client
-      .logout()
+      .reset()
       .then(response => done())
       .catch(error => done());
   });
+
   describe('Get URL Construction', () => {
     it('should generate a get request url', () => {
       return expect(

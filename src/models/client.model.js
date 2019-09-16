@@ -134,11 +134,9 @@ class Client extends Document {
 
    */
   login() {
-    return this.agent.connection
-      .start(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false)
-      .then(token => ({
-        token
-      }));
+    return this.agent.connection.start(
+      !_.isEmpty(this.agent.agent) ? this.agent.localize() : false
+    );
   }
 
   /**
@@ -146,12 +144,13 @@ class Client extends Document {
    * @memberof Client
    * @public
    * @description logs out of the current authentication session and clears the saved token.
-   * @see {@method Connnection#clear}
+   * @param {String} [id] the connection id to logout.
+   * @see {@method Connnection#end}
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
-  logout() {
+  logout(id) {
     return this.agent.connection
-      .end(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false)
+      .end(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false, id)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body));
   }
@@ -183,10 +182,10 @@ class Client extends Document {
         queue: this.agent.queue.map(({ url }) => ({ url })),
         pending: this.agent.pending.map(({ url }) => ({ url })),
         sessions: this.agent.connection.sessions.map(
-          ({ issued, expires, url, active }) => ({
+          ({ issued, expires, id, active }) => ({
             issued,
             expires,
-            url,
+            id,
             active
           })
         )
@@ -202,13 +201,24 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either with a message object.
    */
   reset() {
-    this.agent.pending = [];
-    this.agent.queue = [];
-    this.agent.connection.sessions = [];
-    this.agent.connection.starting = false;
-    return this.save().then(client => ({
-      message: 'Client Reset'
-    }));
+    return new Promise((resolve, reject) => {
+      const logouts = [];
+      this.agent.queue = [];
+      this.agent.pending = [];
+      this.agent.connection.sessions.forEach(({ id }) =>
+        logouts.push(this.logout(id))
+      );
+      Promise.all(logouts)
+        .then(results => {
+          return this.save();
+        })
+        .then(client =>
+          resolve({
+            message: 'Client Reset'
+          })
+        )
+        .catch(error => reject({ message: 'Client Reset Failed' }));
+    });
   }
 
   /**

@@ -2,7 +2,7 @@
 
 const moment = require('moment');
 const { EmbeddedDocument } = require('marpat');
-
+const uuidv4 = require('uuid/v4');
 /**
  * @class Session
  * @classdesc The class used to save FileMaker Data API Session information
@@ -12,6 +12,14 @@ class Session extends EmbeddedDocument {
   constructor() {
     super();
     this.schema({
+      /** A string containing a unique identifier for a session.
+       * @member Session#id
+       * @type String
+       */
+      id: {
+        type: String,
+        default: () => uuidv4()
+      },
       /** A string containing the time the token token was issued.
        * @member Session#issued
        * @type String
@@ -36,13 +44,6 @@ class Session extends EmbeddedDocument {
        * @type String
        */
       used: {
-        type: String
-      },
-      /* A string containing the last time the token was used.
-       * @member Session#used
-       * @type String
-       */
-      url: {
         type: String
       },
       /* A boolean set if the current session is in use.
@@ -102,7 +103,6 @@ class Session extends EmbeddedDocument {
    */
   extend() {
     this.active = false;
-    this.url = '';
     this.expires = moment()
       .add(15, 'minutes')
       .format();

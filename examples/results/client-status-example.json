@@ -1,27 +1,28 @@
 {
   "data": {
-    "since": "2019-09-14T23:35:20-07:00",
+    "since": "2019-09-15T15:30:43-07:00",
     "in": "438 Bytes",
-    "out": "29.9 kB"
+    "out": "29.8 kB"
   },
   "queue": [],
   "pending": [],
   "sessions": [
     {
-      "issued": "2019-09-14T23:35:20-07:00",
-      "expired": {},
-      "active": true
-    },
-    {
-      "issued": "2019-09-14T23:35:20-07:00",
-      "expired": {},
-      "url": "",
+      "issued": "2019-09-15T15:30:44-07:00",
+      "expires": "2019-09-15T15:45:47-07:00",
+      "id": "r2d2-c3po-l3-37-bb-8",
       "active": false
     },
     {
-      "issued": "2019-09-14T23:35:21-07:00",
-      "expired": {},
-      "url": "https://some-server.com/fmi/data/vLatest/databases/fms-api-app/layouts/Heroes/records/747518/containers/image/1",
+      "issued": "2019-09-15T15:30:44-07:00",
+      "expires": "2019-09-15T15:45:44-07:00",
+      "id": "r2d2-c3po-l3-37-bb-8",
+      "active": true
+    },
+    {
+      "issued": "2019-09-15T15:30:44-07:00",
+      "expires": "2019-09-15T15:45:44-07:00",
+      "id": "r2d2-c3po-l3-37-bb-8",
       "active": true
     }
   ]

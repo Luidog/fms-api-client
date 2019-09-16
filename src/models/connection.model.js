@@ -50,9 +50,9 @@ class Connection extends EmbeddedDocument {
       },
       /**
        * Open Data API sessions.
-       * @member Connection#sessions
+       * @member Connection#starting
        * @see  {@link Session}
-       * @type Array
+       * @type Boolean
        */
       starting: {
         type: Boolean,
@@ -163,9 +163,10 @@ class Connection extends EmbeddedDocument {
           code: '1760',
           message: 'Unable to parse session token from server response.'
         });
-      this.sessions.push(Session.create({ token: data.response.token }));
+      const session = Session.create({ token: data.response.token });
+      this.sessions.push(session);
       this.clear();
-      resolve(data.response.token);
+      resolve({ token: session.token, id: session.id });
     });
   }
 
@@ -219,12 +220,13 @@ class Connection extends EmbeddedDocument {
    * @description ends a FileMaker Data API session and clears the session.
    * @see  {@link Connection#clear}
    * @param {Object} [agent] An optional custom request agent.
+   * @param {String} [id] The session id to log out.
    * @return {String} The session token.
    */
-  end(agent) {
+  end(agent, id = false) {
     return new Promise((resolve, reject) => {
-      if (this.sessions.length > 0) {
-        const session = this.available();
+      const session = id ? _.find(this.sessions, { id }) : this.available();
+      if (session) {
         session.active = true;
         instance
           .request(
@@ -264,7 +266,7 @@ class Connection extends EmbeddedDocument {
   clear(header) {
     this.sessions = this.sessions.filter(session =>
       typeof header === 'string'
-        ? header.replace('Bearer ', '') !== session.token || !session.expired()
+        ? header.replace('Bearer ', '') !== session.token && !session.expired()
         : !session.expired()
     );
   }

@@ -53,7 +53,7 @@ describe('Agent Configuration Capabilities', () => {
   after(done => {
     client
       .reset()
-      .then(() => client.logout().then(response => done()))
+      .then(response => done())
       .catch(error => done());
   });
 

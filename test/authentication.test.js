@@ -1,6 +1,6 @@
 'use strict';
 
-/* global describe before beforeEach afterEach it */
+/* global describe before after beforeEach afterEach it */
 
 /* eslint-disable */
 
@@ -56,10 +56,17 @@ describe('Authentication Capabilities', () => {
     return done();
   });
 
+  after(done => {
+    client
+      .reset()
+      .then(response => done())
+      .catch(error => done());
+  });
+
   it('should authenticate into FileMaker.', () => {
     return expect(client.login())
       .to.eventually.be.a('object')
-      .that.has.all.keys('token');
+      .that.has.all.keys('token', 'id');
   });
 
   it('should automatically request an authentication token', () => {
