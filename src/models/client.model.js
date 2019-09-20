@@ -134,9 +134,9 @@ class Client extends Document {
 
    */
   login() {
-    return this.agent.connection.start(
-      !_.isEmpty(this.agent.agent) ? this.agent.localize() : false
-    );
+    return this.agent.connection
+      .start(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false)
+      .catch(error => this._save(error));
   }
 
   /**
@@ -152,7 +152,8 @@ class Client extends Document {
     return this.agent.connection
       .end(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false, id)
       .then(body => this.data.outgoing(body))
-      .then(body => this._save(body));
+      .then(body => this._save(body))
+      .catch(error => this._save(error));
   }
   /**
    * @method productInfo
@@ -165,7 +166,7 @@ class Client extends Document {
     return productInfo(
       this.agent.connection.server,
       this.agent.connection.version
-    );
+    ).catch(error => this._save(error));
   }
 
   /**
@@ -238,7 +239,7 @@ class Client extends Document {
       this.agent.connection.server,
       credentials || this.agent.connection.credentials,
       this.agent.connection.version
-    );
+    ).catch(error => this._save(error));
   }
 
   /**
@@ -265,7 +266,8 @@ class Client extends Document {
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => body.response);
+      .then(body => body.response)
+      .catch(error => this._save(error));
   }
 
   /**
@@ -293,7 +295,8 @@ class Client extends Document {
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => body.response);
+      .then(body => body.response)
+      .catch(error => this._save(error));
   }
 
   /**
@@ -323,7 +326,8 @@ class Client extends Document {
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => body.response);
+      .then(body => body.response)
+      .catch(error => this._save(error));
   }
 
   /**
@@ -367,7 +371,8 @@ class Client extends Document {
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => parseScriptResult(body));
+      .then(body => parseScriptResult(body))
+      .catch(error => this._save(error));
   }
 
   /**
@@ -430,7 +435,8 @@ class Client extends Document {
       .then(body => parseScriptResult(body))
       .then(response =>
         parameters.merge ? Object.assign(data, response) : response
-      );
+      )
+      .catch(error => this._save(error));
   }
 
   /**
@@ -485,7 +491,8 @@ class Client extends Document {
         parameters.merge
           ? Object.assign(data, { recordId: recordId }, body)
           : body
-      );
+      )
+      .catch(error => this._save(error));
   }
 
   /**
@@ -525,7 +532,8 @@ class Client extends Document {
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => parseScriptResult(body));
+      .then(body => parseScriptResult(body))
+      .catch(error => this._save(error));
   }
 
   /**
@@ -571,7 +579,8 @@ class Client extends Document {
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => parseScriptResult(body));
+      .then(body => parseScriptResult(body))
+      .catch(error => this._save(error));
   }
 
   /**
@@ -621,7 +630,8 @@ class Client extends Document {
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => parseScriptResult(body));
+      .then(body => parseScriptResult(body))
+      .catch(error => this._save(error));
   }
 
   /**
@@ -678,6 +688,7 @@ class Client extends Document {
         .then(body => parseScriptResult(body))
         .then(response => resolve(response))
         .catch(error => {
+          this._save();
           return error.code === '401'
             ? resolve({
                 data: [],
@@ -717,7 +728,8 @@ class Client extends Document {
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => body.response);
+      .then(body => body.response)
+      .catch(error => this._save(error));
   }
 
   /**
@@ -788,7 +800,7 @@ class Client extends Document {
             .then(response => Object.assign(response, { recordId: resolvedId }))
         )
         .then(response => resolve(response))
-        .catch(error => reject(error));
+        .catch(error => this._save(reject(error)));
     });
   }
 
@@ -849,7 +861,8 @@ class Client extends Document {
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
-      .then(body => pick(parseScriptResult(body), 'scriptResult'));
+      .then(body => pick(parseScriptResult(body), 'scriptResult'))
+      .catch(error => this._save(error));
   }
 
   /**
@@ -896,7 +909,8 @@ class Client extends Document {
         scriptResult: isJSON(body.response.scriptResult)
           ? JSON.parse(body.response.scriptResult)
           : body.response.scriptResult
-      }));
+      }))
+      .catch(error => this._save(error));
   }
 }
 
