@@ -421,15 +421,6 @@ The layouts method will return a list of layouts accessible by the configured cl
 
 `client.layouts()`
 
-| Param        | Type                | Description                                  |
-| ------------ | ------------------- | -------------------------------------------- |
-| [parameters] | <code>Object</code> | optional request parameters for the request. |
-| Param        | Type                | Default                                      | Description |
-| ---------    | ------------------- | ----------------------                       | ------------------------------------------------------ |
-| host         | <code>String</code> |                                              | The host FileMaker server. |
-| database     | <code>String</code> |                                              | The FileMaker database to target. |
-| [version]    | <code>String</code> | <code>"vLatest"</code>                       | The Data API version to use. The default is 'vLatest'. |
-
 ```js
 const layouts = client =>
   client.layouts().then(result => log('layouts-example', result));
@@ -529,16 +520,6 @@ The scripts method will return metadata for the scripts accessible by the config
 
 `client.scripts()`
 
-| Param        | Type                | Description                                  |
-| ------------ | ------------------- | -------------------------------------------- |
-| [parameters] | <code>Object</code> | optional request parameters for the request. |
-
-| Param     | Type                | Default                | Description                                            |
-| --------- | ------------------- | ---------------------- | ------------------------------------------------------ |
-| host      | <code>String</code> |                        | The host FileMaker server.                             |
-| database  | <code>String</code> |                        | The FileMaker database to target.                      |
-| [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
-
 ```js
 const scripts = client =>
   client
@@ -624,19 +605,13 @@ Result:
 #### Get Layout
 
 The layout method will get metadata for the specified layout.
+
 `client.layout(layout)`
 
 | Param        | Type                | Description                                  |
 | ------------ | ------------------- | -------------------------------------------- |
 | layout       | <code>String</code> | The layout to use in the request.            |
 | [parameters] | <code>Object</code> | optional request parameters for the request. |
-
-| Param     | Type                | Default                | Description                                            |
-| --------- | ------------------- | ---------------------- | ------------------------------------------------------ |
-| host      | <code>String</code> |                        | The host FileMaker server.                             |
-| database  | <code>String</code> |                        | The FileMaker database to target.                      |
-| layout    | <code>String</code> |                        | The database layout to use.                            |
-| [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
 
 ```js
 const layout = client =>
@@ -932,13 +907,6 @@ Using the client you can create filemaker records. To create a record specify th
 | data       | <code>Object</code> | The data to use when creating a record.                 |
 | parameters | <code>Object</code> | The request parameters to use when creating the record. |
 
-| Param     | Type                | Default                | Description                                            |
-| --------- | ------------------- | ---------------------- | ------------------------------------------------------ |
-| host      | <code>String</code> |                        | The host FileMaker server.                             |
-| database  | <code>String</code> |                        | The FileMaker database to target.                      |
-| layout    | <code>String</code> |                        | The database layout to use.                            |
-| [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
-
 ```js
 const createRecord = client =>
   client
@@ -1006,14 +974,6 @@ The duplicate method duplicates the FileMaker record using the layout and record
 | recordId     | <code>String</code> | The record id to target for duplication.     |
 | [parameters] | <code>Object</code> | optional request parameters for the request. |
 
-| Param     | Type                | Default                | Description                                            |
-| --------- | ------------------- | ---------------------- | ------------------------------------------------------ |
-| host      | <code>String</code> |                        | The host FileMaker server.                             |
-| database  | <code>String</code> |                        | The FileMaker database to target.                      |
-| layout    | <code>String</code> |                        | The database layout to use.                            |
-| recordId  | <code>String</code> |                        | The FileMaker internal record id to duplicate.         |
-| [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
-
 ```js
 client
   .duplicate('Heroes', response.data[0].recordId)
@@ -1077,14 +1037,6 @@ The Get method will return a specific FileMaker record based on the recordId pas
 | layout       | <code>String</code> | The layout to use when retrieving the record.                       |
 | recordId     | <code>String</code> | The FileMaker internal record ID to use when retrieving the record. |
 | [parameters] | <code>Object</code> | Parameters to add for the get query.                                |
-
-| Param     | Type                | Default                | Description                                            |
-| --------- | ------------------- | ---------------------- | ------------------------------------------------------ |
-| host      | <code>String</code> |                        | The host FileMaker server.                             |
-| database  | <code>String</code> |                        | The FileMaker database to target.                      |
-| layout    | <code>String</code> |                        | The database layout to use.                            |
-| recordId  | <code>String</code> |                        | The FileMaker internal record id to update.            |
-| [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
 
 ```js
 client
@@ -1158,13 +1110,6 @@ You can use the client to list filemaker records. The list method accepts a layo
 | ------------ | ------------------- | --------------------------------------------- |
 | layout       | <code>String</code> | The layout to use when retrieving the record. |
 | [parameters] | <code>Object</code> | the parameters to use to modify the query.    |
-
-| Param     | Type                | Default                | Description                                            |
-| --------- | ------------------- | ---------------------- | ------------------------------------------------------ |
-| host      | <code>String</code> |                        | The host FileMaker server.                             |
-| database  | <code>String</code> |                        | The FileMaker database to target.                      |
-| layout    | <code>String</code> |                        | The database layout to use.                            |
-| [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
 
 ```js
 const listHeroes = client =>
@@ -1285,13 +1230,6 @@ The client's find method will accept either a single object as find parameters o
 | query      | <code>Object</code> | to use in the find request.                 |
 | parameters | <code>Object</code> | the parameters to use to modify the query.  |
 
-| Param     | Type                | Default                | Description                                            |
-| --------- | ------------------- | ---------------------- | ------------------------------------------------------ |
-| host      | <code>String</code> |                        | The host FileMaker server.                             |
-| database  | <code>String</code> |                        | The FileMaker database to target.                      |
-| layout    | <code>String</code> |                        | The database layout to use.                            |
-| [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
-
 ```js
 const findRecords = client =>
   client
@@ -1402,14 +1340,6 @@ The client's delete method requires a layout and a record id. The recordId can b
 | recordId   | <code>String</code> | The FileMaker internal record ID to use when editing the record. |
 | parameters | <code>Object</code> | parameters to use when performing the query.                     |
 
-| Param     | Type                | Default                | Description                                            |
-| --------- | ------------------- | ---------------------- | ------------------------------------------------------ |
-| host      | <code>String</code> |                        | The host FileMaker server.                             |
-| database  | <code>String</code> |                        | The FileMaker database to target.                      |
-| layout    | <code>String</code> |                        | The database layout to use.                            |
-| recordId  | <code>String</code> |                        | The FileMaker internal record id to update.            |
-| [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
-
 ```js
 const deleteRecords = client =>
   client
@@ -1432,6 +1362,7 @@ Result:
 #### Trigger Script
 
 The client's script method will trigger a script. You can also trigger scripts with the create, edit, list, find, and delete methods. This method performs a list with a limit of one on the specified layout before triggering the script. this is the most lightweight request possible while still being able to trigger a script.
+
 `client.script(layout, script, param, parameters)`
 
 | Param        | Type                                       | Description                            |
@@ -1440,15 +1371,6 @@ The client's script method will trigger a script. You can also trigger scripts w
 | script       | <code>String</code>                        | The name of the script                 |
 | param        | <code>Object</code> \| <code>String</code> | Parameter to pass to the script        |
 | [parameters] | <code>Object</code>                        | Optional request parameters.           |
-
-| Param       | Type                                                              | Default                | Description                                              |
-| ----------- | ----------------------------------------------------------------- | ---------------------- | -------------------------------------------------------- |
-| host        | <code>String</code>                                               |                        | The host FileMaker server.                               |
-| database    | <code>String</code>                                               |                        | The FileMaker database to target.                        |
-| layout      | <code>String</code>                                               |                        | The database layout to use.                              |
-| script      | <code>String</code>                                               |                        | The name of the script to run .                          |
-| [parameter] | <code>String</code> \| <code>Object</code> \| <code>Number</code> |                        | Optional script parameters to pass to the called script. |
-| [version]   | <code>String</code>                                               | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'.   |
 
 ```js
 const triggerScript = client =>
@@ -1477,12 +1399,13 @@ Result:
 The client's script method will trigger a script. You can also trigger scripts with the create, edit, list, find, and delete methods. This method performs a list with a limit of one on the specified layout before triggering the script. this is the most lightweight request possible while still being able to trigger a script.
 
 `client.run(layout, scripts,parameters)`
-| Param | Type | Description |
+
+| Param      | Type                                      | Description                                 |
 | ---------- | ----------------------------------------- | ------------------------------------------- |
-| layout | <code>String</code> | The layout to use for the list request |
-| scripts | <code>Object</code> \| <code>Array</code> | The name of the script |
-| parameters | <code>Object</code> | Parameters to pass to the script |
-| request | <code>Object</code> | A request to run alongside the list method. |
+| layout     | <code>String</code>                       | The layout to use for the list request      |
+| scripts    | <code>Object</code> \| <code>Array</code> | The name of the script                      |
+| parameters | <code>Object</code>                       | Parameters to pass to the script            |
+| request    | <code>Object</code>                       | A request to run alongside the list method. |
 
 ```js
 const runMultipleScripts = client =>
@@ -1517,22 +1440,14 @@ The upload method will upload binary data to a container. The file parameter sho
 
 `client.upload(file, layout, container, recordId, parameters)`
 
-| Param              | Type                                       | Description                                                           |
-| ------------------ | ------------------------------------------ | --------------------------------------------------------------------- |
-| file               | <code>String</code>                        | The path to the file to upload.                                       |
-| layout             | <code>String</code>                        | The layout to use when performing the find.                           |
-| containerFieldName | <code>String</code>                        | The field name to insert the data into. It must be a container field. |
-| recordId           | <code>Number</code> \| <code>String</code> | the recordId to use when uploading the file.                          |
-| parameters         | <code>Object</code>                        | parameters to use when performing the query.                          |
-| Param              | Type                                       | Default                                                               | Description |
-| -----------------  | ------------------------------------------ | ----------------------                                                | ---------------------------------------------------------------------- |
-| host               | <code>String</code>                        |                                                                       | The host FileMaker server. |
-| database           | <code>String</code>                        |                                                                       | The FileMaker database to target. |
-| layout             | <code>String</code>                        |                                                                       | The database layout to use. |
-| recordId           | <code>String</code>                        |                                                                       | the record id to use when inserting the file. |
-| fieldName          | <code>String</code>                        |                                                                       | the field to use when inserting a file. |
-| [fieldRepetition]  | <code>String</code> \| <code>Number</code> | <code>1</code>                                                        | The field repetition to use when inserting the file. The default is 1. |
-| [version]          | <code>String</code>                        | <code>"vLatest"</code>                                                | The Data API version to use. The default is 'vLatest'. |
+| Param              | Type                                       | Description                                                            |
+| ------------------ | ------------------------------------------ | ---------------------------------------------------------------------- |
+| file               | <code>String</code>                        | The path to the file to upload.                                        |
+| layout             | <code>String</code>                        | The layout to use when performing the find.                            |
+| containerFieldName | <code>String</code>                        | The field name to insert the data into. It must be a container field.  |
+| recordId           | <code>Number</code> \| <code>String</code> | the recordId to use when uploading the file.                           |
+| parameters         | <code>Object</code>                        | parameters to use when performing the query.                           |
+| [fieldRepetition]  | <code>String</code> \| <code>Number</code> | The field repetition to use when inserting the file. The default is 1. |
 
 ```js
 const uploadImage = client =>
@@ -1582,15 +1497,11 @@ Result:
 The globals method will set global fields for the current session.
 
 `client.globals(data, parameters)`
-| Param | Type | Description |
+
+| Param      | Type                                      | Description                                           |
 | ---------- | ----------------------------------------- | ----------------------------------------------------- |
-| data | <code>Object</code> \| <code>Array</code> | a json object containing the name value pairs to set. |
-| parameters | <code>Object</code> | parameters to use when performing the query. |
-| Param | Type | Default | Description |
-| --------- | ------------------- | ---------------------- | ------------------------------------------------------ |
-| host | <code>String</code> | | The host FileMaker server. |
-| database | <code>String</code> | | The FileMaker database to target. |
-| [version] | <code>String</code> | <code>"vLatest"</code> | The Data API version to use. The default is 'vLatest'. |
+| data       | <code>Object</code> \| <code>Array</code> | a json object containing the name value pairs to set. |
+| parameters | <code>Object</code>                       | parameters to use when performing the query.          |
 
 ```js
 const setGlobals = client =>
