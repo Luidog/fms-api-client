@@ -183,11 +183,10 @@ class Client extends Document {
         queue: this.agent.queue.map(({ url }) => ({ url })),
         pending: this.agent.pending.map(({ url }) => ({ url })),
         sessions: this.agent.connection.sessions.map(
-          ({ issued, expires, id, active }) => ({
+          ({ issued, expires, id }) => ({
             issued,
             expires,
-            id,
-            active
+            id
           })
         )
       })
@@ -367,7 +366,6 @@ class Client extends Document {
         },
         parameters
       )
-
       .then(response => response.data)
       .then(body => this.data.outgoing(body))
       .then(body => this._save(body))
