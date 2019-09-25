@@ -134,9 +134,12 @@ class Client extends Document {
 
    */
   login() {
-    return this.agent.connection
-      .start(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false)
-      .catch(error => this._save(error));
+    return new Promise((resolve, reject) =>
+      this.agent.connection
+        .start(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false)
+        .then(response => resolve(response))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -149,11 +152,13 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   logout(id) {
-    return this.agent.connection
-      .end(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false, id)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .catch(error => this._save(error));
+    return new Promise((resolve, reject) =>
+      this.agent.connection
+        .end(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false, id)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(resolve(body)))
+        .catch(error => this._save(reject(error)))
+    );
   }
   /**
    * @method productInfo
@@ -163,10 +168,11 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   productInfo() {
-    return productInfo(
-      this.agent.connection.server,
-      this.agent.connection.version
-    ).catch(error => this._save(error));
+    return new Promise((resolve, reject) =>
+      productInfo(this.agent.connection.server, this.agent.connection.version)
+        .then(response => resolve(response))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -234,11 +240,15 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   databases(credentials, version) {
-    return databases(
-      this.agent.connection.server,
-      credentials || this.agent.connection.credentials,
-      this.agent.connection.version
-    ).catch(error => this._save(error));
+    return new Promise((resolve, reject) =>
+      databases(
+        this.agent.connection.server,
+        credentials || this.agent.connection.credentials,
+        this.agent.connection.version
+      )
+        .then(response => resolve(response))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -250,23 +260,25 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   layouts(parameters = {}) {
-    return this.agent
-      .request(
-        {
-          url: urls.layouts(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            this.agent.connection.version
-          ),
-          method: 'get'
-        },
-        parameters
-      )
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => body.response)
-      .catch(error => this._save(error));
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.layouts(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              this.agent.connection.version
+            ),
+            method: 'get'
+          },
+          parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => resolve(body.response))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -278,24 +290,26 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   scripts(parameters = {}) {
-    return this.agent
-      .request(
-        {
-          url: urls.scripts(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            this.agent.connection.version
-          ),
-          method: 'get'
-        },
-        parameters
-      )
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.scripts(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              this.agent.connection.version
+            ),
+            method: 'get'
+          },
+          parameters
+        )
 
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => body.response)
-      .catch(error => this._save(error));
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => resolve(body.response))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -308,25 +322,27 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   layout(layout, parameters = {}) {
-    return this.agent
-      .request(
-        {
-          url: urls.layout(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            layout,
-            this.agent.connection.version
-          ),
-          method: 'get',
-          params: toStrings(sanitizeParameters(parameters, ['recordId']))
-        },
-        parameters
-      )
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => body.response)
-      .catch(error => this._save(error));
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.layout(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              layout,
+              this.agent.connection.version
+            ),
+            method: 'get',
+            params: toStrings(sanitizeParameters(parameters, ['recordId']))
+          },
+          parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => resolve(body.response))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -340,37 +356,40 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   duplicate(layout, recordId, parameters = {}) {
-    return this.agent
-      .request(
-        {
-          url: urls.duplicate(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            layout,
-            recordId,
-            this.agent.connection.version
-          ),
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json'
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.duplicate(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              layout,
+              recordId,
+              this.agent.connection.version
+            ),
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data: sanitizeParameters(parameters, [
+              'script',
+              'script.param',
+              'script.prerequest',
+              'script.prerequest.param',
+              'script.presort',
+              'script.presort.param',
+              'request'
+            ])
           },
-          data: sanitizeParameters(parameters, [
-            'script',
-            'script.param',
-            'script.prerequest',
-            'script.prerequest.param',
-            'script.presort',
-            'script.presort.param',
-            'request'
-          ])
-        },
-        parameters
-      )
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => parseScriptResult(body))
-      .catch(error => this._save(error));
+          parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => parseScriptResult(body))
+        .then(result => resolve(result))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -397,44 +416,45 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   create(layout, data = {}, parameters = {}) {
-    return this.agent
-      .request(
-        {
-          url: urls.create(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            layout,
-            this.agent.connection.version
-          ),
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json'
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.create(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              layout,
+              this.agent.connection.version
+            ),
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data: Object.assign(
+              sanitizeParameters(parameters, [
+                'portalData',
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'request'
+              ]),
+              this.data.incoming(setData(data))
+            )
           },
-          data: Object.assign(
-            sanitizeParameters(parameters, [
-              'portalData',
-              'script',
-              'script.param',
-              'script.prerequest',
-              'script.prerequest.param',
-              'script.presort',
-              'script.presort.param',
-              'request'
-            ]),
-            this.data.incoming(setData(data))
-          )
-        },
-        parameters
-      )
-
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => parseScriptResult(body))
-      .then(response =>
-        parameters.merge ? Object.assign(data, response) : response
-      )
-      .catch(error => this._save(error));
+          parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => parseScriptResult(body))
+        .then(response =>
+          resolve(parameters.merge ? Object.assign(data, response) : response)
+        )
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -449,48 +469,51 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   edit(layout, recordId, data, parameters = {}) {
-    return this.agent
-      .request(
-        {
-          url: urls.update(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            layout,
-            recordId,
-            this.agent.connection.version
-          ),
-          method: 'patch',
-          headers: {
-            'Content-Type': 'application/json'
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.update(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              layout,
+              recordId,
+              this.agent.connection.version
+            ),
+            method: 'patch',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data: Object.assign(
+              sanitizeParameters(parameters, [
+                'portalData',
+                'modId',
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'request'
+              ]),
+              this.data.incoming(setData(data))
+            )
           },
-          data: Object.assign(
-            sanitizeParameters(parameters, [
-              'portalData',
-              'modId',
-              'script',
-              'script.param',
-              'script.prerequest',
-              'script.prerequest.param',
-              'script.presort',
-              'script.presort.param',
-              'request'
-            ]),
-            this.data.incoming(setData(data))
+          parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => parseScriptResult(body))
+        .then(body =>
+          resolve(
+            parameters.merge
+              ? Object.assign(data, { recordId: recordId }, body)
+              : body
           )
-        },
-        parameters
-      )
-
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => parseScriptResult(body))
-      .then(body =>
-        parameters.merge
-          ? Object.assign(data, { recordId: recordId }, body)
-          : body
-      )
-      .catch(error => this._save(error));
+        )
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -504,34 +527,37 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   delete(layout, recordId, parameters = {}) {
-    return this.agent
-      .request(
-        {
-          url: urls.delete(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            layout,
-            recordId,
-            this.agent.connection.version
-          ),
-          method: 'delete',
-          data: sanitizeParameters(parameters, [
-            'script',
-            'script.param',
-            'script.prerequest',
-            'script.prerequest.param',
-            'script.presort',
-            'script.presort.param',
-            'request'
-          ])
-        },
-        parameters
-      )
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => parseScriptResult(body))
-      .catch(error => this._save(error));
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.delete(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              layout,
+              recordId,
+              this.agent.connection.version
+            ),
+            method: 'delete',
+            data: sanitizeParameters(parameters, [
+              'script',
+              'script.param',
+              'script.prerequest',
+              'script.prerequest.param',
+              'script.presort',
+              'script.presort.param',
+              'request'
+            ])
+          },
+          parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => parseScriptResult(body))
+        .then(result => resolve(result))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -545,40 +571,43 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   get(layout, recordId, parameters = {}) {
-    return this.agent
-      .request(
-        {
-          url: urls.get(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            layout,
-            recordId,
-            this.agent.connection.version
-          ),
-          method: 'get',
-          params: toStrings(
-            sanitizeParameters(namespace(parameters), [
-              'script',
-              'script.param',
-              'script.prerequest',
-              'script.prerequest.param',
-              'script.presort',
-              'script.presort.param',
-              'layout.response',
-              'portal',
-              '_offset.*',
-              '_limit.*',
-              'request'
-            ])
-          )
-        },
-        parameters
-      )
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => parseScriptResult(body))
-      .catch(error => this._save(error));
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.get(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              layout,
+              recordId,
+              this.agent.connection.version
+            ),
+            method: 'get',
+            params: toStrings(
+              sanitizeParameters(namespace(parameters), [
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'layout.response',
+                'portal',
+                '_offset.*',
+                '_limit.*',
+                'request'
+              ])
+            )
+          },
+          parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => parseScriptResult(body))
+        .then(result => resolve(result))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -591,45 +620,48 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   list(layout, parameters = {}) {
-    return this.agent
-      .request(
-        {
-          url: urls.list(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            layout,
-            this.agent.connection.version
-          ),
-          method: 'get',
-          headers: {
-            'Content-Type': 'application/json'
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.list(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              layout,
+              this.agent.connection.version
+            ),
+            method: 'get',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            params: toStrings(
+              sanitizeParameters(namespace(parameters), [
+                '_limit',
+                '_offset',
+                '_sort',
+                'portal',
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                'layout.response',
+                '_offset.*',
+                '_limit.*',
+                'request'
+              ])
+            )
           },
-          params: toStrings(
-            sanitizeParameters(namespace(parameters), [
-              '_limit',
-              '_offset',
-              '_sort',
-              'portal',
-              'script',
-              'script.param',
-              'script.prerequest',
-              'script.prerequest.param',
-              'script.presort',
-              'script.presort.param',
-              'layout.response',
-              '_offset.*',
-              '_limit.*',
-              'request'
-            ])
-          )
-        },
-        parameters
-      )
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => parseScriptResult(body))
-      .catch(error => this._save(error));
+          parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => parseScriptResult(body))
+        .then(result => resolve(result))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -684,7 +716,7 @@ class Client extends Document {
         .then(body => this.data.outgoing(body))
         .then(body => this._save(body))
         .then(body => parseScriptResult(body))
-        .then(response => resolve(response))
+        .then(result => resolve(result))
         .catch(error => {
           this._save();
           return error.code === '401'
@@ -707,27 +739,29 @@ class Client extends Document {
    * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
    */
   globals(data, parameters) {
-    return this.agent
-      .request(
-        {
-          url: urls.globals(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            this.agent.connection.version
-          ),
-          method: 'patch',
-          headers: {
-            'Content-Type': 'application/json'
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.globals(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              this.agent.connection.version
+            ),
+            method: 'patch',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data: { globalFields: toStrings(data) }
           },
-          data: { globalFields: toStrings(data) }
-        },
-        parameters
-      )
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => body.response)
-      .catch(error => this._save(error));
+          parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(result => resolve(result))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -816,51 +850,54 @@ class Client extends Document {
    * @return {Promise}           returns a promise that will either resolve or reject based on the Data API.
    */
   run(layout, scripts, parameters, request) {
-    return this.agent
-      .request(
-        {
-          url: urls.list(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            layout,
-            this.agent.connection.version
-          ),
-          method: 'get',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          params: sanitizeParameters(
-            Object.assign(
-              Array.isArray(scripts)
-                ? { scripts }
-                : isJSON(scripts)
-                ? { scripts: [scripts] }
-                : { script: scripts },
-              typeof scripts === 'string' && typeof parameters !== 'undefined'
-                ? { 'script.param': parameters }
-                : {},
-              namespace({ limit: 1 })
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.list(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              layout,
+              this.agent.connection.version
             ),
-            [
-              'script',
-              'script.param',
-              'script.prerequest',
-              'script.prerequest.param',
-              'script.presort',
-              'script.presort.param',
-              '_limit'
-            ]
-          )
-        },
-        typeof scripts === 'string' && typeof parameters !== 'undefined'
-          ? request
-          : parameters
-      )
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => pick(parseScriptResult(body), 'scriptResult'))
-      .catch(error => this._save(error));
+            method: 'get',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            params: sanitizeParameters(
+              Object.assign(
+                Array.isArray(scripts)
+                  ? { scripts }
+                  : isJSON(scripts)
+                  ? { scripts: [scripts] }
+                  : { script: scripts },
+                typeof scripts === 'string' && typeof parameters !== 'undefined'
+                  ? { 'script.param': parameters }
+                  : {},
+                namespace({ limit: 1 })
+              ),
+              [
+                'script',
+                'script.param',
+                'script.prerequest',
+                'script.prerequest.param',
+                'script.presort',
+                'script.presort.param',
+                '_limit'
+              ]
+            )
+          },
+          typeof scripts === 'string' && typeof parameters !== 'undefined'
+            ? request
+            : parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => pick(parseScriptResult(body), 'scriptResult'))
+        .then(result => resolve(result))
+        .catch(error => this._save(reject(error)))
+    );
   }
 
   /**
@@ -875,40 +912,43 @@ class Client extends Document {
    * @return {Promise}      returns a promise that will either resolve or reject based on the Data API.
    */
   script(layout, script, param = {}, parameters) {
-    return this.agent
-      .request(
-        {
-          url: urls.script(
-            this.agent.connection.server,
-            this.agent.connection.database,
-            layout,
-            script,
-            this.agent.connection.version
-          ),
-          method: 'get',
-          headers: {
-            'Content-Type': 'application/json'
+    return new Promise((resolve, reject) =>
+      this.agent
+        .request(
+          {
+            url: urls.script(
+              this.agent.connection.server,
+              this.agent.connection.database,
+              layout,
+              script,
+              this.agent.connection.version
+            ),
+            method: 'get',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            params: !isEmpty(param)
+              ? {
+                  'script.param': isJSON(param)
+                    ? JSON.stringify(param)
+                    : param.toString()
+                }
+              : param
           },
-          params: !isEmpty(param)
-            ? {
-                'script.param': isJSON(param)
-                  ? JSON.stringify(param)
-                  : param.toString()
-              }
-            : param
-        },
-        parameters
-      )
-      .then(response => response.data)
-      .then(body => this.data.outgoing(body))
-      .then(body => this._save(body))
-      .then(body => ({
-        ...body.response,
-        scriptResult: isJSON(body.response.scriptResult)
-          ? JSON.parse(body.response.scriptResult)
-          : body.response.scriptResult
-      }))
-      .catch(error => this._save(error));
+          parameters
+        )
+        .then(response => response.data)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(body))
+        .then(body => ({
+          ...body.response,
+          scriptResult: isJSON(body.response.scriptResult)
+            ? JSON.parse(body.response.scriptResult)
+            : body.response.scriptResult
+        }))
+        .then(result => resolve(result))
+        .catch(error => this._save(reject(error)))
+    );
   }
 }
 
