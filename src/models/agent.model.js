@@ -400,6 +400,7 @@ class Agent extends EmbeddedDocument {
     if (!global.FMS_API_CLIENT.WATCHERS[this.global]) {
       const WATCHER = setTimeout(
         function watch() {
+          this.connection.clear();
           if (this.queue.length > 0) {
             this.shift();
           }

@@ -67,8 +67,7 @@ describe('Client Capabilities', () => {
     client.agent.connection.sessions.push({ url: 'FileMaker DAPI URL' });
     return expect(client.status())
       .to.eventually.be.a('object')
-      .that.has.all.keys('data', 'pending', 'queue', 'sessions')
-      .and.property('data');
+      .that.has.all.keys('data', 'pending', 'queue', 'sessions');
   });
 
   it('should reset the client', () => {
