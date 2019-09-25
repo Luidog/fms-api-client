@@ -106,7 +106,11 @@ class Connection extends EmbeddedDocument {
    */
   authentication({ headers, ...request }) {
     return new Promise((resolve, reject) => {
-      const sessions = _.sortBy(this.sessions, ['active', 'used'], ['desc']);
+      const sessions = _.sortBy(
+        this.sessions.filter(session => !session.expired()),
+        ['active', 'used'],
+        ['desc']
+      );
       const session = sessions[0];
       session.active = true;
       session.url = request.url;
@@ -130,7 +134,7 @@ class Connection extends EmbeddedDocument {
    * @return {Boolean} data a boolean indicating if the connection has a session.
    */
   ready() {
-    return this.sessions.length > 0;
+    return this.sessions.filter(session => !session.expired()).length > 0;
   }
 
   /**
@@ -266,7 +270,7 @@ class Connection extends EmbeddedDocument {
   clear(header) {
     this.sessions = this.sessions.filter(session =>
       typeof header === 'string'
-        ? header.replace('Bearer ', '') !== session.token && !session.expired()
+        ? header.replace('Bearer ', '') !== session.token
         : !session.expired()
     );
   }
