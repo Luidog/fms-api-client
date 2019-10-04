@@ -68,3 +68,12 @@ patch:
         patched: '2019-07-07T20:07:54.255Z'
     - marpat > snyk > inquirer > lodash:
         patched: '2019-07-07T20:07:54.255Z'
+  SNYK-JS-HTTPSPROXYAGENT-469131:
+    - snyk > proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T04:37:00.187Z'
+    - snyk > proxy-agent > pac-proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T04:37:00.187Z'
+    - marpat > snyk > proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T04:37:00.187Z'
+    - marpat > snyk > proxy-agent > pac-proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T04:37:00.187Z'
