@@ -49,11 +49,7 @@
     "moment": "^2.24.0",
     "object-sizeof": "^1.5.2",
     "prettysize": "^2.0.0",
-<<<<<<< Updated upstream
-    "snyk": "^1.258.2",
-=======
     "snyk": "^1.260.0",
->>>>>>> Stashed changes
     "stream-to-array": "^2.3.0",
     "tough-cookie": "^3.0.1",
     "uuid": "^3.3.3"
