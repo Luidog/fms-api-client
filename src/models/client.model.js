@@ -141,6 +141,24 @@ class Client extends Document {
         .catch(error => this._save(reject(error)))
     );
   }
+  /**
+   * @method validate
+   * @memberof Client
+   * @public
+   * @description logs out of the current authentication session and clears the saved token.
+   * @param {String} id the connection id or token to validate.
+   * @see {@method Connnection#validate}
+   * @return {Promise} returns a promise that will either resolve or reject based on the Data API.
+   */
+  validate(id) {
+    return new Promise((resolve, reject) =>
+      this.agent.connection
+        .validate(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false, id)
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(resolve(body)))
+        .catch(error => this._save(reject(error)))
+    );
+  }
 
   /**
    * @method logout
@@ -160,6 +178,7 @@ class Client extends Document {
         .catch(error => this._save(reject(error)))
     );
   }
+
   /**
    * @method productInfo
    * @memberof Client
