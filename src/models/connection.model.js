@@ -259,6 +259,47 @@ class Connection extends EmbeddedDocument {
     });
   }
 
+    /**
+   * @method validate
+   * @public
+   * @memberof Connection
+   * @description the validate method validates if a session or token is still valid.
+   * @see  {@link Connection#clear}
+   * @param {Object} [agent] An optional custom request agent.
+   * @param {String} [id] The session id to log out.
+   * @return {String} The session token.
+   */
+  validate(agent, id) {
+    return new Promise((resolve, reject) => {
+      const session = id ? _.find(this.sessions, { id }) : { token: id };
+      if (session) {
+        session.active = true;
+        instance
+          .request(
+            Object.assign(
+              {
+                url: urls.validate(
+                  this.server,
+                  this.version
+                ),
+                headers:{
+                  Authorization: `Bearer ${session.token}`
+                }
+              },
+              agent ? { ...agent } : {}
+            )
+          )
+          .then(response => {
+            this.clear(session.token);
+            resolve(response.data);
+          })
+          .catch(error => reject(error));
+      } else {
+        reject({ message: 'No session or token to validate' });
+      }
+    });
+  }
+
   /**
    * @method clear
    * @memberof Connection
