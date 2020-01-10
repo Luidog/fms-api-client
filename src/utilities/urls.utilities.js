@@ -252,6 +252,17 @@ const urls = {
    */
   script: (host, database, layout, script, parameter, version = 'vLatest') =>
     `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/script/${script}`
+
+  /**
+   * @function validate
+   * @memberOf urls
+   * @public
+   * @description The validate function generates a url for validating a session token.
+   * @param {String} host The host FileMaker server.
+   * @param {String} [version="vLatest"] The Data API version to use. The default is 'vLatest'.
+   * @return {String} The URL to call validate a token
+   */
+  validate: (host, version = 'vLatest') => `${host}/fmi/data/${version}/validatesession`
 };
 
 module.exports = { urls };
