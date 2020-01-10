@@ -251,7 +251,7 @@ const urls = {
    * @return {String} The URL to call a specific FileMaker script
    */
   script: (host, database, layout, script, parameter, version = 'vLatest') =>
-    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/script/${script}`
+    `${host}/fmi/data/${version}/databases/${database}/layouts/${layout}/script/${script}`,
 
   /**
    * @function validate
