@@ -143,7 +143,9 @@ describe('Authentication Capabilities', () => {
         .catch(error => error)
     )
       .to.eventually.be.an('object')
-      .that.has.all.keys('code', 'message');
+      .that.has.all.keys('code', 'message')
+      .and.property('code')
+      .to.equal('212');
   });
 
   it('should reject if it can not create a new data api session', () => {
