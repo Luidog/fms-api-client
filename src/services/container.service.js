@@ -1,5 +1,7 @@
 'use strict';
 
+const axios = require('axios');
+const axiosCookieJarSupport = require('axios-cookiejar-support').default;
 const fs = require('fs');
 const path = require('path');
 const toArray = require('stream-to-array');
@@ -7,7 +9,11 @@ const { CookieJar } = require('tough-cookie');
 const mime = require('mime-types');
 const uuidv4 = require('uuid/v4');
 const _ = require('lodash');
-const { instance } = require('./request.service');
+const { interceptResponse } = require('./request.service')
+
+const instance = axios.create();
+
+axiosCookieJarSupport(instance);
 
 /**
  * @class Container Service
@@ -19,7 +25,7 @@ const { instance } = require('./request.service');
  * @param  {Any} error We publishing error.
  */
 instance.interceptors.response.use(
-  response => response,
+  response => interceptResponse(response),
   error => handleError(error)
 );
 

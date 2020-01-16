@@ -77,5 +77,5 @@ instance.interceptors.response.use(
 );
 
 module.exports = {
-  instance
+  instance, interceptResponse
 };
