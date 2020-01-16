@@ -25,20 +25,21 @@ const interceptError = error => {
   if (error.code) {
     return Promise.reject({ code: error.code, message: error.message });
   } else if (
-    error.response.status === 502 ||
-    typeof error.response.data !== 'object'
-  ) {
-    return Promise.reject({
-      message: 'The Data API is currently unavailable',
-      code: '1630'
-    });
-  } else if (
     error.response.status === 400 &&
     error.request.path.includes('RCType=EmbeddedRCFileProcessor')
   ) {
     return Promise.reject({
       message: 'FileMaker WPE rejected the request',
       code: '9'
+    });
+  } else if (
+    error.response.status === 502 ||
+    typeof error.response.data !== 'object' ||
+    !error.response.data.messages
+  ) {
+    return Promise.reject({
+      message: 'The Data API is currently unavailable',
+      code: '1630'
     });
   } else {
     return Promise.reject(error.response.data.messages[0]);
@@ -77,5 +78,6 @@ instance.interceptors.response.use(
 );
 
 module.exports = {
-  instance, interceptResponse
+  instance,
+  interceptResponse
 };
