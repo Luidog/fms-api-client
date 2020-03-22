@@ -137,7 +137,8 @@ class Client extends Document {
     return new Promise((resolve, reject) =>
       this.agent.connection
         .start(!_.isEmpty(this.agent.agent) ? this.agent.localize() : false)
-        .then(response => resolve(response))
+        .then(body => this.data.outgoing(body))
+        .then(body => this._save(resolve(body)))
         .catch(error => this._save(reject(error)))
     );
   }
