@@ -47,7 +47,7 @@
     "marpat": "^3.0.2",
     "mime-types": "^2.1.26",
     "moment": "^2.24.0",
-    "object-sizeof": "^1.5.2",
+    "object-sizeof": "^1.5.3",
     "prettysize": "^2.0.0",
     "snyk": "^1.290.2",
     "stream-to-array": "^2.3.0",
