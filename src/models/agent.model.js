@@ -2,7 +2,7 @@
 
 const https = require('https');
 const http = require('http');
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const { EmbeddedDocument } = require('marpat');
 const _ = require('lodash');
 const { deepMapKeys } = require('../utilities');

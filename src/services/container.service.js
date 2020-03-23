@@ -7,7 +7,7 @@ const path = require('path');
 const toArray = require('stream-to-array');
 const { CookieJar } = require('tough-cookie');
 const mime = require('mime-types');
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const _ = require('lodash');
 const { interceptResponse } = require('./request.service')
 
