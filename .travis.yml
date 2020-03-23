@@ -1,6 +1,7 @@
 language: node_js
 node_js:
 - node
+services: mongodb
 install:
 - npm install
 - npm install marpat
