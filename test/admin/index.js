@@ -30,8 +30,15 @@ const login = () =>
       return response.data.response.token;
     });
 
-const logout = (token = adminToken) => instance
+const logout = (token = adminToken) =>
+  token
+    ? instance
         .delete(`/fmi/admin/api/v2/user/auth/${token}`, {})
+        .then(response => {
+          adminToken = false;
+          return response.data.response.token;
+        })
+    : Promise.resolve();
 
 const remove = ({ id }, token = adminToken) =>
   instance
