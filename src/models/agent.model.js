@@ -210,15 +210,17 @@ class Agent extends EmbeddedDocument {
    * @return {Object} request The configured axios instance to use for a request.
    */
   request(data, parameters = {}) {
-    instance.interceptors.request.use(
-      ({ httpAgent, httpsAgent, ...request }) =>
-        new Promise((resolve, reject) =>
+    const interceptor = instance.interceptors.request.use(
+      ({ httpAgent, httpsAgent, ...request }) => {
+        instance.interceptors.request.eject(interceptor);
+        return new Promise((resolve, reject) =>
           this.push({
             request: this.handleRequest(request),
             resolve,
             reject
           })
-        )
+        );
+      }
     );
 
     instance.interceptors.response.use(
@@ -401,15 +403,24 @@ class Agent extends EmbeddedDocument {
       const WATCHER = setTimeout(
         function watch() {
           this.connection.clear();
-          if (this.queue.length > 0) {
+          if (
+            this.queue.length > 0 &&
+            !this.connection.starting &&
+            this.connection.available()
+          ) {
             this.shift();
           }
 
-          if (this.pending.length > 0 && this.connection.ready()) {
+          if (
+            this.pending.length > 0 &&
+            !this.connection.starting &&
+            this.connection.available()
+          ) {
             this.resolve();
           }
 
           if (
+            this.pending.length > 0 &&
             !this.connection.available() &&
             !this.connection.starting &&
             this.connection.sessions.length < this.concurrency
