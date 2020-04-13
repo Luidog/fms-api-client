@@ -210,12 +210,13 @@ class Agent extends EmbeddedDocument {
    * @return {Object} request The configured axios instance to use for a request.
    */
   request(data, parameters = {}) {
+    const id = uuidv4();
     const interceptor = instance.interceptors.request.use(
       ({ httpAgent, httpsAgent, ...request }) => {
         instance.interceptors.request.eject(interceptor);
         return new Promise((resolve, reject) =>
           this.push({
-            request: this.handleRequest(request),
+            request: this.handleRequest(request, id),
             resolve,
             reject
           })
@@ -223,9 +224,15 @@ class Agent extends EmbeddedDocument {
       }
     );
 
-    instance.interceptors.response.use(
-      response => this.handleResponse(response),
-      error => this.handleError(error)
+    const response = instance.interceptors.response.use(
+      response => {
+        instance.interceptors.response.eject(response);
+        return this.handleResponse(response, id);
+      },
+      error => {
+        instance.interceptors.response.eject(response);
+        return this.handleError(error, id);
+      }
     );
 
     return instance(
@@ -246,17 +253,22 @@ class Agent extends EmbeddedDocument {
    * @description handles request data before it is sent to the resource. This function
    * will eventually be used to cancel the request and return the configuration body.
    * This function will test the url for an http proticol and reject if none exist.
-   * @param  {Object} response The axios response
+   * @param  {Object} response The axios response.
+   * @param {String} id the request id.
    * @return {Promise}      the request configuration object
    */
-  handleResponse(response) {
+  handleResponse(response, id) {
+    const token = _.get(response, 'config.headers.Authorization');
+    if (token) {
+      this.connection.deactivate(token, id);
+    }
     if (typeof response.data !== 'object') {
       return Promise.reject({
         message: 'The Data API is currently unavailable',
         code: '1630'
       });
     } else {
-      this.connection.extend(response.config.headers.Authorization);
+      this.connection.extend(token);
       return response;
     }
   }
@@ -268,10 +280,12 @@ class Agent extends EmbeddedDocument {
    * @description handles request data before it is sent to the resource. This function
    * will eventually be used to cancel the request and return the configuration body.
    * This function will test the url for an http proticol and reject if none exist.
-   * @param  {Object} config The axios request configuration
+   * @param  {Object} config The axios request configuration.
+   * @param {String} id the request id.
    * @return {Promise}      the request configuration object
    */
-  handleRequest(config) {
+  handleRequest(config, id) {
+    config.id = id;
     return config.url.startsWith('http')
       ? omit(config, ['params.request', 'data.request'])
       : Promise.reject({
@@ -362,9 +376,17 @@ class Agent extends EmbeddedDocument {
    * function will add an expired property to the error response if it recieves a invalid
    * token response.
    * @param  {Object} error The error recieved from the requested resource.
+   * @param {String} id the request id.
    * @return {Promise}      A promise rejection containing a code and a message
    */
-  handleError(error) {
+  handleError(error, id) {
+    const token = _.get(error, 'config.headers.Authorization');
+    if (token) {
+      this.connection.deactivate(token, id);
+    }
+    
+    this.connection.confirm();
+
     if (error.code) {
       return Promise.reject({ code: error.code, message: error.message });
     } else if (
@@ -377,9 +399,7 @@ class Agent extends EmbeddedDocument {
       });
     } else {
       if (error.response.data.messages[0].code === '952')
-        this.connection.clear(
-          _.get(error, 'response.config.headers.Authorization')
-        );
+        this.connection.clear(token);
       return Promise.reject(error.response.data.messages[0]);
     }
   }
@@ -464,7 +484,8 @@ class Agent extends EmbeddedDocument {
         Object.assign(
           this.mutate(pending.request, (value, key) =>
             key.replace(/{{dot}}/g, '.')
-          )
+          ),
+          { id: pending.id }
         ),
         _.isEmpty(this.agent) ? {} : this.localize()
       )

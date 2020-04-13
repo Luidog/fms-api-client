@@ -104,7 +104,7 @@ class Connection extends EmbeddedDocument {
    * @see  {@link Connection#available}
    * @return {String} The session token.
    */
-  authentication({ headers, ...request }) {
+  authentication({ headers, id, ...request }) {
     return new Promise((resolve, reject) => {
       const sessions = _.sortBy(
         this.sessions.filter(session => !session.expired()),
@@ -114,6 +114,7 @@ class Connection extends EmbeddedDocument {
       const session = sessions[0];
       session.active = true;
       session.url = request.url;
+      session.request = id;
       session.used = moment().format();
       resolve({
         ...request,
@@ -123,18 +124,6 @@ class Connection extends EmbeddedDocument {
         }
       });
     });
-  }
-
-  /**
-   * @method ready
-   * @public
-   * @memberof Connection
-   * @description Saves a token retrieved from the Data API as a sessions
-   * @see  {@link session}
-   * @return {Boolean} data a boolean indicating if the connection has a session.
-   */
-  ready() {
-    return this.sessions.filter(session => !session.expired()).length > 0;
   }
 
   /**
@@ -286,6 +275,38 @@ class Connection extends EmbeddedDocument {
     const token = header.replace('Bearer ', '');
     const session = _.find(this.sessions, session => session.token === token);
     if (session) session.extend();
+  }
+
+  /**
+   * @method confirm
+   * @memberOf confirm
+   * @description The confirm method will set the active property to false when a session does not have a
+   * valid request id.
+   */
+  confirm() {
+    this.sessions.forEach(session => {
+      if (_.isEmpty(session.request)) {
+        session.active = false;
+      }
+    });
+  }
+  /**
+   * @method  deactivate
+   * @memberOf Connection
+   * @public
+   * @description The deactivate method will reactive a session by setting the active property to false.
+   * @param {String} header The header containing the token representing the session to deactivate
+   * @param {String} id The request id.
+   * @see  {@link Agent#handleResponse}
+   * @see  {@link Agent#handleError}
+   */
+  deactivate(header, id) {
+    const token = header.replace('Bearer ', '');
+    const session = _.find(
+      this.sessions,
+      session => session.token === token || session.request === id
+    );
+    if (session) session.deactivate();
   }
 }
 
