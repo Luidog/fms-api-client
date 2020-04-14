@@ -42,6 +42,7 @@ describe('Request Queue Capabilities', () => {
     client = Filemaker.create({
       database: process.env.DATABASE,
       server: process.env.SERVER,
+      concurrency: 25,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
     });

@@ -43,6 +43,13 @@ class Session extends EmbeddedDocument {
       used: {
         type: String
       },
+      /* A string containing the request created when the token is in use..
+       * @member Session#request
+       * @type String
+       */
+      request: {
+        type: String
+      },
       /* A boolean set if the current session is in use.
        * @member Session#active
        * @type Boolean
@@ -95,12 +102,25 @@ class Session extends EmbeddedDocument {
    * @method extend
    * @memberof Session
    * @public
-   * @description This method extends a Data API session and sets it to inactive.
+   * @description This method extends a Data API session.
    * @see  {@link Agent#handleResponse}
    */
   extend() {
     this.active = false;
     this.expires = moment().add(15, 'minutes').format();
+  }
+
+  /**
+   * @method  deactivate
+   * @memberOf Sessions
+   * @public
+   * @description This method sets deactivates a session by setting active to false.
+   * @see  {@link Agent#handleResponse}
+   * @see  {@link Agent#handleError}
+   */
+  deactivate() {
+    this.request = "";
+    this.active = false;
   }
 }
 
