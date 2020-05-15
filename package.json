@@ -45,7 +45,7 @@
     "into-stream": "^5.1.1",
     "lodash": "^4.17.15",
     "marpat": "^3.0.3",
-    "mime-types": "^2.1.26",
+    "mime-types": "^2.1.27",
     "moment": "^2.24.0",
     "object-sizeof": "^1.6.0",
     "prettysize": "^2.0.0",
