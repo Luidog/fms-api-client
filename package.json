@@ -46,7 +46,7 @@
     "lodash": "^4.17.15",
     "marpat": "^3.0.3",
     "mime-types": "^2.1.26",
-    "moment": "^2.24.0",
+    "moment": "^2.25.0",
     "object-sizeof": "^1.6.0",
     "prettysize": "^2.0.0",
     "snyk": "^1.305.1",
