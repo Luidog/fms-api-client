@@ -82,3 +82,8 @@ patch:
         patched: '2019-12-12T07:52:09.956Z'
     - marpat > snyk > snyk-sbt-plugin > tree-kill:
         patched: '2019-12-12T07:52:09.956Z'
+  SNYK-JS-LODASH-567746:
+    - marpat > lodash:
+        patched: '2020-06-04T14:20:57.919Z'
+    - lodash:
+        patched: '2020-06-04T14:20:57.919Z'

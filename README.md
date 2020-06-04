@@ -2143,8 +2143,8 @@ npm test
 ```
 
 ```default
-> fms-api-client@2.3.2 test /fms-api-client
-> snyk test && nyc _mocha --recursive ./test --timeout=15000 --exit
+> fms-api-client@2.3.4 test /fms-api-client
+> snyk test && nyc _mocha --recursive ./test --timeout=40000 --exit
 
 
 Testing /fms-api-client...
@@ -2523,7 +2523,7 @@ Licenses:          enabled
       ✓ it should pick a string property while maintaing the object
 
 
-  269 passing (2m)
+  271 passing (2m)
 
 ------------------------------|----------|----------|----------|----------|-------------------|
 File                          |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
