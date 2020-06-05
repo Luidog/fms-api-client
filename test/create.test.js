@@ -60,6 +60,15 @@ describe('Create Capabilities', () => {
       .that.has.all.keys('recordId', 'modId');
   });
 
+  it('should create FileMaker multiple records without fieldData', () => {
+    return expect(Promise.all([
+      client.create(process.env.LAYOUT, { name: 'Han Solo' }),
+      client.create(process.env.LAYOUT, { name: 'Han Solo' }),
+      client.create(process.env.LAYOUT, { name: 'Han Solo' })
+    ]))
+    .to.eventually.be.an('array');
+  });
+
   it('should allow you to specify a timeout', () => {
     return expect(
       client
