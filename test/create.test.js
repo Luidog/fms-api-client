@@ -61,11 +61,13 @@ describe('Create Capabilities', () => {
   });
 
   it('should create FileMaker multiple records without fieldData', () => {
-    return expect(Promise.all([
-      client.create(process.env.LAYOUT, { name: 'Han Solo' }),
-      client.create(process.env.LAYOUT, { name: 'Han Solo' }),
-      client.create(process.env.LAYOUT, { name: 'Han Solo' })
-    ]))
+    
+    return expect(
+      Promise.all(
+        new Array(100)
+          .fill()
+          .map((n, i) => client.create(process.env.LAYOUT, { name: `Han Solo ${i}` }))
+    )
     .to.eventually.be.an('array');
   });
 
