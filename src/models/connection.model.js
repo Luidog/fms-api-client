@@ -104,7 +104,7 @@ class Connection extends EmbeddedDocument {
    * @see  {@link Connection#available}
    * @return {String} The session token.
    */
-  authentication({ headers, id, ...request }) {
+  addAuthenticationHeaders({ headers, id, ...request }) {
     return new Promise((resolve, reject) => {
       const sessions = _.sortBy(
         this.sessions.filter(session => !session.expired()),

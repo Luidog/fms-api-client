@@ -113,6 +113,31 @@ class Agent extends EmbeddedDocument {
         type: Object
       }
     });
+
+    instance.interceptors.request.use(
+      ({ httpAgent, httpsAgent, ...request }) => {
+        return new Promise((resolve, reject) =>
+          this.push({
+            request: this.handleRequest(request),
+            resolve,
+            reject
+          })
+        );
+      }
+    );
+
+    instance.interceptors.response.use(
+      response => {
+        return this.handleResponse(response, response.config.headers.requestId);
+      },
+      error => {
+        if (error.config != null) {
+          return this.handleError(error, error.config.headers.requestId);
+        }
+
+        throw error;
+      }
+    );
   }
 
   /**
@@ -210,31 +235,6 @@ class Agent extends EmbeddedDocument {
    * @return {Object} request The configured axios instance to use for a request.
    */
   request(data, parameters = {}) {
-    const id = uuidv4();
-    const interceptor = instance.interceptors.request.use(
-      ({ httpAgent, httpsAgent, ...request }) => {
-        instance.interceptors.request.eject(interceptor);
-        return new Promise((resolve, reject) =>
-          this.push({
-            request: this.handleRequest(request, id),
-            resolve,
-            reject
-          })
-        );
-      }
-    );
-
-    const response = instance.interceptors.response.use(
-      response => {
-        instance.interceptors.response.eject(response);
-        return this.handleResponse(response, id);
-      },
-      error => {
-        instance.interceptors.response.eject(response);
-        return this.handleError(error, id);
-      }
-    );
-
     return instance(
       Object.assign(
         data,
@@ -284,8 +284,8 @@ class Agent extends EmbeddedDocument {
    * @param {String} id the request id.
    * @return {Promise}      the request configuration object
    */
-  handleRequest(config, id) {
-    config.id = id;
+  handleRequest(config) {
+    config.headers.requestId = uuidv4();
     return config.url.startsWith('http')
       ? omit(config, ['params.request', 'data.request'])
       : Promise.reject({
@@ -384,7 +384,7 @@ class Agent extends EmbeddedDocument {
     if (token) {
       this.connection.deactivate(token, id);
     }
-    
+
     this.connection.confirm();
 
     if (error.code) {
@@ -480,7 +480,7 @@ class Agent extends EmbeddedDocument {
   resolve() {
     const pending = this.pending.shift();
     this.connection
-      .authentication(
+      .addAuthenticationHeaders(
         Object.assign(
           this.mutate(pending.request, (value, key) =>
             key.replace(/{{dot}}/g, '.')

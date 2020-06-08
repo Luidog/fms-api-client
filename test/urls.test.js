@@ -311,7 +311,7 @@ describe('Data API URL Construction Capabilities', () => {
   describe('Authentication URL Construction', () => {
     it('should generate a authentication url', () => {
       return expect(
-        urls.authentication(
+        urls.addAuthenticationHeaders(
           process.env.SERVER,
           process.env.DATABASE,
           process.env.VERSION
@@ -321,7 +321,7 @@ describe('Data API URL Construction Capabilities', () => {
 
     it('should not require a version', () => {
       return expect(
-        urls.authentication(process.env.SERVER, process.env.DATABASE)
+        urls.addAuthenticationHeaders(process.env.SERVER, process.env.DATABASE)
       ).to.be.a('string');
     });
   });
