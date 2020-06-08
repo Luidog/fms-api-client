@@ -18,6 +18,8 @@ const varium = require('varium');
 const { connect } = require('marpat');
 const { Filemaker } = require('../index.js');
 
+const delay = parseInt(process.env.ADMIN_DELAY);
+
 const manifestPath = path.join(__dirname, './env.manifest');
 
 chai.use(chaiAsPromised);
@@ -49,7 +51,7 @@ describe('Session Capabilities', () => {
         })
         .then(client => admin.login())
         .then(() => admin.sessions.drop({ userName: process.env.USERNAME }))
-        .then(() => setTimeout(() => done(), 15000));
+        .then(() => setTimeout(() => done(), delay));
     });
 
     after(done => {
@@ -128,7 +130,7 @@ describe('Session Capabilities', () => {
         })
         .then(client => admin.login())
         .then(() => admin.sessions.drop({ userName: process.env.USERNAME }))
-        .then(() => setTimeout(() => done(), 15000));
+        .then(() => setTimeout(() => done(), delay))
         .catch(error => done(error));
     });
 
