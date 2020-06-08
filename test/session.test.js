@@ -129,6 +129,7 @@ describe('Session Capabilities', () => {
         .then(client => admin.login())
         .then(() => admin.sessions.drop({ userName: process.env.USERNAME }))
         .then(() => setTimeout(() => done(), 15000));
+        .catch(error => done(error));
     });
 
     after(done => {
@@ -181,6 +182,21 @@ describe('Session Capabilities', () => {
       )
         .to.eventually.be.a('array')
         .to.have.a.lengthOf(repetition);
+    });
+
+    it('should be able to create a large number of records without an initial session', () => {
+      const creates = new Array(100)
+        .fill()
+        .map((n, i) =>
+          client.create(process.env.LAYOUT, { name: `Han Solo ${i}` })
+        );
+
+      return expect(Promise.all(creates))
+        .to.eventually.be.a('array')
+        .and.to.have.length(100)
+        .and.property(0)
+        .to.be.an('object')
+        .that.has.all.keys('recordId', 'modId');
     });
   });
 });
