@@ -6,6 +6,7 @@
   "scripts": {
     "test": "snyk test && nyc _mocha --recursive  ./test/*.test.js --timeout=40000 --exit",
     "test-local": "nyc _mocha --recursive  ./test/*.test.js --timeout=40000 --exit",
+    "test-session": "nyc _mocha --recursive  ./test/session.test.js --timeout=40000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "report": "nyc report --reporter=html",
     "examples": "node examples/index.js",
