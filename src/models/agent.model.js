@@ -485,7 +485,7 @@ class Agent extends EmbeddedDocument {
           this.mutate(pending.request, (value, key) =>
             key.replace(/{{dot}}/g, '.')
           ),
-          { id: pending.id }
+          { id: pending.request.id }
         ),
         _.isEmpty(this.agent) ? {} : this.localize()
       )
