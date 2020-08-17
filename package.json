@@ -43,7 +43,7 @@
     "axios-cookiejar-support": "^1.0.0",
     "form-data": "^3.0.0",
     "into-stream": "^5.1.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "marpat": "^3.0.3",
     "mime-types": "^2.1.26",
     "moment": "^2.24.0",
