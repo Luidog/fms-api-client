@@ -13,6 +13,7 @@ const _ = require('lodash');
  * @description This function tranforms an object given by turning related tables into objects
  * @param  {Object} object The response recieved from the FileMaker DAPI.
  * @param  {String} parentKey The response recieved from the FileMaker DAPI.
+ * @param  {Object} options Options object to modify how this function performs.
  * @return {Object}      A JSON object containing the selected data from the Data API Response.
  */
 const transformRelatedTables = (object, parentKey) =>
@@ -21,9 +22,9 @@ const transformRelatedTables = (object, parentKey) =>
     (accumulator, value, key) => {
       if (key.includes('::')) {
         const position = key.indexOf('::');
-        const parent = _.camelCase(parentKey);
-        const table = _.camelCase(key.slice(0, position));
-        const field = _.camelCase(key.slice(position + 2));
+        const parent = parentKey;
+        const table = key.slice(0, position);
+        const field = key.slice(position + 2);
         if (
           !Object.prototype.hasOwnProperty.call(accumulator, table) &&
           table !== parent
