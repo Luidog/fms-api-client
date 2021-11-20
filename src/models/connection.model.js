@@ -5,6 +5,7 @@ const moment = require('moment');
 const { EmbeddedDocument } = require('marpat');
 const { Credentials } = require('./credentials.model');
 const { Session } = require('./session.model');
+const { FMDataSourceItem } = require('./fm-data-source-item.model');
 const { urls } = require('../utilities');
 const { instance } = require('../services');
 
@@ -75,6 +76,11 @@ class Connection extends EmbeddedDocument {
       credentials: {
         type: Credentials,
         required: true
+      },
+      fmDataSource: {
+        type: [FMDataSourceItem],
+        default: () => [],
+        required: false
       }
     });
   }
@@ -192,7 +198,7 @@ class Connection extends EmbeddedDocument {
                 'Content-Type': 'application/json',
                 authorization: this.credentials.basic()
               },
-              data: {}
+              data: this.fmDataSource ? { fmDataSource: this.fmDataSource } : {}
             }
           )
         )

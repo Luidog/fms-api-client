@@ -226,6 +226,7 @@ After connecting to a datastore you can import and create clients. A client is c
 | server        | <code>String</code>  | The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
 | user          | <code>String</code>  |     The FileMaker user account to be used when authenticating into the Data API     |
 | password      | <code>String</code>  |                       The FileMaker user account's password.                        |
+| fmDataSource  | <code>Array</code>   |                   External FileMaker Data Source Authentication                     |
 | [name]        | <code>String</code>  |                               A name for the client.                                |
 | [usage]       | <code>Boolean</code> |          Track Data API usage for this client. **Note:** Default is `true`          |
 | [timeout]     | <code>Number</code>  |     The default timeout time for requests **Note:** Default is 0, (no timeout)      |
@@ -243,6 +244,17 @@ const client = Filemaker.create({
   server: process.env.SERVER,
   user: process.env.USERNAME,
   password: process.env.PASSWORD,
+  fmDataSource: [
+    {
+      database: process.env.EXTERNAL_DB,
+      username: process.env.EXTERNAL_DB_USERNAME,
+      password: process.env.EXTERNAL_DB_PASSWORD,
+      // or...
+      oAuthRequestId: requestIdHere,
+      oAuthIdentifier: identifierHere
+    }
+    // more...
+  ]
   usage: process.env.CLIENT_USAGE_TRACKING
 });
 ```
