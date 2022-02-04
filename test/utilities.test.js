@@ -55,6 +55,58 @@ describe('Conversion Utility Capabilities', () => {
         .to.be.a('object')
         .and.to.include.keys('name');
     });
+    describe('Long number handling', () => {
+      const convertLongNums = true;
+      it('it should return a string when given a string', () => {
+        return expect(parse('A String', convertLongNums)).to.be.a('string');
+      });
+      it('it should return an object when given a stringified object', () => {
+        return expect(
+          parse(JSON.stringify({ name: 'Han Solo' }), convertLongNums)
+        )
+          .to.be.a('object')
+          .and.to.include.keys('name');
+      });
+      it('it should convert long numbers to strings', () => {
+        const parsed = parse(
+          '{"longNum": 123456789012345678901234567890}',
+          convertLongNums
+        );
+        const longNum = parsed.longNum;
+        return expect(longNum).to.be.a('string');
+      });
+      it('it should leave short numbers as numbers', () => {
+        const parsed = parse('{"shortNum": 123}', convertLongNums);
+        const shortNum = parsed.shortNum;
+        return expect(shortNum).to.be.a('number');
+      });
+      it('it should work with negative numbers', () => {
+        const parsed = parse(
+          '{"longNum": -123456789012345678901234567890}',
+          convertLongNums
+        );
+        const longNum = parsed.longNum;
+        return expect(longNum).to.eql('-123456789012345678901234567890');
+      });
+      it('it should work with short negative numbers', () => {
+        const parsed = parse('{"longNum": -123}', convertLongNums);
+        const longNum = parsed.longNum;
+        return expect(longNum).to.eql(-123);
+      });
+      it('it should work with decimals', () => {
+        const parsed = parse(
+          '{"longNum": 1.12345678901234567890123456789}',
+          convertLongNums
+        );
+        const longNum = parsed.longNum;
+        return expect(longNum).to.eql('1.12345678901234567890123456789');
+      });
+      it('it should work with short decimals', () => {
+        const parsed = parse('{"longNum": 1.123}', convertLongNums);
+        const longNum = parsed.longNum;
+        return expect(longNum).to.eql(1.123);
+      });
+    });
   });
   describe('isJSON Utility', () => {
     it('it should return true for an object', () => {

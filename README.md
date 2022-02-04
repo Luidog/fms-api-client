@@ -220,18 +220,19 @@ connect('nedb://memory');
 
 After connecting to a datastore you can import and create clients. A client is created using the create method on the Filemaker class. The FileMaker class accepts an object with the following properties:
 
-| Property      |         Type         |                                     Description                                     |
-| ------------- | :------------------: | :---------------------------------------------------------------------------------: |
-| database      | <code>String</code>  |                        The FileMaker database to connect to                         |
-| server        | <code>String</code>  | The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
-| user          | <code>String</code>  |     The FileMaker user account to be used when authenticating into the Data API     |
-| password      | <code>String</code>  |                       The FileMaker user account's password.                        |
-| [name]        | <code>String</code>  |                               A name for the client.                                |
-| [usage]       | <code>Boolean</code> |          Track Data API usage for this client. **Note:** Default is `true`          |
-| [timeout]     | <code>Number</code>  |     The default timeout time for requests **Note:** Default is 0, (no timeout)      |
-| [concurrency] | <code>Number</code>  |          The number of concurrent requests that will be made to FileMaker           |
-| [proxy]       | <code>Object</code>  |                             settings for a proxy server                             |
-| [agent]       | <code>Object</code>  |                         settings for a custom request agent                         |
+| Property                      |         Type         |                                     Description                                     |
+| ----------------------------- | :------------------: | :---------------------------------------------------------------------------------: |
+| database                      | <code>String</code>  |                        The FileMaker database to connect to                         |
+| server                        | <code>String</code>  | The FileMaker server to use as the host. **Note:** Must be an http or https Domain. |
+| user                          | <code>String</code>  |     The FileMaker user account to be used when authenticating into the Data API     |
+| password                      | <code>String</code>  |                       The FileMaker user account's password.                        |
+| [name]                        | <code>String</code>  |                               A name for the client.                                |
+| [usage]                       | <code>Boolean</code> |          Track Data API usage for this client. **Note:** Default is `true`          |
+| [timeout]                     | <code>Number</code>  |     The default timeout time for requests **Note:** Default is 0, (no timeout)      |
+| [concurrency]                 | <code>Number</code>  |          The number of concurrent requests that will be made to FileMaker           |
+| [proxy]                       | <code>Object</code>  |                             settings for a proxy server                             |
+| [agent]                       | <code>Object</code>  |                         settings for a custom request agent                         |
+| [convertLongNumbersToStrings] | <code>Boolean</code> |   Converts long numbers like Get(UUIDNumber) and Random() to strings in responses   |
 
 :warning: You should only use the agent parameter when absolutely necessary. The Data API was designed to be used on https. Deviating from the intended use should be done with caution.
 

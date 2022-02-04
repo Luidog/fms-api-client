@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const JSONbig = require('json-bigint')({ storeAsString: true });
 
 /**
  * @class Conversion Utilities
@@ -105,9 +106,15 @@ const omit = (data, properties) =>
  * @description The parse function performs a try catch before attempting to parse the value as JSON. If the value is not valid JSON it wil return the value.
  * @see isJSON
  * @param  {Any} value The value to attempt to parse.
+ * @param  {boolean} [convertLongNumbersToStrings] convert long numbers to strings.
  * @return {Object|Any} A JSON object or array of objects without the properties passed to it
  */
-const parse = value => (isJSON(value) ? JSON.parse(value) : value);
+const parse = (value, convertLongNumbersToStrings) =>
+  isJSON(value)
+    ? convertLongNumbersToStrings
+      ? JSONbig.parse(value)
+      : JSON.parse(value)
+    : value;
 
 /**
  * @function pick

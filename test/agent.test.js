@@ -73,6 +73,7 @@ describe('Agent Configuration Capabilities', () => {
         '_schema',
         'concurrency',
         'connection',
+        'convertLongNumbersToStrings',
         'queue',
         'delay',
         'pending',
@@ -120,6 +121,7 @@ describe('Agent Configuration Capabilities', () => {
         'agent',
         'connection',
         'concurrency',
+        'convertLongNumbersToStrings',
         'delay',
         'pending',
         'queue',
@@ -150,6 +152,7 @@ describe('Agent Configuration Capabilities', () => {
         'agent',
         'concurrency',
         'connection',
+        'convertLongNumbersToStrings',
         'delay',
         'global',
         'pending',
@@ -253,6 +256,7 @@ describe('Agent Configuration Capabilities', () => {
         'agent',
         'concurrency',
         'connection',
+        'convertLongNumbersToStrings',
         'delay',
         'global',
         'pending',
@@ -268,7 +272,7 @@ describe('Agent Configuration Capabilities', () => {
 
   it('should use a proxy if one is set', () => {
     http
-      .createServer(function(req, res) {
+      .createServer(function (req, res) {
         proxy.web(req, res, {
           target: process.env.SERVER
         });
@@ -338,6 +342,7 @@ describe('Agent Configuration Capabilities', () => {
         '_schema',
         'protocol',
         'connection',
+        'convertLongNumbersToStrings',
         'global',
         'proxy',
         'timeout',
@@ -369,6 +374,7 @@ describe('Agent Configuration Capabilities', () => {
         '_schema',
         'protocol',
         'connection',
+        'convertLongNumbersToStrings',
         'global',
         'proxy',
         'timeout',
@@ -401,6 +407,88 @@ describe('Agent Configuration Capabilities', () => {
       .with.any.keys('message', 'code')
       .and.property('code')
       .to.equal('ECONNABORTED');
+  });
+
+  describe('convertLongNumbersToStrings option', () => {
+    it('should return strings in fieldData if enabled', () => {
+      const client = Filemaker.create({
+        database: process.env.DATABASE,
+        server: process.env.SERVER,
+        user: process.env.USERNAME,
+        password: process.env.PASSWORD,
+        usage: true,
+        convertLongNumbersToStrings: true
+      });
+      return expect(
+        client
+          .save()
+          .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
+          .then(res => res.data[0].fieldData.uuidNumber)
+          .catch(error => error)
+      ).to.eventually.be.a('string');
+    });
+
+    it('should return numbers in fieldData by default', () => {
+      const client = Filemaker.create({
+        database: process.env.DATABASE,
+        server: process.env.SERVER,
+        user: process.env.USERNAME,
+        password: process.env.PASSWORD,
+        usage: true
+      });
+      return expect(
+        client
+          .save()
+          .then(client => client.list(process.env.LAYOUT, { limit: 1 }))
+          .then(res => res.data[0].fieldData.uuidNumber)
+          .catch(error => error)
+      ).to.eventually.be.a('number');
+    });
+
+    it('should return strings in scriptResult if enabled', () => {
+      const client = Filemaker.create({
+        database: process.env.DATABASE,
+        server: process.env.SERVER,
+        user: process.env.USERNAME,
+        password: process.env.PASSWORD,
+        usage: true,
+        convertLongNumbersToStrings: true
+      });
+      return expect(
+        client
+          .save()
+          .then(client =>
+            client.list(process.env.LAYOUT, {
+              limit: 1,
+              script: 'Long Number JSON Script'
+            })
+          )
+          .then(res => res.scriptResult.longNumber)
+          .catch(error => error)
+      ).to.eventually.be.a('string');
+    });
+
+    it('should return numbers in scriptResult by default', () => {
+      const client = Filemaker.create({
+        database: process.env.DATABASE,
+        server: process.env.SERVER,
+        user: process.env.USERNAME,
+        password: process.env.PASSWORD,
+        usage: true
+      });
+      return expect(
+        client
+          .save()
+          .then(client =>
+            client.list(process.env.LAYOUT, {
+              limit: 1,
+              script: 'Long Number JSON Script'
+            })
+          )
+          .then(res => res.scriptResult.longNumber)
+          .catch(error => error)
+      ).to.eventually.be.a('number');
+    });
   });
 
   it('should not try to resolve pending requests that do not have a resolve function', () => {

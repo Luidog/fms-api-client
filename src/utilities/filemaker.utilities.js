@@ -111,19 +111,20 @@ const sanitizeParameters = (parameters, safeParameters) =>
   );
 
 /**
- * @function parseScriptResults
+ * @function parseScriptResult
  * @public
  * @memberof Filemaker Utilities
  * @description The parseScriptResults function filters the FileMaker DAPI response by testing if a script was triggered
  * with the request, then either selecting the response, script error, and script result from the
  * response or selecting just the response.
  * @param  {Object} data The response recieved from the FileMaker DAPI.
+ * @param  {boolean} convertLongNumbersToStrings convert long numbers to strings
  * @return {Object}      A json object containing the selected data from the Data API Response.
  */
-const parseScriptResult = data =>
+const parseScriptResult = (data, convertLongNumbersToStrings) =>
   _.mapValues(data.response, (value, property, object) =>
     property.includes('scriptResult')
-      ? (object[property] = parse(value))
+      ? (object[property] = parse(value, convertLongNumbersToStrings))
       : value
   );
 
