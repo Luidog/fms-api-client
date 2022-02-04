@@ -11,7 +11,7 @@ const { Connection } = require('./connection.model');
 const axios = require('axios');
 const axiosCookieJarSupport = require('axios-cookiejar-support').default;
 const { omit } = require('../utilities');
-const JSONbig = require('json-bigint')({ storeAsString: true });
+const { parse } = require('../utilities/conversion.utilities');
 
 const instance = axios.create();
 
@@ -225,8 +225,8 @@ class Agent extends EmbeddedDocument {
     const id = uuidv4();
     const interceptor = instance.interceptors.request.use(
       ({ httpAgent, httpsAgent, ...request }) => {
-        if (this.convertLongNumbersToStrings)
-          request.transformResponse = data => JSONbig.parse(data);
+        request.transformResponse = data =>
+          parse(data, this.convertLongNumbersToStrings);
         instance.interceptors.request.eject(interceptor);
         return new Promise((resolve, reject) =>
           this.push({

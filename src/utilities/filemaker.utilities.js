@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
-const { stringify, parse, parseBigInt } = require('./conversion.utilities');
+const { stringify, parse } = require('./conversion.utilities');
 
 /** @class Filemaker Utilities */
 
@@ -124,9 +124,7 @@ const sanitizeParameters = (parameters, safeParameters) =>
 const parseScriptResult = (data, convertLongNumbersToStrings) =>
   _.mapValues(data.response, (value, property, object) =>
     property.includes('scriptResult')
-      ? (object[property] = convertLongNumbersToStrings
-          ? parseBigInt(value)
-          : parse(value))
+      ? (object[property] = parse(value, convertLongNumbersToStrings))
       : value
   );
 

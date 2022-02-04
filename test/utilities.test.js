@@ -15,8 +15,7 @@ const {
   pick,
   omit,
   parse,
-  isJSON,
-  parseBigInt
+  isJSON
 } = require('../src/utilities/conversion.utilities');
 
 chai.use(chaiAsPromised);
@@ -56,25 +55,31 @@ describe('Conversion Utility Capabilities', () => {
         .to.be.a('object')
         .and.to.include.keys('name');
     });
-  });
-  describe('ParseBigInt Utility', () => {
-    it('it should return a string when given a string', () => {
-      return expect(parseBigInt('A String')).to.be.a('string');
-    });
-    it('it should return an object when given a stringified object', () => {
-      return expect(parseBigInt(JSON.stringify({ name: 'Han Solo' })))
-        .to.be.a('object')
-        .and.to.include.keys('name');
-    });
-    it('it should convert long numbers to strings', () => {
-      const parsed = parseBigInt('{"longNum": 123456789012345678901234567890}');
-      const longNum = parsed.longNum;
-      return expect(longNum).to.be.a('string');
-    });
-    it('it should leave short numbers as numbers', () => {
-      const parsed = parseBigInt('{"shortNum": 123}');
-      const shortNum = parsed.shortNum;
-      return expect(shortNum).to.be.a('number');
+    describe('Long number handling', () => {
+      const convertLongNums = true;
+      it('it should return a string when given a string', () => {
+        return expect(parse('A String', convertLongNums)).to.be.a('string');
+      });
+      it('it should return an object when given a stringified object', () => {
+        return expect(
+          parse(JSON.stringify({ name: 'Han Solo' }), convertLongNums)
+        )
+          .to.be.a('object')
+          .and.to.include.keys('name');
+      });
+      it('it should convert long numbers to strings', () => {
+        const parsed = parse(
+          '{"longNum": 123456789012345678901234567890}',
+          convertLongNums
+        );
+        const longNum = parsed.longNum;
+        return expect(longNum).to.be.a('string');
+      });
+      it('it should leave short numbers as numbers', () => {
+        const parsed = parse('{"shortNum": 123}', convertLongNums);
+        const shortNum = parsed.shortNum;
+        return expect(shortNum).to.be.a('number');
+      });
     });
   });
   describe('isJSON Utility', () => {
