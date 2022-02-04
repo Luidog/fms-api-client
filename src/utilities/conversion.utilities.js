@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const JSONbig = require('json-bigint')({ storeAsString: true });
 
 /**
  * @class Conversion Utilities
@@ -110,6 +111,17 @@ const omit = (data, properties) =>
 const parse = value => (isJSON(value) ? JSON.parse(value) : value);
 
 /**
+ * @function parseBigInt
+ * @public
+ * @memberof Conversion Utilities
+ * @description The parseBigInt function performs a try catch before attempting to parse the value as JSON. If the value is not valid JSON it wil return the value. Long numbers are returned as strings.
+ * @see isJSON
+ * @param  {Any} value The value to attempt to parse.
+ * @return {Object|Any} A JSON object or array of objects without the properties passed to it
+ */
+const parseBigInt = value => (isJSON(value) ? JSONbig.parse(value) : value);
+
+/**
  * @function pick
  * @public
  * @memberof Filemaker Utilities
@@ -158,5 +170,6 @@ module.exports = {
   omit,
   pick,
   parse,
+  parseBigInt,
   deepMapKeys
 };

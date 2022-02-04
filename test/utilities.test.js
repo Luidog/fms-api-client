@@ -15,7 +15,8 @@ const {
   pick,
   omit,
   parse,
-  isJSON
+  isJSON,
+  parseBigInt
 } = require('../src/utilities/conversion.utilities');
 
 chai.use(chaiAsPromised);
@@ -54,6 +55,26 @@ describe('Conversion Utility Capabilities', () => {
       return expect(parse(JSON.stringify({ name: 'Han Solo' })))
         .to.be.a('object')
         .and.to.include.keys('name');
+    });
+  });
+  describe('ParseBigInt Utility', () => {
+    it('it should return a string when given a string', () => {
+      return expect(parseBigInt('A String')).to.be.a('string');
+    });
+    it('it should return an object when given a stringified object', () => {
+      return expect(parseBigInt(JSON.stringify({ name: 'Han Solo' })))
+        .to.be.a('object')
+        .and.to.include.keys('name');
+    });
+    it('it should convert long numbers to strings', () => {
+      const parsed = parseBigInt('{"longNum": 123456789012345678901234567890}');
+      const longNum = parsed.longNum;
+      return expect(longNum).to.be.a('string');
+    });
+    it('it should leave short numbers as numbers', () => {
+      const parsed = parseBigInt('{"shortNum": 123}');
+      const shortNum = parsed.shortNum;
+      return expect(shortNum).to.be.a('number');
     });
   });
   describe('isJSON Utility', () => {

@@ -80,6 +80,7 @@ class Client extends Document {
       threshold,
       usage,
       proxy,
+      convertLongNumbersToStrings,
       ...connection
     } = data;
     const protocol = data.server.startsWith('https') ? 'https' : 'http';
@@ -91,6 +92,7 @@ class Client extends Document {
       threshold,
       concurrency,
       protocol,
+      convertLongNumbersToStrings,
       connection
     });
   }
@@ -387,7 +389,9 @@ class Client extends Document {
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this._save(body))
-        .then(body => parseScriptResult(body))
+        .then(body =>
+          parseScriptResult(body, this.agent.convertLongNumbersToStrings)
+        )
         .then(result => resolve(result))
         .catch(error => this._save(reject(error)))
     );
@@ -450,7 +454,9 @@ class Client extends Document {
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this._save(body))
-        .then(body => parseScriptResult(body))
+        .then(body =>
+          parseScriptResult(body, this.agent.convertLongNumbersToStrings)
+        )
         .then(response =>
           resolve(parameters.merge ? Object.assign(data, response) : response)
         )
@@ -505,7 +511,9 @@ class Client extends Document {
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this._save(body))
-        .then(body => parseScriptResult(body))
+        .then(body =>
+          parseScriptResult(body, this.agent.convertLongNumbersToStrings)
+        )
         .then(body =>
           resolve(
             parameters.merge
@@ -555,7 +563,9 @@ class Client extends Document {
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this._save(body))
-        .then(body => parseScriptResult(body))
+        .then(body =>
+          parseScriptResult(body, this.agent.convertLongNumbersToStrings)
+        )
         .then(result => resolve(result))
         .catch(error => this._save(reject(error)))
     );
@@ -605,7 +615,9 @@ class Client extends Document {
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this._save(body))
-        .then(body => parseScriptResult(body))
+        .then(body =>
+          parseScriptResult(body, this.agent.convertLongNumbersToStrings)
+        )
         .then(result => resolve(result))
         .catch(error => this._save(reject(error)))
     );
@@ -659,7 +671,9 @@ class Client extends Document {
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this._save(body))
-        .then(body => parseScriptResult(body))
+        .then(body =>
+          parseScriptResult(body, this.agent.convertLongNumbersToStrings)
+        )
         .then(result => resolve(result))
         .catch(error => this._save(reject(error)))
     );
@@ -716,7 +730,9 @@ class Client extends Document {
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this._save(body))
-        .then(body => parseScriptResult(body))
+        .then(body =>
+          parseScriptResult(body, this.agent.convertLongNumbersToStrings)
+        )
         .then(result => resolve(result))
         .catch(error => {
           this._save();
@@ -829,7 +845,9 @@ class Client extends Document {
             .then(response => response.data)
             .then(body => this.data.outgoing(body))
             .then(body => this._save(body))
-            .then(body => parseScriptResult(body))
+            .then(body =>
+              parseScriptResult(body, this.agent.convertLongNumbersToStrings)
+            )
             .then(response => Object.assign(response, { recordId: resolvedId }))
         )
         .then(response => resolve(response))
@@ -895,7 +913,12 @@ class Client extends Document {
         .then(response => response.data)
         .then(body => this.data.outgoing(body))
         .then(body => this._save(body))
-        .then(body => pick(parseScriptResult(body), 'scriptResult'))
+        .then(body =>
+          pick(
+            parseScriptResult(body, this.agent.convertLongNumbersToStrings),
+            'scriptResult'
+          )
+        )
         .then(result => resolve(result))
         .catch(error => this._save(reject(error)))
     );
