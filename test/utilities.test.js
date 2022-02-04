@@ -80,6 +80,32 @@ describe('Conversion Utility Capabilities', () => {
         const shortNum = parsed.shortNum;
         return expect(shortNum).to.be.a('number');
       });
+      it('it should work with negative numbers', () => {
+        const parsed = parse(
+          '{"longNum": -123456789012345678901234567890}',
+          convertLongNums
+        );
+        const longNum = parsed.longNum;
+        return expect(longNum).to.eql('-123456789012345678901234567890');
+      });
+      it('it should work with short negative numbers', () => {
+        const parsed = parse('{"longNum": -123}', convertLongNums);
+        const longNum = parsed.longNum;
+        return expect(longNum).to.eql(-123);
+      });
+      it('it should work with decimals', () => {
+        const parsed = parse(
+          '{"longNum": 1.12345678901234567890123456789}',
+          convertLongNums
+        );
+        const longNum = parsed.longNum;
+        return expect(longNum).to.eql('1.12345678901234567890123456789');
+      });
+      it('it should work with short decimals', () => {
+        const parsed = parse('{"longNum": 1.123}', convertLongNums);
+        const longNum = parsed.longNum;
+        return expect(longNum).to.eql(1.123);
+      });
     });
   });
   describe('isJSON Utility', () => {
