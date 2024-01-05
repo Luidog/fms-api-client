@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/Luidog/fms-api-client",
   "dependencies": {
-    "axios": "^0.21.3",
+    "axios": "^1.6.4",
     "axios-cookiejar-support": "^1.0.0",
     "form-data": "^3.0.0",
     "into-stream": "^5.1.1",
